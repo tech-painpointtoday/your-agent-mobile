@@ -1,0 +1,163 @@
+import 'package:youragent/domain/entities/contract_status.dart';
+import 'package:youragent/domain/entities/contract_type.dart';
+
+class ContractModel {
+  final String? id;
+  final String? contractNumber;
+  final String? propertyName;
+  final String? lessor;
+  final String? lessee;
+  final ContractStatus? status;
+  final ContractType? contractType;
+  final String? propertyType;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final String? sellerSignedContractUrl;
+  final DateTime? sellerSignedAt;
+  final String? buyerSignedContractUrl;
+  final DateTime? buyerSignedAt;
+
+  ContractModel({
+    this.id,
+    this.contractNumber,
+    this.propertyName,
+    this.lessor,
+    this.lessee,
+    this.status,
+    this.contractType,
+    this.propertyType,
+    this.createdAt,
+    this.updatedAt,
+    this.sellerSignedContractUrl,
+    this.sellerSignedAt,
+    this.buyerSignedContractUrl,
+    this.buyerSignedAt,
+  });
+
+  factory ContractModel.fromJson(Map<String, dynamic> json) {
+    final property = json['property'] ?? {};
+    final specs = property['specs'] ?? {};
+    final buyer = json['buyer'] ?? {};
+    final owner = json['owner'] ?? {};
+
+    // Format contract number as 11-digit string with leading zeros
+    // Example: id 4 -> "00000000004", id 5260108 -> "00005260108"
+    String formatContractNumber(dynamic id) {
+      if (id == null) return 'N/A';
+      final idInt = id is int ? id : int.tryParse(id.toString());
+      if (idInt == null) return id.toString();
+      return idInt.toString().padLeft(11, '0');
+    }
+
+    // Construct property name from available data
+    String pName = specs['name']?.toString() ?? '';
+    if (pName.isEmpty) {
+      if (specs['address'] != null) {
+        pName = specs['address'].toString();
+      } else {
+        pName = 'Property #${property['id']}';
+      }
+    }
+
+
+    // Get lessor name - try owner first, then fallback to agent_id
+    String? lessorName;
+    if (owner['name'] != null) {
+      lessorName = owner['name'].toString();
+    } else if (json['agent_id'] != null) {
+      // Fallback: use agent_id if owner name not available
+      lessorName = 'Agent #${json['agent_id']}';
+    }
+
+    return ContractModel(
+      id: json['id']?.toString(),
+      contractNumber: formatContractNumber(json['id']),
+      propertyName: pName,
+      lessor: lessorName ?? 'N/A',
+      lessee: buyer['name']?.toString() ?? 'N/A',
+      status: ContractStatus.fromApiValue(json['status']?.toString()),
+      contractType: ContractType.fromApiValue(json['contract_type']?.toString()),
+      propertyType: _mapPropertyType(specs['type']?.toString()),
+      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
+      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
+      sellerSignedContractUrl: json['seller_signed_contract_url']?.toString(),
+      sellerSignedAt: json['seller_signed_at'] != null ? DateTime.parse(json['seller_signed_at']) : null,
+      buyerSignedContractUrl: json['buyer_signed_contract_url']?.toString(),
+      buyerSignedAt: json['buyer_signed_at'] != null ? DateTime.parse(json['buyer_signed_at']) : null,
+    );
+  }
+
+  // Map property type to Thai labels
+  static String? _mapPropertyType(String? type) {
+    if (type == null) return null;
+    final t = type.toLowerCase();
+    switch (t) {
+      case 'house':
+        return 'บ้าน';
+      case 'condo':
+      case 'condominium':
+        return 'คอนโด';
+      case 'apartment':
+        return 'อพาร์ตเมนต์';
+      case 'land':
+        return 'ที่ดิน';
+      case 'commercial':
+        return 'เชิงพาณิชย์';
+      default:
+        return type;
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'contractNumber': contractNumber,
+      'propertyName': propertyName,
+      'lessor': lessor,
+      'lessee': lessee,
+      'status': status?.apiValue,
+      'contractType': contractType?.apiValue,
+      'propertyType': propertyType,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+      'sellerSignedContractUrl': sellerSignedContractUrl,
+      'sellerSignedAt': sellerSignedAt?.toIso8601String(),
+      'buyerSignedContractUrl': buyerSignedContractUrl,
+      'buyerSignedAt': buyerSignedAt?.toIso8601String(),
+    };
+  }
+
+  ContractModel copyWith({
+    String? id,
+    String? contractNumber,
+    String? propertyName,
+    String? lessor,
+    String? lessee,
+    ContractStatus? status,
+    ContractType? contractType,
+    String? propertyType,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? sellerSignedContractUrl,
+    DateTime? sellerSignedAt,
+    String? buyerSignedContractUrl,
+    DateTime? buyerSignedAt,
+  }) {
+    return ContractModel(
+      id: id ?? this.id,
+      contractNumber: contractNumber ?? this.contractNumber,
+      propertyName: propertyName ?? this.propertyName,
+      lessor: lessor ?? this.lessor,
+      lessee: lessee ?? this.lessee,
+      status: status ?? this.status,
+      contractType: contractType ?? this.contractType,
+      propertyType: propertyType ?? this.propertyType,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      sellerSignedContractUrl: sellerSignedContractUrl ?? this.sellerSignedContractUrl,
+      sellerSignedAt: sellerSignedAt ?? this.sellerSignedAt,
+      buyerSignedContractUrl: buyerSignedContractUrl ?? this.buyerSignedContractUrl,
+      buyerSignedAt: buyerSignedAt ?? this.buyerSignedAt,
+    );
+  }
+}

@@ -1,0 +1,63 @@
+---
+description: 
+alwaysApply: true
+---
+
+# Project Rules & Design System Enforcement
+
+You are an expert Flutter Developer assisting with the "YourAgent" application. You must strictly adhere to the following design systems, architectural patterns, and behavior rules.
+
+## 1. UI Component Enforcement
+**Do not use standard Material widgets** when a custom App component exists. You must use the following components from the design system:
+
+* **Buttons:**
+    * **NEVER** use `ElevatedButton`, `TextButton`, or `OutlinedButton` directly.
+    * **ALWAYS** use `AppButton`.
+    * *Usage:* `AppButton(text: 'Label', style: AppButtonStyle.primary, onPressed: ...)`
+    * *Styles:* Use `AppButtonStyle.primary` for main actions, `destructive` for delete/remove, `outline` for cancel/secondary, `ghost` for subtle actions.
+
+* **Dialogs & Alerts:**
+    * **NEVER** use `showDialog`, `AlertDialog`, or `SimpleDialog` directly.
+    * **ALWAYS** use the `StatusDialog` helper class (which wraps `AppStatusDialog`).
+    * *Usage:* `StatusDialog.showSuccess(...)`, `StatusDialog.showDestructive(...)`.
+
+* **Inputs:**
+    * **NEVER** use `TextField` or `TextFormField` directly.
+    * **ALWAYS** use `AppTextField`.
+    * *Usage:* `AppTextField(label: 'Email', isRequired: true, controller: ...)`
+
+* **Badges/Tags:**
+    * **ALWAYS** use `AppBadge` for status labels or tags.
+
+* **Typography & Colors:**
+    * Use `AppColors` for all color references (e.g., `AppColors.primary`, `AppColors.error`).
+    * Use `GoogleFonts.anuphan()` for all text styles unless inherited from the Theme.
+
+## 2. Critical Action Workflow (The "Confirmation First" Rule)
+Any action that modifies data or changes authentication state (**Create, Save, Submit, Update, Delete, Remove, Logout**) MUST trigger a confirmation dialog *before* executing the logic.
+
+**Pattern:**
+1.  **User Trigger:** User taps an `AppButton`.
+2.  **Interception:** Do NOT call the API/BLoC event immediately.
+3.  **Confirmation:** Show `StatusDialog.confirm` (for neutral actions) or `StatusDialog.destructive` (for negative actions).
+4.  **Execution:** Place the actual logic (e.g., `context.read<Bloc>().add(...)`) inside the `onAction` callback of the dialog.
+
+**Example (Delete Action):**
+```dart
+// BAD
+onPressed: () {
+  context.read<ContractBloc>().add(DeleteContractEvent(id));
+}
+
+// GOOD
+onPressed: () {
+  StatusDialog.showDestructive(
+    context: context,
+    title: 'ลบสัญญา?',
+    message: 'คุณต้องการลบสัญญานี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
+    actionLabel: 'ลบ',
+    onAction: () {
+      context.read<ContractBloc>().add(DeleteContractEvent(id));
+    },
+  );
+}
