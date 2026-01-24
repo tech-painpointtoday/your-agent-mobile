@@ -20,6 +20,7 @@ import '../features/dashboard/pages/dashboard_screen.dart';
 import '../features/money/pages/money_screen.dart';
 import '../features/property/pages/property_screen.dart';
 import '../features/public/pages/policy_screen.dart';
+import '../features/splash/splash_screen.dart';
 
 class AppRouter {
   final Function(Locale) changeLocale;
@@ -27,7 +28,7 @@ class AppRouter {
 
   late final GoRouter router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: '/login',
+    initialLocation: '/splash',
     refreshListenable: DependencyInjection.authRepository as ChangeNotifier,
     redirect: (context, state) {
       final authRepo = DependencyInjection.authRepository;
@@ -37,7 +38,8 @@ class AppRouter {
           state.uri.path.startsWith('/register');
 
       // allow public routes
-      if (state.uri.path.startsWith('/policy') ||
+      if (state.uri.path.startsWith('/splash') ||
+          state.uri.path.startsWith('/policy') ||
           state.uri.path.startsWith('/forgot-password') ||
           state.uri.path.startsWith('/reset-password') ||
           state.uri.path.startsWith('/email-verification-pending')) {
@@ -76,6 +78,10 @@ class AppRouter {
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: '/login',
         builder: (context, state) => LoginScreen(changeLocale: changeLocale),
