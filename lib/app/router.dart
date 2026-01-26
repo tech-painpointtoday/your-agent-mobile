@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:youragent/features/home/pages/home_screen.dart';
 
 import '../core/di/dependency_injection.dart';
 import '../domain/entities/user.dart';
+import '../features/activities/pages/all_activities_screen.dart';
 import '../features/auth/pages/email_verification_pending_screen.dart';
 import '../features/auth/pages/forgot_password_screen.dart';
 import '../features/auth/pages/login_screen.dart';
 import '../features/auth/pages/register_screen.dart';
 import '../features/auth/pages/reset_password_screen.dart';
-import '../features/activities/pages/all_activities_screen.dart';
 import '../features/bureau/pages/bureau_screen.dart';
 import '../features/calendar/pages/calendar_screen.dart';
 import '../features/co_agent/pages/co_agent_screen.dart';
@@ -18,9 +18,14 @@ import '../features/contract/pages/contract_screen.dart';
 import '../features/dashboard/pages/dashboard_home_screen.dart';
 import '../features/dashboard/pages/dashboard_screen.dart';
 import '../features/money/pages/money_screen.dart';
+import '../features/notifications/bloc/notification_bloc.dart';
+import '../features/notifications/bloc/notification_event.dart';
+import '../features/notifications/pages/notification_detail_screen.dart';
+import '../features/notifications/pages/notifications_screen.dart';
 import '../features/property/pages/property_screen.dart';
 import '../features/public/pages/policy_screen.dart';
 import '../features/splash/splash_screen.dart';
+import '../widgets/main_navigation_screen.dart';
 
 class AppRouter {
   final Function(Locale) changeLocale;
@@ -48,6 +53,7 @@ class AppRouter {
 
       // Protected routes that require authentication
       final protectedRoutes = [
+        '/',
         '/home-screen',
         '/property',
         '/money',
@@ -58,6 +64,7 @@ class AppRouter {
         '/contract',
         '/bureau',
         '/activities',
+        '/notifications',
       ];
 
       final isProtectedRoute = protectedRoutes.any(
@@ -66,7 +73,7 @@ class AppRouter {
 
       if (isLoggedIn) {
         if (isAuthRoute) {
-          return '/home-screen';
+          return '/'; // Redirect to main navigation
         }
         return null;
       }
@@ -85,6 +92,47 @@ class AppRouter {
       GoRoute(
         path: '/login',
         builder: (context, state) => LoginScreen(changeLocale: changeLocale),
+      ),
+      // Main navigation with PageView
+      GoRoute(
+        path: '/',
+        builder: (context, state) =>
+            const MainNavigationScreen(initialIndex: 0),
+      ),
+      GoRoute(
+        path: '/property',
+        builder: (context, state) =>
+            const MainNavigationScreen(initialIndex: 1),
+      ),
+      GoRoute(
+        path: '/money',
+        builder: (context, state) =>
+            const MainNavigationScreen(initialIndex: 2),
+      ),
+      GoRoute(
+        path: '/calendar',
+        builder: (context, state) =>
+            const MainNavigationScreen(initialIndex: 3),
+      ),
+      GoRoute(
+        path: '/contact',
+        builder: (context, state) =>
+            const MainNavigationScreen(initialIndex: 4),
+      ),
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: '/notifications/:id',
+        builder: (context, state) {
+          final notificationId = state.pathParameters['id']!;
+          return BlocProvider(
+            create: (context) =>
+                NotificationBloc()..add(const LoadNotifications()),
+            child: NotificationDetailScreen(notificationId: notificationId),
+          );
+        },
       ),
       GoRoute(
         path: '/register',
@@ -137,25 +185,10 @@ class AppRouter {
           return EmailVerificationPendingScreen(email: email);
         },
       ),
+      // Legacy route - redirects to main navigation
       GoRoute(
         path: '/home-screen',
-        builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        path: '/property',
-        builder: (context, state) => const PropertyScreen(),
-      ),
-      GoRoute(
-        path: '/money',
-        builder: (context, state) => const MoneyScreen(),
-      ),
-      GoRoute(
-        path: '/calendar',
-        builder: (context, state) => const CalendarScreen(),
-      ),
-      GoRoute(
-        path: '/contact',
-        builder: (context, state) => const ContactScreen(),
+        redirect: (context, state) => '/',
       ),
       GoRoute(
         path: '/dashboard',

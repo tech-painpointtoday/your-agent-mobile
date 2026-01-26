@@ -47,7 +47,7 @@ class _AuthHeaderState extends State<AuthHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final isInLoginFlow = widget.onRoleChanged != null;
 
     return SafeArea(

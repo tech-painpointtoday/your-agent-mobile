@@ -62,9 +62,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (!_termsAccepted || !_privacyAccepted) return;
     if (_selectedBusinessType == null) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context).select_business_type),
+          content: Text(l10n.select_business_type),
         ),
       );
       return;
@@ -92,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocListener<AuthBloc, AuthState>(
       listener: _listener,
@@ -702,7 +703,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required String linkText,
     required VoidCallback onLinkTap,
   }) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

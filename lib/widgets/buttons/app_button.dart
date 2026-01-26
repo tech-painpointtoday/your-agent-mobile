@@ -7,7 +7,7 @@ import '../../core/theme/app_colors.dart';
 /// This is intentionally lightweight compared to the old `old_lib/` button
 /// implementation, but follows the same visual language and colors.
 
-enum AppButtonStyle { primary, destructive }
+enum AppButtonStyle { primary, destructive, outline }
 
 class AppButton extends StatelessWidget {
   final String text;
@@ -31,7 +31,12 @@ class AppButton extends StatelessWidget {
         enabled ? AppColors.buttonPrimary : AppColors.buttonDisabledBg,
       AppButtonStyle.destructive =>
         enabled ? AppColors.error600 : AppColors.buttonDisabledBg,
+      AppButtonStyle.outline => Colors.white,
     };
+
+    final Color textColor = style == AppButtonStyle.outline
+        ? (enabled ? AppColors.gray500 : AppColors.buttonDisabledText)
+        : Colors.white;
 
     return SizedBox(
       width: double.infinity,
@@ -40,17 +45,26 @@ class AppButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: background,
-          foregroundColor: Colors.white,
+          foregroundColor: textColor,
           disabledBackgroundColor: AppColors.buttonDisabledBg,
           disabledForegroundColor: AppColors.buttonDisabledText,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
+            side: style == AppButtonStyle.outline
+                ? BorderSide(
+                    color: enabled ? AppColors.gray300 : AppColors.gray200,
+                    width: 1,
+                  )
+                : BorderSide.none,
           ),
           elevation: 0,
         ),
         child: Text(
           text,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
         ),
       ),
     );

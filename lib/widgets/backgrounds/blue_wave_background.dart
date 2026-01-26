@@ -2,21 +2,36 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 
-class BlueWaveBackground extends StatelessWidget {
+class ColorsWaveBackground extends StatelessWidget {
   final Widget? child;
+  final Color firstColor;
+  final Color secondColor;
 
-  const BlueWaveBackground({super.key, this.child});
+  const ColorsWaveBackground({
+    super.key,
+    this.child,
+    this.firstColor = const Color(0xFF1743C7),
+    this.secondColor = const Color(0xFF64D6FF),
+  });
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _BlueWavePainter(),
+      painter: _BlueWavePainter(
+        firstColor: firstColor,
+        secondColor: secondColor,
+      ),
       child: SizedBox.expand(child: child),
     );
   }
 }
 
 class _BlueWavePainter extends CustomPainter {
+  final Color firstColor;
+  final Color secondColor;
+
+  const _BlueWavePainter({required this.firstColor, required this.secondColor});
+
   @override
   void paint(Canvas canvas, Size size) {
     // 1) Base vertical gradient – deep blue to light blue
@@ -25,8 +40,8 @@ class _BlueWavePainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          const Color(0xFF1743C7), // deep blue (top)
-          const Color(0xFF64D6FF), // light cyan (bottom)
+          firstColor, // deep blue (top)
+          secondColor, // light cyan (bottom)
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
@@ -62,4 +77,18 @@ class _BlueWavePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// Backwards-compatible alias used by some screens.
+///
+/// `test_youragent` used `BlueWaveBackground`, while the current implementation
+/// is `ColorsWaveBackground`. Keeping this wrapper avoids having to update all
+/// call sites.
+class BlueWaveBackground extends ColorsWaveBackground {
+  const BlueWaveBackground({
+    super.key,
+    super.child,
+    super.firstColor,
+    super.secondColor,
+  });
 }

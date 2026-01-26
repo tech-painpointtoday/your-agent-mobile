@@ -4,11 +4,13 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../domain/entities/user.dart';
 import '../../l10n/app_localizations.dart';
+import '../buttons/app_button.dart';
+import '../dialogs/status_dialog.dart';
 import '../form_fields/labeled_dropdown_field.dart';
 import '../form_fields/labeled_password_field.dart';
 import '../form_fields/labeled_text_form_field.dart';
 
-class BusinessRegisterForm extends StatefulWidget {
+class RegisterForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController nameController;
   final TextEditingController emailController;
@@ -23,7 +25,7 @@ class BusinessRegisterForm extends StatefulWidget {
   final ValueChanged<bool> onTermsChanged;
   final ValueChanged<bool> onPrivacyChanged;
 
-  const BusinessRegisterForm({
+  const RegisterForm({
     super.key,
     required this.formKey,
     required this.nameController,
@@ -41,17 +43,18 @@ class BusinessRegisterForm extends StatefulWidget {
   });
 
   @override
-  State<BusinessRegisterForm> createState() => _BusinessRegisterFormState();
+  State<RegisterForm> createState() => _RegisterFormState();
 }
 
-class _BusinessRegisterFormState extends State<BusinessRegisterForm> {
+class _RegisterFormState extends State<RegisterForm> {
   String? _selectedBusinessType;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
-    final canSubmit = _selectedBusinessType != null &&
+    final canSubmit =
+        _selectedBusinessType != null &&
         widget.termsAccepted &&
         widget.privacyAccepted;
 
@@ -81,7 +84,9 @@ class _BusinessRegisterFormState extends State<BusinessRegisterForm> {
             controller: widget.phoneController,
             prefixIcon: Icons.phone_outlined,
             keyboardType: TextInputType.phone,
-            validator: (v) => (v == null || v.isEmpty) ? 'กรุณากรอก${l10n.phone_number}' : null,
+            validator: (v) => (v == null || v.isEmpty)
+                ? 'กรุณากรอก${l10n.phone_number}'
+                : null,
           ),
           LabeledDropdownField<String>(
             label: l10n.business_type_hint,
@@ -141,7 +146,8 @@ class _BusinessRegisterFormState extends State<BusinessRegisterForm> {
             compareController: widget.passwordController,
             validator: (v) {
               if (v == null || v.isEmpty) return l10n.enter_confirm_password;
-              if (v != widget.passwordController.text) return l10n.passwords_do_not_match;
+              if (v != widget.passwordController.text)
+                return l10n.passwords_do_not_match;
               return null;
             },
           ),
@@ -162,28 +168,23 @@ class _BusinessRegisterFormState extends State<BusinessRegisterForm> {
             onLinkTap: () => context.push('/policy?type=privacy'),
           ),
           const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
+          AppButton(
+            text: l10n.register_button,
+            style: AppButtonStyle.primary,
             height: 52,
-            child: ElevatedButton(
-              onPressed: () {
-                if (_selectedBusinessType == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.select_business_type)),
-                  );
-                  return;
-                }
-                if (!canSubmit) return;
-                widget.onRegister(_selectedBusinessType!);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: canSubmit ? AppColors.primary : const Color(0xFFE9E9EB),
-              ),
-              child: Text(
-                l10n.register_button,
-                style: const TextStyle(color: AppColors.white, fontWeight: FontWeight.w700),
-              ),
-            ),
+            onPressed: canSubmit
+                ? () async {
+                    final confirmed = await StatusDialog.showConfirmation(
+                      context: context,
+                      title: l10n.confirm,
+                      message: 'Do you want to register?',
+                      confirmText: l10n.confirm,
+                      cancelText: l10n.cancel_button,
+                    );
+                    if (!confirmed) return;
+                    widget.onRegister(_selectedBusinessType!);
+                  }
+                : null,
           ),
         ],
       ),
@@ -197,7 +198,7 @@ class _BusinessRegisterFormState extends State<BusinessRegisterForm> {
     required String linkText,
     required VoidCallback onLinkTap,
   }) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
         Checkbox(
@@ -218,7 +219,9 @@ class _BusinessRegisterFormState extends State<BusinessRegisterForm> {
                       onTap: onLinkTap,
                       child: Text(
                         linkText,
-                        style: const TextStyle(decoration: TextDecoration.underline),
+                        style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
                   ),
@@ -231,4 +234,3 @@ class _BusinessRegisterFormState extends State<BusinessRegisterForm> {
     );
   }
 }
-

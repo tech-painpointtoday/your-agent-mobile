@@ -1,10 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../widgets/app_search_bar.dart';
 import '../../../widgets/backgrounds/blue_wave_background.dart';
+import '../../notifications/bloc/notification_bloc.dart';
+import '../../notifications/bloc/notification_event.dart';
+import '../../notifications/bloc/notification_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,133 +19,64 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _bottomIndex = 0;
-
-  BottomNavigationBarItem _buildBottomNavItem({
-    required String iconPath,
-    required String unselectedIconPath,
-    required String label,
-    required bool isSelected,
-  }) {
-    return BottomNavigationBarItem(
-      icon: SvgPicture.asset(
-        unselectedIconPath,
-        width: 24,
-        height: 24,
-        colorFilter: const ColorFilter.mode(
-          AppColors.gray400,
-          BlendMode.srcIn,
-        ),
-      ),
-      activeIcon: SvgPicture.asset(
-        iconPath,
-        width: 24,
-        height: 24,
-        colorFilter: const ColorFilter.mode(
-          AppColors.primary,
-          BlendMode.srcIn,
-        ),
-      ),
-      label: label,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final double headerHeight = constraints.maxHeight * 0.38;
+    return BlocProvider(
+      create: (context) => NotificationBloc()..add(const LoadNotifications()),
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final double headerHeight = constraints.maxHeight * 0.38;
 
-          return Stack(
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: headerHeight,
-                child: const BlueWaveBackground(),
-              ),
-              SafeArea(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: const [
-                      SizedBox(height: 12),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: HomeHeader(),
-                      ),
-                      SizedBox(height: 14),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: HomeSearchBar(),
-                      ),
-                      SizedBox(height: 16),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: MenuGridCard(),
-                      ),
-                      SizedBox(height: 18),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: RecommendedSection(),
-                      ),
-                      SizedBox(height: 18),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: ActivitiesSection(),
-                      ),
-                    ],
+            return Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: headerHeight,
+                  child: const BlueWaveBackground(),
+                ),
+                SafeArea(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: const [
+                        SizedBox(height: 12),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: HomeHeader(),
+                        ),
+                        SizedBox(height: 14),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: HomeSearchBar(),
+                        ),
+                        SizedBox(height: 16),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: MenuGridCard(),
+                        ),
+                        SizedBox(height: 18),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: RecommendedSection(),
+                        ),
+                        SizedBox(height: 18),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: ActivitiesSection(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          );
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _bottomIndex,
-        onTap: (i) => setState(() => _bottomIndex = i),
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.gray400,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        items: [
-          _buildBottomNavItem(
-            iconPath: 'assets/icons/home-2-filled.svg',
-            unselectedIconPath: 'assets/icons/home.svg',
-            label: 'Home',
-            isSelected: _bottomIndex == 0,
-          ),
-          _buildBottomNavItem(
-            iconPath: 'assets/icons/building-filled.svg',
-            unselectedIconPath: 'assets/icons/building.svg',
-            label: 'Property',
-            isSelected: _bottomIndex == 1,
-          ),
-          _buildBottomNavItem(
-            iconPath: 'assets/icons/wallet-filled.svg',
-            unselectedIconPath: 'assets/icons/wallet.svg',
-            label: 'Money',
-            isSelected: _bottomIndex == 2,
-          ),
-          _buildBottomNavItem(
-            iconPath: 'assets/icons/calendar-filled.svg',
-            unselectedIconPath: 'assets/icons/calendar.svg',
-            label: 'Calendar',
-            isSelected: _bottomIndex == 3,
-          ),
-          _buildBottomNavItem(
-            iconPath: 'assets/icons/contact-book-filled.svg',
-            unselectedIconPath: 'assets/icons/contact-book.svg',
-            label: 'Contact',
-            isSelected: _bottomIndex == 4,
-          ),
-        ],
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -185,74 +121,110 @@ class HomeHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-        _HeaderActionIcon(icon: Icons.notifications_none_rounded, onTap: null),
+        _HeaderActionIcon(
+          svgPath: 'assets/images/bell-icon.svg',
+          onTap: () => context.push('/notifications'),
+          showBadge: true,
+        ),
         const SizedBox(width: 10),
-        _HeaderActionIcon(icon: Icons.chat_bubble_outline_rounded, onTap: null),
+        _HeaderActionIcon(
+          svgPath: 'assets/images/message-icon.svg',
+          onTap: null,
+        ),
       ],
     );
   }
 }
 
 class _HeaderActionIcon extends StatelessWidget {
-  final IconData icon;
+  final String svgPath;
   final VoidCallback? onTap;
+  final bool showBadge;
 
-  const _HeaderActionIcon({required this.icon, required this.onTap});
+  const _HeaderActionIcon({
+    required this.svgPath,
+    required this.onTap,
+    this.showBadge = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
-      child: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: AppColors.white.withOpacity(0.18),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(icon, color: AppColors.white, size: 20),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: AppColors.white.withOpacity(0.18),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                svgPath,
+                width: 20,
+                height: 20,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.white,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          ),
+          if (showBadge)
+            BlocBuilder<NotificationBloc, NotificationState>(
+              builder: (context, state) {
+                final unreadCount = state is NotificationLoaded
+                    ? state.unreadCount
+                    : 0;
+
+                if (unreadCount == 0) return const SizedBox.shrink();
+
+                return Positioned(
+                  right: -4,
+                  top: -4,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: AppColors.error600,
+                      shape: BoxShape.circle,
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 18,
+                      minHeight: 18,
+                    ),
+                    child: Center(
+                      child: Text(
+                        unreadCount > 99 ? '99+' : unreadCount.toString(),
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          height: 1,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
       ),
     );
   }
 }
 
+/// Search bar for home screen with custom hint text
 class HomeSearchBar extends StatelessWidget {
   const HomeSearchBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 44,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 12,
-            offset: Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Row(
-        children: const [
-          Icon(Icons.search_rounded, color: AppColors.gray500),
-          SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              'ค้นหาทรัพย์ของคุณ...',
-              style: TextStyle(
-                color: AppColors.gray500,
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return const AppSearchBar(hintText: 'ค้นหาทรัพย์ของคุณ...');
   }
 }
 

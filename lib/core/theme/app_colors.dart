@@ -17,7 +17,19 @@ class AppColors {
   static const gray500 = Color(0xFF717680);
   static const gray600 = Color(0xFF535862);
   static const gray700 = Color(0xFF414651);
+  static const gray800 = Color(0xFF2D2F34);
+  static const gray900 = Color(0xFF1C1C1C);
   static const grayBorder = Color(0xFFE9EAEB);
+
+  // Ruby/Red shades
+  static const ruby500 = Color(0xFFDC2626);
+
+  // Blue shades
+  static const blue100 = Color(0xFFE5F0FF);
+
+  // Card label colors
+  static const cardLabelPrimary = Color(0xFF1C1C1C);
+  static const cardLabelSecondary = Color(0xFFA9A9A9);
 
   // Semantic
   static const success600 = Color(0xFF16B364);

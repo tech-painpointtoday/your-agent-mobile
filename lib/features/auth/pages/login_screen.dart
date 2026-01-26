@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (state is AuthError) {
-      final l10n = AppLocalizations.of(context);
+      final l10n = AppLocalizations.of(context)!;
       await StatusDialog.showError(
         context: context,
         title: l10n.login_error,
@@ -223,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocListener<AuthBloc, AuthState>(
       listener: _listener,
@@ -264,7 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _roleSegment(l10n),
+                    _roleSegment(l10n!),
                 const SizedBox(height: 18),
                 Form(
                   key: _formKey,

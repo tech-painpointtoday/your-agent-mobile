@@ -6,17 +6,20 @@ import '../../domain/usecases/auth_usecases.dart';
 import '../../features/auth/bloc/auth_bloc.dart';
 import '../../services/api_client.dart';
 import '../../services/auth_api_service.dart';
+import '../../services/chat_api_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class DependencyInjection {
   static final ApiClient _apiClient = ApiClient();
   static final AuthApiService _authApiService = AuthApiService(_apiClient);
+  static final ChatApiService _chatApiService = ChatApiService(_apiClient);
   static final AuthRepositoryImpl _authRepository =
       AuthRepositoryImpl(authApiService: _authApiService);
 
   static ApiClient get apiClient => _apiClient;
   static AuthApiService get authApiService => _authApiService;
+  static ChatApiService get chatApiService => _chatApiService;
   static AuthRepository get authRepository => _authRepository;
 
   static SignInWithEmail get signInWithEmailUseCase =>
