@@ -34,7 +34,10 @@ class StandardTextField extends StatelessWidget {
     this.suffixIcon,
     this.suffix,
     this.onChanged,
-  }) : assert(controller == null || initialValue == null, 'Cannot provide both controller and initialValue');
+  }) : assert(
+         controller == null || initialValue == null,
+         'Cannot provide both controller and initialValue',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -59,22 +62,27 @@ class StandardTextField extends StatelessWidget {
                 return null;
               },
           onChanged: onChanged,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: isReadOnly ? AppColors.gray600 : AppColors.gray900),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: isReadOnly ? AppColors.baseDarkGrey : AppColors.baseDarkGrey,
+          ),
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.gray400),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            hintStyle: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.baseGrey),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
             filled: true,
-            fillColor: isReadOnly ? AppColors.gray50 : AppColors.white,
+            fillColor: isReadOnly ? AppColors.basePaleGrey : AppColors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -82,11 +90,11 @@ class StandardTextField extends StatelessWidget {
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.error600),
+              borderSide: const BorderSide(color: AppColors.supportRedDeep),
             ),
             suffixIcon: suffixIcon,
             suffix: suffix != null
@@ -94,7 +102,9 @@ class StandardTextField extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 8),
                     child: Text(
                       suffix!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.gray600),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.baseDarkGrey,
+                      ),
                     ),
                   )
                 : null,

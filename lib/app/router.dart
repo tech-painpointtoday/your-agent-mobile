@@ -11,17 +11,15 @@ import '../features/auth/pages/login_screen.dart';
 import '../features/auth/pages/register_screen.dart';
 import '../features/auth/pages/reset_password_screen.dart';
 import '../features/bureau/pages/bureau_screen.dart';
-import '../features/calendar/pages/calendar_screen.dart';
 import '../features/co_agent/pages/co_agent_screen.dart';
-import '../features/contact/pages/contact_screen.dart';
 import '../features/contract/pages/contract_screen.dart';
 import '../features/dashboard/pages/dashboard_home_screen.dart';
 import '../features/dashboard/pages/dashboard_screen.dart';
-import '../features/money/pages/money_screen.dart';
 import '../features/notifications/bloc/notification_bloc.dart';
 import '../features/notifications/bloc/notification_event.dart';
 import '../features/notifications/pages/notification_detail_screen.dart';
 import '../features/notifications/pages/notifications_screen.dart';
+import '../features/property/pages/property_detail_screen.dart';
 import '../features/property/pages/property_screen.dart';
 import '../features/public/pages/policy_screen.dart';
 import '../features/splash/splash_screen.dart';
@@ -38,16 +36,16 @@ class AppRouter {
     redirect: (context, state) {
       final authRepo = DependencyInjection.authRepository;
       final isLoggedIn = authRepo.isAuthenticated;
-      final isAuthRoute =
-          state.uri.path.startsWith('/login') ||
-          state.uri.path.startsWith('/register');
+      final currentPath = state.uri.path;
+      final isLoginRoute = currentPath.startsWith('/login');
+      final isRegisterRoute = currentPath.startsWith('/register');
 
-      // allow public routes
-      if (state.uri.path.startsWith('/splash') ||
-          state.uri.path.startsWith('/policy') ||
-          state.uri.path.startsWith('/forgot-password') ||
-          state.uri.path.startsWith('/reset-password') ||
-          state.uri.path.startsWith('/email-verification-pending')) {
+      // allow public routes (accessible regardless of auth status)
+      if (currentPath.startsWith('/splash') ||
+          currentPath.startsWith('/policy') ||
+          currentPath.startsWith('/forgot-password') ||
+          currentPath.startsWith('/reset-password') ||
+          currentPath.startsWith('/email-verification-pending')) {
         return null;
       }
 
@@ -68,17 +66,22 @@ class AppRouter {
       ];
 
       final isProtectedRoute = protectedRoutes.any(
-        (route) => state.uri.path.startsWith(route),
+        (route) => currentPath.startsWith(route),
       );
 
       if (isLoggedIn) {
-        if (isAuthRoute) {
+        // If logged in, redirect away from auth routes
+        if (isLoginRoute || isRegisterRoute) {
           return '/'; // Redirect to main navigation
         }
         return null;
       }
 
-      // not logged in -> block protected routes
+      // not logged in -> allow auth routes, block protected routes
+      if (isLoginRoute || isRegisterRoute) {
+        return null; // Allow access to login/register when not logged in
+      }
+
       if (isProtectedRoute) {
         return '/login';
       }
@@ -103,6 +106,13 @@ class AppRouter {
         path: '/property',
         builder: (context, state) =>
             const MainNavigationScreen(initialIndex: 1),
+      ),
+      GoRoute(
+        path: '/property/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return PropertyDetailScreen(propertyId: id);
+        },
       ),
       GoRoute(
         path: '/money',
@@ -186,10 +196,7 @@ class AppRouter {
         },
       ),
       // Legacy route - redirects to main navigation
-      GoRoute(
-        path: '/home-screen',
-        redirect: (context, state) => '/',
-      ),
+      GoRoute(path: '/home-screen', redirect: (context, state) => '/'),
       GoRoute(
         path: '/dashboard',
         builder: (context, state) => const DashboardHomeScreen(),

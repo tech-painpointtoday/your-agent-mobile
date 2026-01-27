@@ -39,7 +39,10 @@ class AppSidebar extends StatelessWidget {
     );
   }
 
-  List<Map<String, dynamic>> _getMenuItems(UserRole role, AppLocalizations l10n) {
+  List<Map<String, dynamic>> _getMenuItems(
+    UserRole role,
+    AppLocalizations l10n,
+  ) {
     switch (role) {
       case UserRole.agent:
         return [
@@ -163,7 +166,9 @@ class AppSidebar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.blue100 : Colors.transparent,
-          border: isSelected ? Border(left: BorderSide(color: AppColors.blue600, width: 3)) : null,
+          border: isSelected
+              ? Border(left: BorderSide(color: AppColors.blue600, width: 3))
+              : null,
         ),
         child: Row(
           children: [
@@ -176,10 +181,19 @@ class AppSidebar extends StatelessWidget {
                     iconAsset,
                     width: 24,
                     height: 24,
-                    colorFilter: ColorFilter.mode(isSelected ? AppColors.blue600 : AppColors.gray600, BlendMode.srcIn),
+                    colorFilter: ColorFilter.mode(
+                      isSelected ? AppColors.blue600 : AppColors.baseDarkGrey,
+                      BlendMode.srcIn,
+                    ),
                   )
                 else
-                  Icon(icon, size: 24, color: isSelected ? AppColors.blue600 : AppColors.gray600),
+                  Icon(
+                    icon,
+                    size: 24,
+                    color: isSelected
+                        ? AppColors.blue600
+                        : AppColors.baseDarkGrey,
+                  ),
                 // Badge indicator
                 if (hasBadge)
                   Positioned(
@@ -203,7 +217,9 @@ class AppSidebar extends StatelessWidget {
                 style: GoogleFonts.anuphan(
                   fontSize: 14,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                  color: isSelected ? AppColors.blue600 : AppColors.gray600,
+                  color: isSelected
+                      ? AppColors.blue600
+                      : AppColors.baseDarkGrey,
                 ),
               ),
             ),

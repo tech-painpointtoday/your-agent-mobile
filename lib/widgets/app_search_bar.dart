@@ -63,20 +63,24 @@ class _AppSearchBarState extends State<AppSearchBar> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.search_rounded, size: 20, color: AppColors.gray500),
+          const Icon(
+            Icons.search_rounded,
+            size: 20,
+            color: AppColors.baseDarkGrey,
+          ),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
               controller: _searchController,
               style: const TextStyle(
-                color: AppColors.gray700,
+                color: AppColors.baseDarkGrey,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
               decoration: InputDecoration(
                 hintText: widget.hintText,
                 hintStyle: const TextStyle(
-                  color: AppColors.gray500,
+                  color: AppColors.baseDarkGrey,
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                 ),
@@ -101,7 +105,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
               child: Icon(
                 Icons.clear,
                 size: 18,
-                color: AppColors.gray400.withOpacity(0.6),
+                color: AppColors.baseGrey.withOpacity(0.6),
               ),
             ),
         ],

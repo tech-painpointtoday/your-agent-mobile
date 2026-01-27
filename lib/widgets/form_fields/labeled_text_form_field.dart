@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 
@@ -8,6 +9,7 @@ class LabeledTextFormField extends StatelessWidget {
   final String? hintText;
   final TextEditingController controller;
   final IconData? prefixIcon;
+  final String? prefixIconSvg;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final bool obscureText;
@@ -20,6 +22,7 @@ class LabeledTextFormField extends StatelessWidget {
     this.hintText,
     required this.controller,
     this.prefixIcon,
+    this.prefixIconSvg,
     this.keyboardType,
     this.validator,
     this.obscureText = false,
@@ -32,15 +35,6 @@ class LabeledTextFormField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.anuphan(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppColors.eerieBlack,
-          ),
-        ),
-        const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
@@ -55,19 +49,40 @@ class LabeledTextFormField extends StatelessWidget {
   }
 
   InputDecoration _buildInputDecoration() {
+    Widget? prefixWidget;
+    if (prefixIconSvg != null) {
+      prefixWidget = Padding(
+        padding: const EdgeInsets.all(16),
+        child: SvgPicture.asset(
+          prefixIconSvg!,
+          width: 16,
+          height: 16,
+          colorFilter: const ColorFilter.mode(
+            AppColors.primary,
+            BlendMode.srcIn,
+          ),
+        ),
+      );
+    } else if (prefixIcon != null) {
+      prefixWidget = Icon(prefixIcon, color: AppColors.primary);
+    }
+
     return InputDecoration(
       hintText: hintText ?? label,
-      prefixIcon: prefixIcon != null
-          ? Icon(prefixIcon, color: AppColors.shadyLady)
-          : null,
+      hintStyle: GoogleFonts.anuphan(color: AppColors.baseGrey),
+      prefixIcon: prefixWidget,
       suffixIcon: suffixIcon,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.bonJour),
+        borderSide: const BorderSide(color: AppColors.baseGrey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.bonJour),
+        borderSide: const BorderSide(color: AppColors.baseGrey),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       filled: true,

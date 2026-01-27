@@ -13,7 +13,7 @@ class ContractScreen extends StatelessWidget {
         title: const Text('Contract'),
         backgroundColor: AppColors.white,
         elevation: 0,
-        foregroundColor: AppColors.gray700,
+        foregroundColor: AppColors.baseDarkGrey,
       ),
       body: const Center(
         child: Text(
@@ -21,7 +21,7 @@ class ContractScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: AppColors.gray600,
+            color: AppColors.baseDarkGrey,
           ),
         ),
       ),

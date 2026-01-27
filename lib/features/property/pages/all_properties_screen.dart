@@ -206,7 +206,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                               ),
                               child: const Icon(
                                 Icons.tune,
-                                color: AppColors.gray500,
+                                color: AppColors.baseDarkGrey,
                                 size: 20,
                               ),
                             ),
@@ -241,24 +241,21 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Empty State Illustration (placeholder)
-          Container(
-            width: 200,
-            height: 200,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: Icon(
-              Icons.inventory_2_outlined,
-              size: 80,
-              color: AppColors.primary.withOpacity(0.5),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 140, maxHeight: 140),
+              child: Image.asset(
+                'assets/images/property/empty_state.png',
+                fit: BoxFit.contain,
+              ),
             ),
           ),
           const SizedBox(height: 24),
           const Text(
             'ขณะนี้ยังไม่มีข้อมูลทรัพย์ในระบบ',
             style: TextStyle(
-              color: AppColors.gray500,
+              color: AppColors.baseDarkGrey,
               fontSize: 14,
               fontWeight: FontWeight.w400,
             ),

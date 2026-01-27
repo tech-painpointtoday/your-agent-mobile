@@ -296,7 +296,7 @@ class _AvailabilityEditScreenState extends State<AvailabilityEditScreen> {
                               style: GoogleFonts.anuphan(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.eerieBlack,
+                                color: AppColors.baseDarkGrey,
                               ),
                             ),
                             const SizedBox(height: 24),

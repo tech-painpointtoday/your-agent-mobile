@@ -110,7 +110,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
                     fontSize: 14,
                     // Placeholder (no value) should use #A4A7AE
                     color: widget.value != null
-                        ? AppColors.eerieBlack
+                        ? AppColors.baseDarkGrey
                         : const Color(0xFFA4A7AE),
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -155,7 +155,9 @@ class _DropdownOverlay<T> extends StatelessWidget {
     final itemCount = items.length + (hintExists ? 1 : 0);
     final dropdownHeight = (itemCount * itemHeight).clamp(0.0, 250.0);
 
-    final offset = showAbove ? Offset(0, -dropdownHeight - 4) : const Offset(0, 4);
+    final offset = showAbove
+        ? Offset(0, -dropdownHeight - 4)
+        : const Offset(0, 4);
 
     return GestureDetector(
       onTap: onDismiss,
@@ -213,7 +215,12 @@ class _DropdownItem<T> extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _DropdownItem({required this.value, required this.text, required this.isSelected, required this.onTap});
+  const _DropdownItem({
+    required this.value,
+    required this.text,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -221,13 +228,15 @@ class _DropdownItem<T> extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        color: isSelected ? AppColors.gray100 : Colors.transparent,
+        color: isSelected ? AppColors.basePaleGrey : Colors.transparent,
         child: Text(
           text,
           style: GoogleFonts.anuphan(
             fontSize: 14,
             // Hint row / placeholder uses #A4A7AE, selected options use normal text color
-            color: value == null ? const Color(0xFFA4A7AE) : AppColors.eerieBlack,
+            color: value == null
+                ? const Color(0xFFA4A7AE)
+                : AppColors.baseDarkGrey,
           ),
         ),
       ),

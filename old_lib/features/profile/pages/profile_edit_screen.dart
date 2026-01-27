@@ -27,7 +27,7 @@ class ProfileEditScreen extends StatelessWidget {
 
           return Scaffold(
             key: scaffoldKey,
-            backgroundColor: AppColors.gray100,
+            backgroundColor: AppColors.basePaleGrey,
             drawer: isMobile
                 ? Drawer(
                     child: AppSidebar(
@@ -56,9 +56,7 @@ class ProfileEditScreen extends StatelessWidget {
                             currentRoute: '/profile/edit',
                           ),
                         // Main Content
-                        Expanded(
-                          child: const ProfileEditForm(),
-                        ),
+                        Expanded(child: const ProfileEditForm()),
                       ],
                     ),
                   ),

@@ -183,7 +183,7 @@ class _AppButtonState extends State<AppButton> {
             case ButtonColor.secondary:
               return AppColors.buttonSecondary;
             case ButtonColor.gray:
-              return AppColors.gray600;
+              return AppColors.baseDarkGrey;
           }
         case ButtonVariant.outlined:
           return AppColors.white;
@@ -194,7 +194,7 @@ class _AppButtonState extends State<AppButton> {
             case ButtonColor.secondary:
               return AppColors.buttonLightGreen;
             case ButtonColor.gray:
-              return AppColors.gray50;
+              return AppColors.basePaleGrey;
           }
         case ButtonVariant.disabled:
           return AppColors.buttonDisabledBg;
@@ -209,7 +209,7 @@ class _AppButtonState extends State<AppButton> {
             case ButtonColor.secondary:
               return AppColors.buttonSecondaryHover;
             case ButtonColor.gray:
-              return AppColors.gray700;
+              return AppColors.baseDarkGrey;
           }
         case ButtonVariant.outlined:
           switch (widget.color) {
@@ -245,7 +245,7 @@ class _AppButtonState extends State<AppButton> {
             case ButtonColor.secondary:
               return AppColors.buttonSecondary;
             case ButtonColor.gray:
-              return AppColors.gray600;
+              return AppColors.baseDarkGrey;
           }
         case ButtonVariant.outlined:
           switch (widget.color) {
@@ -278,7 +278,7 @@ class _AppButtonState extends State<AppButton> {
             case ButtonColor.secondary:
               return AppColors.buttonSecondaryHover;
             case ButtonColor.gray:
-              return AppColors.gray700;
+              return AppColors.baseDarkGrey;
           }
         case ButtonVariant.outlined:
           switch (widget.color) {
@@ -287,7 +287,7 @@ class _AppButtonState extends State<AppButton> {
             case ButtonColor.secondary:
               return AppColors.buttonSecondaryHover;
             case ButtonColor.gray:
-              return AppColors.gray600;
+              return AppColors.baseDarkGrey;
           }
         case ButtonVariant.light:
           switch (widget.color) {
@@ -296,7 +296,7 @@ class _AppButtonState extends State<AppButton> {
             case ButtonColor.secondary:
               return AppColors.buttonSecondary.withValues(alpha: 0.2);
             case ButtonColor.gray:
-              return AppColors.gray600;
+              return AppColors.baseDarkGrey;
           }
         case ButtonVariant.disabled:
           return AppColors.buttonBorderGray;
@@ -325,7 +325,7 @@ class _AppButtonState extends State<AppButton> {
             case ButtonColor.secondary:
               return AppColors.buttonSecondary;
             case ButtonColor.gray:
-              return AppColors.gray500;
+              return AppColors.baseDarkGrey;
           }
         case ButtonVariant.disabled:
           return AppColors.buttonDisabledText;
@@ -342,7 +342,7 @@ class _AppButtonState extends State<AppButton> {
             case ButtonColor.secondary:
               return AppColors.buttonSecondaryHover;
             case ButtonColor.gray:
-              return AppColors.gray700;
+              return AppColors.baseDarkGrey;
           }
         case ButtonVariant.light:
           switch (widget.color) {
@@ -351,7 +351,7 @@ class _AppButtonState extends State<AppButton> {
             case ButtonColor.secondary:
               return AppColors.buttonSecondaryHover;
             case ButtonColor.gray:
-              return AppColors.gray700;
+              return AppColors.baseDarkGrey;
           }
         case ButtonVariant.disabled:
           return AppColors.buttonDisabledText;
@@ -405,7 +405,7 @@ class _AppButtonState extends State<AppButton> {
       case ButtonColor.gray:
         return [
           BoxShadow(
-            color: AppColors.gray600.withValues(alpha: 0.2),
+            color: AppColors.baseDarkGrey.withValues(alpha: 0.2),
             blurRadius: 4,
             spreadRadius: 0,
           ),

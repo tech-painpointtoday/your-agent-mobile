@@ -24,7 +24,7 @@ class DashedAddButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: CustomPaint(
           painter: const DashedBorderPainter(
-            color: AppColors.grayBorder,
+            color: AppColors.baseGrey,
             strokeWidth: 1.5,
             radius: 12,
             dashLength: 6,
@@ -61,4 +61,3 @@ class DashedAddButton extends StatelessWidget {
     return SizedBox(width: double.infinity, child: button);
   }
 }
-

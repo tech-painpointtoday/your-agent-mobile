@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 import '../core/config/app_config.dart';
+import '../core/di/dependency_injection.dart';
 import 'session_service.dart';
 
 class ApiClient {
@@ -22,6 +24,13 @@ class ApiClient {
         },
       ),
     );
+
+    // Add TalkerDioLogger interceptor ONLY in DEV environment
+    if (AppConfig.isDev && DependencyInjection.talker != null) {
+      dio.interceptors.add(
+        TalkerDioLogger(talker: DependencyInjection.talker!),
+      );
+    }
 
     dio.interceptors.add(
       InterceptorsWrapper(
@@ -82,4 +91,3 @@ class ApiClient {
     return dio.post(path, data: data, queryParameters: queryParameters);
   }
 }
-

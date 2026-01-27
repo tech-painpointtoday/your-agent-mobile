@@ -37,7 +37,10 @@ class AppSidebar extends StatelessWidget {
     );
   }
 
-  List<Map<String, dynamic>> _getMenuItems(UserRole role, AppLocalizations l10n) {
+  List<Map<String, dynamic>> _getMenuItems(
+    UserRole role,
+    AppLocalizations l10n,
+  ) {
     switch (role) {
       case UserRole.agent:
         return [
@@ -155,7 +158,7 @@ class AppSidebar extends StatelessWidget {
                 width: 24,
                 height: 24,
                 colorFilter: ColorFilter.mode(
-                  isSelected ? AppColors.blue600 : AppColors.gray600,
+                  isSelected ? AppColors.blue600 : AppColors.baseDarkGrey,
                   BlendMode.srcIn,
                 ),
               )
@@ -163,7 +166,7 @@ class AppSidebar extends StatelessWidget {
               Icon(
                 icon,
                 size: 24,
-                color: isSelected ? AppColors.blue600 : AppColors.gray600,
+                color: isSelected ? AppColors.blue600 : AppColors.baseDarkGrey,
               ),
             const SizedBox(width: 12),
             Expanded(
@@ -172,7 +175,9 @@ class AppSidebar extends StatelessWidget {
                 style: GoogleFonts.anuphan(
                   fontSize: 14,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                  color: isSelected ? AppColors.blue600 : AppColors.gray600,
+                  color: isSelected
+                      ? AppColors.blue600
+                      : AppColors.baseDarkGrey,
                 ),
               ),
             ),

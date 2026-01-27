@@ -50,7 +50,7 @@ class StatusDialog {
             message: message,
             confirmText: confirmText,
             cancelText: cancelText,
-            confirmColor: AppColors.error600,
+            confirmColor: AppColors.supportRedDeep,
             isDestructive: true,
             type: DialogType.destructive,
           ),
@@ -131,7 +131,10 @@ class StatusDialog {
   }
 
   /// Show Loading Dialog
-  static Future<void> showLoading({required BuildContext context, String message = 'Loading...'}) async {
+  static Future<void> showLoading({
+    required BuildContext context,
+    String message = 'Loading...',
+  }) async {
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -147,7 +150,11 @@ class StatusDialog {
               const SizedBox(width: 20),
               Text(
                 message,
-                style: GoogleFonts.anuphan(fontSize: 16, color: AppColors.eerieBlack, fontWeight: FontWeight.w500),
+                style: GoogleFonts.anuphan(
+                  fontSize: 16,
+                  color: AppColors.baseDarkGrey,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
@@ -157,7 +164,9 @@ class StatusDialog {
   }
 
   /// Show Change Password Dialog
-  static Future<bool?> showChangePassword({required BuildContext context}) async {
+  static Future<bool?> showChangePassword({
+    required BuildContext context,
+  }) async {
     return ChangePasswordDialog.show(context);
   }
 
@@ -185,7 +194,11 @@ class StatusDialog {
               Flexible(
                 child: Text(
                   message ?? 'Loading...',
-                  style: GoogleFonts.anuphan(fontSize: 16, color: AppColors.eerieBlack, fontWeight: FontWeight.w500),
+                  style: GoogleFonts.anuphan(
+                    fontSize: 16,
+                    color: AppColors.baseDarkGrey,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],

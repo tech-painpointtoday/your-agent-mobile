@@ -26,7 +26,7 @@ class SignatureCard extends StatelessWidget {
           height: 120,
           width: double.infinity,
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.gray300),
+            border: Border.all(color: AppColors.baseLightGrey),
             borderRadius: BorderRadius.circular(8),
           ),
           child: signatureImageUrl != null
@@ -37,7 +37,9 @@ class SignatureCard extends StatelessWidget {
               : Center(
                   child: Text(
                     'No signature',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.gray400),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: AppColors.baseGrey),
                   ),
                 ),
         ),
@@ -45,15 +47,26 @@ class SignatureCard extends StatelessWidget {
         // Signer info
         Text(
           '($signerName)',
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: AppColors.gray900, fontWeight: FontWeight.w500),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AppColors.baseDarkGrey,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         const SizedBox(height: 4),
-        Text(role, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.gray600)),
+        Text(
+          role,
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: AppColors.baseDarkGrey),
+        ),
         if (timestamp != null) ...[
           const SizedBox(height: 4),
-          Text(timestamp!, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.gray500)),
+          Text(
+            timestamp!,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.baseDarkGrey),
+          ),
         ],
       ],
     );

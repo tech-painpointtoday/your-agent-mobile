@@ -30,7 +30,11 @@ class LabeledDropdownField<T> extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.anuphan(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.eerieBlack),
+          style: GoogleFonts.anuphan(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: AppColors.baseDarkGrey,
+          ),
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<T>(
@@ -49,7 +53,9 @@ class LabeledDropdownField<T> extends StatelessWidget {
   InputDecoration _buildInputDecoration() {
     return InputDecoration(
       hintText: hintText ?? label,
-      prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: AppColors.shadyLady) : null,
+      prefixIcon: prefixIcon != null
+          ? Icon(prefixIcon, color: AppColors.shadyLady)
+          : null,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: AppColors.bonJour),

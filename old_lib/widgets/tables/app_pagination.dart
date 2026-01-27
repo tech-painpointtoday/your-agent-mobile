@@ -34,7 +34,13 @@ class AppPagination extends StatelessWidget {
           // Items per page dropdown
           Row(
             children: [
-              Text(l10n.items_per_page, style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.gray600)),
+              Text(
+                l10n.items_per_page,
+                style: GoogleFonts.anuphan(
+                  fontSize: 14,
+                  color: AppColors.baseDarkGrey,
+                ),
+              ),
               const SizedBox(width: 8),
               AppDropdown<int>(
                 value: itemsPerPage,
@@ -55,7 +61,9 @@ class AppPagination extends StatelessWidget {
               // Previous button
               _PaginationArrowButton(
                 icon: Icons.chevron_left,
-                onPressed: currentPage > 1 ? () => onPageChanged(currentPage - 1) : null,
+                onPressed: currentPage > 1
+                    ? () => onPageChanged(currentPage - 1)
+                    : null,
               ),
               const SizedBox(width: 8),
               // Page numbers with ellipsis for many pages
@@ -64,7 +72,9 @@ class AppPagination extends StatelessWidget {
               // Next button
               _PaginationArrowButton(
                 icon: Icons.chevron_right,
-                onPressed: currentPage < totalPages ? () => onPageChanged(currentPage + 1) : null,
+                onPressed: currentPage < totalPages
+                    ? () => onPageChanged(currentPage + 1)
+                    : null,
               ),
             ],
           ),
@@ -110,7 +120,10 @@ class AppPagination extends StatelessWidget {
   Widget _buildEllipsis() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Text('...', style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.gray500)),
+      child: Text(
+        '...',
+        style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseDarkGrey),
+      ),
     );
   }
 
@@ -134,7 +147,9 @@ class AppPagination extends StatelessWidget {
             style: GoogleFonts.anuphan(
               fontSize: 14,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              color: isSelected ? AppColors.eerieBlack : AppColors.gray500,
+              color: isSelected
+                  ? AppColors.baseDarkGrey
+                  : AppColors.baseDarkGrey,
             ),
           ),
         ),
@@ -164,7 +179,13 @@ class AppPaginationPlaceholder extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(l10n.items_per_page, style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.gray600)),
+              Text(
+                l10n.items_per_page,
+                style: GoogleFonts.anuphan(
+                  fontSize: 14,
+                  color: AppColors.baseDarkGrey,
+                ),
+              ),
               const SizedBox(width: 8),
               AppDropdown<int>(
                 value: itemsPerPage,
@@ -198,7 +219,11 @@ class _PaginationArrowButton extends StatelessWidget {
         height: 32,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
         alignment: Alignment.center,
-        child: Icon(icon, size: 20, color: isEnabled ? const Color(0xFF717680) : const Color(0xFFD5D6D9)),
+        child: Icon(
+          icon,
+          size: 20,
+          color: isEnabled ? const Color(0xFF717680) : const Color(0xFFD5D6D9),
+        ),
       ),
     );
   }

@@ -884,7 +884,7 @@ class _ContractFormState extends State<ContractForm> {
             colorScheme: const ColorScheme.light(
               primary: AppColors.buttonPrimary,
               onPrimary: Colors.white,
-              onSurface: AppColors.eerieBlack,
+              onSurface: AppColors.baseDarkGrey,
             ),
           ),
           child: child!,
@@ -1555,7 +1555,7 @@ class _ContractFormState extends State<ContractForm> {
           const SizedBox(width: 8),
           IconButton(
             icon: const Icon(Icons.refresh, size: 20),
-            color: AppColors.gray600,
+            color: AppColors.baseDarkGrey,
             onPressed: () {
               context.read<ContractFormBloc>().add(
                 ContractFormClearRegistration(type: clientType),
@@ -1629,7 +1629,7 @@ class _ContractFormState extends State<ContractForm> {
                             style: GoogleFonts.anuphan(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.eerieBlack,
+                              color: AppColors.baseDarkGrey,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -1638,7 +1638,7 @@ class _ContractFormState extends State<ContractForm> {
                             subtitle,
                             style: GoogleFonts.anuphan(
                               fontSize: 14,
-                              color: AppColors.gray600,
+                              color: AppColors.baseDarkGrey,
                             ),
                           ),
                         ],
@@ -1649,7 +1649,7 @@ class _ContractFormState extends State<ContractForm> {
                         child: IconButton(
                           icon: const Icon(
                             Icons.close,
-                            color: AppColors.gray400,
+                            color: AppColors.baseGrey,
                           ),
                           onPressed: () => Navigator.of(context).pop(),
                           hoverColor: Colors.transparent,
@@ -1694,13 +1694,13 @@ class _ContractFormState extends State<ContractForm> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
-                                    color: AppColors.grayBorder,
+                                    color: AppColors.baseGrey,
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
-                                    color: AppColors.grayBorder,
+                                    color: AppColors.baseGrey,
                                   ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
@@ -1744,11 +1744,11 @@ class _ContractFormState extends State<ContractForm> {
                               ?.copyWith(color: const Color(0xFFA4A7AE)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: AppColors.grayBorder),
+                            borderSide: BorderSide(color: AppColors.baseGrey),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: AppColors.grayBorder),
+                            borderSide: BorderSide(color: AppColors.baseGrey),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -1798,13 +1798,13 @@ class _ContractFormState extends State<ContractForm> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
-                                    color: AppColors.grayBorder,
+                                    color: AppColors.baseGrey,
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
-                                    color: AppColors.grayBorder,
+                                    color: AppColors.baseGrey,
                                   ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
@@ -1826,7 +1826,7 @@ class _ContractFormState extends State<ContractForm> {
                                     width: 20,
                                     height: 20,
                                     colorFilter: const ColorFilter.mode(
-                                      AppColors.gray400,
+                                      AppColors.baseGrey,
                                       BlendMode.srcIn,
                                     ),
                                   ),
@@ -1873,13 +1873,13 @@ class _ContractFormState extends State<ContractForm> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
-                                    color: AppColors.grayBorder,
+                                    color: AppColors.baseGrey,
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
-                                    color: AppColors.grayBorder,
+                                    color: AppColors.baseGrey,
                                   ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
@@ -1901,7 +1901,7 @@ class _ContractFormState extends State<ContractForm> {
                                     width: 20,
                                     height: 20,
                                     colorFilter: const ColorFilter.mode(
-                                      AppColors.gray400,
+                                      AppColors.baseGrey,
                                       BlendMode.srcIn,
                                     ),
                                   ),
@@ -2011,7 +2011,7 @@ class _ContractFormState extends State<ContractForm> {
                     text: ' (ไม่บังคับ)',
                     style: Theme.of(
                       context,
-                    ).textTheme.bodyMedium?.copyWith(color: AppColors.gray400),
+                    ).textTheme.bodyMedium?.copyWith(color: AppColors.baseGrey),
                   ),
                 ],
               ),
@@ -2424,27 +2424,27 @@ class _ContractFormState extends State<ContractForm> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: const BorderSide(
-                                color: AppColors.grayBorder,
+                                color: AppColors.baseGrey,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: const BorderSide(
-                                color: AppColors.grayBorder,
+                                color: AppColors.baseGrey,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
                                 color: widget.isReadOnly
-                                    ? AppColors.grayBorder
+                                    ? AppColors.baseGrey
                                     : AppColors.primary,
                               ),
                             ),
                             disabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: const BorderSide(
-                                color: AppColors.grayBorder,
+                                color: AppColors.baseGrey,
                               ),
                             ),
                             isDense: true,
@@ -2494,7 +2494,7 @@ class _ContractFormState extends State<ContractForm> {
                         title: Text(
                           l10n.no_data_found,
                           style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: AppColors.gray400),
+                              ?.copyWith(color: AppColors.baseGrey),
                         ),
                       ),
                     ),
@@ -2580,7 +2580,7 @@ class _ContractFormState extends State<ContractForm> {
 
   Widget _buildSignatureSection(AppLocalizations l10n) {
     final contract = widget.initialData?.originalContract;
-    
+
     // Hide section if both signed URLs and dates are null
     if (contract?.sellerSignedContractUrl == null &&
         contract?.buyerSignedContractUrl == null &&
@@ -2591,8 +2591,10 @@ class _ContractFormState extends State<ContractForm> {
 
     final sellerSignedUrl = contract?.sellerSignedContractUrl;
     final buyerSignedUrl = contract?.buyerSignedContractUrl;
-    final isSellerSigned = sellerSignedUrl != null || contract?.sellerSignedAt != null;
-    final isBuyerSigned = buyerSignedUrl != null || contract?.buyerSignedAt != null;
+    final isSellerSigned =
+        sellerSignedUrl != null || contract?.sellerSignedAt != null;
+    final isBuyerSigned =
+        buyerSignedUrl != null || contract?.buyerSignedAt != null;
 
     return AppFormSection(
       title: l10n.confirmation_and_signature,
@@ -2609,7 +2611,10 @@ class _ContractFormState extends State<ContractForm> {
                   ? () async {
                       final uri = Uri.parse(sellerSignedUrl);
                       if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
                       } else {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -2631,14 +2636,16 @@ class _ContractFormState extends State<ContractForm> {
                     padding: const EdgeInsets.all(32),
                     constraints: const BoxConstraints(minHeight: 280),
                     decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.gray200),
+                      border: Border.all(color: AppColors.baseLightGrey),
                       borderRadius: BorderRadius.circular(16),
                       color: Colors.white,
                     ),
                     child: Icon(
                       Icons.gesture,
                       size: 64,
-                      color: isSellerSigned ? AppColors.success600 : AppColors.gray800,
+                      color: isSellerSigned
+                          ? AppColors.success600
+                          : AppColors.gray800,
                     ),
                   ),
 
@@ -2654,19 +2661,25 @@ class _ContractFormState extends State<ContractForm> {
                   const SizedBox(height: 8),
                   Text(
                     l10n.lessor,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w400,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     contract?.sellerSignedAt != null
-                        ? DateFormat('dd MMM yyyy', 'th_TH').format(contract!.sellerSignedAt!)
-                        : DateFormat('dd MMM yyyy', 'th_TH').format(DateTime.now()),
+                        ? DateFormat(
+                            'dd MMM yyyy',
+                            'th_TH',
+                          ).format(contract!.sellerSignedAt!)
+                        : DateFormat(
+                            'dd MMM yyyy',
+                            'th_TH',
+                          ).format(DateTime.now()),
                     style: Theme.of(
                       context,
-                    ).textTheme.bodyLarge?.copyWith(color: AppColors.gray400),
+                    ).textTheme.bodyLarge?.copyWith(color: AppColors.baseGrey),
                     textAlign: TextAlign.center,
                   ),
                   if (sellerSignedUrl != null) ...[
@@ -2691,7 +2704,10 @@ class _ContractFormState extends State<ContractForm> {
                   ? () async {
                       final uri = Uri.parse(buyerSignedUrl);
                       if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
                       } else {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -2713,14 +2729,16 @@ class _ContractFormState extends State<ContractForm> {
                     padding: const EdgeInsets.all(32),
                     constraints: const BoxConstraints(minHeight: 280),
                     decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.gray200),
+                      border: Border.all(color: AppColors.baseLightGrey),
                       borderRadius: BorderRadius.circular(16),
                       color: Colors.white,
                     ),
                     child: Icon(
                       Icons.gesture,
                       size: 64,
-                      color: isBuyerSigned ? AppColors.success600 : AppColors.gray800,
+                      color: isBuyerSigned
+                          ? AppColors.success600
+                          : AppColors.gray800,
                     ),
                   ),
 
@@ -2736,19 +2754,25 @@ class _ContractFormState extends State<ContractForm> {
                   const SizedBox(height: 8),
                   Text(
                     l10n.lessee,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w400,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     contract?.buyerSignedAt != null
-                        ? DateFormat('dd MMM yyyy', 'th_TH').format(contract!.buyerSignedAt!)
-                        : DateFormat('dd MMM yyyy', 'th_TH').format(DateTime.now()),
+                        ? DateFormat(
+                            'dd MMM yyyy',
+                            'th_TH',
+                          ).format(contract!.buyerSignedAt!)
+                        : DateFormat(
+                            'dd MMM yyyy',
+                            'th_TH',
+                          ).format(DateTime.now()),
                     style: Theme.of(
                       context,
-                    ).textTheme.bodyLarge?.copyWith(color: AppColors.gray400),
+                    ).textTheme.bodyLarge?.copyWith(color: AppColors.baseGrey),
                     textAlign: TextAlign.center,
                   ),
                   if (buyerSignedUrl != null) ...[

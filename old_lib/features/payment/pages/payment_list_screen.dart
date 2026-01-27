@@ -33,7 +33,7 @@ class PaymentListScreen extends StatelessWidget {
                       style: GoogleFonts.anuphan(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.eerieBlack,
+                        color: AppColors.baseDarkGrey,
                       ),
                     ),
                     const SizedBox(height: 24),

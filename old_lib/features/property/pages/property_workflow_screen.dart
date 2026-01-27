@@ -29,7 +29,7 @@ class PropertyWorkflowScreen extends StatelessWidget {
                       style: GoogleFonts.anuphan(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.eerieBlack,
+                        color: AppColors.baseDarkGrey,
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -98,7 +98,9 @@ class PropertyWorkflowScreen extends StatelessWidget {
               style: GoogleFonts.anuphan(
                 fontSize: 16,
                 fontWeight: isCompleted ? FontWeight.w600 : FontWeight.normal,
-                color: isCompleted ? AppColors.eerieBlack : AppColors.shadyLady,
+                color: isCompleted
+                    ? AppColors.baseDarkGrey
+                    : AppColors.shadyLady,
               ),
             ),
           ),

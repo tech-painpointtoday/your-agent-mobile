@@ -37,7 +37,9 @@ class DashboardScreen extends StatelessWidget {
           children: [
             Text(
               AppLocalizations.of(context)!.agent_summary,
-              style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 16),
             Builder(
@@ -64,12 +66,17 @@ class DashboardScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.jungleGreen,
                   foregroundColor: AppColors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   elevation: 0,
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.view_properties_list,
-                  style: theme.textTheme.titleMedium?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -99,9 +106,19 @@ class _StatCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: theme.textTheme.bodySmall?.copyWith(color: AppColors.gray500)),
+          Text(
+            title,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppColors.baseDarkGrey,
+            ),
+          ),
           const SizedBox(height: 8),
-          Text(value, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+          Text(
+            value,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );

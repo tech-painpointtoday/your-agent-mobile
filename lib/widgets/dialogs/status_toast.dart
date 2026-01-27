@@ -100,15 +100,15 @@ class _StatusToastState extends State<StatusToast>
   Color _getIconColor() {
     switch (widget.type) {
       case DialogType.success:
-        return AppColors.success600;
+        return AppColors.supportGreenDark;
       case DialogType.error:
-        return AppColors.error600;
+        return AppColors.supportRedDeep;
       case DialogType.warning:
-        return AppColors.warning600;
+        return AppColors.warning;
       case DialogType.info:
-        return AppColors.blue600;
+        return AppColors.supportBlueDeep;
       case DialogType.destructive:
-        return AppColors.error600;
+        return AppColors.supportRedDeep;
     }
   }
 
@@ -196,7 +196,7 @@ class _StatusToastState extends State<StatusToast>
                                   style: GoogleFonts.anuphan(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.gray900,
+                                    color: AppColors.baseDarkGrey,
                                   ),
                                 ),
                                 if (widget.message != null &&
@@ -206,7 +206,7 @@ class _StatusToastState extends State<StatusToast>
                                     widget.message!,
                                     style: GoogleFonts.anuphan(
                                       fontSize: 12,
-                                      color: AppColors.gray600,
+                                      color: AppColors.baseDarkGrey,
                                       height: 1.4,
                                     ),
                                   ),
@@ -229,7 +229,7 @@ class _StatusToastState extends State<StatusToast>
                                 width: 12,
                                 height: 12,
                                 colorFilter: const ColorFilter.mode(
-                                  AppColors.gray400,
+                                  AppColors.baseGrey,
                                   BlendMode.srcIn,
                                 ),
                               ),

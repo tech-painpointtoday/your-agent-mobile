@@ -8,15 +8,15 @@ class NotificationColors {
   static Color getPrimaryColor(NotificationType type) {
     switch (type) {
       case NotificationType.info:
-        return AppColors.blue600; // Blue
+        return AppColors.supportBlueDeep; // Blue
       case NotificationType.success:
-        return AppColors.success600; // Green
+        return AppColors.supportGreenDark; // Green
       case NotificationType.warning:
-        return AppColors.warning600; // Orange/Yellow
+        return AppColors.supportOrangeDark; // Orange/Yellow
       case NotificationType.error:
-        return AppColors.error600; // Red
+        return AppColors.supportRedDeep; // Red
       case NotificationType.system:
-        return AppColors.gray700; // Gray
+        return AppColors.baseDarkGrey; // Gray
     }
   }
 
@@ -24,15 +24,15 @@ class NotificationColors {
   static Color getBackgroundColor(NotificationType type) {
     switch (type) {
       case NotificationType.info:
-        return AppColors.blue100;
+        return AppColors.supportBlueLight;
       case NotificationType.success:
-        return AppColors.statusSuccessBg;
+        return AppColors.supportGreenLight;
       case NotificationType.warning:
-        return AppColors.statusWarningBg;
+        return AppColors.supportOrangeLight;
       case NotificationType.error:
-        return AppColors.statusErrorBg;
+        return AppColors.supportRedLight;
       case NotificationType.system:
-        return AppColors.gray100;
+        return AppColors.basePaleGrey;
     }
   }
 

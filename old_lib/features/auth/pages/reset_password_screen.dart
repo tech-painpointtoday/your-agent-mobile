@@ -42,13 +42,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     }
 
     context.read<AuthBloc>().add(
-          AuthResetPasswordRequested(
-            token: widget.token,
-            email: widget.email,
-            password: _passwordController.text,
-            passwordConfirmation: _passwordConfirmationController.text,
-          ),
-        );
+      AuthResetPasswordRequested(
+        token: widget.token,
+        email: widget.email,
+        password: _passwordController.text,
+        passwordConfirmation: _passwordConfirmationController.text,
+      ),
+    );
   }
 
   void _handleStateChange(BuildContext context, AuthState state) {
@@ -84,7 +84,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           title: const Text('ตั้งรหัสผ่านใหม่'),
           backgroundColor: AppColors.white,
           elevation: 0,
-          foregroundColor: AppColors.eerieBlack,
+          foregroundColor: AppColors.baseDarkGrey,
         ),
         body: SafeArea(
           child: Center(
@@ -104,7 +104,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         style: GoogleFonts.anuphan(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.eerieBlack,
+                          color: AppColors.baseDarkGrey,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -259,14 +259,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       // Submit Button
                       BlocBuilder<AuthBloc, AuthState>(
                         builder: (context, state) {
-                          final isLoading = state is AuthOperationState &&
+                          final isLoading =
+                              state is AuthOperationState &&
                               state.resetPasswordStatus ==
                                   ResetPasswordStatus.loading;
                           return SizedBox(
                             width: double.infinity,
                             height: 52,
                             child: ElevatedButton(
-                              onPressed: isLoading ? null : _handleResetPassword,
+                              onPressed: isLoading
+                                  ? null
+                                  : _handleResetPassword,
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -279,9 +282,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       height: 20,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation<Color>(
-                                          AppColors.white,
-                                        ),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              AppColors.white,
+                                            ),
                                       ),
                                     )
                                   : Text(

@@ -190,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> with AuthLandingMixin {
                             style: GoogleFonts.anuphan(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.eerieBlack,
+                              color: AppColors.baseDarkGrey,
                             ),
                             textAlign: TextAlign.center,
                           ),

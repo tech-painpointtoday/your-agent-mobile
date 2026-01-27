@@ -6,10 +6,7 @@ import 'package:youragent/domain/entities/contract_status.dart';
 class ContractStatusChip extends StatelessWidget {
   final ContractStatus? status;
 
-  const ContractStatusChip({
-    super.key,
-    required this.status,
-  });
+  const ContractStatusChip({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +19,9 @@ class ContractStatusChip extends StatelessWidget {
     switch (effective) {
       case ContractStatus.draft:
       case ContractStatus.pendingSignature:
-        dotColor = AppColors.warning600;
-        textColor = AppColors.warning600;
-        bgColor = AppColors.warning600.withValues(alpha: 0.12);
+        dotColor = AppColors.warning;
+        textColor = AppColors.warning;
+        bgColor = AppColors.warning.withValues(alpha: 0.12);
         break;
       case ContractStatus.signed:
       case ContractStatus.completed:
@@ -33,9 +30,9 @@ class ContractStatusChip extends StatelessWidget {
         bgColor = AppColors.success600.withValues(alpha: 0.12);
         break;
       case ContractStatus.cancelled:
-        dotColor = AppColors.error600;
-        textColor = AppColors.error600;
-        bgColor = AppColors.error600.withValues(alpha: 0.12);
+        dotColor = AppColors.supportRedDeep;
+        textColor = AppColors.supportRedDeep;
+        bgColor = AppColors.supportRedDeep.withValues(alpha: 0.12);
         break;
     }
 
@@ -51,22 +48,18 @@ class ContractStatusChip extends StatelessWidget {
           Container(
             width: 8,
             height: 8,
-            decoration: BoxDecoration(
-              color: dotColor,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
           ),
           const SizedBox(width: 6),
           Text(
             effective.getLabel(),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: textColor,
-                ),
+              fontWeight: FontWeight.w600,
+              color: textColor,
+            ),
           ),
         ],
       ),
     );
   }
 }
-

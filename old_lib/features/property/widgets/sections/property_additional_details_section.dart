@@ -202,21 +202,21 @@ class PropertyAdditionalDetailsSection extends StatelessWidget {
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.grayBorder),
+                borderSide: BorderSide(color: AppColors.baseGrey),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.grayBorder),
+                borderSide: BorderSide(color: AppColors.baseGrey),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
-                  color: isReadOnly ? AppColors.grayBorder : AppColors.primary,
+                  color: isReadOnly ? AppColors.baseGrey : AppColors.primary,
                 ),
               ),
               disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.grayBorder),
+                borderSide: BorderSide(color: AppColors.baseGrey),
               ),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(
@@ -228,7 +228,7 @@ class PropertyAdditionalDetailsSection extends StatelessWidget {
               suffixIcon: Icon(
                 Icons.keyboard_arrow_down,
                 size: 20,
-                color: isReadOnly ? AppColors.gray400 : null,
+                color: isReadOnly ? AppColors.baseGrey : null,
               ),
             ),
             child: selectedValues.isEmpty
@@ -276,7 +276,7 @@ class PropertyAdditionalDetailsSection extends StatelessWidget {
                                 child: const Icon(
                                   Icons.close,
                                   size: 16,
-                                  color: AppColors.gray400,
+                                  color: AppColors.baseGrey,
                                 ),
                               ),
                             ],
@@ -345,7 +345,7 @@ class PropertyAdditionalDetailsSection extends StatelessWidget {
                             fontSize: 14,
                             color: isSelected
                                 ? const Color(0xFF1743C7)
-                                : AppColors.eerieBlack,
+                                : AppColors.baseDarkGrey,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

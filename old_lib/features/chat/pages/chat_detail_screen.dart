@@ -359,7 +359,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               message.message,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
-                color: isMe ? AppColors.white : AppColors.eerieBlack,
+                color: isMe ? AppColors.white : AppColors.baseDarkGrey,
               ),
             ),
           ],

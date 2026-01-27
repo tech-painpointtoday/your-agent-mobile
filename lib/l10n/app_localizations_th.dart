@@ -15,7 +15,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get family_members => 'สมาชิกในครอบครัว';
 
   @override
-  String get family_members_subtitle => 'กรอกข้อมูลสมาชิกเพื่อค้นหาบ้านที่เข้ากับทุกคนในครอบครัว';
+  String get family_members_subtitle =>
+      'กรอกข้อมูลสมาชิกเพื่อค้นหาบ้านที่เข้ากับทุกคนในครอบครัว';
 
   @override
   String get real_estate => 'อสังหาริมทรัพย์';
@@ -231,7 +232,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get login => 'เข้าสู่ระบบ';
 
   @override
-  String get no_locations_found => 'ไม่พบอสังหาริมทรัพย์ที่ตรงกับตัวกรองปัจจุบัน';
+  String get no_locations_found =>
+      'ไม่พบอสังหาริมทรัพย์ที่ตรงกับตัวกรองปัจจุบัน';
 
   @override
   String get hero_search_prefix => 'ค้นหาบ้านที่';
@@ -291,7 +293,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get don_t_have_account => 'ยังไม่มีบัญชี?';
 
   @override
-  String get register_now => 'ลงทะเบียน';
+  String get register_now => 'ลงทะเบียนเลย';
 
   @override
   String get already_have_account => 'มีบัญชีอยู่แล้ว?';
@@ -348,7 +350,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get hero_slogan_part2 => 'บ้านที่ใช่สำหรับคุณ';
 
   @override
-  String get hero_subtitle => 'เพราะเราเชื่อว่าบ้านที่ใช่ จะช่วยให้ชีวิตเราดียิ่งขึ้น';
+  String get hero_subtitle =>
+      'เพราะเราเชื่อว่าบ้านที่ใช่ จะช่วยให้ชีวิตเราดียิ่งขึ้น';
 
   @override
   String get select_role_title => 'เลือกบทบาทของคุณ';
@@ -366,7 +369,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get enter_password => 'กรุณากรอกรหัสผ่านของคุณ';
 
   @override
-  String get password_length_error => 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
+  String get password_length_error =>
+      'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
 
   @override
   String get sign_in_cancelled => 'ยกเลิกการลงชื่อเข้าใช้';
@@ -417,7 +421,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get create_property => 'สร้างอสังหาริมทรัพย์';
 
   @override
-  String get create_property_subtitle => 'กรอกข้อมูลด้านล่างเพื่อสร้างรายการอสังหาริมทรัพย์ใหม่';
+  String get create_property_subtitle =>
+      'กรอกข้อมูลด้านล่างเพื่อสร้างรายการอสังหาริมทรัพย์ใหม่';
 
   @override
   String get basic_information => 'ข้อมูลพื้นฐาน';
@@ -501,7 +506,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get property_location_title => 'ตำแหน่งอสังหาริมทรัพย์';
 
   @override
-  String get property_location_subtitle => 'คลิกบนแผนที่หรือใช้ตำแหน่งปัจจุบันของคุณเพื่อตั้งค่าตำแหน่งอสังหาริมทรัพย์';
+  String get property_location_subtitle =>
+      'คลิกบนแผนที่หรือใช้ตำแหน่งปัจจุบันของคุณเพื่อตั้งค่าตำแหน่งอสังหาริมทรัพย์';
 
   @override
   String get use_current_location => 'ใช้ตำแหน่งปัจจุบัน';
@@ -548,7 +554,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get property_created_success => 'สร้างอสังหาริมทรัพย์สำเร็จ!';
 
   @override
-  String get error_creating_property => 'เกิดข้อผิดพลาดในการสร้างอสังหาริมทรัพย์';
+  String get error_creating_property =>
+      'เกิดข้อผิดพลาดในการสร้างอสังหาริมทรัพย์';
 
   @override
   String get error_picking_images => 'เกิดข้อผิดพลาดในการเลือกรูปภาพ';
@@ -662,7 +669,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get edit_property => 'แก้ไขอสังหาริมทรัพย์';
 
   @override
-  String get edit_property_subtitle => 'อัปเดตข้อมูลด้านล่างเพื่อแก้ไขรายการอสังหาริมทรัพย์ของคุณ';
+  String get edit_property_subtitle =>
+      'อัปเดตข้อมูลด้านล่างเพื่อแก้ไขรายการอสังหาริมทรัพย์ของคุณ';
 
   @override
   String get current_photos => 'รูปภาพปัจจุบัน';
@@ -677,7 +685,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get property_updated_success => 'อัปเดตอสังหาริมทรัพย์สำเร็จ!';
 
   @override
-  String get error_updating_property => 'เกิดข้อผิดพลาดในการอัปเดตอสังหาริมทรัพย์';
+  String get error_updating_property =>
+      'เกิดข้อผิดพลาดในการอัปเดตอสังหาริมทรัพย์';
 
   @override
   String get add_available_time_slot => 'เพิ่มช่วงเวลาที่ว่าง';
@@ -695,13 +704,15 @@ class AppLocalizationsTh extends AppLocalizations {
   String get cancel => 'ยกเลิก';
 
   @override
-  String get end_time_must_be_after_start_time => 'เวลาสิ้นสุดต้องอยู่หลังเวลาเริ่มต้น';
+  String get end_time_must_be_after_start_time =>
+      'เวลาสิ้นสุดต้องอยู่หลังเวลาเริ่มต้น';
 
   @override
   String get availability_created_success => 'สร้างช่วงเวลาที่ว่างสำเร็จ!';
 
   @override
-  String get error_creating_availability => 'เกิดข้อผิดพลาดในการสร้างช่วงเวลาที่ว่าง';
+  String get error_creating_availability =>
+      'เกิดข้อผิดพลาดในการสร้างช่วงเวลาที่ว่าง';
 
   @override
   String get home_details_title => 'รายละเอียดบ้าน';
@@ -763,7 +774,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get more_details_title => 'รายละเอียดเพิ่มเติม';
 
   @override
-  String get more_details_description => 'บ้านเดี่ยวสวยงาม ตั้งอยู่ในทำเลทอง ใกล้ BTS ห้างสรรพสินค้า โรงพยาบาล และโรงเรียน เหมาะสำหรับทั้งการอยู่อาศัยและการลงทุน';
+  String get more_details_description =>
+      'บ้านเดี่ยวสวยงาม ตั้งอยู่ในทำเลทอง ใกล้ BTS ห้างสรรพสินค้า โรงพยาบาล และโรงเรียน เหมาะสำหรับทั้งการอยู่อาศัยและการลงทุน';
 
   @override
   String get show_more => 'ดูเพิ่มเติม';
@@ -847,31 +859,39 @@ class AppLocalizationsTh extends AppLocalizations {
   String get voice_location_prompt => 'พูดชื่อทำเลที่ต้องการค้นหา เช่น บางนา';
 
   @override
-  String get voice_budget_min_prompt => 'พูดงบประมาณเริ่มต้น เช่น 3 ล้าน หรือ 3000000';
+  String get voice_budget_min_prompt =>
+      'พูดงบประมาณเริ่มต้น เช่น 3 ล้าน หรือ 3000000';
 
   @override
-  String get voice_budget_max_prompt => 'พูดงบประมาณสูงสุด เช่น 5 ล้าน หรือ 5000000';
+  String get voice_budget_max_prompt =>
+      'พูดงบประมาณสูงสุด เช่น 5 ล้าน หรือ 5000000';
 
   @override
-  String get voice_property_type_prompt => 'พูดประเภทอสังหา เช่น บ้าน หรือ คอนโด';
+  String get voice_property_type_prompt =>
+      'พูดประเภทอสังหา เช่น บ้าน หรือ คอนโด';
 
   @override
   String get voice_member_name_prompt => 'คุณชื่ออะไร?';
 
   @override
-  String get voice_member_dob_prompt => 'วันเกิดของคุณคือวันอะไร? กรุณาพูดเป็นวัน เดือน ปี เช่น 01 01 1990';
+  String get voice_member_dob_prompt =>
+      'วันเกิดของคุณคือวันอะไร? กรุณาพูดเป็นวัน เดือน ปี เช่น 01 01 1990';
 
   @override
-  String get voice_member_gender_prompt => 'เพศของคุณคืออะไร? เช่น ผู้ชาย หรือ ผู้หญิง';
+  String get voice_member_gender_prompt =>
+      'เพศของคุณคืออะไร? เช่น ผู้ชาย หรือ ผู้หญิง';
 
   @override
-  String get voice_member_phone_prompt => 'เบอร์โทรศัพท์ของคุณคืออะไร? กรุณาพูดเป็นตัวเลข';
+  String get voice_member_phone_prompt =>
+      'เบอร์โทรศัพท์ของคุณคืออะไร? กรุณาพูดเป็นตัวเลข';
 
   @override
-  String get voice_member_car_plate_prompt => 'ทะเบียนรถของคุณคืออะไร? สามารถพูดเป็นตัวเลข';
+  String get voice_member_car_plate_prompt =>
+      'ทะเบียนรถของคุณคืออะไร? สามารถพูดเป็นตัวเลข';
 
   @override
-  String get voice_member_weight_prompt => 'น้ำหนักความสำคัญของสมาชิกคนนี้กี่เปอร์เซ็นต์? เช่น 50';
+  String get voice_member_weight_prompt =>
+      'น้ำหนักความสำคัญของสมาชิกคนนี้กี่เปอร์เซ็นต์? เช่น 50';
 
   @override
   String get voice_input_title => 'กรอกข้อมูลด้วยเสียง';
@@ -984,7 +1004,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get profile_agent_code => 'รหัสเพื่อเชื่อมต่อกับบริษัท';
 
   @override
-  String get profile_share_code_desc => 'แชร์ข้อมูลประจำตัวนี้กับบริษัทเพื่อให้พวกเขาสามารถเพิ่มคุณในพอร์ตโฟลิโอของพวกเขาได้ ข้อมูลประจำตัวนี้สามารถใช้ได้เพียงครั้งเดียว';
+  String get profile_share_code_desc =>
+      'แชร์ข้อมูลประจำตัวนี้กับบริษัทเพื่อให้พวกเขาสามารถเพิ่มคุณในพอร์ตโฟลิโอของพวกเขาได้ ข้อมูลประจำตัวนี้สามารถใช้ได้เพียงครั้งเดียว';
 
   @override
   String get profile_copy => 'คัดลอก';
@@ -1029,10 +1050,12 @@ class AppLocalizationsTh extends AppLocalizations {
   String get back_to_availability => '← กลับไปยังเวลาที่ว่าง';
 
   @override
-  String get availability_tips_title => 'เคล็ดลับสำหรับการตั้งค่าความพร้อมใช้งาน';
+  String get availability_tips_title =>
+      'เคล็ดลับสำหรับการตั้งค่าความพร้อมใช้งาน';
 
   @override
-  String get tip_no_overlap => 'คุณไม่สามารถสร้างช่วงเวลาที่ทับซ้อนกันในวันที่เดียวกันได้';
+  String get tip_no_overlap =>
+      'คุณไม่สามารถสร้างช่วงเวลาที่ทับซ้อนกันในวันที่เดียวกันได้';
 
   @override
   String get tip_no_past_dates => 'ไม่สามารถตั้งช่วงเวลาสำหรับวันที่ผ่านมาแล้ว';
@@ -1041,7 +1064,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get tip_end_after_start => 'เวลาสิ้นสุดต้องอยู่หลังเวลาเริ่มต้น';
 
   @override
-  String get tip_consider_schedule => 'พิจารณาตารางเวลาของคุณเมื่อตั้งค่าความพร้อมใช้งาน';
+  String get tip_consider_schedule =>
+      'พิจารณาตารางเวลาของคุณเมื่อตั้งค่าความพร้อมใช้งาน';
 
   @override
   String get create_time_slot => 'สร้างช่วงเวลา';
@@ -1050,7 +1074,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get delete_time_slot => 'ลบช่วงเวลา';
 
   @override
-  String get delete_time_slot_confirm => 'คุณแน่ใจหรือไม่ว่าต้องการลบช่วงเวลานี้?';
+  String get delete_time_slot_confirm =>
+      'คุณแน่ใจหรือไม่ว่าต้องการลบช่วงเวลานี้?';
 
   @override
   String get delete => 'ลบ';
@@ -1074,13 +1099,16 @@ class AppLocalizationsTh extends AppLocalizations {
   String get confirm => 'ยืนยัน';
 
   @override
-  String get confirm_delete_property => 'คุณต้องการลบอสังหาริมทรัพย์นี้หรือไม่?';
+  String get confirm_delete_property =>
+      'คุณต้องการลบอสังหาริมทรัพย์นี้หรือไม่?';
 
   @override
-  String get confirm_create_property => 'คุณต้องการสร้างอสังหาริมทรัพย์นี้หรือไม่?';
+  String get confirm_create_property =>
+      'คุณต้องการสร้างอสังหาริมทรัพย์นี้หรือไม่?';
 
   @override
-  String get confirm_update_property => 'คุณต้องการอัปเดตอสังหาริมทรัพย์นี้หรือไม่?';
+  String get confirm_update_property =>
+      'คุณต้องการอัปเดตอสังหาริมทรัพย์นี้หรือไม่?';
 
   @override
   String get confirm_delete_contract => 'คุณต้องการลบสัญญานี้ใช่หรือไม่?';
@@ -1152,10 +1180,12 @@ class AppLocalizationsTh extends AppLocalizations {
   String get appointments => 'นัดหมาย';
 
   @override
-  String get confirm_cancel => 'คุณแน่ใจหรือไม่ว่าต้องการยกเลิก? การเปลี่ยนแปลงที่ยังไม่ได้บันทึกจะสูญหายทั้งหมด';
+  String get confirm_cancel =>
+      'คุณแน่ใจหรือไม่ว่าต้องการยกเลิก? การเปลี่ยนแปลงที่ยังไม่ได้บันทึกจะสูญหายทั้งหมด';
 
   @override
-  String get confirm_cancel_create => 'คุณแน่ใจหรือไม่ว่าต้องการยกเลิก? ข้อมูลที่กรอกไว้จะสูญหายทั้งหมด';
+  String get confirm_cancel_create =>
+      'คุณแน่ใจหรือไม่ว่าต้องการยกเลิก? ข้อมูลที่กรอกไว้จะสูญหายทั้งหมด';
 
   @override
   String get yes => 'ใช่';

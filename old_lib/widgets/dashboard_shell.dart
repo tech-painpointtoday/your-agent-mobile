@@ -27,7 +27,7 @@ class AppLayout extends StatelessWidget {
         : UserRole.agent;
 
     return Scaffold(
-      backgroundColor: AppColors.gray100,
+      backgroundColor: AppColors.basePaleGrey,
       body: SafeArea(
         child: Column(
           children: [

@@ -14,16 +14,17 @@ class FormLabel extends StatelessWidget {
       child: RichText(
         text: TextSpan(
           text: label,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: AppColors.gray900),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w500,
+            color: AppColors.baseDarkGrey,
+          ),
           children: [
             if (!isRequired)
               TextSpan(
                 text: ' (ไม่บังคับ)',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w400,
-                  color: AppColors.gray400, // #A4A7AE
+                  color: AppColors.baseGrey, // #A4A7AE
                 ),
               ),
           ],

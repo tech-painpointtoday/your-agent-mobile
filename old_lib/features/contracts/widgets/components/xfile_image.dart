@@ -38,7 +38,7 @@ class XFileImage extends StatelessWidget {
           return Center(
             child: Text(
               'ไม่สามารถแสดงรูปภาพได้',
-              style: GoogleFonts.anuphan(color: AppColors.gray400),
+              style: GoogleFonts.anuphan(color: AppColors.baseGrey),
             ),
           );
         }
@@ -47,4 +47,3 @@ class XFileImage extends StatelessWidget {
     );
   }
 }
-

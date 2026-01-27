@@ -33,7 +33,7 @@ class AppLayout extends StatelessWidget {
 
         return Scaffold(
           key: scaffoldKey,
-          backgroundColor: AppColors.gray100,
+          backgroundColor: AppColors.basePaleGrey,
           drawer: isMobile
               ? Drawer(
                   child: AppSidebar(role: role, currentRoute: currentRoute),

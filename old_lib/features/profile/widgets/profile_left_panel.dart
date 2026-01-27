@@ -127,7 +127,7 @@ class _EmailVerifiedChip extends StatelessWidget {
 
     // Warning styling when not verified
     if (!isVerified) {
-      const warningColor = AppColors.warning600;
+      const warningColor = AppColors.warning;
       final bg = warningColor.withValues(alpha: 0.12);
       const fg = warningColor;
 

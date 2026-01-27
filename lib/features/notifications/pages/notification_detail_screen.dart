@@ -49,7 +49,7 @@ class NotificationDetailScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios,
-            color: AppColors.gray700,
+            color: AppColors.baseDarkGrey,
             size: 20,
           ),
           onPressed: () => context.pop(),
@@ -59,7 +59,7 @@ class NotificationDetailScreen extends StatelessWidget {
           style: GoogleFonts.anuphan(
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            color: AppColors.gray900,
+            color: AppColors.baseDarkGrey,
           ),
         ),
         centerTitle: false,
@@ -87,7 +87,7 @@ class NotificationDetailScreen extends StatelessWidget {
                 'ไม่พบการแจ้งเตือน',
                 style: GoogleFonts.anuphan(
                   fontSize: 16,
-                  color: AppColors.gray600,
+                  color: AppColors.baseDarkGrey,
                 ),
               ),
             );
@@ -149,7 +149,7 @@ class NotificationDetailScreen extends StatelessWidget {
                               style: GoogleFonts.anuphan(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: AppColors.gray500,
+                                color: AppColors.baseDarkGrey,
                               ),
                             ),
                           ],
@@ -169,7 +169,7 @@ class NotificationDetailScreen extends StatelessWidget {
                         style: GoogleFonts.anuphan(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
-                          color: AppColors.gray700,
+                          color: AppColors.baseDarkGrey,
                           height: 1.6,
                         ),
                       ),

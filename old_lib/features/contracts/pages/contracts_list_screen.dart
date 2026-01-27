@@ -47,7 +47,7 @@ class _ContractsListScreenState extends State<ContractsListScreen> {
 
         return Scaffold(
           key: scaffoldKey,
-          backgroundColor: AppColors.gray100,
+          backgroundColor: AppColors.basePaleGrey,
           drawer: isMobile
               ? Drawer(
                   child: AppSidebar(role: userRole, currentRoute: currentRoute),
@@ -92,7 +92,7 @@ class _ContractsListScreenState extends State<ContractsListScreen> {
                                       style: GoogleFonts.anuphan(
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
-                                        color: AppColors.eerieBlack,
+                                        color: AppColors.baseDarkGrey,
                                       ),
                                     ),
                                     const SizedBox(height: 24),
@@ -114,7 +114,7 @@ class _ContractsListScreenState extends State<ContractsListScreen> {
                                           const ContractsFilterSection(),
                                           const SizedBox(height: 24),
                                           Divider(
-                                            color: AppColors.gray200,
+                                            color: AppColors.baseLightGrey,
                                             height: 1,
                                           ),
                                           const SizedBox(height: 24),

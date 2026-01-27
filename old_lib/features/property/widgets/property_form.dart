@@ -567,22 +567,22 @@ class _PropertyFormState extends State<PropertyForm> {
   String _addLabelIfNotExists(String text, String label) {
     if (text.isEmpty) return text;
     final trimmed = text.trim();
-    
+
     // Check if text starts with label (case insensitive for English, direct for Thai)
     // This prevents double prefixes like "ซอย ซอย 3" or "Soi Soi 3"
     final textLower = trimmed.toLowerCase();
     final labelLower = label.toLowerCase();
-    
+
     // For Thai labels, check direct match first (more reliable)
     if (trimmed.startsWith(label)) {
       return trimmed;
     }
-    
+
     // For English labels, check case-insensitive match
     if (textLower.startsWith(labelLower)) {
       return trimmed;
     }
-    
+
     return '$label $trimmed';
   }
 
@@ -983,7 +983,8 @@ class _PropertyFormState extends State<PropertyForm> {
         if (_districtController.text.isEmpty && specMap['district'] != null) {
           _districtController.text = specMap['district'].toString();
         }
-        if (_subdistrictController.text.isEmpty && specMap['subdistrict'] != null) {
+        if (_subdistrictController.text.isEmpty &&
+            specMap['subdistrict'] != null) {
           _subdistrictController.text = specMap['subdistrict'].toString();
         }
         if (specMap['additional_details'] != null) {
@@ -1227,7 +1228,7 @@ class _PropertyFormState extends State<PropertyForm> {
                   fromCamera ? 'กำลังเปิดกล้อง...' : 'กำลังเลือกรูปภาพ...',
                   style: GoogleFonts.anuphan(
                     fontSize: 16,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1586,7 +1587,7 @@ class _PropertyFormState extends State<PropertyForm> {
 
   /// Check if a value is safe to auto-fill into address fields
   /// Prevents invalid administrative level names from polluting manual input fields
-  /// 
+  ///
   /// [value] - The address component value to validate
   /// [isSubdistrictLevel] - If true, allows subdistrict keywords but bans higher levels
   ///                       If false, bans all administrative level keywords (for Soi/Road)
@@ -1674,21 +1675,22 @@ class _PropertyFormState extends State<PropertyForm> {
         debugPrint(
           'PropertyForm: Reverse geocode result: ${result.keys.toList()}',
         );
-        
+
         // Extract raw address components from API result
         String? apiRoad = result['road']?.toString().trim();
         String? apiSoi = result['soi']?.toString().trim();
         String? apiHouseNumber = result['houseNumber']?.toString().trim();
         final rawSubdistrict = result['subdistrict']?.toString().trim();
-        
+
         // 1. Smart Migration: Move Road to Soi if Road contains Soi/Village/Alley keywords
         // Google Maps often incorrectly puts Soi/Village/Alley names into the road field
         // Check for: "Soi", "ซอย" (soi), "หมู่บ้าน" (village), "ตรอก" (alley)
         final soiKeywords = ['Soi', 'ซอย', 'หมู่บ้าน', 'ตรอก'];
-        final hasSoiKeyword = apiRoad != null &&
+        final hasSoiKeyword =
+            apiRoad != null &&
             apiRoad.isNotEmpty &&
             soiKeywords.any((keyword) => apiRoad!.contains(keyword));
-        
+
         if (hasSoiKeyword) {
           debugPrint(
             'PropertyForm: Detected misplaced Soi/Village/Alley in road field: "$apiRoad" - moving to Soi field',
@@ -1697,25 +1699,27 @@ class _PropertyFormState extends State<PropertyForm> {
           apiSoi = apiSoi?.isNotEmpty == true ? apiSoi : apiRoad;
           apiRoad = null; // Clear Road field
         }
-        
+
         // 2. Validate address components (apply banned keyword validation)
-        final isValidSoi = apiSoi != null &&
+        final isValidSoi =
+            apiSoi != null &&
             apiSoi.isNotEmpty &&
             _isSafeToAutoFill(apiSoi, isSubdistrictLevel: false);
         final finalSoi = isValidSoi ? apiSoi : null;
-        
-        final isValidRoad = apiRoad != null &&
+
+        final isValidRoad =
+            apiRoad != null &&
             apiRoad.isNotEmpty &&
             _isSafeToAutoFill(apiRoad, isSubdistrictLevel: false);
         final finalRoad = isValidRoad ? apiRoad : null;
-        
+
         // Validate Subdistrict: allow subdistrict keywords, but reject province/district keywords
         final isValidSubdistrict = _isSafeToAutoFill(
           rawSubdistrict,
           isSubdistrictLevel: true,
         );
         final finalSubdistrict = isValidSubdistrict ? rawSubdistrict : null;
-        
+
         // Update BLoC state with address information (only validated values)
         if (result['address'] != null && result['address']!.isNotEmpty) {
           context.read<PropertyFormBloc>().add(
@@ -1750,21 +1754,21 @@ class _PropertyFormState extends State<PropertyForm> {
 
             // อัปเดต manual fields (เลขที่บ้าน, ซอย, ถนน)
             // Implement Clear-on-Empty rule: Clear controllers if API returns null/empty
-            
+
             // House Number: Clear if empty, otherwise assign
             if (apiHouseNumber != null && apiHouseNumber.isNotEmpty) {
               _houseNumberController.text = apiHouseNumber;
             } else {
               _houseNumberController.clear(); // CLEAR if empty
             }
-            
+
             // Soi: Apply validation and Clear-on-Empty rule
             if (finalSoi != null && finalSoi.isNotEmpty) {
               _soiController.text = finalSoi;
             } else {
               _soiController.clear(); // CLEAR if empty/invalid
             }
-            
+
             // Road: Apply validation and Clear-on-Empty rule
             if (finalRoad != null && finalRoad.isNotEmpty) {
               _roadController.text = finalRoad;
@@ -2032,7 +2036,8 @@ class _PropertyFormState extends State<PropertyForm> {
       }(),
       'available_from': () {
         // Use BLoC state date if available, otherwise parse from controller
-        if (blocState is PropertyFormData && blocState.availableFromDate != null) {
+        if (blocState is PropertyFormData &&
+            blocState.availableFromDate != null) {
           return DateFormat('yyyy-MM-dd').format(blocState.availableFromDate!);
         }
         if (_availableFromDate != null) {
@@ -3338,7 +3343,7 @@ class _PropertyFormState extends State<PropertyForm> {
             colorScheme: const ColorScheme.light(
               primary: AppColors.buttonPrimary,
               onPrimary: Colors.white,
-              onSurface: AppColors.eerieBlack,
+              onSurface: AppColors.baseDarkGrey,
             ),
           ),
           child: child!,
@@ -3393,23 +3398,23 @@ class _PropertyFormState extends State<PropertyForm> {
                   hintStyle: theme.textTheme.bodyMedium,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.grayBorder),
+                    borderSide: BorderSide(color: AppColors.baseGrey),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.grayBorder),
+                    borderSide: BorderSide(color: AppColors.baseGrey),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color: widget.isReadOnly
-                          ? AppColors.grayBorder
+                          ? AppColors.baseGrey
                           : AppColors.primary,
                     ),
                   ),
                   disabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.grayBorder),
+                    borderSide: BorderSide(color: AppColors.baseGrey),
                   ),
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
@@ -3428,7 +3433,7 @@ class _PropertyFormState extends State<PropertyForm> {
                           icon: const Icon(
                             Icons.calendar_today_outlined,
                             size: 20,
-                            color: AppColors.gray500,
+                            color: AppColors.baseDarkGrey,
                           ),
                           onPressed: () => _selectBuiltDate(context),
                         ),
@@ -3473,7 +3478,7 @@ class _PropertyFormState extends State<PropertyForm> {
             colorScheme: const ColorScheme.light(
               primary: AppColors.buttonPrimary,
               onPrimary: Colors.white,
-              onSurface: AppColors.eerieBlack,
+              onSurface: AppColors.baseDarkGrey,
             ),
           ),
           child: child!,
@@ -3533,23 +3538,23 @@ class _PropertyFormState extends State<PropertyForm> {
                   hintStyle: theme.textTheme.bodyMedium,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.grayBorder),
+                    borderSide: BorderSide(color: AppColors.baseGrey),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.grayBorder),
+                    borderSide: BorderSide(color: AppColors.baseGrey),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color: widget.isReadOnly
-                          ? AppColors.grayBorder
+                          ? AppColors.baseGrey
                           : AppColors.primary,
                     ),
                   ),
                   disabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.grayBorder),
+                    borderSide: BorderSide(color: AppColors.baseGrey),
                   ),
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
@@ -3568,7 +3573,7 @@ class _PropertyFormState extends State<PropertyForm> {
                           icon: const Icon(
                             Icons.calendar_today_outlined,
                             size: 20,
-                            color: AppColors.gray500,
+                            color: AppColors.baseDarkGrey,
                           ),
                           onPressed: () => _selectAvailableFromDate(context),
                         ),

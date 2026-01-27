@@ -19,6 +19,7 @@ class StatusDialog {
     required String message,
     String confirmText = 'Confirm',
     String cancelText = 'Cancel',
+    VoidCallback? onConfirmed,
   }) async {
     return await showDialog<bool>(
           context: context,
@@ -27,9 +28,10 @@ class StatusDialog {
             message: message,
             confirmText: confirmText,
             cancelText: cancelText,
-            confirmColor: AppColors.blue600,
+            confirmColor: AppColors.supportBlueDeep,
             isDestructive: false,
             type: DialogType.info,
+            onConfirm: onConfirmed,
           ),
         ) ??
         false;
@@ -50,7 +52,7 @@ class StatusDialog {
             message: message,
             confirmText: confirmText,
             cancelText: cancelText,
-            confirmColor: AppColors.error600,
+            confirmColor: AppColors.supportRedDeep,
             isDestructive: true,
             type: DialogType.destructive,
           ),
@@ -152,7 +154,7 @@ class StatusDialog {
                 message,
                 style: GoogleFonts.anuphan(
                   fontSize: 16,
-                  color: AppColors.eerieBlack,
+                  color: AppColors.baseDarkGrey,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -189,7 +191,7 @@ class StatusDialog {
                   message ?? 'Loading...',
                   style: GoogleFonts.anuphan(
                     fontSize: 16,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

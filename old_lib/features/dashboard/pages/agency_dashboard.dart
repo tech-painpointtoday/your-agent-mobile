@@ -145,7 +145,7 @@ class _DashboardButton extends StatelessWidget {
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.white,
-          foregroundColor: AppColors.eerieBlack,
+          foregroundColor: AppColors.baseDarkGrey,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           shape: RoundedRectangleBorder(

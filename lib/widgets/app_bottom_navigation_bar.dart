@@ -51,7 +51,10 @@ class AppBottomNavigationBar extends StatelessWidget {
         unselectedIconPath,
         width: 24,
         height: 24,
-        colorFilter: const ColorFilter.mode(AppColors.gray400, BlendMode.srcIn),
+        colorFilter: const ColorFilter.mode(
+          AppColors.baseGrey,
+          BlendMode.srcIn,
+        ),
       ),
       activeIcon: SvgPicture.asset(
         iconPath,
@@ -83,7 +86,7 @@ class AppBottomNavigationBar extends StatelessWidget {
           onTap: (i) => _onTap(context, i),
           type: BottomNavigationBarType.fixed,
           selectedItemColor: AppColors.primary,
-          unselectedItemColor: AppColors.gray400,
+          unselectedItemColor: AppColors.baseGrey,
           backgroundColor: AppColors.white,
           selectedFontSize: 12,
           unselectedFontSize: 12,

@@ -94,8 +94,11 @@ class ContractFormHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-        border: Border(bottom: BorderSide(color: AppColors.gray200)),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+        border: Border(bottom: BorderSide(color: AppColors.baseLightGrey)),
       ),
       child: Row(
         children: [
@@ -104,7 +107,11 @@ class ContractFormHeader extends StatelessWidget {
             width: 32,
             height: 32,
             child: IconButton(
-              icon: SvgPicture.asset('assets/icons/form/chevron-left.svg', width: 20, height: 20),
+              icon: SvgPicture.asset(
+                'assets/icons/form/chevron-left.svg',
+                width: 20,
+                height: 20,
+              ),
               onPressed: onBack ?? () => _navigateBack(context),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
@@ -112,13 +119,15 @@ class ContractFormHeader extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           // Title
-          Text(_title, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            _title,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const Spacer(),
           if (mode == ContractFormMode.view && extraLeadingAction != null) ...[
-            SizedBox(
-              height: 48,
-              child: extraLeadingAction,
-            ),
+            SizedBox(height: 48, child: extraLeadingAction),
             const SizedBox(width: 12),
           ],
           // Primary button
@@ -129,27 +138,41 @@ class ContractFormHeader extends StatelessWidget {
                 onPressed: (isLoading == true)
                     ? null
                     : () {
-                        debugPrint('ContractFormHeader: Primary button pressed (${mode.name})');
+                        debugPrint(
+                          'ContractFormHeader: Primary button pressed (${mode.name})',
+                        );
                         debugPrint(
                           'ContractFormHeader: onPrimaryAction is ${onPrimaryAction != null ? "set" : "null"}',
                         );
-                        debugPrint('ContractFormHeader: isLoading = $isLoading');
+                        debugPrint(
+                          'ContractFormHeader: isLoading = $isLoading',
+                        );
                         onPrimaryAction?.call();
                       },
                 icon: SvgPicture.asset(
-                  mode == ContractFormMode.create ? 'assets/icons/form/plus-2.svg' : 'assets/icons/form/save.svg',
+                  mode == ContractFormMode.create
+                      ? 'assets/icons/form/plus-2.svg'
+                      : 'assets/icons/form/save.svg',
                   width: 16,
                   height: 16,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 label: Text(_primaryButtonLabel),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.buttonPrimary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   minimumSize: const Size(0, 48),
                   textStyle: primaryButtonTextStyle,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
               ),
@@ -161,27 +184,39 @@ class ContractFormHeader extends StatelessWidget {
                 onPressed: (isLoading == true)
                     ? null
                     : () {
-                        debugPrint('ContractFormHeader: Primary button pressed (view mode)');
+                        debugPrint(
+                          'ContractFormHeader: Primary button pressed (view mode)',
+                        );
                         debugPrint(
                           'ContractFormHeader: onPrimaryAction is ${onPrimaryAction != null ? "set" : "null"}',
                         );
-                        debugPrint('ContractFormHeader: isLoading = $isLoading');
+                        debugPrint(
+                          'ContractFormHeader: isLoading = $isLoading',
+                        );
                         onPrimaryAction?.call();
                       },
                 icon: SvgPicture.asset(
                   'assets/icons/form/edit-2.svg',
                   width: 16,
                   height: 16,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 label: Text(_primaryButtonLabel),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.buttonPrimary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   minimumSize: const Size(0, 48),
                   textStyle: primaryButtonTextStyle,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
               ),
@@ -199,16 +234,24 @@ class ContractFormHeader extends StatelessWidget {
                   'assets/icons/form/trash-2.svg',
                   width: 20,
                   height: 20,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 label: Text(_secondaryButtonLabel),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.ruby500,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   minimumSize: const Size(0, 48),
                   textStyle: primaryButtonTextStyle,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
               ),
@@ -219,12 +262,17 @@ class ContractFormHeader extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: (isLoading == true) ? null : onSecondaryAction,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.gray400,
-                  side: const BorderSide(color: AppColors.gray200),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  foregroundColor: AppColors.baseGrey,
+                  side: const BorderSide(color: AppColors.baseLightGrey),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   minimumSize: const Size(0, 48),
                   textStyle: secondaryButtonTextStyle,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: Text(_secondaryButtonLabel),
               ),

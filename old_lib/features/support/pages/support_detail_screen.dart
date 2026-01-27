@@ -43,7 +43,7 @@ class SupportDetailScreen extends StatelessWidget {
                       style: GoogleFonts.anuphan(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.eerieBlack,
+                        color: AppColors.baseDarkGrey,
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -64,7 +64,7 @@ class SupportDetailScreen extends StatelessWidget {
                             ticket['last_message'] as String,
                             style: GoogleFonts.anuphan(
                               fontSize: 16,
-                              color: AppColors.eerieBlack,
+                              color: AppColors.baseDarkGrey,
                             ),
                           ),
                           const SizedBox(height: 24),

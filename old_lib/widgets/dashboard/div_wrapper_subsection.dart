@@ -31,18 +31,8 @@ class DivWrapperSubsection extends StatelessWidget {
       'คอนโด': 21,
       'บ้านแฝด': 14,
     };
-    final buyersData = {
-      'อื่น ๆ': 35,
-      'บ้าน': 30,
-      'คอนโด': 21,
-      'บ้านแฝด': 14,
-    };
-    final rentersData = {
-      'อื่น ๆ': 35,
-      'บ้าน': 30,
-      'คอนโด': 21,
-      'บ้านแฝด': 14,
-    };
+    final buyersData = {'อื่น ๆ': 35, 'บ้าน': 30, 'คอนโด': 21, 'บ้านแฝด': 14};
+    final rentersData = {'อื่น ๆ': 35, 'บ้าน': 30, 'คอนโด': 21, 'บ้านแฝด': 14};
 
     // Color schemes for each chart (from CSS)
     final greenColors = [
@@ -101,13 +91,12 @@ class DivWrapperSubsection extends StatelessWidget {
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: cards
-          .map((card) => Expanded(
-                child: _buildCard(card, isMobile),
-              ))
-          .expand((widget) => [widget, const SizedBox(width: 16)])
-          .toList()
-        ..removeLast(),
+      children:
+          cards
+              .map((card) => Expanded(child: _buildCard(card, isMobile)))
+              .expand((widget) => [widget, const SizedBox(width: 16)])
+              .toList()
+            ..removeLast(),
     );
   }
 
@@ -140,7 +129,7 @@ class DivWrapperSubsection extends StatelessWidget {
                 style: GoogleFonts.anuphan(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.eerieBlack,
+                  color: AppColors.baseDarkGrey,
                 ),
               ),
               const SizedBox(width: 8),
@@ -149,7 +138,7 @@ class DivWrapperSubsection extends StatelessWidget {
                 style: GoogleFonts.anuphan(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                  color: AppColors.eerieBlack,
+                  color: AppColors.baseDarkGrey,
                 ),
               ),
             ],
@@ -199,7 +188,7 @@ class DivWrapperSubsection extends StatelessWidget {
                         style: GoogleFonts.anuphan(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
-                          color: AppColors.eerieBlack,
+                          color: AppColors.baseDarkGrey,
                         ),
                       ),
                     ],
@@ -227,4 +216,3 @@ class _CardData {
     required this.colors,
   });
 }
-

@@ -104,24 +104,20 @@ class _PropertyMapViewState extends State<PropertyMapView> {
     return Container(
       height: widget.height,
       decoration: BoxDecoration(
-        color: AppColors.gray100,
+        color: AppColors.basePaleGrey,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.gray200, width: 2),
+        border: Border.all(color: AppColors.baseLightGrey, width: 2),
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.map_outlined,
-              size: 48,
-              color: AppColors.gray400,
-            ),
+            Icon(Icons.map_outlined, size: 48, color: AppColors.baseGrey),
             const SizedBox(height: 8),
             Text(
               'Map unavailable',
               style: TextStyle(
-                color: AppColors.gray500,
+                color: AppColors.baseDarkGrey,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -167,13 +163,15 @@ class _PropertyMapViewState extends State<PropertyMapView> {
                 return Container(
                   height: widget.height,
                   decoration: BoxDecoration(
-                    color: AppColors.gray100,
+                    color: AppColors.basePaleGrey,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Center(
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.primary,
+                      ),
                     ),
                   ),
                 );

@@ -4,9 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../data/models/user_profile_model.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../utils/image_url_helper.dart';
 import '../../../widgets/app_search_bar.dart';
 import '../../../widgets/backgrounds/blue_wave_background.dart';
+import '../../../widgets/dialogs/status_dialog.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/bloc/auth_event.dart';
+import '../../auth/bloc/auth_state.dart';
 import '../../notifications/bloc/notification_bloc.dart';
 import '../../notifications/bloc/notification_event.dart';
 import '../../notifications/bloc/notification_state.dart';
@@ -82,16 +90,118 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class HomeHeader extends StatelessWidget {
+class HomeHeader extends StatefulWidget {
   const HomeHeader({super.key});
 
   @override
+  State<HomeHeader> createState() => _HomeHeaderState();
+}
+
+class _HomeHeaderState extends State<HomeHeader> {
+  UserProfileModel? _profileData;
+  bool _isLoadingProfile = false;
+  String? _fetchingUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserProfile();
+  }
+
+  Future<void> _fetchUserProfile() async {
+    final authRepo = DependencyInjection.authRepository;
+    final currentUser = authRepo.currentUser;
+    final currentUserId = currentUser?.id;
+
+    if (currentUser == null || currentUserId == null) return;
+    if (_isLoadingProfile || _fetchingUserId == currentUserId) return;
+
+    _fetchingUserId = currentUserId;
+    setState(() {
+      _isLoadingProfile = true;
+    });
+
+    try {
+      final authApiService = DependencyInjection.authApiService;
+      final userData = await authApiService.getCurrentUser();
+      final profileData = UserProfileModel.fromJson(userData);
+
+      if (mounted) {
+        setState(() {
+          _profileData = profileData;
+          _isLoadingProfile = false;
+          _fetchingUserId = null;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error fetching profile: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingProfile = false;
+          _fetchingUserId = null;
+        });
+      }
+    }
+  }
+
+  Widget _buildGradientAvatar(String initial) {
+    const blueTop = Color(0xFF3B82F6);
+    const blueBottom = Color(0xFF1E40AF);
+
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [blueTop, blueBottom],
+        ),
+      ),
+      child: Center(
+        child: Text(
+          initial.toUpperCase(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final authRepo = DependencyInjection.authRepository;
+    final currentUser = authRepo.currentUser;
+
+    // Get user name from profile data or fallback to currentUser
+    final userName = _profileData?.name ?? currentUser?.displayName ?? '';
+    final profilePhoto = _profileData?.profilePhoto;
+    final profilePhotoUrl = ImageUrlHelper.getProfilePhotoUrl(profilePhoto);
+
+    // Get initial for gradient avatar
+    final initial = userName.trim().isNotEmpty
+        ? userName.trim()[0].toUpperCase()
+        : '?';
+
     return Row(
       children: [
-        const CircleAvatar(
-          radius: 20,
-          backgroundImage: AssetImage('assets/icons/placeholder_profile.png'),
+        ClipOval(
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: profilePhotoUrl != null
+                ? CachedNetworkImage(
+                    imageUrl: profilePhotoUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) =>
+                        _buildGradientAvatar(initial),
+                    errorWidget: (context, url, error) =>
+                        _buildGradientAvatar(initial),
+                  )
+                : _buildGradientAvatar(initial),
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -107,11 +217,11 @@ class HomeHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              const Text(
-                'เอเจนซี่ ดวงเด่น',
+              Text(
+                userName.isNotEmpty ? userName : 'เอเจนซี่ ดวงเด่น',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -131,8 +241,119 @@ class HomeHeader extends StatelessWidget {
           svgPath: 'assets/images/message-icon.svg',
           onTap: null,
         ),
+        const SizedBox(width: 10),
+        _LogoutButton(),
       ],
     );
+  }
+}
+
+class _LogoutButton extends StatelessWidget {
+  const _LogoutButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => _handleLogout(context),
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: AppColors.white.withOpacity(0.18),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Center(
+          child: Icon(Icons.logout, size: 20, color: AppColors.white),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleLogout(BuildContext context) async {
+    // Store references before async operations to avoid context issues
+    if (!context.mounted) return;
+
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) {
+      debugPrint('❌ Cannot get localizations, aborting logout');
+      return;
+    }
+
+    // Get AuthBloc reference before async operations
+    final authBloc = context.read<AuthBloc>();
+    final router = GoRouter.of(context);
+
+    // Use StatusDialog for consistent UI
+    final confirmed = await StatusDialog.showDestructive(
+      context: context,
+      title: l10n.logout_title,
+      message: l10n.logout_message,
+      confirmText: l10n.logout_button,
+      cancelText: l10n.cancel_button,
+    );
+
+    if (confirmed != true) {
+      return; // User cancelled
+    }
+
+    // Get current role before logout (to determine login route)
+    final role = DependencyInjection.authRepository.currentRole;
+    final loginRoute = role != null ? '/login/${role.name}' : '/login/agent';
+
+    // Dispatch logout event using stored reference
+    authBloc.add(const SignOutEvent());
+
+    // Wait for logout to complete by polling auth state
+    // Check both AuthBloc state and authRepository.isAuthenticated
+    bool logoutCompleted = false;
+    int attempts = 0;
+    const maxAttempts = 30; // 3 seconds max wait (30 * 100ms)
+
+    while (!logoutCompleted && attempts < maxAttempts) {
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      // Check AuthBloc state using stored reference
+      final authState = authBloc.state;
+      final isUnauthenticated =
+          authState is Unauthenticated || authState is AuthError;
+
+      // Also check authRepository directly
+      final isLoggedOut = !DependencyInjection.authRepository.isAuthenticated;
+
+      if (isUnauthenticated || isLoggedOut) {
+        logoutCompleted = true;
+        break;
+      }
+
+      attempts++;
+    }
+
+    // Navigate to login page using router reference
+    // The router redirect should also handle this, but we navigate explicitly as well
+    try {
+      // Use router directly instead of context.go to avoid context issues
+      router.go(loginRoute);
+      debugPrint('✅ Logout completed, navigated to $loginRoute');
+    } catch (e) {
+      debugPrint('❌ Error navigating to login after logout: $e');
+      // Try again after a short delay
+      await Future.delayed(const Duration(milliseconds: 200));
+      try {
+        router.go(loginRoute);
+        debugPrint('✅ Retry navigation successful');
+      } catch (e2) {
+        debugPrint('❌ Second attempt to navigate failed: $e2');
+        // Last resort: use context if still mounted
+        if (context.mounted) {
+          try {
+            context.go(loginRoute);
+          } catch (e3) {
+            debugPrint('❌ Final navigation attempt failed: $e3');
+          }
+        }
+      }
+    }
   }
 }
 
@@ -189,7 +410,7 @@ class _HeaderActionIcon extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: const BoxDecoration(
-                      color: AppColors.error600,
+                      color: AppColors.supportRedDeep,
                       shape: BoxShape.circle,
                     ),
                     constraints: const BoxConstraints(
@@ -234,6 +455,7 @@ class HomeMenuItem {
   final String imagePath;
   final String route;
   final Color accent;
+  final bool enable;
 
   const HomeMenuItem({
     required this.label,
@@ -241,6 +463,7 @@ class HomeMenuItem {
     required this.imagePath,
     required this.route,
     required this.accent,
+    this.enable = true,
   });
 }
 
@@ -282,6 +505,7 @@ class MenuGridCard extends StatelessWidget {
       imagePath: 'assets/images/home/dashboard.png',
       route: '/dashboard',
       accent: Color(0xFFF97316),
+      enable: false,
     ),
     HomeMenuItem(
       label: 'Co-Agent',
@@ -289,6 +513,7 @@ class MenuGridCard extends StatelessWidget {
       imagePath: 'assets/images/home/co_agent.png',
       route: '/co-agent',
       accent: Color(0xFF6366F1),
+      enable: false,
     ),
     HomeMenuItem(
       label: 'Contract',
@@ -303,6 +528,7 @@ class MenuGridCard extends StatelessWidget {
       imagePath: 'assets/images/home/bureau.png',
       route: '/bureau',
       accent: Color(0xFF06B6D4),
+      enable: false,
     ),
   ];
 
@@ -344,7 +570,7 @@ class _MenuGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.push(item.route),
+      onTap: () => item.enable ? context.push(item.route) : null,
       borderRadius: BorderRadius.circular(12),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -355,14 +581,15 @@ class _MenuGridItem extends StatelessWidget {
               width: 40,
               height: 40,
               fit: BoxFit.contain,
+              opacity: AlwaysStoppedAnimation<double>(item.enable ? 1 : 0.2),
               errorBuilder: (context, error, stackTrace) => Container(
                 width: 24,
                 height: 24,
-                color: AppColors.gray200,
+                color: AppColors.baseLightGrey,
                 child: const Icon(
                   Icons.error_outline,
                   size: 16,
-                  color: AppColors.gray400,
+                  color: AppColors.baseGrey,
                 ),
               ),
             ),
@@ -377,7 +604,7 @@ class _MenuGridItem extends StatelessWidget {
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: AppColors.gray600,
+              color: AppColors.baseDarkGrey,
             ),
           ),
           const SizedBox(height: 2),
@@ -389,7 +616,7 @@ class _MenuGridItem extends StatelessWidget {
             style: const TextStyle(
               fontSize: 9,
               fontWeight: FontWeight.w500,
-              color: AppColors.gray500,
+              color: AppColors.baseDarkGrey,
             ),
           ),
         ],
@@ -443,7 +670,7 @@ class _RecommendedSectionState extends State<RecommendedSection> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
-            color: AppColors.gray500,
+            color: AppColors.baseDarkGrey,
           ),
         ),
         const SizedBox(height: 14),
@@ -472,7 +699,7 @@ class _RecommendedSectionState extends State<RecommendedSection> {
                     imageUrl: _images[i],
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Container(
-                      color: AppColors.gray100,
+                      color: AppColors.basePaleGrey,
                       child: const Center(
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
@@ -481,10 +708,10 @@ class _RecommendedSectionState extends State<RecommendedSection> {
                       ),
                     ),
                     errorWidget: (context, url, error) => Container(
-                      color: AppColors.gray100,
+                      color: AppColors.basePaleGrey,
                       child: const Icon(
                         Icons.error_outline,
-                        color: AppColors.gray400,
+                        color: AppColors.baseGrey,
                         size: 48,
                       ),
                     ),
@@ -518,7 +745,7 @@ class _DotsIndicator extends StatelessWidget {
           width: i == index ? 8 : 6,
           height: 6,
           decoration: BoxDecoration(
-            color: i == index ? AppColors.primary : AppColors.gray300,
+            color: i == index ? AppColors.primary : AppColors.baseLightGrey,
             borderRadius: BorderRadius.circular(3),
           ),
         ),
@@ -585,7 +812,7 @@ class ActivitiesSection extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.gray500,
+                      color: AppColors.baseDarkGrey,
                     ),
                   ),
                 ],
@@ -601,7 +828,7 @@ class ActivitiesSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.gray500,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
               ),
@@ -671,7 +898,7 @@ class _ActivityCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.gray700,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -682,7 +909,7 @@ class _ActivityCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.gray500,
+                    color: AppColors.baseDarkGrey,
                     height: 1.35,
                   ),
                 ),
@@ -696,7 +923,7 @@ class _ActivityCard extends StatelessWidget {
                           width: 10,
                           height: 10,
                           colorFilter: const ColorFilter.mode(
-                            AppColors.gray500,
+                            AppColors.baseDarkGrey,
                             BlendMode.srcIn,
                           ),
                         ),
@@ -708,7 +935,7 @@ class _ActivityCard extends StatelessWidget {
                           width: 10,
                           height: 10,
                           colorFilter: const ColorFilter.mode(
-                            AppColors.gray500,
+                            AppColors.baseDarkGrey,
                             BlendMode.srcIn,
                           ),
                         ),
@@ -719,7 +946,7 @@ class _ActivityCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.gray500,
+                          color: AppColors.baseDarkGrey,
                         ),
                       ),
                     ],
@@ -736,15 +963,18 @@ class _ActivityCard extends StatelessWidget {
               width: 76,
               height: 76,
               fit: BoxFit.cover,
-              placeholder: (context, url) =>
-                  Container(width: 76, height: 76, color: AppColors.gray100),
+              placeholder: (context, url) => Container(
+                width: 76,
+                height: 76,
+                color: AppColors.basePaleGrey,
+              ),
               errorWidget: (context, url, error) => Container(
                 width: 76,
                 height: 76,
-                color: AppColors.gray100,
+                color: AppColors.basePaleGrey,
                 child: const Icon(
                   Icons.error_outline,
-                  color: AppColors.gray400,
+                  color: AppColors.baseGrey,
                   size: 24,
                 ),
               ),

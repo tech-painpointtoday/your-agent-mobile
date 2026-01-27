@@ -50,27 +50,27 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     try {
       // Check if supportsAuthenticate is available (may throw if not initialized)
       final supportsAuth = _googleSignIn.supportsAuthenticate();
-      
+
       if (supportsAuth) {
-      // Mobile platforms: show custom button that calls authenticate()
-      return BlocSelector<AuthBloc, AuthState, bool>(
-        selector: (state) => state is AuthLoading,
-        builder: (context, isLoading) {
-          return _buildMobileButton(context, isLoading);
-        },
-      );
-    } else {
-      // Web platform: use renderButton from google_sign_in_web
-      if (kIsWeb) {
-        // Cache the web button widget to prevent iframe recreation
-        _cachedWebButton ??= _buildWebButton();
-        return _cachedWebButton!;
-      } else {
-        // Fallback for unknown platforms
-        return const Text(
-          'This platform does not have a known authentication method',
+        // Mobile platforms: show custom button that calls authenticate()
+        return BlocSelector<AuthBloc, AuthState, bool>(
+          selector: (state) => state is AuthLoading,
+          builder: (context, isLoading) {
+            return _buildMobileButton(context, isLoading);
+          },
         );
-      }
+      } else {
+        // Web platform: use renderButton from google_sign_in_web
+        if (kIsWeb) {
+          // Cache the web button widget to prevent iframe recreation
+          _cachedWebButton ??= _buildWebButton();
+          return _cachedWebButton!;
+        } else {
+          // Fallback for unknown platforms
+          return const Text(
+            'This platform does not have a known authentication method',
+          );
+        }
       }
     } catch (e) {
       // If Google Sign-In is not initialized, show a disabled button or placeholder
@@ -112,7 +112,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
           style: GoogleFonts.anuphan(
             fontSize: 16,
             fontWeight: FontWeight.w500,
-            color: AppColors.eerieBlack,
+            color: AppColors.baseDarkGrey,
           ),
         ),
         style: OutlinedButton.styleFrom(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 
@@ -11,6 +12,7 @@ class LabeledDropdownField<T> extends StatelessWidget {
   final void Function(T?)? onChanged;
   final String? Function(T?)? validator;
   final IconData? prefixIcon;
+  final String? prefixIconSvg;
 
   const LabeledDropdownField({
     super.key,
@@ -21,6 +23,7 @@ class LabeledDropdownField<T> extends StatelessWidget {
     this.onChanged,
     this.validator,
     this.prefixIcon,
+    this.prefixIconSvg,
   });
 
   @override
@@ -28,18 +31,14 @@ class LabeledDropdownField<T> extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.anuphan(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppColors.eerieBlack,
-          ),
-        ),
-        const SizedBox(height: 8),
         DropdownButtonFormField<T>(
           initialValue: value,
-          icon: const Icon(Icons.keyboard_arrow_down),
+          icon: const Icon(
+            Icons.keyboard_arrow_down,
+            color: AppColors.baseGrey,
+          ),
+          dropdownColor: AppColors.white,
+          borderRadius: BorderRadius.circular(12),
           decoration: _buildInputDecoration(),
           items: items,
           onChanged: onChanged,
@@ -51,18 +50,41 @@ class LabeledDropdownField<T> extends StatelessWidget {
   }
 
   InputDecoration _buildInputDecoration() {
+    Widget? prefixWidget;
+    if (prefixIconSvg != null) {
+      prefixWidget = Padding(
+        padding: const EdgeInsets.all(16),
+        child: SvgPicture.asset(
+          prefixIconSvg!,
+          width: 16,
+          height: 16,
+          colorFilter: const ColorFilter.mode(
+            AppColors.primary,
+            BlendMode.srcIn,
+          ),
+        ),
+      );
+    } else if (prefixIcon != null) {
+      prefixWidget = Icon(prefixIcon, color: AppColors.primary);
+    }
+
     return InputDecoration(
       hintText: hintText ?? label,
-      prefixIcon: prefixIcon != null
-          ? Icon(prefixIcon, color: AppColors.shadyLady)
-          : null,
+      hintStyle: GoogleFonts.anuphan(color: AppColors.baseGrey),
+      prefixIcon: prefixWidget,
+
+      // 3. Ensures the field container also has the 12 radius
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.bonJour),
+        borderSide: const BorderSide(color: AppColors.baseGrey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.bonJour),
+        borderSide: const BorderSide(color: AppColors.baseGrey),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       filled: true,

@@ -13,7 +13,8 @@ import 'package:youragent/widgets/image_modal.dart';
 /// Displays image upload UI, existing photos grid, and new photos preview
 class AppImageUploadWidget extends StatelessWidget {
   final List<XFile> newPhotos;
-  final List<String> existingPhotoUrls; // Changed from PropertyImage to String URLs
+  final List<String>
+  existingPhotoUrls; // Changed from PropertyImage to String URLs
   final bool isReadOnly;
   final VoidCallback onPickImages;
   final VoidCallback? onPickImagesFromCamera;
@@ -110,9 +111,7 @@ class AppImageUploadWidget extends StatelessWidget {
                             vertical: 12,
                           ),
                           elevation: 0,
-                          side: const BorderSide(
-                            color: Color(0xFF1743C7),
-                          ),
+                          side: const BorderSide(color: Color(0xFF1743C7)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -277,14 +276,10 @@ class AppImageUploadWidget extends StatelessWidget {
                         ? Image.network(
                             file.path,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              color: Colors.grey[200],
-                            ),
+                            errorBuilder: (_, __, ___) =>
+                                Container(color: Colors.grey[200]),
                           )
-                        : Image.file(
-                            File(file.path),
-                            fit: BoxFit.cover,
-                          ),
+                        : Image.file(File(file.path), fit: BoxFit.cover),
                     // Gradient overlay for text readability
                     Positioned(
                       bottom: 0,
@@ -335,7 +330,7 @@ class AppImageUploadWidget extends StatelessWidget {
                             child: const Icon(
                               Icons.close,
                               size: 14,
-                              color: AppColors.eerieBlack,
+                              color: AppColors.baseDarkGrey,
                             ),
                           ),
                         ),
@@ -354,9 +349,7 @@ class AppImageUploadWidget extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.grayBorder,
-              ),
+              border: Border.all(color: AppColors.baseGrey),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -364,7 +357,7 @@ class AppImageUploadWidget extends StatelessWidget {
                 Icon(
                   Icons.image_not_supported_outlined,
                   size: 24,
-                  color: AppColors.gray300,
+                  color: AppColors.baseLightGrey,
                 ),
                 const SizedBox(width: 8),
                 Text(

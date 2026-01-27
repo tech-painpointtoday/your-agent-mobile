@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -23,11 +22,7 @@ class NotificationEmptyState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Placeholder for empty state icon - you can add an SVG asset later
-            Icon(
-              Icons.notifications_none,
-              size: 80,
-              color: AppColors.gray400,
-            ),
+            Icon(Icons.notifications_none, size: 80, color: AppColors.baseGrey),
             const SizedBox(height: 24),
             Text(
               title,
@@ -35,7 +30,7 @@ class NotificationEmptyState extends StatelessWidget {
               style: GoogleFonts.anuphan(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: AppColors.gray600,
+                color: AppColors.baseDarkGrey,
               ),
             ),
             const SizedBox(height: 8),
@@ -45,7 +40,7 @@ class NotificationEmptyState extends StatelessWidget {
               style: GoogleFonts.anuphan(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: AppColors.gray500,
+                color: AppColors.baseDarkGrey,
               ),
             ),
           ],

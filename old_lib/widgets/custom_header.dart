@@ -239,7 +239,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                                                 l10n.app_title,
                                                 style: GoogleFonts.anuphan(
                                                   fontSize: logoFontSize,
-                                                  color: AppColors.eerieBlack,
+                                                  color: AppColors.baseDarkGrey,
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
@@ -365,7 +365,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                                         _getRoleName(role, l10n),
                                         style: GoogleFonts.anuphan(
                                           fontSize: buttonFontSize,
-                                          color: AppColors.eerieBlack,
+                                          color: AppColors.baseDarkGrey,
                                         ),
                                       ),
                                     );
@@ -377,7 +377,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                                           _getRoleName(role, l10n),
                                           style: GoogleFonts.anuphan(
                                             fontSize: buttonFontSize,
-                                            color: AppColors.eerieBlack,
+                                            color: AppColors.baseDarkGrey,
                                           ),
                                         ),
                                       );
@@ -439,7 +439,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                                         l10n.login,
                                         style: GoogleFonts.anuphan(
                                           fontSize: buttonFontSize,
-                                          color: AppColors.eerieBlack,
+                                          color: AppColors.baseDarkGrey,
                                         ),
                                       ),
                                     ],
@@ -513,7 +513,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                         shortCode,
                         style: GoogleFonts.anuphan(
                           fontSize: buttonFontSize,
-                          color: AppColors.eerieBlack,
+                          color: AppColors.baseDarkGrey,
                         ),
                       ),
                     );
@@ -543,7 +543,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                             shortCode,
                             style: GoogleFonts.anuphan(
                               fontSize: buttonFontSize,
-                              color: AppColors.eerieBlack,
+                              color: AppColors.baseDarkGrey,
                             ),
                           ),
                         ],
@@ -670,7 +670,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                   userName,
                   style: GoogleFonts.anuphan(
                     fontSize: buttonFontSize,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
               ],
@@ -805,7 +805,7 @@ class _CustomHeaderState extends State<CustomHeader> {
             color: AppColors.white,
             borderRadius: BorderRadius.circular(35),
           ),
-          child: Icon(Icons.logout, size: 20, color: AppColors.eerieBlack),
+          child: Icon(Icons.logout, size: 20, color: AppColors.baseDarkGrey),
         ),
       ),
     );

@@ -11,7 +11,7 @@ class AppTheme {
         secondary: AppColors.alizarinCrimson,
         error: AppColors.alizarinCrimson,
         surface: AppColors.white,
-        onSurface: AppColors.eerieBlack,
+        onSurface: AppColors.baseDarkGrey,
       ),
       scaffoldBackgroundColor: AppColors.wildSand,
       pageTransitionsTheme: const PageTransitionsTheme(
@@ -58,15 +58,15 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.white,
-        hintStyle: const TextStyle(color: AppColors.gray400),
-        labelStyle: const TextStyle(color: AppColors.gray400),
+        hintStyle: const TextStyle(color: AppColors.baseGrey),
+        labelStyle: const TextStyle(color: AppColors.baseGrey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grayBorder),
+          borderSide: const BorderSide(color: AppColors.baseGrey),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grayBorder),
+          borderSide: const BorderSide(color: AppColors.baseGrey),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -74,7 +74,7 @@ class AppTheme {
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grayBorder),
+          borderSide: const BorderSide(color: AppColors.baseGrey),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -104,7 +104,7 @@ class AppTheme {
         fontSize: fontSize,
         height: height,
         fontWeight: fontWeight,
-        color: color ?? AppColors.eerieBlack,
+        color: color ?? AppColors.baseDarkGrey,
         letterSpacing: letterSpacing,
       );
     }

@@ -16,29 +16,29 @@ class StatusIcon extends StatelessWidget {
 
     switch (type) {
       case DialogType.success:
-        bgColor = AppColors.statusSuccessBg;
+        bgColor = AppColors.supportGreenLight;
         iconPath = 'assets/icons/check-circle.svg';
-        iconColor = AppColors.success600;
+        iconColor = AppColors.supportGreenDark;
         break;
       case DialogType.error:
-        bgColor = AppColors.statusErrorBg;
+        bgColor = AppColors.supportRedLight;
         iconPath = 'assets/icons/x-circle.svg';
-        iconColor = AppColors.error600;
+        iconColor = AppColors.supportRedDark;
         break;
       case DialogType.destructive:
-        bgColor = AppColors.statusErrorBg;
+        bgColor = AppColors.supportRedLight;
         iconPath = 'assets/icons/alert-triangle.svg';
-        iconColor = AppColors.error600;
+        iconColor = AppColors.supportRedDark;
         break;
       case DialogType.warning:
-        bgColor = AppColors.statusWarningBg;
+        bgColor = AppColors.supportOrangeLight;
         iconPath = 'assets/icons/alert-triangle.svg';
-        iconColor = AppColors.warning600;
+        iconColor = AppColors.supportOrangeDark;
         break;
       case DialogType.info:
-        bgColor = AppColors.blue100;
+        bgColor = AppColors.supportBlueLight;
         iconPath = ''; // Not used
-        iconColor = AppColors.blue600;
+        iconColor = AppColors.supportBlueDeep;
         break;
     }
 
@@ -77,7 +77,7 @@ class StatusCloseButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: const BoxDecoration(
-          color: AppColors.gray50,
+          color: AppColors.basePaleGrey,
           shape: BoxShape.circle,
         ),
         child: SvgPicture.asset(
@@ -85,7 +85,7 @@ class StatusCloseButton extends StatelessWidget {
           width: 12,
           height: 12,
           colorFilter: const ColorFilter.mode(
-            AppColors.gray400,
+            AppColors.baseGrey,
             BlendMode.srcIn,
           ),
         ),

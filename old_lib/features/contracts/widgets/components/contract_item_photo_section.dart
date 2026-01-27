@@ -42,7 +42,7 @@ class ContractItemPhotoSection extends StatelessWidget {
                     style: GoogleFonts.anuphan(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.eerieBlack,
+                      color: AppColors.baseDarkGrey,
                     ),
                   ),
                   if (!isReadOnly) ...[
@@ -52,7 +52,7 @@ class ContractItemPhotoSection extends StatelessWidget {
                       style: GoogleFonts.anuphan(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
-                        color: AppColors.gray400,
+                        color: AppColors.baseGrey,
                       ),
                     ),
                   ],
@@ -67,7 +67,7 @@ class ContractItemPhotoSection extends StatelessWidget {
                     TextButton(
                       onPressed: onRemoveAllPhotos,
                       style: TextButton.styleFrom(
-                        foregroundColor: AppColors.error600,
+                        foregroundColor: AppColors.supportRedDeep,
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                       ),
                       child: Row(
@@ -135,7 +135,7 @@ class ContractItemPhotoSection extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.grayBorder),
+                      border: Border.all(color: AppColors.baseGrey),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.05),
@@ -176,7 +176,7 @@ class ContractItemPhotoSection extends StatelessWidget {
                           ),
                           child: const Icon(
                             Icons.close,
-                            color: AppColors.gray600,
+                            color: AppColors.baseDarkGrey,
                             size: 16,
                           ),
                         ),
@@ -219,8 +219,8 @@ class ContractItemPhotoSection extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.grayBorder, width: 1.5),
-              color: isReadOnly ? AppColors.white : AppColors.gray50,
+              border: Border.all(color: AppColors.baseGrey, width: 1.5),
+              color: isReadOnly ? AppColors.white : AppColors.basePaleGrey,
             ),
             child: Center(
               child: isReadOnly
@@ -230,13 +230,13 @@ class ContractItemPhotoSection extends StatelessWidget {
                         const Icon(
                           Icons.image_not_supported_outlined,
                           size: 24,
-                          color: AppColors.gray400,
+                          color: AppColors.baseGrey,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           l10n.no_images,
                           style: GoogleFonts.anuphan(
-                            color: AppColors.gray400,
+                            color: AppColors.baseGrey,
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
                           ),
@@ -249,13 +249,13 @@ class ContractItemPhotoSection extends StatelessWidget {
                         Icon(
                           Icons.image_outlined,
                           size: 40,
-                          color: AppColors.gray400.withValues(alpha: 0.5),
+                          color: AppColors.baseGrey.withValues(alpha: 0.5),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'ตัวอย่างรูปภาพ',
                           style: GoogleFonts.anuphan(
-                            color: AppColors.gray400,
+                            color: AppColors.baseGrey,
                             fontSize: 14,
                           ),
                         ),
@@ -267,4 +267,3 @@ class ContractItemPhotoSection extends StatelessWidget {
     );
   }
 }
-

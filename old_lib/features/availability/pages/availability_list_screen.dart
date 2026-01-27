@@ -217,7 +217,7 @@ class _AvailabilityListScreenState extends State<AvailabilityListScreen> {
                     style: GoogleFonts.anuphan(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.eerieBlack,
+                      color: AppColors.baseDarkGrey,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -271,7 +271,7 @@ class _AvailabilityListScreenState extends State<AvailabilityListScreen> {
                 style: GoogleFonts.anuphan(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.eerieBlack,
+                  color: AppColors.baseDarkGrey,
                 ),
               ),
               const SizedBox(height: 4),

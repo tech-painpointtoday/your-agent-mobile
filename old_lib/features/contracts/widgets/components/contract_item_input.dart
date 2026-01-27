@@ -48,7 +48,9 @@ class _ContractItemInputState extends State<ContractItemInput> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.initialName);
-    _descriptionController = TextEditingController(text: widget.initialDescription);
+    _descriptionController = TextEditingController(
+      text: widget.initialDescription,
+    );
   }
 
   @override
@@ -91,9 +93,9 @@ class _ContractItemInputState extends State<ContractItemInput> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking images: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error picking images: $e')));
     }
   }
 
@@ -113,7 +115,7 @@ class _ContractItemInputState extends State<ContractItemInput> {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: AppColors.baseGrey),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -127,13 +129,13 @@ class _ContractItemInputState extends State<ContractItemInput> {
                   style: GoogleFonts.anuphan(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
               ),
               if (widget.onRemove != null)
                 IconButton(
-                  icon: const Icon(Icons.close, color: AppColors.gray400),
+                  icon: const Icon(Icons.close, color: AppColors.baseGrey),
                   onPressed: widget.onRemove,
                   tooltip: 'ลบรายการ',
                   padding: EdgeInsets.zero,
@@ -181,4 +183,3 @@ class _ContractItemInputState extends State<ContractItemInput> {
     );
   }
 }
-

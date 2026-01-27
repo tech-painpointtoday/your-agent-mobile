@@ -28,7 +28,10 @@ class BaseStatusDialog extends StatelessWidget {
     this.isSingleAction = false,
     this.onConfirm,
     this.type = DialogType.info,
-  }) : assert(message != null || content != null, 'Either message or content must be provided');
+  }) : assert(
+         message != null || content != null,
+         'Either message or content must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,10 @@ class BaseStatusDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildHeader(context),
-              if (confirmText.isNotEmpty || !isSingleAction) ...[const SizedBox(height: 24), _buildActions(context)],
+              if (confirmText.isNotEmpty || !isSingleAction) ...[
+                const SizedBox(height: 24),
+                _buildActions(context),
+              ],
             ],
           ),
         ),
@@ -55,7 +61,10 @@ class BaseStatusDialog extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    final bool showIcon = type == DialogType.success || type == DialogType.warning || type == DialogType.error;
+    final bool showIcon =
+        type == DialogType.success ||
+        type == DialogType.warning ||
+        type == DialogType.error;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,13 +77,24 @@ class BaseStatusDialog extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: GoogleFonts.anuphan(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.gray900),
+                style: GoogleFonts.anuphan(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.baseDarkGrey,
+                ),
               ),
               const SizedBox(height: 4),
               if (content != null)
                 content!
               else
-                Text(message!, style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.gray600, height: 1.5)),
+                Text(
+                  message!,
+                  style: GoogleFonts.anuphan(
+                    fontSize: 14,
+                    color: AppColors.baseDarkGrey,
+                    height: 1.5,
+                  ),
+                ),
             ],
           ),
         ),
@@ -97,8 +117,13 @@ class BaseStatusDialog extends StatelessWidget {
             backgroundColor: confirmColor,
             foregroundColor: Colors.white,
             elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            textStyle: GoogleFonts.anuphan(fontWeight: FontWeight.w600, fontSize: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            textStyle: GoogleFonts.anuphan(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
           ),
           child: Text(confirmText),
         ),
@@ -118,8 +143,13 @@ class BaseStatusDialog extends StatelessWidget {
               foregroundColor: Colors.white,
               elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              textStyle: GoogleFonts.anuphan(fontWeight: FontWeight.w600, fontSize: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              textStyle: GoogleFonts.anuphan(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
             child: Text(confirmText),
           ),
@@ -130,12 +160,17 @@ class BaseStatusDialog extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () => Navigator.of(context).pop(false),
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.gray700,
+              foregroundColor: AppColors.baseDarkGrey,
               backgroundColor: Colors.white,
-              side: const BorderSide(color: AppColors.gray300),
+              side: const BorderSide(color: AppColors.baseLightGrey),
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              textStyle: GoogleFonts.anuphan(fontWeight: FontWeight.w500, fontSize: 13),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              textStyle: GoogleFonts.anuphan(
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+              ),
             ),
             child: Text(cancelText ?? 'Cancel'),
           ),

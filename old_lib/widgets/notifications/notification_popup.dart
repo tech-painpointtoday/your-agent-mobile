@@ -210,7 +210,7 @@ class _NotificationPopupState extends State<NotificationPopup> {
                   style: GoogleFonts.anuphan(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
                 InkWell(
@@ -240,7 +240,7 @@ class _NotificationPopupState extends State<NotificationPopup> {
                         locale == 'th' ? 'ไม่มีแจ้งเตือน' : 'No notifications',
                         style: GoogleFonts.anuphan(
                           fontSize: 14,
-                          color: AppColors.gray500,
+                          color: AppColors.baseDarkGrey,
                         ),
                       ),
                     ),
@@ -348,7 +348,7 @@ class _NotificationItem extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.gray200,
+                color: AppColors.baseLightGrey,
               ),
               child: avatarUrl != null && avatarUrl!.isNotEmpty
                   ? ClipOval(
@@ -398,7 +398,7 @@ class _NotificationItem extends StatelessWidget {
                     style: GoogleFonts.anuphan(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.eerieBlack,
+                      color: AppColors.baseDarkGrey,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -410,7 +410,7 @@ class _NotificationItem extends StatelessWidget {
                     style: GoogleFonts.anuphan(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.gray500,
+                      color: AppColors.baseDarkGrey,
                     ),
                   ),
                 ],
@@ -426,9 +426,9 @@ class _NotificationItem extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.gray200,
+        color: AppColors.baseLightGrey,
       ),
-      child: Icon(Icons.person, color: AppColors.gray500, size: 24),
+      child: Icon(Icons.person, color: AppColors.baseDarkGrey, size: 24),
     );
   }
 }

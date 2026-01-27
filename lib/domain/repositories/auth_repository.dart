@@ -25,4 +25,3 @@ abstract class AuthRepository {
 
   Future<void> restoreAuthState();
 }
-

@@ -64,7 +64,7 @@ class AppFormNumberField extends StatelessWidget {
                 style: (enable == true)
                     ? theme.textTheme.bodyMedium
                     : theme.textTheme.bodyMedium?.copyWith(
-                        color: AppColors.gray400,
+                        color: AppColors.baseGrey,
                       ),
                 inputFormatters: isDecimal
                     ? null
@@ -72,27 +72,27 @@ class AppFormNumberField extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: label,
                   hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.gray400,
+                    color: AppColors.baseGrey,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.grayBorder),
+                    borderSide: const BorderSide(color: AppColors.baseGrey),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.grayBorder),
+                    borderSide: const BorderSide(color: AppColors.baseGrey),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color: (isReadOnly == true || enable == false)
-                          ? AppColors.grayBorder
+                          ? AppColors.baseGrey
                           : AppColors.primary,
                     ),
                   ),
                   disabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.grayBorder),
+                    borderSide: const BorderSide(color: AppColors.baseGrey),
                   ),
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
@@ -101,17 +101,20 @@ class AppFormNumberField extends StatelessWidget {
                   ),
                   suffixText: suffixText,
                   suffixStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: (enable == true) ? AppColors.shadyLady : AppColors.gray400,
+                    color: (enable == true)
+                        ? AppColors.shadyLady
+                        : AppColors.baseGrey,
                   ),
                   filled: (isReadOnly == true) || (enable == false),
                   fillColor: (enable == false)
-                      ? AppColors.gray50
+                      ? AppColors.basePaleGrey
                       : (isReadOnly == true ? AppColors.white : null),
                 ),
                 validator: (isReadOnly == true)
                     ? null
                     : (value) {
-                        if (isRequired == true && (value == null || value.isEmpty)) {
+                        if (isRequired == true &&
+                            (value == null || value.isEmpty)) {
                           return l10n.this_field_required;
                         }
                         if (value != null && value.isNotEmpty) {

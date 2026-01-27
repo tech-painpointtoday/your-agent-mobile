@@ -7,8 +7,15 @@ class SectionHeader extends StatelessWidget {
   final String? iconPath; // SVG asset path
   final IconData? icon; // Material icon (for backward compatibility)
 
-  const SectionHeader({super.key, required this.title, this.iconPath, this.icon})
-    : assert(iconPath != null || icon != null, 'Either iconPath or icon must be provided');
+  const SectionHeader({
+    super.key,
+    required this.title,
+    this.iconPath,
+    this.icon,
+  }) : assert(
+         iconPath != null || icon != null,
+         'Either iconPath or icon must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -16,22 +23,29 @@ class SectionHeader extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: AppColors.blue100, borderRadius: BorderRadius.circular(8)),
+          decoration: BoxDecoration(
+            color: AppColors.supportBlueLight,
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: iconPath != null
               ? SvgPicture.asset(
                   iconPath!,
                   width: 20,
                   height: 20,
-                  colorFilter: const ColorFilter.mode(AppColors.blue600, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.supportBlueDeep,
+                    BlendMode.srcIn,
+                  ),
                 )
-              : Icon(icon!, size: 20, color: AppColors.blue600),
+              : Icon(icon!, size: 20, color: AppColors.supportBlueDeep),
         ),
         const SizedBox(width: 12),
         Text(
           title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: AppColors.blue600),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.supportBlueDeep,
+          ),
         ),
       ],
     );

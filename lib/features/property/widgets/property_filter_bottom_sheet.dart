@@ -428,7 +428,8 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                           _buildChip(
                             '$i',
                             isSelected: selectedParkingSpaces == i,
-                            onTap: () => setState(() => selectedParkingSpaces = i),
+                            onTap: () =>
+                                setState(() => selectedParkingSpaces = i),
                           ),
                       ],
                     ),
@@ -481,7 +482,9 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'คลาสสิค',
-                          isSelected: selectedPropertyStyles.contains('คลาสสิค'),
+                          isSelected: selectedPropertyStyles.contains(
+                            'คลาสสิค',
+                          ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains('คลาสสิค')) {
@@ -494,7 +497,9 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'โมเดิร์น',
-                          isSelected: selectedPropertyStyles.contains('โมเดิร์น'),
+                          isSelected: selectedPropertyStyles.contains(
+                            'โมเดิร์น',
+                          ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains('โมเดิร์น')) {
@@ -507,7 +512,9 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'เนเชอรัล',
-                          isSelected: selectedPropertyStyles.contains('เนเชอรัล'),
+                          isSelected: selectedPropertyStyles.contains(
+                            'เนเชอรัล',
+                          ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains('เนเชอรัล')) {
@@ -533,7 +540,9 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'มินิมอล',
-                          isSelected: selectedPropertyStyles.contains('มินิมอล'),
+                          isSelected: selectedPropertyStyles.contains(
+                            'มินิมอล',
+                          ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains('มินิมอล')) {
@@ -559,7 +568,9 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'ร่วมสมัย',
-                          isSelected: selectedPropertyStyles.contains('ร่วมสมัย'),
+                          isSelected: selectedPropertyStyles.contains(
+                            'ร่วมสมัย',
+                          ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains('ร่วมสมัย')) {
@@ -572,10 +583,14 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'โคโลเนียล',
-                          isSelected: selectedPropertyStyles.contains('โคโลเนียล'),
+                          isSelected: selectedPropertyStyles.contains(
+                            'โคโลเนียล',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedPropertyStyles.contains('โคโลเนียล')) {
+                              if (selectedPropertyStyles.contains(
+                                'โคโลเนียล',
+                              )) {
                                 selectedPropertyStyles.remove('โคโลเนียล');
                               } else {
                                 selectedPropertyStyles.add('โคโลเนียล');
@@ -585,10 +600,14 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'ไทยร่วมสมัย',
-                          isSelected: selectedPropertyStyles.contains('ไทยร่วมสมัย'),
+                          isSelected: selectedPropertyStyles.contains(
+                            'ไทยร่วมสมัย',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedPropertyStyles.contains('ไทยร่วมสมัย')) {
+                              if (selectedPropertyStyles.contains(
+                                'ไทยร่วมสมัย',
+                              )) {
                                 selectedPropertyStyles.remove('ไทยร่วมสมัย');
                               } else {
                                 selectedPropertyStyles.add('ไทยร่วมสมัย');
@@ -598,7 +617,9 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'บอร์ดิก',
-                          isSelected: selectedPropertyStyles.contains('บอร์ดิก'),
+                          isSelected: selectedPropertyStyles.contains(
+                            'บอร์ดิก',
+                          ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains('บอร์ดิก')) {
@@ -625,11 +646,17 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       children: [
                         _buildMultiSelectChip(
                           'Pet-friendly',
-                          isSelected: selectedPropertyHighlights.contains('Pet-friendly'),
+                          isSelected: selectedPropertyHighlights.contains(
+                            'Pet-friendly',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedPropertyHighlights.contains('Pet-friendly')) {
-                                selectedPropertyHighlights.remove('Pet-friendly');
+                              if (selectedPropertyHighlights.contains(
+                                'Pet-friendly',
+                              )) {
+                                selectedPropertyHighlights.remove(
+                                  'Pet-friendly',
+                                );
                               } else {
                                 selectedPropertyHighlights.add('Pet-friendly');
                               }
@@ -638,24 +665,38 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'Elderly-Friendly',
-                          isSelected: selectedPropertyHighlights.contains('Elderly-Friendly'),
+                          isSelected: selectedPropertyHighlights.contains(
+                            'Elderly-Friendly',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedPropertyHighlights.contains('Elderly-Friendly')) {
-                                selectedPropertyHighlights.remove('Elderly-Friendly');
+                              if (selectedPropertyHighlights.contains(
+                                'Elderly-Friendly',
+                              )) {
+                                selectedPropertyHighlights.remove(
+                                  'Elderly-Friendly',
+                                );
                               } else {
-                                selectedPropertyHighlights.add('Elderly-Friendly');
+                                selectedPropertyHighlights.add(
+                                  'Elderly-Friendly',
+                                );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
                           'ใกล้ทางด่วน',
-                          isSelected: selectedPropertyHighlights.contains('ใกล้ทางด่วน'),
+                          isSelected: selectedPropertyHighlights.contains(
+                            'ใกล้ทางด่วน',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedPropertyHighlights.contains('ใกล้ทางด่วน')) {
-                                selectedPropertyHighlights.remove('ใกล้ทางด่วน');
+                              if (selectedPropertyHighlights.contains(
+                                'ใกล้ทางด่วน',
+                              )) {
+                                selectedPropertyHighlights.remove(
+                                  'ใกล้ทางด่วน',
+                                );
                               } else {
                                 selectedPropertyHighlights.add('ใกล้ทางด่วน');
                               }
@@ -664,11 +705,17 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'ใกล้รถไฟฟ้า',
-                          isSelected: selectedPropertyHighlights.contains('ใกล้รถไฟฟ้า'),
+                          isSelected: selectedPropertyHighlights.contains(
+                            'ใกล้รถไฟฟ้า',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedPropertyHighlights.contains('ใกล้รถไฟฟ้า')) {
-                                selectedPropertyHighlights.remove('ใกล้รถไฟฟ้า');
+                              if (selectedPropertyHighlights.contains(
+                                'ใกล้รถไฟฟ้า',
+                              )) {
+                                selectedPropertyHighlights.remove(
+                                  'ใกล้รถไฟฟ้า',
+                                );
                               } else {
                                 selectedPropertyHighlights.add('ใกล้รถไฟฟ้า');
                               }
@@ -677,11 +724,17 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'ใกล้โรงพยาบาล',
-                          isSelected: selectedPropertyHighlights.contains('ใกล้โรงพยาบาล'),
+                          isSelected: selectedPropertyHighlights.contains(
+                            'ใกล้โรงพยาบาล',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedPropertyHighlights.contains('ใกล้โรงพยาบาล')) {
-                                selectedPropertyHighlights.remove('ใกล้โรงพยาบาล');
+                              if (selectedPropertyHighlights.contains(
+                                'ใกล้โรงพยาบาล',
+                              )) {
+                                selectedPropertyHighlights.remove(
+                                  'ใกล้โรงพยาบาล',
+                                );
                               } else {
                                 selectedPropertyHighlights.add('ใกล้โรงพยาบาล');
                               }
@@ -690,11 +743,17 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'โครงการใหม่',
-                          isSelected: selectedPropertyHighlights.contains('โครงการใหม่'),
+                          isSelected: selectedPropertyHighlights.contains(
+                            'โครงการใหม่',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedPropertyHighlights.contains('โครงการใหม่')) {
-                                selectedPropertyHighlights.remove('โครงการใหม่');
+                              if (selectedPropertyHighlights.contains(
+                                'โครงการใหม่',
+                              )) {
+                                selectedPropertyHighlights.remove(
+                                  'โครงการใหม่',
+                                );
                               } else {
                                 selectedPropertyHighlights.add('โครงการใหม่');
                               }
@@ -717,7 +776,9 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       children: [
                         _buildMultiSelectChip(
                           'ฟิตเนส',
-                          isSelected: selectedCommonFacilities.contains('ฟิตเนส'),
+                          isSelected: selectedCommonFacilities.contains(
+                            'ฟิตเนส',
+                          ),
                           onTap: () {
                             setState(() {
                               if (selectedCommonFacilities.contains('ฟิตเนส')) {
@@ -730,10 +791,14 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'สระว่ายน้ำ',
-                          isSelected: selectedCommonFacilities.contains('สระว่ายน้ำ'),
+                          isSelected: selectedCommonFacilities.contains(
+                            'สระว่ายน้ำ',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedCommonFacilities.contains('สระว่ายน้ำ')) {
+                              if (selectedCommonFacilities.contains(
+                                'สระว่ายน้ำ',
+                              )) {
                                 selectedCommonFacilities.remove('สระว่ายน้ำ');
                               } else {
                                 selectedCommonFacilities.add('สระว่ายน้ำ');
@@ -743,10 +808,14 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'สนามหญ้า',
-                          isSelected: selectedCommonFacilities.contains('สนามหญ้า'),
+                          isSelected: selectedCommonFacilities.contains(
+                            'สนามหญ้า',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedCommonFacilities.contains('สนามหญ้า')) {
+                              if (selectedCommonFacilities.contains(
+                                'สนามหญ้า',
+                              )) {
                                 selectedCommonFacilities.remove('สนามหญ้า');
                               } else {
                                 selectedCommonFacilities.add('สนามหญ้า');
@@ -756,23 +825,35 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'Co-working space',
-                          isSelected: selectedCommonFacilities.contains('Co-working space'),
+                          isSelected: selectedCommonFacilities.contains(
+                            'Co-working space',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedCommonFacilities.contains('Co-working space')) {
-                                selectedCommonFacilities.remove('Co-working space');
+                              if (selectedCommonFacilities.contains(
+                                'Co-working space',
+                              )) {
+                                selectedCommonFacilities.remove(
+                                  'Co-working space',
+                                );
                               } else {
-                                selectedCommonFacilities.add('Co-working space');
+                                selectedCommonFacilities.add(
+                                  'Co-working space',
+                                );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
                           'สนามเด็กเล่น',
-                          isSelected: selectedCommonFacilities.contains('สนามเด็กเล่น'),
+                          isSelected: selectedCommonFacilities.contains(
+                            'สนามเด็กเล่น',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedCommonFacilities.contains('สนามเด็กเล่น')) {
+                              if (selectedCommonFacilities.contains(
+                                'สนามเด็กเล่น',
+                              )) {
                                 selectedCommonFacilities.remove('สนามเด็กเล่น');
                               } else {
                                 selectedCommonFacilities.add('สนามเด็กเล่น');
@@ -782,10 +863,14 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'สนามกีฬา',
-                          isSelected: selectedCommonFacilities.contains('สนามกีฬา'),
+                          isSelected: selectedCommonFacilities.contains(
+                            'สนามกีฬา',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedCommonFacilities.contains('สนามกีฬา')) {
+                              if (selectedCommonFacilities.contains(
+                                'สนามกีฬา',
+                              )) {
                                 selectedCommonFacilities.remove('สนามกีฬา');
                               } else {
                                 selectedCommonFacilities.add('สนามกีฬา');
@@ -795,13 +880,21 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                         ),
                         _buildMultiSelectChip(
                           'เจ้าหน้าที่ รปภ.',
-                          isSelected: selectedCommonFacilities.contains('เจ้าหน้าที่ รปภ.'),
+                          isSelected: selectedCommonFacilities.contains(
+                            'เจ้าหน้าที่ รปภ.',
+                          ),
                           onTap: () {
                             setState(() {
-                              if (selectedCommonFacilities.contains('เจ้าหน้าที่ รปภ.')) {
-                                selectedCommonFacilities.remove('เจ้าหน้าที่ รปภ.');
+                              if (selectedCommonFacilities.contains(
+                                'เจ้าหน้าที่ รปภ.',
+                              )) {
+                                selectedCommonFacilities.remove(
+                                  'เจ้าหน้าที่ รปภ.',
+                                );
                               } else {
-                                selectedCommonFacilities.add('เจ้าหน้าที่ รปภ.');
+                                selectedCommonFacilities.add(
+                                  'เจ้าหน้าที่ รปภ.',
+                                );
                               }
                             });
                           },

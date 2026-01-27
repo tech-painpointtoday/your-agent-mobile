@@ -32,13 +32,11 @@ class ChatListScreen extends StatelessWidget {
               style: GoogleFonts.anuphan(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: AppColors.eerieBlack,
+                color: AppColors.baseDarkGrey,
               ),
             ),
             const SizedBox(height: 24),
-            ...bookings.map(
-              (booking) => _buildChatCard(context, booking),
-            ),
+            ...bookings.map((booking) => _buildChatCard(context, booking)),
           ],
         ),
       ),

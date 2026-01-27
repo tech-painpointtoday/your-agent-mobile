@@ -142,13 +142,13 @@ class _LoginScreenState extends State<LoginScreen> with AuthLandingMixin {
     // Handle navigation after authentication events
     // Note: Router redirect will handle navigation automatically, so we don't navigate here
     // This prevents double navigation (router + manual navigation)
-    
+
     // Handle email not verified - redirect to verification pending screen
     if (state is EmailNotVerified && mounted) {
       context.go('/email-verification-pending?email=${state.email}');
       return;
     }
-    
+
     if (state is AuthError && mounted) {
       final l10n = AppLocalizations.of(context)!;
       await StatusDialog.showError(
@@ -178,16 +178,17 @@ class _LoginScreenState extends State<LoginScreen> with AuthLandingMixin {
     // Clear password field after successful login and check email verification
     if (state is Authenticated && mounted) {
       _passwordController.clear();
-      
+
       // Check if email is verified
       try {
         // Wait a bit for profile to be saved after login
         await Future.delayed(const Duration(milliseconds: 500));
-        
+
         // Fetch user profile to check email verification status
-        final userData = await DependencyInjection.authApiService.getCurrentUser();
+        final userData = await DependencyInjection.authApiService
+            .getCurrentUser();
         final userProfile = UserProfileModel.fromJson(userData);
-        
+
         // If email is not verified, redirect to email verification pending screen
         if (!userProfile.isEmailVerified && mounted) {
           final email = _emailController.text.trim();
@@ -302,7 +303,7 @@ class _LoginScreenState extends State<LoginScreen> with AuthLandingMixin {
                             style: GoogleFonts.anuphan(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.eerieBlack,
+                              color: AppColors.baseDarkGrey,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -481,7 +482,8 @@ class _LoginScreenState extends State<LoginScreen> with AuthLandingMixin {
                                                   .textTheme
                                                   .titleSmall
                                                   ?.copyWith(
-                                                    color: AppColors.eerieBlack,
+                                                    color:
+                                                        AppColors.baseDarkGrey,
                                                   ),
                                             ),
                                           ],
@@ -644,7 +646,7 @@ class _LoginScreenState extends State<LoginScreen> with AuthLandingMixin {
                                   //     onPressed: _handleDebugLogin,
                                   //     style: OutlinedButton.styleFrom(
                                   //       side: const BorderSide(
-                                  //         color: AppColors.gray400,
+                                  //         color: AppColors.baseGrey,
                                   //       ),
                                   //       shape: RoundedRectangleBorder(
                                   //         borderRadius: BorderRadius.circular(
@@ -661,7 +663,7 @@ class _LoginScreenState extends State<LoginScreen> with AuthLandingMixin {
                                   //         style: GoogleFonts.anuphan(
                                   //           fontSize: 14,
                                   //           fontWeight: FontWeight.w500,
-                                  //           color: AppColors.gray600,
+                                  //           color: AppColors.baseDarkGrey,
                                   //         ),
                                   //       ),
                                   //     ),

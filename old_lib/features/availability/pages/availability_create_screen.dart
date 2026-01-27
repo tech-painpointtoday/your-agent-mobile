@@ -18,7 +18,8 @@ class AvailabilityCreateScreen extends StatefulWidget {
   const AvailabilityCreateScreen({super.key, required this.changeLocale});
 
   @override
-  State<AvailabilityCreateScreen> createState() => _AvailabilityCreateScreenState();
+  State<AvailabilityCreateScreen> createState() =>
+      _AvailabilityCreateScreenState();
 }
 
 class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
@@ -74,7 +75,9 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
   Future<void> _selectTime(BuildContext context, bool isStartTime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: isStartTime ? const TimeOfDay(hour: 8, minute: 0) : const TimeOfDay(hour: 18, minute: 0),
+      initialTime: isStartTime
+          ? const TimeOfDay(hour: 8, minute: 0)
+          : const TimeOfDay(hour: 18, minute: 0),
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
@@ -82,7 +85,9 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
             data: Theme.of(context).copyWith(
               timePickerTheme: TimePickerThemeData(
                 backgroundColor: Colors.white,
-                hourMinuteShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                hourMinuteShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 dayPeriodBorderSide: BorderSide.none,
               ),
             ),
@@ -115,7 +120,9 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
       if (endMinutes <= startMinutes) {
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.end_time_must_be_after_start_time)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.end_time_must_be_after_start_time)),
+          );
         }
         return;
       }
@@ -124,14 +131,24 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
     if (_selectedDate != null && _endTime != null) {
       final now = DateTime.now();
       final isToday =
-          _selectedDate!.year == now.year && _selectedDate!.month == now.month && _selectedDate!.day == now.day;
+          _selectedDate!.year == now.year &&
+          _selectedDate!.month == now.month &&
+          _selectedDate!.day == now.day;
       if (isToday) {
-        final endDateTime = DateTime(now.year, now.month, now.day, _endTime!.hour, _endTime!.minute);
+        final endDateTime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          _endTime!.hour,
+          _endTime!.minute,
+        );
         if (endDateTime.isBefore(now)) {
           if (mounted) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Time range must end in the future')));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Time range must end in the future'),
+              ),
+            );
           }
           return;
         }
@@ -149,7 +166,9 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.availability_created_success)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.availability_created_success)),
+        );
         context.pop();
       }
     } catch (e) {
@@ -168,7 +187,11 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
           errorMessage = ApiResponseService.getErrorMessage(e);
         }
 
-        StatusDialog.showError(context: context, title: l10n.error_creating_availability, message: errorMessage);
+        StatusDialog.showError(
+          context: context,
+          title: l10n.error_creating_availability,
+          message: errorMessage,
+        );
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -213,7 +236,7 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
                         style: GoogleFonts.anuphan(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.eerieBlack,
+                          color: AppColors.baseDarkGrey,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -226,10 +249,14 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
                           onTap: () => _selectDate(context),
                           decoration: InputDecoration(
                             hintText: 'DD MM YYYY',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                             suffixIcon: const Icon(Icons.calendar_today),
                           ),
-                          validator: (value) => value?.isEmpty ?? true ? l10n.this_field_required : null,
+                          validator: (value) => value?.isEmpty ?? true
+                              ? l10n.this_field_required
+                              : null,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -237,9 +264,13 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
                       isDesktop
                           ? Row(
                               children: [
-                                Expanded(child: _buildTimeField(context, l10n, true)),
+                                Expanded(
+                                  child: _buildTimeField(context, l10n, true),
+                                ),
                                 const SizedBox(width: 16),
-                                Expanded(child: _buildTimeField(context, l10n, false)),
+                                Expanded(
+                                  child: _buildTimeField(context, l10n, false),
+                                ),
                               ],
                             )
                           : Column(
@@ -270,14 +301,21 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.anuphan(fontSize: 14, fontWeight: FontWeight.w500)),
+        Text(
+          label,
+          style: GoogleFonts.anuphan(fontSize: 14, fontWeight: FontWeight.w500),
+        ),
         const SizedBox(height: 8),
         child,
       ],
     );
   }
 
-  Widget _buildTimeField(BuildContext context, AppLocalizations l10n, bool isStartTime) {
+  Widget _buildTimeField(
+    BuildContext context,
+    AppLocalizations l10n,
+    bool isStartTime,
+  ) {
     return _buildFormField(
       label: '${isStartTime ? l10n.start_time : l10n.end_time} *',
       child: TextFormField(
@@ -289,7 +327,8 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           suffixIcon: const Icon(Icons.access_time),
         ),
-        validator: (value) => value?.isEmpty ?? true ? l10n.this_field_required : null,
+        validator: (value) =>
+            value?.isEmpty ?? true ? l10n.this_field_required : null,
       ),
     );
   }
@@ -297,17 +336,28 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
   Widget _buildTipsSection(BuildContext context, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: AppColors.blue100, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(
+        color: AppColors.blue100,
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.info_outline, color: AppColors.blue600, size: 18),
+              const Icon(
+                Icons.info_outline,
+                color: AppColors.blue600,
+                size: 18,
+              ),
               const SizedBox(width: 8),
               Text(
                 l10n.availability_tips_title,
-                style: GoogleFonts.anuphan(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.blue600),
+                style: GoogleFonts.anuphan(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.blue600,
+                ),
               ),
             ],
           ),
@@ -329,19 +379,32 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
         children: [
           const Text('• ', style: TextStyle(color: AppColors.blue600)),
           Expanded(
-            child: Text(text, style: GoogleFonts.anuphan(fontSize: 13, color: AppColors.blue600)),
+            child: Text(
+              text,
+              style: GoogleFonts.anuphan(
+                fontSize: 13,
+                color: AppColors.blue600,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, AppLocalizations l10n, bool isDesktop) {
+  Widget _buildActionButtons(
+    BuildContext context,
+    AppLocalizations l10n,
+    bool isDesktop,
+  ) {
     return isDesktop
         ? Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              OutlinedButton(onPressed: _isSubmitting ? null : () => context.pop(), child: Text(l10n.cancel)),
+              OutlinedButton(
+                onPressed: _isSubmitting ? null : () => context.pop(),
+                child: Text(l10n.cancel),
+              ),
               const SizedBox(width: 12),
               ElevatedButton(
                 onPressed: _isSubmitting ? null : _submitForm,
@@ -353,7 +416,10 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
                     : Text(l10n.create_time_slot),
               ),
@@ -374,7 +440,10 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
                       ? const SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
                       : Text(l10n.create_time_slot),
                 ),
@@ -382,7 +451,10 @@ class _AvailabilityCreateScreenState extends State<AvailabilityCreateScreen> {
               const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
-                child: OutlinedButton(onPressed: _isSubmitting ? null : () => context.pop(), child: Text(l10n.cancel)),
+                child: OutlinedButton(
+                  onPressed: _isSubmitting ? null : () => context.pop(),
+                  child: Text(l10n.cancel),
+                ),
               ),
             ],
           );

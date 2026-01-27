@@ -49,7 +49,7 @@ class AppImageUploadWidget extends StatelessWidget {
             instructionText!,
             style: GoogleFonts.anuphan(
               fontSize: 14,
-              color: AppColors.shadyLady,
+              color: AppColors.baseDarkGrey,
             ),
           ),
           const SizedBox(height: 16),
@@ -126,7 +126,7 @@ class AppImageUploadWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.anuphan(
                     fontSize: 12,
-                    color: AppColors.shadyLady,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
               ],
@@ -162,7 +162,7 @@ class AppImageUploadWidget extends StatelessWidget {
                   imageUrl: imageUrl,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
-                    color: AppColors.bonJour,
+                    color: AppColors.basePaleGrey,
                     child: Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
@@ -172,7 +172,7 @@ class AppImageUploadWidget extends StatelessWidget {
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
-                    color: AppColors.bonJour,
+                    color: AppColors.basePaleGrey,
                     child: const Icon(Icons.error),
                   ),
                 ),
@@ -330,7 +330,7 @@ class AppImageUploadWidget extends StatelessWidget {
                             child: const Icon(
                               Icons.close,
                               size: 14,
-                              color: AppColors.eerieBlack,
+                              color: AppColors.baseDarkGrey,
                             ),
                           ),
                         ),
@@ -349,7 +349,7 @@ class AppImageUploadWidget extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.grayBorder),
+              border: Border.all(color: AppColors.baseGrey),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -357,14 +357,14 @@ class AppImageUploadWidget extends StatelessWidget {
                 Icon(
                   Icons.image_not_supported_outlined,
                   size: 24,
-                  color: AppColors.gray300,
+                  color: AppColors.baseLightGrey,
                 ),
                 const SizedBox(width: 8),
                 Text(
                   emptyStateMessage ?? 'ไม่มีรูปภาพแนบ',
                   style: GoogleFonts.anuphan(
                     fontSize: 14,
-                    color: AppColors.shadyLady,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
               ],

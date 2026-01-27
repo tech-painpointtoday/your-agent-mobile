@@ -15,7 +15,7 @@ class DashboardScreen extends StatelessWidget {
         title: Text('Dashboard (${role.name})'),
         backgroundColor: AppColors.white,
         elevation: 0,
-        foregroundColor: AppColors.eerieBlack,
+        foregroundColor: AppColors.baseDarkGrey,
       ),
       body: Center(
         child: Text(

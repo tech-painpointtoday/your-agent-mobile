@@ -66,7 +66,10 @@ class _AppGenericTableState<T> extends State<AppGenericTable<T>> {
           padding: const EdgeInsets.all(48.0),
           child: Text(
             widget.emptyMessage,
-            style: GoogleFonts.anuphan(fontSize: 16, color: AppColors.gray500),
+            style: GoogleFonts.anuphan(
+              fontSize: 16,
+              color: AppColors.baseDarkGrey,
+            ),
           ),
         ),
       );
@@ -180,7 +183,7 @@ class _AppGenericTableState<T> extends State<AppGenericTable<T>> {
                               style: GoogleFonts.anuphan(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.eerieBlack,
+                                color: AppColors.baseDarkGrey,
                               ),
                             ),
                           ),

@@ -1,68 +1,77 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const primary = Color(0xFF1743C7);
-  static const primaryHover = Color(0xFF0F2E9E);
+  // ==========================================
+  // 1. Core Styles (Direct from Figma :root)
+  // ==========================================
 
-  // Base
-  static const white = Color(0xFFFFFFFF);
-  static const black = Color(0xFF000000);
+  // Base colors
+  static const baseWhite = Color(0xFFFFFFFF);
+  static const baseOffWhite = Color(0xFFFAFAFA);
+  static const basePaleGrey = Color(0xFFF5F5F5);
+  static const baseLightGrey = Color(0xFFE9EAEB);
+  static const baseGrey = Color(0xFFA4A7AE);
+  static const baseDarkGrey = Color(0xFF717680);
+  static const baseBlack = Color(0xFF181D27);
 
-  // Gray scale
-  static const gray50 = Color(0xFFFAFAFA);
-  static const gray100 = Color(0xFFF5F5F5);
-  static const gray200 = Color(0xFFE9EAE8);
-  static const gray300 = Color(0xFFD5D7DA);
-  static const gray400 = Color(0xFFA4A7AE);
-  static const gray500 = Color(0xFF717680);
-  static const gray600 = Color(0xFF535862);
-  static const gray700 = Color(0xFF414651);
-  static const gray800 = Color(0xFF2D2F34);
-  static const gray900 = Color(0xFF1C1C1C);
-  static const grayBorder = Color(0xFFE9EAEB);
+  // Brand colors
+  static const brandBlue = Color(0xFF1743C7);
+  static const brandDarkBlue = Color(0xFF0028A2);
+  static const brandGreen = Color(0xFF32A792);
+  static const brandLightGreen = Color(0xFFEAFAF7);
 
-  // Ruby/Red shades
-  static const ruby500 = Color(0xFFDC2626);
+  // Support colors
+  static const supportRedDeep = Color(0xFFD61204);
+  static const supportRedDark = Color(0xFFF04437);
+  static const supportRedLight = Color(0xFFFFECEC);
+  static const supportGreenDark = Color(0xFF3FBE59);
+  static const supportGreenLight = Color(0xFFE8FCEC);
+  static const supportOrangeDark = Color(0xFFFA7C2E);
+  static const supportOrangeLight = Color(0xFFFFF6E8);
+  static const supportBlueDeep = Color(0xFF175CD3);
+  static const supportBlueDark = Color(0xFF2E90FA);
+  static const supportBlueLight = Color(0xFFEFF8FF);
 
-  // Blue shades
-  static const blue100 = Color(0xFFE5F0FF);
+  // ==========================================
+  // 2. Primary & Semantic Aliases (เรียกใช้ใน App)
+  // ==========================================
 
-  // Card label colors
-  static const cardLabelPrimary = Color(0xFF1C1C1C);
-  static const cardLabelSecondary = Color(0xFFA9A9A9);
+  // Primary Mapping (ตามที่คุณต้องการ)
+  static const primary = brandBlue; // #1743C7
+  static const primaryHover = brandDarkBlue; // #0028A2
+  static const primaryLight = supportBlueLight;
 
-  // Semantic
-  static const success600 = Color(0xFF16B364);
-  static const error600 = Color(0xFFD92D20);
-  static const warning600 = Color(0xFFDC6803);
-  static const blue600 = Color(0xFF2563EB);
+  // Secondary / Alternative
+  static const secondary = brandGreen;
+  static const secondaryLight = brandLightGreen;
 
-  // Status card backgrounds (for alerts)
-  static const statusSuccessBg = Color(0xFFECFDF3);
-  static const statusErrorBg = Color(0xFFFEF3F2);
-  static const statusWarningBg = Color(0xFFFFFAEB);
+  // Gray Aliases (เพื่อให้ Code เดิมไม่พัง) - All mapped to base colors
+  // static const basePaleGrey = baseOffWhite;
+  // static const basePaleGrey = basePaleGrey;
+  // static const baseLightGrey = baseLightGrey;
+  // static const baseLightGrey = baseLightGrey; // Map to baseLightGrey
+  // static const baseGrey = baseGrey;
+  // static const baseDarkGrey = baseDarkGrey;
+  // static const gray600 = baseDarkGrey; // Map to baseDarkGrey
+  // static const baseDarkGrey = baseDarkGrey; // Map to baseDarkGrey
+  // static const gray800 = baseBlack; // Map to baseBlack
+  // static const baseDarkGrey = baseBlack; // Map to baseBlack
+  static const black = baseBlack;
+  static const white = baseWhite;
 
-  // Existing aliases used in old screens
-  static const alizarinCrimson = Color(0xFFE03121);
-  static const bonJour = Color(0xFFE1E1E1);
-  static const eerieBlack = Color(0xFF1C1C1C);
-  static const jungleGreen = Color(0xFF32A792);
-  static const shadyLady = Color(0xFFA9A9A9);
-  static const wildSand = Color(0xFFF3F3F3);
-
-  // Mobile auth UI helpers (from design)
-  static const buttonLightGreen = Color(0x297DE1CF); // #7de1cf29
-  static const buttonBorderGray = Color(0xFFE9E9EB);
-  static const disabledBg = Color(0xFFE9E9EB);
-  static const disabledText = Color(0xFFD5D6D9);
-
-  // Button colors (shared across app)
+  // Button aliases (for backward compatibility)
   static const buttonPrimary = primary;
-  static const buttonPrimaryHover = primaryHover;
-  static const buttonSecondary = jungleGreen;
-  static const buttonSecondaryHover = Color(0xFF2A8B7A);
-  static const buttonDisabledBg = gray50;
-  static const buttonDisabledText = Color(0xFFD5D6D9);
-  static const buttonTextDark = Color(0xFF181D27);
-  static const buttonGrayHover = Color(0xFFF5F5F5);
+  static const buttonSecondary = secondary;
+  static const buttonLightGreen = brandLightGreen;
+  static const buttonDisabledBg = basePaleGrey;
+  static const buttonDisabledText = baseGrey;
+  static const disabledBg = basePaleGrey;
+  static const disabledText = baseGrey;
+  static const jungleGreen = brandGreen;
+
+  // Status Aliases
+  static const success = supportGreenDark;
+  static const error = supportRedDark;
+  static const warning = supportOrangeDark;
+  static const info = supportBlueDark;
 }

@@ -17,7 +17,8 @@ class ContractsFilterSection extends StatefulWidget {
 }
 
 class _ContractsFilterSectionState extends State<ContractsFilterSection> {
-  final TextEditingController _contractNumberController = TextEditingController();
+  final TextEditingController _contractNumberController =
+      TextEditingController();
   final TextEditingController _propertyNameController = TextEditingController();
   final TextEditingController _lessorController = TextEditingController();
   final TextEditingController _lesseeController = TextEditingController();
@@ -46,41 +47,73 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
             final isMedium = constraints.maxWidth > 800;
 
             if (isWide) {
-              return _buildWideLayout(selectedStatus, selectedPropertyType, allContracts);
+              return _buildWideLayout(
+                selectedStatus,
+                selectedPropertyType,
+                allContracts,
+              );
             } else if (isMedium) {
-              return _buildMediumLayout(selectedStatus, selectedPropertyType, allContracts);
+              return _buildMediumLayout(
+                selectedStatus,
+                selectedPropertyType,
+                allContracts,
+              );
             }
-            return _buildNarrowLayout(selectedStatus, selectedPropertyType, allContracts);
+            return _buildNarrowLayout(
+              selectedStatus,
+              selectedPropertyType,
+              allContracts,
+            );
           },
         );
       },
     );
   }
 
-  Widget _buildWideLayout(ContractStatus? selectedStatus, String? selectedPropertyType, List<ContractModel> allContracts) {
+  Widget _buildWideLayout(
+    ContractStatus? selectedStatus,
+    String? selectedPropertyType,
+    List<ContractModel> allContracts,
+  ) {
     final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Row(
           children: [
-            Expanded(child: _buildTextField(_contractNumberController, l10n.search_contract_number)),
+            Expanded(
+              child: _buildTextField(
+                _contractNumberController,
+                l10n.search_contract_number,
+              ),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: _buildTextField(_propertyNameController, l10n.search_property_name)),
+            Expanded(
+              child: _buildTextField(
+                _propertyNameController,
+                l10n.search_property_name,
+              ),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: _buildTextField(_lessorController, l10n.search_lessor)),
+            Expanded(
+              child: _buildTextField(_lessorController, l10n.search_lessor),
+            ),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(child: _buildTextField(_lesseeController, l10n.search_lessee)),
+            Expanded(
+              child: _buildTextField(_lesseeController, l10n.search_lessee),
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: _buildStatusDropdown(
                 value: selectedStatus,
                 hint: l10n.select_contract_status,
                 onChanged: (value) {
-                  context.read<ContractsBloc>().add(ContractsFilterChanged(selectedStatus: value));
+                  context.read<ContractsBloc>().add(
+                    ContractsFilterChanged(selectedStatus: value),
+                  );
                 },
               ),
             ),
@@ -91,7 +124,9 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
                 hint: l10n.select_property_type_contract,
                 items: _getUniquePropertyTypes(allContracts),
                 onChanged: (value) {
-                  context.read<ContractsBloc>().add(ContractsFilterChanged(selectedPropertyType: value));
+                  context.read<ContractsBloc>().add(
+                    ContractsFilterChanged(selectedPropertyType: value),
+                  );
                 },
               ),
             ),
@@ -103,23 +138,41 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
     );
   }
 
-  Widget _buildMediumLayout(ContractStatus? selectedStatus, String? selectedPropertyType, List<ContractModel> allContracts) {
+  Widget _buildMediumLayout(
+    ContractStatus? selectedStatus,
+    String? selectedPropertyType,
+    List<ContractModel> allContracts,
+  ) {
     final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Row(
           children: [
-            Expanded(child: _buildTextField(_contractNumberController, l10n.search_contract_number)),
+            Expanded(
+              child: _buildTextField(
+                _contractNumberController,
+                l10n.search_contract_number,
+              ),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: _buildTextField(_propertyNameController, l10n.search_property_name)),
+            Expanded(
+              child: _buildTextField(
+                _propertyNameController,
+                l10n.search_property_name,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(child: _buildTextField(_lessorController, l10n.search_lessor)),
+            Expanded(
+              child: _buildTextField(_lessorController, l10n.search_lessor),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: _buildTextField(_lesseeController, l10n.search_lessee)),
+            Expanded(
+              child: _buildTextField(_lesseeController, l10n.search_lessee),
+            ),
           ],
         ),
         const SizedBox(height: 12),
@@ -130,7 +183,9 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
                 value: selectedStatus,
                 hint: l10n.select_contract_status,
                 onChanged: (value) {
-                  context.read<ContractsBloc>().add(ContractsFilterChanged(selectedStatus: value));
+                  context.read<ContractsBloc>().add(
+                    ContractsFilterChanged(selectedStatus: value),
+                  );
                 },
               ),
             ),
@@ -141,7 +196,9 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
                 hint: l10n.select_property_type_contract,
                 items: _getUniquePropertyTypes(allContracts),
                 onChanged: (value) {
-                  context.read<ContractsBloc>().add(ContractsFilterChanged(selectedPropertyType: value));
+                  context.read<ContractsBloc>().add(
+                    ContractsFilterChanged(selectedPropertyType: value),
+                  );
                 },
               ),
             ),
@@ -153,7 +210,11 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
     );
   }
 
-  Widget _buildNarrowLayout(ContractStatus? selectedStatus, String? selectedPropertyType, List<ContractModel> allContracts) {
+  Widget _buildNarrowLayout(
+    ContractStatus? selectedStatus,
+    String? selectedPropertyType,
+    List<ContractModel> allContracts,
+  ) {
     final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
@@ -169,7 +230,9 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
           value: selectedStatus,
           hint: l10n.select_contract_status,
           onChanged: (value) {
-            context.read<ContractsBloc>().add(ContractsFilterChanged(selectedStatus: value));
+            context.read<ContractsBloc>().add(
+              ContractsFilterChanged(selectedStatus: value),
+            );
           },
         ),
         const SizedBox(height: 12),
@@ -178,7 +241,9 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
           hint: l10n.select_property_type_contract,
           items: _getUniquePropertyTypes(allContracts),
           onChanged: (value) {
-            context.read<ContractsBloc>().add(ContractsFilterChanged(selectedPropertyType: value));
+            context.read<ContractsBloc>().add(
+              ContractsFilterChanged(selectedPropertyType: value),
+            );
           },
         ),
         const SizedBox(height: 16),
@@ -205,7 +270,10 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: AppColors.primary),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
       ),
     );
   }
@@ -230,7 +298,7 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
 
     final clearButton = AppButtons.outlined(
       label: l10n.clear_data,
-      icon: const Icon(Icons.clear, size: 20, color: AppColors.gray600),
+      icon: const Icon(Icons.clear, size: 20, color: AppColors.baseDarkGrey),
       iconPosition: IconPosition.start,
       color: ButtonColor.gray,
       onPressed: () {
@@ -277,7 +345,12 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
     required List<String> items,
     required Function(String?) onChanged,
   }) {
-    return AppDropdown<String>(value: value, hint: hint, items: items, onChanged: onChanged);
+    return AppDropdown<String>(
+      value: value,
+      hint: hint,
+      items: items,
+      onChanged: onChanged,
+    );
   }
 
   Widget _buildStatusDropdown({
@@ -296,7 +369,11 @@ class _ContractsFilterSectionState extends State<ContractsFilterSection> {
   }
 
   List<String> _getUniquePropertyTypes(List<ContractModel> allContracts) {
-    final propertyTypes = allContracts.map((c) => c.propertyType).whereType<String>().toSet().toList();
+    final propertyTypes = allContracts
+        .map((c) => c.propertyType)
+        .whereType<String>()
+        .toSet()
+        .toList();
     propertyTypes.sort();
     return propertyTypes;
   }
@@ -321,7 +398,7 @@ class _ContractStatusDropdownWrapper extends StatelessWidget {
     // Convert enum to display string for the dropdown
     final displayValue = value?.getLabel();
     final displayItems = items.map((status) => status.getLabel()).toList();
-    
+
     return AppDropdown<String>(
       value: displayValue,
       hint: hint,

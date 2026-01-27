@@ -34,15 +34,6 @@ class _LabeledPasswordFieldState extends State<LabeledPasswordField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: GoogleFonts.anuphan(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppColors.eerieBlack,
-          ),
-        ),
-        const SizedBox(height: 8),
         TextFormField(
           controller: widget.controller,
           obscureText: _obscureText,
@@ -57,14 +48,15 @@ class _LabeledPasswordFieldState extends State<LabeledPasswordField> {
   InputDecoration _buildInputDecoration() {
     return InputDecoration(
       hintText: widget.hintText ?? widget.label,
+      hintStyle: GoogleFonts.anuphan(color: AppColors.baseGrey),
       prefixIcon: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         child: SvgPicture.asset(
-          'assets/icons/key.svg',
-          width: 20,
-          height: 20,
+          'assets/icons/security-shield.svg',
+          width: 16,
+          height: 16,
           colorFilter: const ColorFilter.mode(
-            AppColors.shadyLady,
+            AppColors.primary,
             BlendMode.srcIn,
           ),
         ),
@@ -74,10 +66,10 @@ class _LabeledPasswordFieldState extends State<LabeledPasswordField> {
           _obscureText
               ? 'assets/icons/form/eye-off.svg'
               : 'assets/icons/form/eye.svg',
-          width: 20,
-          height: 20,
+          width: 16,
+          height: 16,
           colorFilter: const ColorFilter.mode(
-            AppColors.shadyLady,
+            AppColors.baseGrey,
             BlendMode.srcIn,
           ),
         ),
@@ -89,11 +81,15 @@ class _LabeledPasswordFieldState extends State<LabeledPasswordField> {
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.bonJour),
+        borderSide: const BorderSide(color: AppColors.baseGrey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.bonJour),
+        borderSide: const BorderSide(color: AppColors.baseGrey),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       filled: true,

@@ -122,7 +122,7 @@ class _PublicHeaderState extends State<PublicHeader> {
                                           l10n.app_title,
                                           style: GoogleFonts.anuphan(
                                             fontSize: logoFontSize,
-                                            color: AppColors.eerieBlack,
+                                            color: AppColors.baseDarkGrey,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -188,7 +188,7 @@ class _PublicHeaderState extends State<PublicHeader> {
                                       shortCode,
                                       style: GoogleFonts.anuphan(
                                         fontSize: buttonFontSize,
-                                        color: AppColors.eerieBlack,
+                                        color: AppColors.baseDarkGrey,
                                       ),
                                     ),
                                   );
@@ -219,7 +219,7 @@ class _PublicHeaderState extends State<PublicHeader> {
                                           shortCode,
                                           style: GoogleFonts.anuphan(
                                             fontSize: buttonFontSize,
-                                            color: AppColors.eerieBlack,
+                                            color: AppColors.baseDarkGrey,
                                           ),
                                         ),
                                       ],
@@ -266,7 +266,7 @@ class _PublicHeaderState extends State<PublicHeader> {
                                     _getRoleName(currentUser.role, l10n),
                                     style: GoogleFonts.anuphan(
                                       fontSize: buttonFontSize,
-                                      color: AppColors.eerieBlack,
+                                      color: AppColors.baseDarkGrey,
                                     ),
                                   ),
                                 ],
@@ -306,7 +306,7 @@ class _PublicHeaderState extends State<PublicHeader> {
                                       l10n.login,
                                       style: GoogleFonts.anuphan(
                                         fontSize: buttonFontSize,
-                                        color: AppColors.eerieBlack,
+                                        color: AppColors.baseDarkGrey,
                                       ),
                                     ),
                                   ],

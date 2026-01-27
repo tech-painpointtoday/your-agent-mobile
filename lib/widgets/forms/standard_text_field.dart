@@ -63,26 +63,26 @@ class StandardTextField extends StatelessWidget {
               },
           onChanged: onChanged,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: isReadOnly ? AppColors.gray600 : AppColors.gray900,
+            color: isReadOnly ? AppColors.baseDarkGrey : AppColors.baseDarkGrey,
           ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: Theme.of(
               context,
-            ).textTheme.bodyMedium?.copyWith(color: AppColors.gray400),
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.baseGrey),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 12,
             ),
             filled: true,
-            fillColor: isReadOnly ? AppColors.gray50 : AppColors.white,
+            fillColor: isReadOnly ? AppColors.basePaleGrey : AppColors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -90,11 +90,11 @@ class StandardTextField extends StatelessWidget {
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.error600),
+              borderSide: const BorderSide(color: AppColors.supportRedDeep),
             ),
             suffixIcon: suffixIcon,
             suffix: suffix != null
@@ -103,7 +103,7 @@ class StandardTextField extends StatelessWidget {
                     child: Text(
                       suffix!,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.gray600,
+                        color: AppColors.baseDarkGrey,
                       ),
                     ),
                   )

@@ -23,24 +23,24 @@ class AppColors {
 
   // Gray scale
   static const gray25 = Color(0xFFFDFDFD);
-  static const gray50 = Color(0xFFFAFAFA);
-  static const gray100 = Color(0xFFF5F5F5);
-  static const gray200 = Color(0xFFE9EAE8);
-  static const gray300 = Color(0xFFD5D7DA);
-  static const gray400 = Color(0xFFA4A7AE);
-  static const gray500 = Color(0xFF717680);
-  static const gray600 = Color(0xFF535862);
-  static const gray700 = Color(0xFF414651);
+  static const basePaleGrey = Color(0xFFFAFAFA);
+  static const basePaleGrey = Color(0xFFF5F5F5);
+  static const baseLightGrey = Color(0xFFE9EAE8);
+  static const baseLightGrey = Color(0xFFD5D7DA);
+  static const baseGrey = Color(0xFFA4A7AE);
+  static const baseDarkGrey = Color(0xFF717680);
+  static const baseDarkGrey = Color(0xFF535862);
+  static const baseDarkGrey = Color(0xFF414651);
   static const gray800 = Color(0xFF252B37);
-  static const gray900 = Color(0xFF101828);
+  static const baseDarkGrey = Color(0xFF101828);
 
-  static const grayBorder = Color(0xFFE9EAEB);
+  static const baseGrey = Color(0xFFE9EAEB);
 
   // Error Red
-  static const error600 = Color(0xFFD92D20);
+  static const supportRedDeep = Color(0xFFD92D20);
 
   // Warning Orange
-  static const warning600 = Color(0xFFDC6803);
+  static const warning = Color(0xFFDC6803);
 
   // Success Green
   static const success600 = Color(0xFF16B364);
@@ -88,7 +88,7 @@ class AppColors {
     0x297DE1CF,
   ); // #7de1cf29 (with transparency)
   static const buttonBorderGray = Color(0xFFE9E9EB);
-  static const buttonDisabledBg = gray50; // #fafafa
+  static const buttonDisabledBg = basePaleGrey; // #fafafa
   static const buttonDisabledText = Color(0xFFD5D6D9);
   static const buttonTextDark = Color(0xFF181D27);
   static const buttonGrayHover = Color(0xFFF5F5F5); // Light gray for hover
@@ -102,14 +102,14 @@ class AppColors {
 
   // Card Label Colors
   static const cardLabelPrimary = Color(0xFF181D27);
-  static const cardLabelSecondary = gray400; // #A4A7AE
+  static const cardLabelSecondary = baseGrey; // #A4A7AE
 
   // Avatar Label Colors
   static const avatarLabelPrimary = Color(0xFF181D27);
-  static const avatarLabelSecondary = gray500; // #717680
+  static const avatarLabelSecondary = baseDarkGrey; // #717680
 
   // Base Label Colors
-  static const baseLabelSecondary = gray500; // #717680
+  static const baseLabelSecondary = baseDarkGrey; // #717680
 
   // Status Badge Colors
   // Pending
@@ -122,7 +122,7 @@ class AppColors {
   static const statusCancelledBg = Color(0xFFFEF3F2);
   static const statusCancelledText = Color(0xFFB42318);
   // Status card text colors
-  static const statusCardTextActive = eerieBlack; // For confirmed status
+  static const statusCardTextActive = baseDarkGrey; // For confirmed status
   static const statusCardTextInactive = Color(
     0xFF717680,
   ); // For pending/cancelled
@@ -131,7 +131,7 @@ class AppColors {
   static const alizarinCrimson = ruby500;
   static const bonJour = Color(0xFFE1E1E1);
   static const crowshead = Color(0xFF1A0F0A);
-  static const eerieBlack = Color(0xFF1C1C1C);
+  static const baseDarkGrey = Color(0xFF1C1C1C);
   static const jungleGreen = emerald500;
   static const shadyLady = Color(0xFFA9A9A9);
   static const wildSand = Color(0xFFF3F3F3);

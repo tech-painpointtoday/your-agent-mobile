@@ -115,7 +115,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
                             title,
                             style: theme.textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.w600,
-                              color: AppColors.eerieBlack,
+                              color: AppColors.baseDarkGrey,
                             ),
                           ),
                           _SortDropdown(
@@ -222,7 +222,7 @@ class _CircleNavButton extends StatelessWidget {
           width: 48,
           height: 48,
           child: Center(
-            child: Icon(icon, size: 22, color: AppColors.eerieBlack),
+            child: Icon(icon, size: 22, color: AppColors.baseDarkGrey),
           ),
         ),
       ),
@@ -275,7 +275,7 @@ class _SortDropdown extends StatelessWidget {
               _label(value),
               style: Theme.of(
                 context,
-              ).textTheme.bodySmall?.copyWith(color: AppColors.eerieBlack),
+              ).textTheme.bodySmall?.copyWith(color: AppColors.baseDarkGrey),
             ),
             const SizedBox(width: 12),
             const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
@@ -389,7 +389,7 @@ class _BookingCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.headlineSmall?.copyWith(
-                            color: AppColors.eerieBlack,
+                            color: AppColors.baseDarkGrey,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

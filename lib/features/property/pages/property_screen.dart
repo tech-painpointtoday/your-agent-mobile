@@ -300,7 +300,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                 child: Text(
                   'ดูทั้งหมด',
                   style: GoogleFonts.anuphan(
-                    color: AppColors.gray400,
+                    color: AppColors.baseGrey,
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                     decoration: TextDecoration.underline,
@@ -317,7 +317,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                     child: Text(
                       'ไม่พบทรัพย์ที่ค้นหา',
                       style: GoogleFonts.anuphan(
-                        color: AppColors.gray400,
+                        color: AppColors.baseGrey,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),

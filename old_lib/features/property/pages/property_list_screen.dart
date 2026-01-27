@@ -106,7 +106,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
 
           return Scaffold(
             key: scaffoldKey,
-            backgroundColor: AppColors.gray100,
+            backgroundColor: AppColors.basePaleGrey,
             drawer: isMobile
                 ? Drawer(
                     child: AppSidebar(
@@ -153,7 +153,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                                         style: GoogleFonts.anuphan(
                                           fontSize: 28,
                                           fontWeight: FontWeight.bold,
-                                          color: AppColors.eerieBlack,
+                                          color: AppColors.baseDarkGrey,
                                         ),
                                       ),
                                     ),
@@ -176,7 +176,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                                           _FilterSection(),
                                           const SizedBox(height: 24),
                                           Divider(
-                                            color: AppColors.gray200,
+                                            color: AppColors.baseLightGrey,
                                             height: 1,
                                           ),
                                           const SizedBox(height: 24),
@@ -232,7 +232,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
           style: GoogleFonts.anuphan(
             fontSize: 14,
             fontWeight: FontWeight.w400,
-            color: AppColors.gray500,
+            color: AppColors.baseDarkGrey,
           ),
         ),
         Row(
@@ -262,10 +262,14 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
               icon: const Icon(Icons.add, size: 20),
               iconPosition: IconPosition.start,
               onPressed: () async {
-                final result = await context.push('/${userRole.name}/properties/create');
+                final result = await context.push(
+                  '/${userRole.name}/properties/create',
+                );
                 // If create was successful, refresh the property list
                 if (result == true && mounted) {
-                  context.read<PropertiesBloc>().add(const PropertiesLoadRequested());
+                  context.read<PropertiesBloc>().add(
+                    const PropertiesLoadRequested(),
+                  );
                 }
               },
             ),
@@ -503,7 +507,7 @@ class _FilterSectionState extends State<_FilterSection> {
                           decoration: InputDecoration(
                             hintText: 'ค้นหาชื่ออสังหาฯ',
                             hintStyle: GoogleFonts.anuphan(
-                              color: AppColors.gray500,
+                              color: AppColors.baseDarkGrey,
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -603,7 +607,7 @@ class _FilterSectionState extends State<_FilterSection> {
                               decoration: InputDecoration(
                                 hintText: 'ค้นหาชื่ออสังหาฯ',
                                 hintStyle: GoogleFonts.anuphan(
-                                  color: AppColors.gray500,
+                                  color: AppColors.baseDarkGrey,
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -707,7 +711,7 @@ class _FilterSectionState extends State<_FilterSection> {
                         decoration: InputDecoration(
                           hintText: 'ค้นหาชื่ออสังหาฯ',
                           hintStyle: GoogleFonts.anuphan(
-                            color: AppColors.gray500,
+                            color: AppColors.baseDarkGrey,
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -810,7 +814,7 @@ class _FilterSectionState extends State<_FilterSection> {
                             icon: const Icon(
                               Icons.clear,
                               size: 20,
-                              color: AppColors.gray600,
+                              color: AppColors.baseDarkGrey,
                             ),
                             iconPosition: IconPosition.start,
                             color: ButtonColor.gray,
@@ -857,7 +861,7 @@ class _FilterSectionState extends State<_FilterSection> {
                                   icon: const Icon(
                                     Icons.clear,
                                     size: 20,
-                                    color: AppColors.gray600,
+                                    color: AppColors.baseDarkGrey,
                                   ),
                                   iconPosition: IconPosition.start,
                                   color: ButtonColor.gray,
@@ -938,9 +942,7 @@ class _PropertyActionsRow extends StatelessWidget {
                   debugPrint(
                     'PropertyActionsRow: Navigating to property detail with ID: $propertyId',
                   );
-                  context.push(
-                    '/${role.name}/properties/$propertyId',
-                  );
+                  context.push('/${role.name}/properties/$propertyId');
                 }
               : null,
         ),
@@ -957,7 +959,9 @@ class _PropertyActionsRow extends StatelessWidget {
                   );
                   // If edit was successful, refresh the property list
                   if (result == true && context.mounted) {
-                    context.read<PropertiesBloc>().add(const PropertiesLoadRequested());
+                    context.read<PropertiesBloc>().add(
+                      const PropertiesLoadRequested(),
+                    );
                   }
                 }
               : null,
@@ -1076,7 +1080,7 @@ class _TableContent extends StatelessWidget {
                   : 'N/A',
               style: GoogleFonts.anuphan(
                 fontSize: 14,
-                color: AppColors.eerieBlack,
+                color: AppColors.baseDarkGrey,
               ),
             ),
           ),
@@ -1087,7 +1091,7 @@ class _TableContent extends StatelessWidget {
                 property.name,
                 style: GoogleFonts.anuphan(
                   fontSize: 14,
-                  color: AppColors.eerieBlack,
+                  color: AppColors.baseDarkGrey,
                 ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -1101,7 +1105,7 @@ class _TableContent extends StatelessWidget {
               propertyTypeThai,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
-                color: AppColors.eerieBlack,
+                color: AppColors.baseDarkGrey,
               ),
             ),
           ),
@@ -1111,7 +1115,7 @@ class _TableContent extends StatelessWidget {
               district,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
-                color: AppColors.eerieBlack,
+                color: AppColors.baseDarkGrey,
               ),
             ),
           ),
@@ -1120,7 +1124,7 @@ class _TableContent extends StatelessWidget {
               province,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
-                color: AppColors.eerieBlack,
+                color: AppColors.baseDarkGrey,
               ),
             ),
           ),
@@ -1129,7 +1133,7 @@ class _TableContent extends StatelessWidget {
               _formatThaiDate(createdDate),
               style: GoogleFonts.anuphan(
                 fontSize: 14,
-                color: AppColors.eerieBlack,
+                color: AppColors.baseDarkGrey,
               ),
             ),
           ),
@@ -1138,7 +1142,7 @@ class _TableContent extends StatelessWidget {
       actionsBuilder: (property, index) {
         // Capture property ID immediately in the builder to avoid closure issues
         final capturedPropertyId = property.id;
-        
+
         // Create a separate widget instance for each row to avoid closure issues
         // Use a key based on property ID to ensure each row gets its own widget instance
         // Pass propertyId directly instead of the whole property object
@@ -1157,7 +1161,7 @@ class _TableContent extends StatelessWidget {
       style: GoogleFonts.anuphan(
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        color: AppColors.eerieBlack,
+        color: AppColors.baseDarkGrey,
       ),
     );
   }
@@ -1168,7 +1172,7 @@ class _TableContent extends StatelessWidget {
       children: [
         _buildHeader(label),
         const SizedBox(width: 4),
-        Icon(Icons.swap_vert, size: 16, color: AppColors.gray500),
+        Icon(Icons.swap_vert, size: 16, color: AppColors.baseDarkGrey),
       ],
     );
   }

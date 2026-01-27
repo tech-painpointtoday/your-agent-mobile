@@ -456,23 +456,23 @@ class _AddressLocationSectionState extends State<AddressLocationSection> {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: AppColors.grayBorder),
+                  borderSide: BorderSide(color: AppColors.baseGrey),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: AppColors.grayBorder),
+                  borderSide: BorderSide(color: AppColors.baseGrey),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
                     color: widget.isReadOnly
-                        ? AppColors.grayBorder
+                        ? AppColors.baseGrey
                         : AppColors.primary,
                   ),
                 ),
                 disabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: AppColors.grayBorder),
+                  borderSide: BorderSide(color: AppColors.baseGrey),
                 ),
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
@@ -485,8 +485,8 @@ class _AddressLocationSectionState extends State<AddressLocationSection> {
                   Icons.keyboard_arrow_down,
                   size: 20,
                   color: widget.isReadOnly
-                      ? AppColors.gray400
-                      : AppColors.gray600,
+                      ? AppColors.baseGrey
+                      : AppColors.baseDarkGrey,
                 ),
               ),
             );
@@ -557,7 +557,10 @@ class _AddressLocationSectionState extends State<AddressLocationSection> {
             return Container(
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: AppColors.gray200, width: 0.5),
+                  bottom: BorderSide(
+                    color: AppColors.baseLightGrey,
+                    width: 0.5,
+                  ),
                 ),
               ),
               child: ListTile(
@@ -572,7 +575,7 @@ class _AddressLocationSectionState extends State<AddressLocationSection> {
                 ),
                 subtitle: Text(
                   '${suggestion['amphoe']} › ${suggestion['province']} › ${suggestion['zipcode']}',
-                  style: TextStyle(fontSize: 11, color: AppColors.gray400),
+                  style: TextStyle(fontSize: 11, color: AppColors.baseGrey),
                 ),
               ),
             );

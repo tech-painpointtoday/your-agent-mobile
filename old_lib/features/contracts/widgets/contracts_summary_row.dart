@@ -28,7 +28,7 @@ class ContractsSummaryRow extends StatelessWidget {
           style: GoogleFonts.anuphan(
             fontSize: 14,
             fontWeight: FontWeight.w400,
-            color: AppColors.gray500,
+            color: AppColors.baseDarkGrey,
           ),
         ),
         // // Create Contract Button

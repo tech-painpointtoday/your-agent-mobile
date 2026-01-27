@@ -30,12 +30,12 @@ class AppButton extends StatelessWidget {
       AppButtonStyle.primary =>
         enabled ? AppColors.buttonPrimary : AppColors.buttonDisabledBg,
       AppButtonStyle.destructive =>
-        enabled ? AppColors.error600 : AppColors.buttonDisabledBg,
+        enabled ? AppColors.supportRedDeep : AppColors.buttonDisabledBg,
       AppButtonStyle.outline => Colors.white,
     };
 
     final Color textColor = style == AppButtonStyle.outline
-        ? (enabled ? AppColors.gray500 : AppColors.buttonDisabledText)
+        ? (enabled ? AppColors.baseDarkGrey : AppColors.buttonDisabledText)
         : Colors.white;
 
     return SizedBox(
@@ -52,7 +52,9 @@ class AppButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             side: style == AppButtonStyle.outline
                 ? BorderSide(
-                    color: enabled ? AppColors.gray300 : AppColors.gray200,
+                    color: enabled
+                        ? AppColors.baseLightGrey
+                        : AppColors.baseLightGrey,
                     width: 1,
                   )
                 : BorderSide.none,

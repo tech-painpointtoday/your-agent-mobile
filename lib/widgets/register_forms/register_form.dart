@@ -24,6 +24,7 @@ class RegisterForm extends StatefulWidget {
   final bool privacyAccepted;
   final ValueChanged<bool> onTermsChanged;
   final ValueChanged<bool> onPrivacyChanged;
+  final bool isLoading;
 
   const RegisterForm({
     super.key,
@@ -40,6 +41,7 @@ class RegisterForm extends StatefulWidget {
     required this.privacyAccepted,
     required this.onTermsChanged,
     required this.onPrivacyChanged,
+    this.isLoading = false,
   });
 
   @override
@@ -65,13 +67,13 @@ class _RegisterFormState extends State<RegisterForm> {
           LabeledTextFormField(
             label: l10n.full_name_hint,
             controller: widget.nameController,
-            prefixIcon: Icons.person_outline,
+            prefixIconSvg: 'assets/icons/user.svg',
             validator: (v) => (v == null || v.isEmpty) ? l10n.enter_name : null,
           ),
           LabeledTextFormField(
             label: l10n.email,
             controller: widget.emailController,
-            prefixIcon: Icons.email_outlined,
+            prefixIconSvg: 'assets/icons/email.svg',
             keyboardType: TextInputType.emailAddress,
             validator: (v) {
               if (v == null || v.isEmpty) return l10n.enter_email;
@@ -82,7 +84,7 @@ class _RegisterFormState extends State<RegisterForm> {
           LabeledTextFormField(
             label: l10n.phone_number,
             controller: widget.phoneController,
-            prefixIcon: Icons.phone_outlined,
+            prefixIconSvg: 'assets/icons/phone.svg',
             keyboardType: TextInputType.phone,
             validator: (v) => (v == null || v.isEmpty)
                 ? 'กรุณากรอก${l10n.phone_number}'
@@ -91,7 +93,7 @@ class _RegisterFormState extends State<RegisterForm> {
           LabeledDropdownField<String>(
             label: l10n.business_type_hint,
             value: _selectedBusinessType,
-            prefixIcon: Icons.business_center_outlined,
+            prefixIconSvg: 'assets/icons/briefcase.svg',
             items: [
               DropdownMenuItem(
                 value: 'Real Estate Agency',
@@ -123,7 +125,7 @@ class _RegisterFormState extends State<RegisterForm> {
             LabeledTextFormField(
               label: l10n.company_name_hint,
               controller: widget.companyController,
-              prefixIcon: Icons.apartment_outlined,
+              prefixIconSvg: 'assets/icons/building.svg',
               validator: (v) {
                 if (_selectedBusinessType != 'Independent Agent') {
                   if (v == null || v.isEmpty) return l10n.enter_company_name;
@@ -146,8 +148,9 @@ class _RegisterFormState extends State<RegisterForm> {
             compareController: widget.passwordController,
             validator: (v) {
               if (v == null || v.isEmpty) return l10n.enter_confirm_password;
-              if (v != widget.passwordController.text)
+              if (v != widget.passwordController.text) {
                 return l10n.passwords_do_not_match;
+              }
               return null;
             },
           ),
@@ -172,7 +175,7 @@ class _RegisterFormState extends State<RegisterForm> {
             text: l10n.register_button,
             style: AppButtonStyle.primary,
             height: 52,
-            onPressed: canSubmit
+            onPressed: (canSubmit && !widget.isLoading)
                 ? () async {
                     final confirmed = await StatusDialog.showConfirmation(
                       context: context,
@@ -205,13 +208,14 @@ class _RegisterFormState extends State<RegisterForm> {
           value: checked,
           onChanged: (v) => onChanged(v ?? false),
           activeColor: AppColors.primary,
+          side: const BorderSide(color: AppColors.baseLightGrey),
         ),
         Expanded(
           child: GestureDetector(
             onTap: () => onChanged(!checked),
             child: RichText(
               text: TextSpan(
-                style: const TextStyle(color: AppColors.eerieBlack),
+                style: const TextStyle(color: AppColors.baseGrey),
                 children: [
                   TextSpan(text: l10n.i_have_read_and_accept),
                   WidgetSpan(
@@ -220,6 +224,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       child: Text(
                         linkText,
                         style: const TextStyle(
+                          color: AppColors.baseGrey,
                           decoration: TextDecoration.underline,
                         ),
                       ),

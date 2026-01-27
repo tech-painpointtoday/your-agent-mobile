@@ -90,14 +90,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
                 const SizedBox(height: 6),
                 const Text(
                   'กรอกอีเมลที่ลงทะเบียนไว้ เพื่อรับลิงก์รีเซ็ตรหัสผ่าน',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: AppColors.gray400),
+                  style: TextStyle(fontSize: 14, color: AppColors.baseGrey),
                 ),
                 const SizedBox(height: 20),
                 Form(
@@ -109,7 +109,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       hintText: l10n.email,
                       prefixIcon: const Icon(
                         Icons.email_outlined,
-                        color: AppColors.gray400,
+                        color: AppColors.baseGrey,
                       ),
                       filled: true,
                       fillColor: AppColors.white,
@@ -119,15 +119,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: AppColors.grayBorder,
-                        ),
+                        borderSide: const BorderSide(color: AppColors.baseGrey),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: AppColors.grayBorder,
-                        ),
+                        borderSide: const BorderSide(color: AppColors.baseGrey),
                       ),
                     ),
                     validator: (v) {

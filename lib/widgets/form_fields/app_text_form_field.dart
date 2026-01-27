@@ -39,7 +39,7 @@ class AppTextFormField extends StatelessWidget {
             Text(
               label,
               style: theme.textTheme.titleSmall?.copyWith(
-                color: AppColors.cardLabelPrimary,
+                color: AppColors.baseDarkGrey,
               ),
             ),
             if (isRequired) ...[
@@ -47,7 +47,7 @@ class AppTextFormField extends StatelessWidget {
               Text(
                 '*',
                 style: theme.textTheme.titleSmall?.copyWith(
-                  color: AppColors.ruby500,
+                  color: AppColors.supportRedDeep,
                 ),
               ),
             ],
@@ -64,7 +64,7 @@ class AppTextFormField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText ?? label,
             hintStyle: theme.textTheme.bodyLarge?.copyWith(
-              color: AppColors.cardLabelSecondary,
+              color: AppColors.baseGrey,
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -74,11 +74,11 @@ class AppTextFormField extends StatelessWidget {
             fillColor: AppColors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -86,7 +86,7 @@ class AppTextFormField extends StatelessWidget {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.error600),
+              borderSide: const BorderSide(color: AppColors.supportRedDeep),
             ),
             suffix: suffix,
           ),

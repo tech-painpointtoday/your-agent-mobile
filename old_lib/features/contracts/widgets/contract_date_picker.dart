@@ -60,16 +60,16 @@ class ContractDatePicker extends StatelessWidget {
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.grayBorder),
+                borderSide: BorderSide(color: AppColors.baseGrey),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.grayBorder),
+                borderSide: BorderSide(color: AppColors.baseGrey),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
-                  color: isReadOnly ? AppColors.grayBorder : AppColors.primary,
+                  color: isReadOnly ? AppColors.baseGrey : AppColors.primary,
                 ),
               ),
               disabledBorder: OutlineInputBorder(
@@ -87,13 +87,13 @@ class ContractDatePicker extends StatelessWidget {
                   ? const Icon(
                       Icons.calendar_today_outlined,
                       size: 20,
-                      color: AppColors.gray400,
+                      color: AppColors.baseGrey,
                     )
                   : IconButton(
                       icon: const Icon(
                         Icons.calendar_today_outlined,
                         size: 20,
-                        color: AppColors.gray400,
+                        color: AppColors.baseGrey,
                       ),
                       onPressed: onTapPick,
                     ),
@@ -102,20 +102,19 @@ class ContractDatePicker extends StatelessWidget {
             validator: isReadOnly
                 ? null
                 : (customValidator ??
-                    (value) {
-                      if (value == null || value.isEmpty) {
-                        return l10n.this_field_required;
-                      }
-                      final date = parseThaiDate(value);
-                      if (date == null) {
-                        return 'รูปแบบวันที่ไม่ถูกต้อง';
-                      }
-                      return null;
-                    }),
+                      (value) {
+                        if (value == null || value.isEmpty) {
+                          return l10n.this_field_required;
+                        }
+                        final date = parseThaiDate(value);
+                        if (date == null) {
+                          return 'รูปแบบวันที่ไม่ถูกต้อง';
+                        }
+                        return null;
+                      }),
           ),
         ),
       ],
     );
   }
 }
-

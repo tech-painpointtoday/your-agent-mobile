@@ -59,7 +59,8 @@ class PropertyFormHeader extends StatelessWidget {
 
   /// Safely navigate back - check if we can pop, otherwise go to properties list
   void _navigateBack(BuildContext context) {
-    final role = DependencyInjection.authRepository.currentRole ?? UserRole.agent;
+    final role =
+        DependencyInjection.authRepository.currentRole ?? UserRole.agent;
     if (context.canPop()) {
       context.pop();
     } else {
@@ -86,8 +87,11 @@ class PropertyFormHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-        border: Border(bottom: BorderSide(color: AppColors.gray200)),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+        border: Border(bottom: BorderSide(color: AppColors.baseLightGrey)),
       ),
       child: Row(
         children: [
@@ -96,7 +100,11 @@ class PropertyFormHeader extends StatelessWidget {
             width: 32,
             height: 32,
             child: IconButton(
-              icon: SvgPicture.asset('assets/icons/form/chevron-left.svg', width: 20, height: 20),
+              icon: SvgPicture.asset(
+                'assets/icons/form/chevron-left.svg',
+                width: 20,
+                height: 20,
+              ),
               onPressed: onBack ?? () => _navigateBack(context),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
@@ -104,7 +112,12 @@ class PropertyFormHeader extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           // Title
-          Text(_title, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            _title,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const Spacer(),
           // Primary button
           if (mode == PropertyFormMode.create || mode == PropertyFormMode.edit)
@@ -114,27 +127,41 @@ class PropertyFormHeader extends StatelessWidget {
                 onPressed: isLoading
                     ? null
                     : () {
-                        debugPrint('PropertyFormHeader: Primary button pressed (${mode.name})');
+                        debugPrint(
+                          'PropertyFormHeader: Primary button pressed (${mode.name})',
+                        );
                         debugPrint(
                           'PropertyFormHeader: onPrimaryAction is ${onPrimaryAction != null ? "set" : "null"}',
                         );
-                        debugPrint('PropertyFormHeader: isLoading = $isLoading');
+                        debugPrint(
+                          'PropertyFormHeader: isLoading = $isLoading',
+                        );
                         onPrimaryAction?.call();
                       },
                 icon: SvgPicture.asset(
-                  mode == PropertyFormMode.create ? 'assets/icons/form/plus-2.svg' : 'assets/icons/form/save.svg',
+                  mode == PropertyFormMode.create
+                      ? 'assets/icons/form/plus-2.svg'
+                      : 'assets/icons/form/save.svg',
                   width: 16,
                   height: 16,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 label: Text(_primaryButtonLabel),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.buttonPrimary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   minimumSize: const Size(0, 48),
                   textStyle: primaryButtonTextStyle,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
               ),
@@ -146,27 +173,39 @@ class PropertyFormHeader extends StatelessWidget {
                 onPressed: isLoading
                     ? null
                     : () {
-                        debugPrint('PropertyFormHeader: Primary button pressed (view mode)');
+                        debugPrint(
+                          'PropertyFormHeader: Primary button pressed (view mode)',
+                        );
                         debugPrint(
                           'PropertyFormHeader: onPrimaryAction is ${onPrimaryAction != null ? "set" : "null"}',
                         );
-                        debugPrint('PropertyFormHeader: isLoading = $isLoading');
+                        debugPrint(
+                          'PropertyFormHeader: isLoading = $isLoading',
+                        );
                         onPrimaryAction?.call();
                       },
                 icon: SvgPicture.asset(
                   'assets/icons/form/edit-2.svg',
                   width: 16,
                   height: 16,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 label: Text(_primaryButtonLabel),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.buttonPrimary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   minimumSize: const Size(0, 48),
                   textStyle: primaryButtonTextStyle,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
               ),
@@ -184,16 +223,24 @@ class PropertyFormHeader extends StatelessWidget {
                   'assets/icons/form/trash-2.svg',
                   width: 20,
                   height: 20,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 label: Text(_secondaryButtonLabel),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.ruby500,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   minimumSize: const Size(0, 48),
                   textStyle: primaryButtonTextStyle,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
               ),
@@ -204,12 +251,17 @@ class PropertyFormHeader extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: isLoading ? null : onSecondaryAction,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.gray400,
-                  side: const BorderSide(color: AppColors.gray200),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  foregroundColor: AppColors.baseGrey,
+                  side: const BorderSide(color: AppColors.baseLightGrey),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   minimumSize: const Size(0, 48),
                   textStyle: secondaryButtonTextStyle,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: Text(_secondaryButtonLabel),
               ),

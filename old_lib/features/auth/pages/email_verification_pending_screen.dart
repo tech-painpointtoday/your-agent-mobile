@@ -10,10 +10,7 @@ import 'package:go_router/go_router.dart';
 class EmailVerificationPendingScreen extends StatelessWidget {
   final String email;
 
-  const EmailVerificationPendingScreen({
-    super.key,
-    required this.email,
-  });
+  const EmailVerificationPendingScreen({super.key, required this.email});
 
   void _handleStateChange(BuildContext context, AuthState state) {
     if (state is AuthOperationState) {
@@ -27,9 +24,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
       } else if (state.resendEmailStatus == ResendEmailStatus.failure) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              state.resendEmailError ?? 'ไม่สามารถส่งอีเมลได้',
-            ),
+            content: Text(state.resendEmailError ?? 'ไม่สามารถส่งอีเมลได้'),
             backgroundColor: Colors.red,
           ),
         );
@@ -39,8 +34,8 @@ class EmailVerificationPendingScreen extends StatelessWidget {
 
   void _handleResendEmail(BuildContext context) {
     context.read<AuthBloc>().add(
-          AuthResendVerificationPublicRequested(email: email),
-        );
+      AuthResendVerificationPublicRequested(email: email),
+    );
   }
 
   void _handleBackToLogin(BuildContext context) {
@@ -77,7 +72,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                       style: GoogleFonts.anuphan(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.eerieBlack,
+                        color: AppColors.baseDarkGrey,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -88,7 +83,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                       'เราได้ส่งลิงก์ยืนยันไปที่ $email แล้ว\nกรุณากดยืนยันเพื่อเริ่มใช้งาน',
                       style: GoogleFonts.anuphan(
                         fontSize: 16,
-                        color: AppColors.eerieBlack,
+                        color: AppColors.baseDarkGrey,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -97,13 +92,17 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                     // Resend Email Button
                     BlocBuilder<AuthBloc, AuthState>(
                       builder: (context, state) {
-                        final isLoading = state is AuthOperationState &&
-                            state.resendEmailStatus == ResendEmailStatus.loading;
+                        final isLoading =
+                            state is AuthOperationState &&
+                            state.resendEmailStatus ==
+                                ResendEmailStatus.loading;
                         return SizedBox(
                           width: double.infinity,
                           height: 52,
                           child: ElevatedButton(
-                            onPressed: isLoading ? null : () => _handleResendEmail(context),
+                            onPressed: isLoading
+                                ? null
+                                : () => _handleResendEmail(context),
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -155,7 +154,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                           style: GoogleFonts.anuphan(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.eerieBlack,
+                            color: AppColors.baseDarkGrey,
                           ),
                         ),
                       ),

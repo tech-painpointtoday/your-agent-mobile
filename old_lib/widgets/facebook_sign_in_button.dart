@@ -66,7 +66,7 @@ class FacebookSignInButton extends StatelessWidget {
                           style: GoogleFonts.roboto(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.eerieBlack,
+                            color: AppColors.baseDarkGrey,
                           ),
                         ),
                       ],
@@ -110,7 +110,7 @@ class FacebookSignInButton extends StatelessWidget {
                         style: GoogleFonts.anuphan(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.eerieBlack,
+                          color: AppColors.baseDarkGrey,
                         ),
                       ),
                     ],

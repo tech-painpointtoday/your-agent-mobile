@@ -39,7 +39,9 @@ class _AgentDashboardState extends State<AgentDashboard> {
   Widget build(BuildContext context) {
     final currentRoute = GoRouterState.of(context).uri.path;
     final authState = context.watch<AuthBloc>().state;
-    final role = authState is Authenticated ? authState.user.role : UserRole.agent;
+    final role = authState is Authenticated
+        ? authState.user.role
+        : UserRole.agent;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -47,7 +49,7 @@ class _AgentDashboardState extends State<AgentDashboard> {
 
         return Scaffold(
           key: _scaffoldKey,
-          backgroundColor: AppColors.gray100,
+          backgroundColor: AppColors.basePaleGrey,
           drawer: isMobile
               ? Drawer(
                   child: AppSidebar(role: role, currentRoute: currentRoute),
@@ -58,14 +60,17 @@ class _AgentDashboardState extends State<AgentDashboard> {
               children: [
                 CustomHeader(
                   changeLocale: widget.changeLocale,
-                  onMenuTap: isMobile ? () => _scaffoldKey.currentState?.openDrawer() : null,
+                  onMenuTap: isMobile
+                      ? () => _scaffoldKey.currentState?.openDrawer()
+                      : null,
                 ),
                 Expanded(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Sidebar (hidden on mobile, shown as drawer)
-                      if (!isMobile) AppSidebar(role: role, currentRoute: currentRoute),
+                      if (!isMobile)
+                        AppSidebar(role: role, currentRoute: currentRoute),
                       // Main Content
                       Expanded(
                         child: SingleChildScrollView(
@@ -78,41 +83,62 @@ class _AgentDashboardState extends State<AgentDashboard> {
                                 child: BlocBuilder<DashboardBloc, DashboardState>(
                                   builder: (context, state) {
                                     if (state is DashboardLoading) {
-                                      return const Center(child: CircularProgressIndicator());
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
                                     }
 
                                     if (state is DashboardError) {
                                       return Center(
                                         child: Text(
                                           '${AppLocalizations.of(context)!.error_occurred}: ${state.message}',
-                                          style: const TextStyle(color: AppColors.ruby500),
+                                          style: const TextStyle(
+                                            color: AppColors.ruby500,
+                                          ),
                                         ),
                                       );
                                     }
 
-                                    final userName = state is DashboardLoaded ? state.userName : 'Admin Agent';
-                                    final propertyCount = state is DashboardLoaded ? state.propertyCount : 0;
-                                    final upcomingBookingCount = state is DashboardLoaded
+                                    final userName = state is DashboardLoaded
+                                        ? state.userName
+                                        : 'Admin Agent';
+                                    final propertyCount =
+                                        state is DashboardLoaded
+                                        ? state.propertyCount
+                                        : 0;
+                                    final upcomingBookingCount =
+                                        state is DashboardLoaded
                                         ? state.upcomingBookingCount
                                         : 0;
 
                                     return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         // Stats Subsection (Welcome + Stats Cards)
-                                        StatsSubsection(userName: userName, isMobile: isMobile),
+                                        StatsSubsection(
+                                          userName: userName,
+                                          isMobile: isMobile,
+                                        ),
                                         SizedBox(height: isMobile ? 12 : 16),
                                         // Stats Wrapper Subsection (Property Breakdown + Appointments)
                                         StatsWrapperSubsection(
                                           propertyCount: propertyCount,
-                                          monthlyAppointments: upcomingBookingCount,
+                                          monthlyAppointments:
+                                              upcomingBookingCount,
                                           isMobile: isMobile,
-                                          bookings: state is DashboardLoaded ? state.bookings : null,
-                                          propertyById: state is DashboardLoaded ? state.propertyById : null,
+                                          bookings: state is DashboardLoaded
+                                              ? state.bookings
+                                              : null,
+                                          propertyById: state is DashboardLoaded
+                                              ? state.propertyById
+                                              : null,
                                         ),
                                         SizedBox(height: isMobile ? 12 : 16),
                                         // Div Wrapper Subsection (Tenant Cards)
-                                        DivWrapperSubsection(isMobile: isMobile),
+                                        DivWrapperSubsection(
+                                          isMobile: isMobile,
+                                        ),
                                       ],
                                     );
                                   },

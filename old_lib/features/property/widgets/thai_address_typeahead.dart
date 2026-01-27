@@ -61,21 +61,21 @@ class ThaiAddressTypeAhead extends StatelessWidget {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.grayBorder),
+                    borderSide: BorderSide(color: AppColors.baseGrey),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.grayBorder),
+                    borderSide: BorderSide(color: AppColors.baseGrey),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
-                      color: isReadOnly ? AppColors.grayBorder : Colors.blue,
+                      color: isReadOnly ? AppColors.baseGrey : Colors.blue,
                     ),
                   ),
                   disabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.grayBorder),
+                    borderSide: BorderSide(color: AppColors.baseGrey),
                   ),
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
@@ -226,7 +226,10 @@ class ThaiAddressTypeAhead extends StatelessWidget {
             return Container(
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: AppColors.gray200, width: 0.5),
+                  bottom: BorderSide(
+                    color: AppColors.baseLightGrey,
+                    width: 0.5,
+                  ),
                 ),
               ),
               child: ListTile(

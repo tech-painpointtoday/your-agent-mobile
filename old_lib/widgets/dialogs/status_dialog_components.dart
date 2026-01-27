@@ -23,17 +23,17 @@ class StatusIcon extends StatelessWidget {
       case DialogType.error:
         bgColor = AppColors.statusCancelledBg;
         iconPath = 'assets/icons/x-circle.svg';
-        iconColor = AppColors.error600;
+        iconColor = AppColors.supportRedDeep;
         break;
       case DialogType.destructive:
         bgColor = AppColors.statusCancelledBg;
         iconPath = 'assets/icons/alert-triangle.svg';
-        iconColor = AppColors.error600;
+        iconColor = AppColors.supportRedDeep;
         break;
       case DialogType.warning:
         bgColor = AppColors.statusPendingBg;
         iconPath = 'assets/icons/alert-triangle.svg';
-        iconColor = AppColors.warning600;
+        iconColor = AppColors.warning;
         break;
       case DialogType.info:
         bgColor = AppColors.blue100;
@@ -57,7 +57,10 @@ class StatusIcon extends StatelessWidget {
     return Container(
       width: 48,
       height: 48,
-      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Center(child: iconWidget),
     );
   }
@@ -73,12 +76,18 @@ class StatusCloseButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       child: Container(
         padding: const EdgeInsets.all(8),
-        decoration: const BoxDecoration(color: AppColors.gray50, shape: BoxShape.circle),
+        decoration: const BoxDecoration(
+          color: AppColors.basePaleGrey,
+          shape: BoxShape.circle,
+        ),
         child: SvgPicture.asset(
           'assets/icons/x.svg',
           width: 12,
           height: 12,
-          colorFilter: const ColorFilter.mode(AppColors.gray400, BlendMode.srcIn),
+          colorFilter: const ColorFilter.mode(
+            AppColors.baseGrey,
+            BlendMode.srcIn,
+          ),
         ),
       ),
     );

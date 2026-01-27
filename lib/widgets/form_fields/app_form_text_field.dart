@@ -76,8 +76,8 @@ class AppFormTextField extends StatelessWidget {
           data: Theme.of(context).copyWith(
             textSelectionTheme: isReadOnlyField
                 ? const TextSelectionThemeData(
-                    selectionColor: AppColors.gray800,
-                    cursorColor: AppColors.gray800,
+                    selectionColor: AppColors.baseDarkGrey,
+                    cursorColor: AppColors.baseDarkGrey,
                   )
                 : null,
           ),
@@ -93,32 +93,32 @@ class AppFormTextField extends StatelessWidget {
                 style: (enable == true)
                     ? theme.textTheme.bodyMedium
                     : theme.textTheme.bodyMedium?.copyWith(
-                        color: AppColors.gray400,
+                        color: AppColors.baseGrey,
                       ),
                 decoration: InputDecoration(
                   hintText: label,
                   hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.gray400,
+                    color: AppColors.baseGrey,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.grayBorder),
+                    borderSide: const BorderSide(color: AppColors.baseGrey),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.grayBorder),
+                    borderSide: const BorderSide(color: AppColors.baseGrey),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
                       color: (enable == false || isReadOnlyField == true)
-                          ? AppColors.grayBorder
+                          ? AppColors.baseGrey
                           : AppColors.primary,
                     ),
                   ),
                   disabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.grayBorder),
+                    borderSide: const BorderSide(color: AppColors.baseGrey),
                   ),
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
@@ -127,7 +127,7 @@ class AppFormTextField extends StatelessWidget {
                   ),
                   filled: (isReadOnlyField == true) || (enable == false),
                   fillColor: (enable == false)
-                      ? AppColors.gray50
+                      ? AppColors.basePaleGrey
                       : (isReadOnlyField == true ? AppColors.white : null),
                 ),
                 validator: isReadOnly

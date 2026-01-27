@@ -79,7 +79,7 @@ class BaseStatusDialog extends StatelessWidget {
                 style: GoogleFonts.anuphan(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.gray900,
+                  color: AppColors.baseDarkGrey,
                 ),
               ),
               const SizedBox(height: 4),
@@ -90,7 +90,7 @@ class BaseStatusDialog extends StatelessWidget {
                   message!,
                   style: GoogleFonts.anuphan(
                     fontSize: 14,
-                    color: AppColors.gray600,
+                    color: AppColors.baseDarkGrey,
                     height: 1.5,
                   ),
                 ),
@@ -159,9 +159,9 @@ class BaseStatusDialog extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () => Navigator.of(context).pop(false),
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.gray700,
+              foregroundColor: AppColors.baseDarkGrey,
               backgroundColor: Colors.white,
-              side: const BorderSide(color: AppColors.gray300),
+              side: const BorderSide(color: AppColors.baseLightGrey),
               padding: const EdgeInsets.symmetric(horizontal: 24),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),

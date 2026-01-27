@@ -38,7 +38,9 @@ class StatsWrapperSubsection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Mock property type breakdown if not provided
-    final breakdown = propertyTypeBreakdown ?? {'บ้าน': 80, 'บ้านแฝด': 40, 'คอนโด': 60, 'อื่น ๆ': 100};
+    final breakdown =
+        propertyTypeBreakdown ??
+        {'บ้าน': 80, 'บ้านแฝด': 40, 'คอนโด': 60, 'อื่น ๆ': 100};
 
     final maxValue = breakdown.values.reduce((a, b) => a > b ? a : b);
 
@@ -54,7 +56,12 @@ class StatsWrapperSubsection extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
             ),
             padding: const EdgeInsets.all(24),
-            child: _buildPropertyBreakdown(context, breakdown, maxValue, propertyCount),
+            child: _buildPropertyBreakdown(
+              context,
+              breakdown,
+              maxValue,
+              propertyCount,
+            ),
           ),
           const SizedBox(height: 16),
           // Monthly Appointments Card
@@ -85,7 +92,12 @@ class StatsWrapperSubsection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
               ),
               padding: const EdgeInsets.all(40),
-              child: _buildPropertyBreakdown(context, breakdown, maxValue, propertyCount),
+              child: _buildPropertyBreakdown(
+                context,
+                breakdown,
+                maxValue,
+                propertyCount,
+              ),
             ),
           ),
           const SizedBox(width: 16),
@@ -107,7 +119,12 @@ class StatsWrapperSubsection extends StatelessWidget {
     );
   }
 
-  Widget _buildPropertyBreakdown(BuildContext context, Map<String, int> breakdown, int maxValue, int propertyCount) {
+  Widget _buildPropertyBreakdown(
+    BuildContext context,
+    Map<String, int> breakdown,
+    int maxValue,
+    int propertyCount,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -117,7 +134,11 @@ class StatsWrapperSubsection extends StatelessWidget {
           children: [
             Text(
               AppLocalizations.of(context)!.my_properties,
-              style: GoogleFonts.anuphan(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF717680)),
+              style: GoogleFonts.anuphan(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF717680),
+              ),
             ),
             const SizedBox(height: 8),
             Row(
@@ -125,12 +146,20 @@ class StatsWrapperSubsection extends StatelessWidget {
               children: [
                 Text(
                   '$propertyCount',
-                  style: GoogleFonts.anuphan(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.eerieBlack),
+                  style: GoogleFonts.anuphan(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.baseDarkGrey,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   'รายการ',
-                  style: GoogleFonts.anuphan(fontSize: 16, fontWeight: FontWeight.w400, color: AppColors.eerieBlack),
+                  style: GoogleFonts.anuphan(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.baseDarkGrey,
+                  ),
                 ),
               ],
             ),
@@ -157,7 +186,7 @@ class StatsWrapperSubsection extends StatelessWidget {
                         style: GoogleFonts.anuphan(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
-                          color: AppColors.eerieBlack,
+                          color: AppColors.baseDarkGrey,
                         ),
                         textAlign: TextAlign.right,
                       ),
@@ -185,7 +214,9 @@ class StatsWrapperSubsection extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: breakdown.entries.map((entry) {
-                        final percentage = maxValue > 0 ? entry.value / maxValue : 0.0;
+                        final percentage = maxValue > 0
+                            ? entry.value / maxValue
+                            : 0.0;
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: Row(
@@ -198,7 +229,9 @@ class StatsWrapperSubsection extends StatelessWidget {
                                     widthFactor: percentage,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: _colorMap[entry.key] ?? AppColors.eerieBlack,
+                                        color:
+                                            _colorMap[entry.key] ??
+                                            AppColors.baseDarkGrey,
                                         borderRadius: const BorderRadius.only(
                                           topRight: Radius.circular(8),
                                           bottomRight: Radius.circular(8),
@@ -235,7 +268,7 @@ class StatsWrapperSubsection extends StatelessWidget {
                             style: GoogleFonts.anuphan(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
-                              color: AppColors.eerieBlack,
+                              color: AppColors.baseDarkGrey,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -293,7 +326,7 @@ class StatsWrapperSubsection extends StatelessWidget {
                         style: GoogleFonts.anuphan(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.eerieBlack,
+                          color: AppColors.baseDarkGrey,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -302,7 +335,7 @@ class StatsWrapperSubsection extends StatelessWidget {
                         style: GoogleFonts.anuphan(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
-                          color: AppColors.eerieBlack,
+                          color: AppColors.baseDarkGrey,
                         ),
                       ),
                     ],
@@ -330,15 +363,20 @@ class StatsWrapperSubsection extends StatelessWidget {
         if (displayBookings.isNotEmpty) ...[
           const SizedBox(height: 24),
           ...displayBookings.map(
-            (booking) =>
-                Padding(padding: const EdgeInsets.only(bottom: 12), child: _buildAppointmentCard(context, booking)),
+            (booking) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _buildAppointmentCard(context, booking),
+            ),
           ),
         ],
       ],
     );
   }
 
-  Widget _buildAppointmentCard(BuildContext context, BookingWithContact bookingWithContact) {
+  Widget _buildAppointmentCard(
+    BuildContext context,
+    BookingWithContact bookingWithContact,
+  ) {
     final booking = bookingWithContact.booking;
     final property = propertyById?[booking.propertyId];
     final propertyModel = property is PropertyModel ? property : null;
@@ -372,7 +410,8 @@ class StatsWrapperSubsection extends StatelessWidget {
 
         final thaiYear = year + 543; // Convert to Buddhist era
         final monthName = thaiMonths[month - 1];
-        final timeStr = '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+        final timeStr =
+            '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
         dateTimeStr = '$day $monthName $thaiYear, $timeStr';
       } catch (e) {
         dateTimeStr = booking.createdAt.toString();
@@ -380,12 +419,15 @@ class StatsWrapperSubsection extends StatelessWidget {
     }
 
     // Get contact name from API response
-    final contactName = bookingWithContact.contactName != null ? 'คุณ ${bookingWithContact.contactName}' : 'คุณลูกค้า';
+    final contactName = bookingWithContact.contactName != null
+        ? 'คุณ ${bookingWithContact.contactName}'
+        : 'คุณลูกค้า';
 
     // Get property location/address
     // Only show address when status is confirmed (not pending)
     String location = '';
-    if (booking.status == BookingStatus.confirmed && propertyModel?.specs != null) {
+    if (booking.status == BookingStatus.confirmed &&
+        propertyModel?.specs != null) {
       location = propertyModel!.specs!.address ?? '';
     }
 
@@ -453,7 +495,9 @@ class StatsWrapperSubsection extends StatelessWidget {
                 child: Text(
                   contactName,
                   style: GoogleFonts.anuphan(
-                    fontSize: isConfirmed ? 16 : 15, // 1 level lower for pending/cancelled
+                    fontSize: isConfirmed
+                        ? 16
+                        : 15, // 1 level lower for pending/cancelled
                     fontWeight: FontWeight.w600,
                     color: textColor,
                   ),
@@ -479,13 +523,20 @@ class StatsWrapperSubsection extends StatelessWidget {
                   'assets/icons/clock.svg',
                   width: 16,
                   height: 16,
-                  colorFilter: const ColorFilter.mode(AppColors.gray500, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.baseDarkGrey,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     dateTimeStr,
-                    style: GoogleFonts.anuphan(fontSize: fontSize, fontWeight: FontWeight.w400, color: textColor),
+                    style: GoogleFonts.anuphan(
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.w400,
+                      color: textColor,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -494,7 +545,8 @@ class StatsWrapperSubsection extends StatelessWidget {
             ),
           ],
           // Location (only show when confirmed, not pending)
-          if (location.isNotEmpty && booking.status == BookingStatus.confirmed) ...[
+          if (location.isNotEmpty &&
+              booking.status == BookingStatus.confirmed) ...[
             const SizedBox(height: 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -503,13 +555,20 @@ class StatsWrapperSubsection extends StatelessWidget {
                   'assets/icons/map-pin.svg',
                   width: 16,
                   height: 16,
-                  colorFilter: const ColorFilter.mode(AppColors.gray500, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.baseDarkGrey,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     location,
-                    style: GoogleFonts.anuphan(fontSize: fontSize, fontWeight: FontWeight.w400, color: textColor),
+                    style: GoogleFonts.anuphan(
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.w400,
+                      color: textColor,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

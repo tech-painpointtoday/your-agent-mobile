@@ -574,7 +574,7 @@ class _FilterSidebarState extends State<FilterSidebar> {
               style: theme.textTheme.bodySmall?.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
-                color: AppColors.gray400,
+                color: AppColors.baseGrey,
               ),
             ),
           ],

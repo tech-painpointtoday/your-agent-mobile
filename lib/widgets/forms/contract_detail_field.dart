@@ -28,7 +28,7 @@ class ContractDetailField extends StatelessWidget {
               child: Text(
                 label,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.gray700,
+                  color: AppColors.baseDarkGrey,
                   fontWeight: FontWeight.w500,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -37,9 +37,9 @@ class ContractDetailField extends StatelessWidget {
             if (isRequired)
               Text(
                 ' *',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppColors.ruby500),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.supportRedDeep,
+                ),
               ),
           ],
         ),
@@ -49,26 +49,26 @@ class ContractDetailField extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: AppColors.gray50,
+            color: AppColors.basePaleGrey,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.gray300),
+            border: Border.all(color: AppColors.baseLightGrey),
           ),
           child: Row(
             children: [
               Expanded(
                 child: Text(
                   value,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: AppColors.gray900),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.baseDarkGrey,
+                  ),
                 ),
               ),
               if (suffix != null)
                 Text(
                   suffix!,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: AppColors.gray600),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.baseDarkGrey,
+                  ),
                 ),
             ],
           ),

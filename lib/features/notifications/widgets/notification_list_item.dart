@@ -70,10 +70,10 @@ class NotificationListItem extends StatelessWidget {
           SlidableAction(
             onPressed: (context) {
               context.read<NotificationBloc>().add(
-                    ArchiveNotification(notification.id),
-                  );
+                ArchiveNotification(notification.id),
+              );
             },
-            backgroundColor: AppColors.warning600,
+            backgroundColor: AppColors.warning,
             foregroundColor: AppColors.white,
             icon: notification.isArchived ? Icons.unarchive : Icons.archive,
             label: notification.isArchived ? 'ยกเลิก' : 'เก็บถาวร',
@@ -91,11 +91,11 @@ class NotificationListItem extends StatelessWidget {
               );
               if (confirmed && context.mounted) {
                 context.read<NotificationBloc>().add(
-                      DeleteNotification(notification.id),
-                    );
+                  DeleteNotification(notification.id),
+                );
               }
             },
-            backgroundColor: AppColors.error600,
+            backgroundColor: AppColors.supportRedDeep,
             foregroundColor: AppColors.white,
             icon: Icons.delete,
             label: 'ลบ',
@@ -108,7 +108,7 @@ class NotificationListItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: const BoxDecoration(
             border: Border(
-              bottom: BorderSide(color: AppColors.gray200, width: 1),
+              bottom: BorderSide(color: AppColors.baseLightGrey, width: 1),
             ),
           ),
           child: Row(
@@ -144,7 +144,7 @@ class NotificationListItem extends StatelessWidget {
                       style: GoogleFonts.anuphan(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.gray600,
+                        color: AppColors.baseDarkGrey,
                         height: 1.4,
                       ),
                     ),
@@ -154,7 +154,7 @@ class NotificationListItem extends StatelessWidget {
                       style: GoogleFonts.anuphan(
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.gray500,
+                        color: AppColors.baseDarkGrey,
                       ),
                     ),
                   ],
@@ -167,7 +167,7 @@ class NotificationListItem extends StatelessWidget {
                   height: 8,
                   margin: const EdgeInsets.only(top: 4),
                   decoration: const BoxDecoration(
-                    color: AppColors.error600,
+                    color: AppColors.supportRedDeep,
                     shape: BoxShape.circle,
                   ),
                 ),

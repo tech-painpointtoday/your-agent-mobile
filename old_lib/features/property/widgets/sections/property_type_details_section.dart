@@ -85,15 +85,15 @@ class PropertyTypeDetailsSection extends StatelessWidget {
                 enabled: !isReadOnly,
                 decoration: InputDecoration(
                   hintText: 'ค้นหาผู้พัฒนาโครงการ',
-                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.gray400,
-                  ),
+                  hintStyle: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: AppColors.baseGrey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.grayBorder),
+                    borderSide: BorderSide(color: AppColors.baseGrey),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -101,7 +101,7 @@ class PropertyTypeDetailsSection extends StatelessWidget {
                   ),
                   disabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.grayBorder),
+                    borderSide: const BorderSide(color: AppColors.baseGrey),
                   ),
                   suffixIcon: isReadOnly
                       ? const Icon(
@@ -112,7 +112,7 @@ class PropertyTypeDetailsSection extends StatelessWidget {
                       : const Icon(
                           Icons.search,
                           size: 20,
-                          color: AppColors.gray500,
+                          color: AppColors.baseDarkGrey,
                         ),
                   filled: isReadOnly,
                   fillColor: isReadOnly ? const Color(0xFFFFFFFF) : null,
@@ -215,15 +215,15 @@ class PropertyTypeDetailsSection extends StatelessWidget {
               enabled: !isReadOnly,
               decoration: InputDecoration(
                 hintText: 'ค้นหาโครงการคอนโด',
-                hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.gray400,
-                ),
+                hintStyle: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: AppColors.baseGrey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: AppColors.grayBorder),
+                  borderSide: BorderSide(color: AppColors.baseGrey),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -231,7 +231,7 @@ class PropertyTypeDetailsSection extends StatelessWidget {
                 ),
                 disabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.grayBorder),
+                  borderSide: const BorderSide(color: AppColors.baseGrey),
                 ),
                 suffixIcon: isReadOnly
                     ? const Icon(
@@ -242,7 +242,7 @@ class PropertyTypeDetailsSection extends StatelessWidget {
                     : const Icon(
                         Icons.search,
                         size: 20,
-                        color: AppColors.gray500,
+                        color: AppColors.baseDarkGrey,
                       ),
                 filled: isReadOnly,
                 fillColor: isReadOnly ? const Color(0xFFFFFFFF) : null,

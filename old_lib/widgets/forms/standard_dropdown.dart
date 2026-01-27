@@ -32,7 +32,8 @@ class StandardDropdown<T> extends StatelessWidget {
       children: [
         FormLabel(label: label, isRequired: isRequired),
         DropdownButtonFormField<T>(
-          initialValue: value, // Changed from initialValue to value for better sync if needed
+          initialValue:
+              value, // Changed from initialValue to value for better sync if needed
           isExpanded: true,
           items: items,
           onChanged: isReadOnly ? null : onChanged,
@@ -46,26 +47,29 @@ class StandardDropdown<T> extends StatelessWidget {
               },
           icon: const Icon(
             Icons.keyboard_arrow_down_rounded, // Chevron down rounded
-            color: AppColors.gray500,
+            color: AppColors.baseDarkGrey,
           ),
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: isReadOnly ? AppColors.gray600 : AppColors.gray900),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: isReadOnly ? AppColors.baseDarkGrey : AppColors.baseDarkGrey,
+          ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.gray400, // #A4A7AE
+              color: AppColors.baseGrey, // #A4A7AE
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
             filled: true,
-            fillColor: isReadOnly ? AppColors.gray50 : AppColors.white,
+            fillColor: isReadOnly ? AppColors.basePaleGrey : AppColors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -73,7 +77,7 @@ class StandardDropdown<T> extends StatelessWidget {
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.gray200),
+              borderSide: const BorderSide(color: AppColors.baseLightGrey),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

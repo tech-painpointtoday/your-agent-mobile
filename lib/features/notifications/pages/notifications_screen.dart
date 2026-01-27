@@ -60,7 +60,7 @@ class _NotificationsScreenContent extends StatelessWidget {
                   leading: IconButton(
                     icon: const Icon(
                       Icons.arrow_back_ios,
-                      color: AppColors.gray700,
+                      color: AppColors.baseDarkGrey,
                     ),
                     onPressed: () => context.pop(),
                   ),
@@ -69,7 +69,7 @@ class _NotificationsScreenContent extends StatelessWidget {
                     style: GoogleFonts.anuphan(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.gray900,
+                      color: AppColors.baseDarkGrey,
                     ),
                   ),
                   actions: [
@@ -84,7 +84,7 @@ class _NotificationsScreenContent extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           color: hasUnread
                               ? AppColors.primary
-                              : AppColors.gray400,
+                              : AppColors.baseGrey,
                         ),
                       ),
                     ),
@@ -100,56 +100,64 @@ class _NotificationsScreenContent extends StatelessWidget {
                       color: AppColors.white,
                       child: Column(
                         children: [
-                          const Divider(height: 1, color: AppColors.gray200),
+                          const Divider(
+                            height: 1,
+                            color: AppColors.baseLightGrey,
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
                               vertical: 12,
                             ),
-                            child: BlocBuilder<
-                                NotificationBloc,
-                                NotificationState>(
-                              builder: (context, state) {
-                                final currentFilter =
-                                    state is NotificationLoaded
+                            child:
+                                BlocBuilder<
+                                  NotificationBloc,
+                                  NotificationState
+                                >(
+                                  builder: (context, state) {
+                                    final currentFilter =
+                                        state is NotificationLoaded
                                         ? state.currentFilter
                                         : NotificationFilter.all;
 
-                                return Row(
-                                  children: [
-                                    _FilterBadge(
-                                      label: 'ทั้งหมด',
-                                      isSelected:
-                                          currentFilter ==
-                                          NotificationFilter.all,
-                                      onTap: () {
-                                        bloc.add(
-                                          const FilterNotifications(
-                                            NotificationFilter.all,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    const SizedBox(width: 8),
-                                    _FilterBadge(
-                                      label: 'ยังไม่ได้อ่าน',
-                                      isSelected:
-                                          currentFilter ==
-                                          NotificationFilter.unread,
-                                      onTap: () {
-                                        bloc.add(
-                                          const FilterNotifications(
-                                            NotificationFilter.unread,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
+                                    return Row(
+                                      children: [
+                                        _FilterBadge(
+                                          label: 'ทั้งหมด',
+                                          isSelected:
+                                              currentFilter ==
+                                              NotificationFilter.all,
+                                          onTap: () {
+                                            bloc.add(
+                                              const FilterNotifications(
+                                                NotificationFilter.all,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        const SizedBox(width: 8),
+                                        _FilterBadge(
+                                          label: 'ยังไม่ได้อ่าน',
+                                          isSelected:
+                                              currentFilter ==
+                                              NotificationFilter.unread,
+                                          onTap: () {
+                                            bloc.add(
+                                              const FilterNotifications(
+                                                NotificationFilter.unread,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
                           ),
-                          const Divider(height: 1, color: AppColors.gray200),
+                          const Divider(
+                            height: 1,
+                            color: AppColors.baseLightGrey,
+                          ),
                         ],
                       ),
                     ),
@@ -171,7 +179,7 @@ class _NotificationsScreenContent extends StatelessWidget {
                       child: Text(
                         'เกิดข้อผิดพลาด: ${state.message}',
                         style: GoogleFonts.anuphan(
-                          color: AppColors.error600,
+                          color: AppColors.supportRedDeep,
                           fontSize: 14,
                         ),
                       ),
@@ -235,7 +243,7 @@ class _FilterBadge extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.gray100,
+          color: isSelected ? AppColors.primary : AppColors.basePaleGrey,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
@@ -243,7 +251,7 @@ class _FilterBadge extends StatelessWidget {
           style: GoogleFonts.anuphan(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: isSelected ? AppColors.white : AppColors.gray600,
+            color: isSelected ? AppColors.white : AppColors.baseDarkGrey,
           ),
         ),
       ),

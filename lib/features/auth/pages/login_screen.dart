@@ -152,17 +152,23 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: BoxDecoration(
               color: selected ? AppColors.buttonLightGreen : AppColors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.buttonBorderGray),
+              border: role == UserRole.agent
+                  ? Border.all(color: const Color(0xFF32A792))
+                  : null,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                SvgPicture.asset(
                   role == UserRole.agent
-                      ? Icons.person_outline
-                      : Icons.business_center_outlined,
-                  size: 18,
-                  color: selected ? AppColors.jungleGreen : AppColors.gray500,
+                      ? 'assets/icons/user.svg'
+                      : 'assets/icons/building.svg',
+                  width: 16,
+                  height: 16,
+                  colorFilter: ColorFilter.mode(
+                    selected ? AppColors.jungleGreen : AppColors.baseDarkGrey,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Flexible(
@@ -174,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontWeight: FontWeight.w600,
                       color: selected
                           ? AppColors.jungleGreen
-                          : AppColors.eerieBlack,
+                          : AppColors.baseDarkGrey,
                     ),
                   ),
                 ),
@@ -208,11 +214,11 @@ class _LoginScreenState extends State<LoginScreen> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.grayBorder),
+        borderSide: const BorderSide(color: AppColors.baseGrey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.grayBorder),
+        borderSide: const BorderSide(color: AppColors.baseGrey),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -251,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -260,24 +266,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: AppColors.gray400,
+                    color: AppColors.baseGrey,
                   ),
                 ),
                 const SizedBox(height: 20),
-                    _roleSegment(l10n!),
+                _roleSegment(l10n),
                 const SizedBox(height: 18),
                 Form(
                   key: _formKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: _inputDecoration(
                           hint: l10n.email,
-                          prefix: const Icon(
-                            Icons.email_outlined,
-                            color: AppColors.gray400,
+                          prefix: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: SvgPicture.asset(
+                              'assets/icons/email.svg',
+                              width: 16,
+                              height: 16,
+                              colorFilter: const ColorFilter.mode(
+                                AppColors.primary,
+                                BlendMode.srcIn,
+                              ),
+                            ),
                           ),
                         ),
                         validator: (v) {
@@ -293,13 +308,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: _inputDecoration(
                           hint: l10n.password,
                           prefix: Padding(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(16),
                             child: SvgPicture.asset(
                               'assets/icons/key.svg',
-                              width: 20,
-                              height: 20,
+                              width: 16,
+                              height: 16,
                               colorFilter: const ColorFilter.mode(
-                                AppColors.gray400,
+                                AppColors.primary,
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -312,10 +327,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               _obscurePassword
                                   ? 'assets/icons/form/eye-off.svg'
                                   : 'assets/icons/form/eye.svg',
-                              width: 22,
-                              height: 22,
+                              width: 16,
+                              height: 16,
                               colorFilter: const ColorFilter.mode(
-                                AppColors.gray400,
+                                AppColors.baseGrey,
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -330,37 +345,60 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: _rememberMe,
-                            onChanged: (v) =>
-                                setState(() => _rememberMe = v ?? false),
-                            side: const BorderSide(color: AppColors.grayBorder),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              l10n.remember_me,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: AppColors.eerieBlack,
+                      GestureDetector(
+                        onTap: () {
+                          setState(() => _rememberMe = !_rememberMe);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Checkbox(
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    visualDensity: const VisualDensity(
+                                      horizontal: VisualDensity.minimumDensity,
+                                      vertical: VisualDensity.minimumDensity,
+                                    ),
+
+                                    value: _rememberMe,
+                                    onChanged: (v) => setState(
+                                      () => _rememberMe = v ?? false,
+                                    ),
+                                    side: const BorderSide(
+                                      color: AppColors.baseGrey,
+                                    ),
+                                    activeColor: AppColors.primary,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Flexible(
+                                    child: Text(
+                                      l10n.remember_me,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: AppColors.baseDarkGrey,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                          TextButton(
-                            onPressed: () => context.push('/forgot-password'),
-                            child: Text(
-                              l10n.forgot_password,
-                              style: const TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: AppColors.gray400,
+                            TextButton(
+                              onPressed: () => context.push('/forgot-password'),
+                              child: Text(
+                                l10n.forgot_password,
+                                style: const TextStyle(
+                                  color: AppColors.baseGrey,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 8),
                       BlocBuilder<AuthBloc, AuthState>(
@@ -407,17 +445,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         children: [
                           const Expanded(
-                            child: Divider(color: AppColors.grayBorder),
+                            child: Divider(color: AppColors.baseGrey),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: Text(
                               l10n.or,
-                              style: const TextStyle(color: AppColors.gray400),
+                              style: const TextStyle(color: AppColors.baseGrey),
                             ),
                           ),
                           const Expanded(
-                            child: Divider(color: AppColors.grayBorder),
+                            child: Divider(color: AppColors.baseGrey),
                           ),
                         ],
                       ),
@@ -434,9 +472,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               label: const Text('Google'),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.eerieBlack,
+                                foregroundColor: AppColors.baseDarkGrey,
                                 side: const BorderSide(
-                                  color: AppColors.grayBorder,
+                                  color: AppColors.baseGrey,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -452,9 +490,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               icon: const Icon(Icons.facebook, size: 18),
                               label: const Text('Facebook'),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.eerieBlack,
+                                foregroundColor: AppColors.baseDarkGrey,
                                 side: const BorderSide(
-                                  color: AppColors.grayBorder,
+                                  color: AppColors.baseGrey,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -471,16 +509,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           Text(
                             l10n.don_t_have_account,
-                            style: const TextStyle(color: AppColors.gray400),
+                            style: const TextStyle(color: AppColors.baseGrey),
                           ),
                           TextButton(
                             onPressed: () => context.go('/register'),
                             child: Text(
                               l10n.register_now,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline,
-                              ),
+                              style: const TextStyle(color: AppColors.primary),
                             ),
                           ),
                         ],

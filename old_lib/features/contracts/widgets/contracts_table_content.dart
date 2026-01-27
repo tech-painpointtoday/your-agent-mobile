@@ -40,7 +40,7 @@ class ContractsTableContent extends StatelessWidget {
             contract.contractNumber ?? 'N/A',
             style: GoogleFonts.anuphan(
               fontSize: 14,
-              color: AppColors.eerieBlack,
+              color: AppColors.baseDarkGrey,
             ),
           ),
         ),
@@ -51,7 +51,7 @@ class ContractsTableContent extends StatelessWidget {
               contract.propertyName ?? 'N/A',
               style: GoogleFonts.anuphan(
                 fontSize: 14,
-                color: AppColors.eerieBlack,
+                color: AppColors.baseDarkGrey,
               ),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -64,7 +64,7 @@ class ContractsTableContent extends StatelessWidget {
             contract.propertyType ?? 'N/A',
             style: GoogleFonts.anuphan(
               fontSize: 14,
-              color: AppColors.eerieBlack,
+              color: AppColors.baseDarkGrey,
             ),
           ),
         ),
@@ -73,7 +73,7 @@ class ContractsTableContent extends StatelessWidget {
             contract.lessor ?? 'N/A',
             style: GoogleFonts.anuphan(
               fontSize: 14,
-              color: AppColors.eerieBlack,
+              color: AppColors.baseDarkGrey,
             ),
           ),
         ),
@@ -82,7 +82,7 @@ class ContractsTableContent extends StatelessWidget {
             contract.lessee ?? 'N/A',
             style: GoogleFonts.anuphan(
               fontSize: 14,
-              color: AppColors.eerieBlack,
+              color: AppColors.baseDarkGrey,
             ),
           ),
         ),
@@ -91,7 +91,7 @@ class ContractsTableContent extends StatelessWidget {
             _formatThaiDate(contract.createdAt),
             style: GoogleFonts.anuphan(
               fontSize: 14,
-              color: AppColors.eerieBlack,
+              color: AppColors.baseDarkGrey,
             ),
           ),
         ),
@@ -131,7 +131,7 @@ class ContractsTableContent extends StatelessWidget {
       style: GoogleFonts.anuphan(
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        color: AppColors.eerieBlack,
+        color: AppColors.baseDarkGrey,
       ),
     );
   }
@@ -145,15 +145,11 @@ class ContractsTableContent extends StatelessWidget {
           style: GoogleFonts.anuphan(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppColors.eerieBlack,
+            color: AppColors.baseDarkGrey,
           ),
         ),
         const SizedBox(width: 4),
-        const Icon(
-          Icons.arrow_upward,
-          size: 16,
-          color: AppColors.eerieBlack,
-        ),
+        const Icon(Icons.arrow_upward, size: 16, color: AppColors.baseDarkGrey),
       ],
     );
   }

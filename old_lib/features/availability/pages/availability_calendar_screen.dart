@@ -14,13 +14,19 @@ class AvailabilityCalendarScreen extends StatefulWidget {
   final Function(Locale) changeLocale;
   final UserRole? role;
 
-  const AvailabilityCalendarScreen({super.key, required this.changeLocale, this.role});
+  const AvailabilityCalendarScreen({
+    super.key,
+    required this.changeLocale,
+    this.role,
+  });
 
   @override
-  State<AvailabilityCalendarScreen> createState() => _AvailabilityCalendarScreenState();
+  State<AvailabilityCalendarScreen> createState() =>
+      _AvailabilityCalendarScreenState();
 }
 
-class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen> {
+class _AvailabilityCalendarScreenState
+    extends State<AvailabilityCalendarScreen> {
   late DateTime _currentMonth;
   List<Map<String, dynamic>> _availableTimes = [];
   bool _isLoading = true;
@@ -35,7 +41,8 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
   Future<void> _loadAvailableTimes() async {
     setState(() => _isLoading = true);
     try {
-      final times = await DependencyInjection.availabilityApiService.listAvailableTimes();
+      final times = await DependencyInjection.availabilityApiService
+          .listAvailableTimes();
       setState(() {
         _availableTimes = times;
         _isLoading = false;
@@ -74,7 +81,9 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
         // Try parse
         final tDate = DateTime.tryParse(tDateStr);
         if (tDate != null) {
-          return tDate.year == date.year && tDate.month == date.month && tDate.day == date.day;
+          return tDate.year == date.year &&
+              tDate.month == date.month &&
+              tDate.day == date.day;
         }
       } catch (_) {}
       return false;
@@ -100,7 +109,9 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
   }
 
   String _getBasePath() {
-    return widget.role == UserRole.agent ? '/agent/availability' : '/availability';
+    return widget.role == UserRole.agent
+        ? '/agent/availability'
+        : '/availability';
   }
 
   @override
@@ -117,7 +128,9 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
           _buildHeaderSection(context, l10n, isDesktop),
           const SizedBox(height: 24),
           // Calendar card
-          _isLoading ? const AppLoader() : _buildCalendarCard(context, l10n, isDesktop),
+          _isLoading
+              ? const AppLoader()
+              : _buildCalendarCard(context, l10n, isDesktop),
           const SizedBox(height: 16),
           // Legend
           _buildLegend(context, l10n),
@@ -126,14 +139,22 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
     );
   }
 
-  Widget _buildHeaderSection(BuildContext context, AppLocalizations l10n, bool isDesktop) {
+  Widget _buildHeaderSection(
+    BuildContext context,
+    AppLocalizations l10n,
+    bool isDesktop,
+  ) {
     return isDesktop
         ? Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 l10n.calendar_view,
-                style: GoogleFonts.anuphan(fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.eerieBlack),
+                style: GoogleFonts.anuphan(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.baseDarkGrey,
+                ),
               ),
               Row(
                 children: [
@@ -142,9 +163,12 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
                     icon: const Icon(Icons.list, size: 18),
                     label: Text(l10n.list_view_button),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.gray600,
+                      backgroundColor: AppColors.baseDarkGrey,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -155,7 +179,10 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.emerald500,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
+                      ),
                     ),
                   ),
                 ],
@@ -167,7 +194,11 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
             children: [
               Text(
                 l10n.calendar_view,
-                style: GoogleFonts.anuphan(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.eerieBlack),
+                style: GoogleFonts.anuphan(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.baseDarkGrey,
+                ),
               ),
               const SizedBox(height: 16),
               Row(
@@ -176,9 +207,12 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
                     child: ElevatedButton.icon(
                       onPressed: () => context.go(_getBasePath()),
                       icon: const Icon(Icons.list, size: 16),
-                      label: Text(l10n.list_view_button, style: const TextStyle(fontSize: 13)),
+                      label: Text(
+                        l10n.list_view_button,
+                        style: const TextStyle(fontSize: 13),
+                      ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.gray600,
+                        backgroundColor: AppColors.baseDarkGrey,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
@@ -189,7 +223,10 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
                     child: ElevatedButton.icon(
                       onPressed: () => context.push('${_getBasePath()}/create'),
                       icon: const Icon(Icons.add, size: 16),
-                      label: Text(l10n.add_time_slot, style: const TextStyle(fontSize: 13)),
+                      label: Text(
+                        l10n.add_time_slot,
+                        style: const TextStyle(fontSize: 13),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.emerald500,
                         foregroundColor: Colors.white,
@@ -203,7 +240,11 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
           );
   }
 
-  Widget _buildCalendarCard(BuildContext context, AppLocalizations l10n, bool isDesktop) {
+  Widget _buildCalendarCard(
+    BuildContext context,
+    AppLocalizations l10n,
+    bool isDesktop,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -225,41 +266,59 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
 
   Widget _buildMonthNavigation(BuildContext context, AppLocalizations l10n) {
     final locale = Localizations.localeOf(context);
-    final monthFormat = locale.languageCode == 'th' ? DateFormat('MMMM yyyy', 'th') : DateFormat('MMMM yyyy');
+    final monthFormat = locale.languageCode == 'th'
+        ? DateFormat('MMMM yyyy', 'th')
+        : DateFormat('MMMM yyyy');
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.bonJour, width: 0.5)),
+        border: Border(
+          bottom: BorderSide(color: AppColors.bonJour, width: 0.5),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             monthFormat.format(_currentMonth),
-            style: GoogleFonts.anuphan(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.eerieBlack),
+            style: GoogleFonts.anuphan(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.baseDarkGrey,
+            ),
           ),
           Row(
             children: [
               IconButton(
                 onPressed: _previousMonth,
                 icon: const Icon(Icons.chevron_left),
-                style: IconButton.styleFrom(backgroundColor: AppColors.wildSand),
+                style: IconButton.styleFrom(
+                  backgroundColor: AppColors.wildSand,
+                ),
               ),
               const SizedBox(width: 8),
               IconButton(
                 onPressed: _nextMonth,
                 icon: const Icon(Icons.chevron_right),
-                style: IconButton.styleFrom(backgroundColor: AppColors.wildSand),
+                style: IconButton.styleFrom(
+                  backgroundColor: AppColors.wildSand,
+                ),
               ),
               const SizedBox(width: 8),
               TextButton(
                 onPressed: _goToToday,
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.wildSand,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                 ),
-                child: Text(l10n.today, style: GoogleFonts.anuphan(color: AppColors.eerieBlack)),
+                child: Text(
+                  l10n.today,
+                  style: GoogleFonts.anuphan(color: AppColors.baseDarkGrey),
+                ),
               ),
             ],
           ),
@@ -271,12 +330,28 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
   Widget _buildDayHeaders(BuildContext context, AppLocalizations l10n) {
     final locale = Localizations.localeOf(context);
     final days = locale.languageCode == 'th'
-        ? [l10n.day_sun, l10n.day_mon, l10n.day_tue, l10n.day_wed, l10n.day_thu, l10n.day_fri, l10n.day_sat]
-        : [l10n.day_sun, l10n.day_mon, l10n.day_tue, l10n.day_wed, l10n.day_thu, l10n.day_fri, l10n.day_sat];
+        ? [
+            l10n.day_sun,
+            l10n.day_mon,
+            l10n.day_tue,
+            l10n.day_wed,
+            l10n.day_thu,
+            l10n.day_fri,
+            l10n.day_sat,
+          ]
+        : [
+            l10n.day_sun,
+            l10n.day_mon,
+            l10n.day_tue,
+            l10n.day_wed,
+            l10n.day_thu,
+            l10n.day_fri,
+            l10n.day_sat,
+          ];
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(color: AppColors.gray700),
+      decoration: BoxDecoration(color: AppColors.baseDarkGrey),
       child: Row(
         children: days
             .map(
@@ -284,7 +359,11 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
                 child: Center(
                   child: Text(
                     day,
-                    style: GoogleFonts.anuphan(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: GoogleFonts.anuphan(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -294,14 +373,30 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
     );
   }
 
-  Widget _buildCalendarGrid(BuildContext context, AppLocalizations l10n, bool isDesktop) {
-    final firstDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month, 1);
-    final lastDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 0);
+  Widget _buildCalendarGrid(
+    BuildContext context,
+    AppLocalizations l10n,
+    bool isDesktop,
+  ) {
+    final firstDayOfMonth = DateTime(
+      _currentMonth.year,
+      _currentMonth.month,
+      1,
+    );
+    final lastDayOfMonth = DateTime(
+      _currentMonth.year,
+      _currentMonth.month + 1,
+      0,
+    );
     final firstWeekday = firstDayOfMonth.weekday % 7;
     final daysInMonth = lastDayOfMonth.day;
 
     // Get days from previous month to fill the first week
-    final prevMonthLastDay = DateTime(_currentMonth.year, _currentMonth.month, 0);
+    final prevMonthLastDay = DateTime(
+      _currentMonth.year,
+      _currentMonth.month,
+      0,
+    );
     final daysFromPrevMonth = firstWeekday;
 
     // Calculate total rows needed
@@ -317,16 +412,42 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
 
             if (dayNumber < 1) {
               // Previous month days
-              final prevDay = prevMonthLastDay.day - (daysFromPrevMonth - dayIndex - 1);
-              return _buildDayCell(context, l10n, null, prevDay, true, isDesktop);
+              final prevDay =
+                  prevMonthLastDay.day - (daysFromPrevMonth - dayIndex - 1);
+              return _buildDayCell(
+                context,
+                l10n,
+                null,
+                prevDay,
+                true,
+                isDesktop,
+              );
             } else if (dayNumber > daysInMonth) {
               // Next month days
               final nextDay = dayNumber - daysInMonth;
-              return _buildDayCell(context, l10n, null, nextDay, true, isDesktop);
+              return _buildDayCell(
+                context,
+                l10n,
+                null,
+                nextDay,
+                true,
+                isDesktop,
+              );
             } else {
               // Current month days
-              final date = DateTime(_currentMonth.year, _currentMonth.month, dayNumber);
-              return _buildDayCell(context, l10n, date, dayNumber, false, isDesktop);
+              final date = DateTime(
+                _currentMonth.year,
+                _currentMonth.month,
+                dayNumber,
+              );
+              return _buildDayCell(
+                context,
+                l10n,
+                date,
+                dayNumber,
+                false,
+                isDesktop,
+              );
             }
           }),
         );
@@ -343,13 +464,17 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
     bool isDesktop,
   ) {
     final isToday = date != null && _isSameDay(date, DateTime.now());
-    final timesForDate = date != null ? _getTimesForDate(date) : <Map<String, dynamic>>[];
+    final timesForDate = date != null
+        ? _getTimesForDate(date)
+        : <Map<String, dynamic>>[];
     final hasTimeSlots = timesForDate.isNotEmpty;
     final hasAvailable = timesForDate.any((t) => t['is_available'] == true);
     final hasUnavailable = timesForDate.any((t) => t['is_available'] == false);
 
     Color bgColor = Colors.transparent;
-    Color textColor = isOutsideMonth ? AppColors.shadyLady : AppColors.eerieBlack;
+    Color textColor = isOutsideMonth
+        ? AppColors.shadyLady
+        : AppColors.baseDarkGrey;
 
     if (isToday && !isOutsideMonth) {
       bgColor = AppColors.buttonPrimary.withValues(alpha: 0.2);
@@ -383,7 +508,11 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
                   if (!isOutsideMonth && date != null)
                     InkWell(
                       onTap: () => context.push('${_getBasePath()}/create'),
-                      child: const Icon(Icons.add, size: 16, color: AppColors.shadyLady),
+                      child: const Icon(
+                        Icons.add,
+                        size: 16,
+                        color: AppColors.shadyLady,
+                      ),
                     ),
                 ],
               ),
@@ -399,23 +528,35 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ...timesForDate.take(2).map((time) {
-                            final isAvailable = time['is_available'] as bool? ?? true;
+                            final isAvailable =
+                                time['is_available'] as bool? ?? true;
                             return InkWell(
-                              onTap: () => context.push('${_getBasePath()}/${time['id']}/edit'),
+                              onTap: () => context.push(
+                                '${_getBasePath()}/${time['id']}/edit',
+                              ),
                               child: Container(
                                 margin: const EdgeInsets.only(bottom: 2),
-                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                  vertical: 1,
+                                ),
                                 decoration: BoxDecoration(
                                   color: isAvailable
-                                      ? AppColors.emerald500.withValues(alpha: 0.2)
-                                      : AppColors.ruby500.withValues(alpha: 0.2),
+                                      ? AppColors.emerald500.withValues(
+                                          alpha: 0.2,
+                                        )
+                                      : AppColors.ruby500.withValues(
+                                          alpha: 0.2,
+                                        ),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
                                   '${time['start_time']} - ${time['end_time']}',
                                   style: GoogleFonts.anuphan(
                                     fontSize: 9,
-                                    color: isAvailable ? AppColors.emerald500 : AppColors.ruby500,
+                                    color: isAvailable
+                                        ? AppColors.emerald500
+                                        : AppColors.ruby500,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -425,13 +566,19 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
                           if (timesForDate.length > 2)
                             Text(
                               '+${timesForDate.length - 2}',
-                              style: GoogleFonts.anuphan(fontSize: 9, color: AppColors.shadyLady),
+                              style: GoogleFonts.anuphan(
+                                fontSize: 9,
+                                color: AppColors.shadyLady,
+                              ),
                             ),
                         ],
                       )
                     : Text(
                         l10n.no_available_times,
-                        style: GoogleFonts.anuphan(fontSize: isDesktop ? 10 : 8, color: AppColors.shadyLady),
+                        style: GoogleFonts.anuphan(
+                          fontSize: isDesktop ? 10 : 8,
+                          color: AppColors.shadyLady,
+                        ),
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -449,13 +596,19 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
                         width: 6,
                         height: 6,
                         margin: const EdgeInsets.only(right: 2),
-                        decoration: BoxDecoration(color: AppColors.emerald500, borderRadius: BorderRadius.circular(3)),
+                        decoration: BoxDecoration(
+                          color: AppColors.emerald500,
+                          borderRadius: BorderRadius.circular(3),
+                        ),
                       ),
                     if (hasUnavailable)
                       Container(
                         width: 6,
                         height: 6,
-                        decoration: BoxDecoration(color: AppColors.ruby500, borderRadius: BorderRadius.circular(3)),
+                        decoration: BoxDecoration(
+                          color: AppColors.ruby500,
+                          borderRadius: BorderRadius.circular(3),
+                        ),
                       ),
                   ],
                 ),
@@ -480,7 +633,10 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
       ),
       child: Row(
         children: [
-          Text(l10n.legend, style: GoogleFonts.anuphan(fontWeight: FontWeight.w600)),
+          Text(
+            l10n.legend,
+            style: GoogleFonts.anuphan(fontWeight: FontWeight.w600),
+          ),
           const SizedBox(width: 24),
           _buildLegendItem(AppColors.emerald500, l10n.status_available),
           const SizedBox(width: 16),
@@ -505,7 +661,10 @@ class _AvailabilityCalendarScreenState extends State<AvailabilityCalendarScreen>
           ),
         ),
         const SizedBox(width: 6),
-        Text(label, style: GoogleFonts.anuphan(fontSize: 12, color: AppColors.shadyLady)),
+        Text(
+          label,
+          style: GoogleFonts.anuphan(fontSize: 12, color: AppColors.shadyLady),
+        ),
       ],
     );
   }

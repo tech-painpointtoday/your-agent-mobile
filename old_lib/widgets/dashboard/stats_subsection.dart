@@ -71,7 +71,7 @@ class StatsSubsection extends StatelessWidget {
                           style: GoogleFonts.anuphan(
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.eerieBlack,
+                            color: AppColors.baseDarkGrey,
                           ),
                         ),
                       ],
@@ -226,7 +226,7 @@ class StatsSubsection extends StatelessWidget {
                               style: GoogleFonts.anuphan(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500,
-                                color: AppColors.eerieBlack,
+                                color: AppColors.baseDarkGrey,
                               ),
                             ),
                           ],
@@ -375,7 +375,7 @@ class _StatCard extends StatelessWidget {
                 style: GoogleFonts.anuphan(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: AppColors.eerieBlack,
+                  color: AppColors.baseDarkGrey,
                 ),
               ),
               Container(
@@ -405,7 +405,7 @@ class _StatCard extends StatelessWidget {
                 style: GoogleFonts.anuphan(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.eerieBlack,
+                  color: AppColors.baseDarkGrey,
                 ),
               ),
               if (unit != null) ...[
@@ -415,7 +415,7 @@ class _StatCard extends StatelessWidget {
                   style: GoogleFonts.anuphan(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
               ],

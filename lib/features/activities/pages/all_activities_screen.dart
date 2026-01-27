@@ -11,41 +11,53 @@ class AllActivitiesScreen extends StatelessWidget {
   static const List<ActivityItem> _allActivities = [
     ActivityItem(
       title: 'ตัวอย่างประชาสัมพันธ์',
-      description: 'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale Figma Draft Rotate Invite Figma Italic Compo...',
-      imageUrl: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=200&h=200&fit=crop',
+      description:
+          'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale Figma Draft Rotate Invite Figma Italic Compo...',
+      imageUrl:
+          'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=200&h=200&fit=crop',
       type: ActivityType.publicRelations,
     ),
     ActivityItem(
       title: 'ตัวอย่างข่าวสาร',
-      description: 'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
-      imageUrl: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=200&h=200&fit=crop',
+      description:
+          'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
+      imageUrl:
+          'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=200&h=200&fit=crop',
       type: ActivityType.news,
       metadata: 'ก้องเกียร การธุรกิจเลิศ • 12 นาที',
     ),
     ActivityItem(
       title: 'ตัวอย่างกิจกรรม',
-      description: 'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
-      imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
+      description:
+          'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
+      imageUrl:
+          'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
       type: ActivityType.activity,
       metadata: '24 ธ.ค. 2568, 12:00 น.',
     ),
     ActivityItem(
       title: 'ตัวอย่างประชาสัมพันธ์ 2',
-      description: 'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale Figma Draft Rotate Invite Figma Italic Compo...',
-      imageUrl: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=200&h=200&fit=crop',
+      description:
+          'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale Figma Draft Rotate Invite Figma Italic Compo...',
+      imageUrl:
+          'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=200&h=200&fit=crop',
       type: ActivityType.publicRelations,
     ),
     ActivityItem(
       title: 'ตัวอย่างข่าวสาร 2',
-      description: 'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
-      imageUrl: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=200&h=200&fit=crop',
+      description:
+          'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
+      imageUrl:
+          'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=200&h=200&fit=crop',
       type: ActivityType.news,
       metadata: 'ก้องเกียร การธุรกิจเลิศ • 15 นาที',
     ),
     ActivityItem(
       title: 'ตัวอย่างกิจกรรม 2',
-      description: 'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
-      imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
+      description:
+          'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
+      imageUrl:
+          'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
       type: ActivityType.activity,
       metadata: '25 ธ.ค. 2568, 14:00 น.',
     ),
@@ -59,7 +71,7 @@ class AllActivitiesScreen extends StatelessWidget {
         title: const Text('กิจกรรม'),
         backgroundColor: AppColors.white,
         elevation: 0,
-        foregroundColor: AppColors.gray700,
+        foregroundColor: AppColors.baseDarkGrey,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -71,14 +83,16 @@ class AllActivitiesScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: AppColors.gray500,
+                color: AppColors.baseDarkGrey,
               ),
             ),
             const SizedBox(height: 16),
-            ..._allActivities.map((activity) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _ActivityCard(activity: activity),
-                )),
+            ..._allActivities.map(
+              (activity) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _ActivityCard(activity: activity),
+              ),
+            ),
           ],
         ),
       ),
@@ -119,7 +133,7 @@ class _ActivityCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.gray700,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -130,7 +144,7 @@ class _ActivityCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.gray500,
+                    color: AppColors.baseDarkGrey,
                     height: 1.35,
                   ),
                 ),
@@ -144,7 +158,7 @@ class _ActivityCard extends StatelessWidget {
                           width: 10,
                           height: 10,
                           colorFilter: const ColorFilter.mode(
-                            AppColors.gray500,
+                            AppColors.baseDarkGrey,
                             BlendMode.srcIn,
                           ),
                         ),
@@ -156,7 +170,7 @@ class _ActivityCard extends StatelessWidget {
                           width: 10,
                           height: 10,
                           colorFilter: const ColorFilter.mode(
-                            AppColors.gray500,
+                            AppColors.baseDarkGrey,
                             BlendMode.srcIn,
                           ),
                         ),
@@ -167,7 +181,7 @@ class _ActivityCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.gray500,
+                          color: AppColors.baseDarkGrey,
                         ),
                       ),
                     ],
@@ -187,15 +201,15 @@ class _ActivityCard extends StatelessWidget {
               placeholder: (context, url) => Container(
                 width: 76,
                 height: 76,
-                color: AppColors.gray100,
+                color: AppColors.basePaleGrey,
               ),
               errorWidget: (context, url, error) => Container(
                 width: 76,
                 height: 76,
-                color: AppColors.gray100,
+                color: AppColors.basePaleGrey,
                 child: const Icon(
                   Icons.error_outline,
-                  color: AppColors.gray400,
+                  color: AppColors.baseGrey,
                   size: 24,
                 ),
               ),

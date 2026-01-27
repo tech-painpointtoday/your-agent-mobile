@@ -55,32 +55,32 @@ class AppFormDropdownField<T> extends StatelessWidget {
                   style: (enable == true)
                       ? theme.textTheme.bodyMedium
                       : theme.textTheme.bodyMedium?.copyWith(
-                          color: AppColors.gray400,
+                          color: AppColors.baseGrey,
                         ),
                   decoration: InputDecoration(
                     hintText: 'เลือก$label',
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.gray400,
+                      color: AppColors.baseGrey,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.grayBorder),
+                      borderSide: const BorderSide(color: AppColors.baseGrey),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.grayBorder),
+                      borderSide: const BorderSide(color: AppColors.baseGrey),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(
                         color: (isReadOnly == true || enable == false)
-                            ? AppColors.grayBorder
+                            ? AppColors.baseGrey
                             : AppColors.primary,
                       ),
                     ),
                     disabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.grayBorder),
+                      borderSide: const BorderSide(color: AppColors.baseGrey),
                     ),
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
@@ -89,7 +89,7 @@ class AppFormDropdownField<T> extends StatelessWidget {
                     ),
                     filled: (isReadOnly == true) || (enable == false),
                     fillColor: (enable == false)
-                        ? AppColors.gray50
+                        ? AppColors.basePaleGrey
                         : (isReadOnly == true ? AppColors.white : null),
                   ),
                   isExpanded: true,
@@ -97,8 +97,8 @@ class AppFormDropdownField<T> extends StatelessWidget {
                     Icons.keyboard_arrow_down,
                     size: 20,
                     color: (isReadOnly == true || enable == false)
-                        ? AppColors.gray400
-                        : AppColors.gray500,
+                        ? AppColors.baseGrey
+                        : AppColors.baseDarkGrey,
                   ),
                   menuMaxHeight: 300,
                   dropdownColor: (isReadOnly == true) ? Colors.white : null,

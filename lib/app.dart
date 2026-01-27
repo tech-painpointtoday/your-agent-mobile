@@ -7,6 +7,7 @@ import 'core/di/dependency_injection.dart';
 import 'core/theme/app_theme.dart';
 import 'flavors.dart';
 import 'l10n/app_localizations.dart';
+import 'widgets/debug/debug_log_floating_button.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -47,6 +48,15 @@ class _AppState extends State<App> {
           GlobalCupertinoLocalizations.delegate,
         ],
         routerConfig: _router.router,
+        builder: (context, child) {
+          // Add debug log floating button overlay
+          return Stack(
+            children: [
+              child ?? const SizedBox.shrink(),
+              const DebugLogFloatingButton(),
+            ],
+          );
+        },
       ),
     );
   }

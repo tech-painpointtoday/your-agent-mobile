@@ -107,21 +107,17 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
 
   Widget _buildMapPlaceholder() {
     return Container(
-      color: AppColors.gray100,
+      color: AppColors.basePaleGrey,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.map_outlined,
-              size: 64,
-              color: AppColors.gray400,
-            ),
+            Icon(Icons.map_outlined, size: 64, color: AppColors.baseGrey),
             const SizedBox(height: 16),
             Text(
               'Map unavailable',
               style: TextStyle(
-                color: AppColors.gray500,
+                color: AppColors.baseDarkGrey,
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
@@ -129,10 +125,7 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
             const SizedBox(height: 8),
             Text(
               'Please configure Google Maps API key',
-              style: TextStyle(
-                color: AppColors.gray400,
-                fontSize: 12,
-              ),
+              style: TextStyle(color: AppColors.baseGrey, fontSize: 12),
             ),
           ],
         ),
@@ -153,11 +146,13 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
               }
               if (!_isMapReady) {
                 return Container(
-                  color: AppColors.gray100,
+                  color: AppColors.basePaleGrey,
                   child: const Center(
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.primary,
+                      ),
                     ),
                   ),
                 );

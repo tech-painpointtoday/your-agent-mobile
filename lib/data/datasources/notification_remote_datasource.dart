@@ -2,7 +2,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../domain/repositories/notification_repository.dart';
-import '../../features/notifications/models/notification_model.dart';
 
 /// Remote data source for notification API calls
 class NotificationRemoteDataSource {

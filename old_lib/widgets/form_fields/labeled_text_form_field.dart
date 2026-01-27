@@ -37,7 +37,7 @@ class LabeledTextFormField extends StatelessWidget {
           style: GoogleFonts.anuphan(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: AppColors.eerieBlack,
+            color: AppColors.baseDarkGrey,
           ),
         ),
         const SizedBox(height: 8),

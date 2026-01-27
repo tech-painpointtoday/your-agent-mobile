@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,7 +23,7 @@ class PropertyListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap ?? () => context.push('/property/${property.id}'),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: ShapeDecoration(
@@ -53,21 +54,21 @@ class PropertyListItem extends StatelessWidget {
                 placeholder: (context, url) => Container(
                   width: 70,
                   height: 70,
-                  color: AppColors.gray100,
+                  color: AppColors.basePaleGrey,
                   child: const Center(
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: AppColors.gray400,
+                      color: AppColors.baseGrey,
                     ),
                   ),
                 ),
                 errorWidget: (context, url, error) => Container(
                   width: 70,
                   height: 70,
-                  color: AppColors.gray100,
+                  color: AppColors.basePaleGrey,
                   child: const Icon(
                     Icons.image_outlined,
-                    color: AppColors.gray400,
+                    color: AppColors.baseGrey,
                     size: 32,
                   ),
                 ),
@@ -83,7 +84,7 @@ class PropertyListItem extends StatelessWidget {
                   Text(
                     'รหัส: ${property.code}',
                     style: GoogleFonts.anuphan(
-                      color: AppColors.gray400,
+                      color: AppColors.baseGrey,
                       fontSize: 10,
                       fontWeight: FontWeight.w400,
                     ),
@@ -105,7 +106,7 @@ class PropertyListItem extends StatelessWidget {
                   Text(
                     property.location,
                     style: GoogleFonts.anuphan(
-                      color: AppColors.gray500,
+                      color: AppColors.baseDarkGrey,
                       fontSize: 10,
                       fontWeight: FontWeight.w400,
                     ),
@@ -124,7 +125,7 @@ class PropertyListItem extends StatelessWidget {
                             child: const Icon(
                               Icons.edit_outlined,
                               size: 20,
-                              color: AppColors.gray500,
+                              color: AppColors.baseDarkGrey,
                             ),
                           ),
                         ),

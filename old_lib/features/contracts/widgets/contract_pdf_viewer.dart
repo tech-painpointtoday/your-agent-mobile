@@ -45,7 +45,7 @@ class _ContractPdfViewerState extends State<ContractPdfViewer> {
   double? _baseScale;
   bool _hasCapturedBaseScale = false;
   int _rotationAngle = 0; // 0, 90, 180, 270 degrees
-  
+
   int get _safeRotationAngle {
     // Ensure rotation angle is always a valid integer between 0 and 360
     final angle = _rotationAngle;
@@ -363,53 +363,43 @@ class _ContractPdfViewerState extends State<ContractPdfViewer> {
                                 child: PdfView(
                                   controller: _pdfController!,
                                   scrollDirection: Axis.vertical,
-                                  builders:
-                                      PdfViewBuilders<DefaultBuilderOptions>(
-                                        options: const DefaultBuilderOptions(),
-                                        documentLoaderBuilder: (_) =>
-                                            const Center(
-                                              child: CircularProgressIndicator(),
-                                            ),
-                                        pageLoaderBuilder: (_) => const Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                        errorBuilder: (_, error) =>
-                                            Center(child: Text(error.toString())),
-                                        pageBuilder:
-                                            (
-                                              context,
+                                  builders: PdfViewBuilders<DefaultBuilderOptions>(
+                                    options: const DefaultBuilderOptions(),
+                                    documentLoaderBuilder: (_) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    pageLoaderBuilder: (_) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    errorBuilder: (_, error) =>
+                                        Center(child: Text(error.toString())),
+                                    pageBuilder:
+                                        (context, pageImage, index, document) {
+                                          final containedScale =
+                                              PhotoViewComputedScale.contained;
+                                          return PhotoViewGalleryPageOptions(
+                                            imageProvider: PdfPageImageProvider(
                                               pageImage,
                                               index,
-                                              document,
-                                            ) {
-                                              final containedScale =
-                                                  PhotoViewComputedScale
-                                                      .contained;
-                                              return PhotoViewGalleryPageOptions(
-                                                imageProvider:
-                                                    PdfPageImageProvider(
-                                                      pageImage,
-                                                      index,
-                                                      document.id,
-                                                    ),
-                                                controller: _photoViewController,
-                                                initialScale: containedScale,
-                                                minScale:
-                                                    PhotoViewComputedScale
-                                                        .contained *
-                                                    0.5,
-                                                maxScale:
-                                                    PhotoViewComputedScale
-                                                        .contained *
-                                                    4.0,
-                                                heroAttributes:
-                                                    PhotoViewHeroAttributes(
-                                                      tag:
-                                                          '${document.id}-$index',
-                                                    ),
-                                              );
-                                            },
-                                      ),
+                                              document.id,
+                                            ),
+                                            controller: _photoViewController,
+                                            initialScale: containedScale,
+                                            minScale:
+                                                PhotoViewComputedScale
+                                                    .contained *
+                                                0.5,
+                                            maxScale:
+                                                PhotoViewComputedScale
+                                                    .contained *
+                                                4.0,
+                                            heroAttributes:
+                                                PhotoViewHeroAttributes(
+                                                  tag: '${document.id}-$index',
+                                                ),
+                                          );
+                                        },
+                                  ),
                                   onDocumentLoaded: (details) {
                                     if (!mounted) return;
                                     setState(() {
@@ -700,74 +690,74 @@ class _Sidebar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          Text(
-            'เอกสารสัญญา',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColors.eerieBlack,
-            ),
-          ),
-          const SizedBox(height: 24),
-          _row(context, 'เลขที่สัญญา:', contractIdText),
-          const SizedBox(height: 12),
-          _statusRow(context, 'สถานะสัญญา:', contract?.status),
-          const SizedBox(height: 12),
-          _statusNoteRow(
-            context,
-            'การลงนาม (ผู้ให้เช่า):',
-            contract?.sellerSignedAt != null,
-          ),
-          const SizedBox(height: 8),
-          _statusNoteRow(
-            context,
-            'การลงนาม (ผู้เช่า):',
-            contract?.buyerSignedAt != null,
-          ),
-          const SizedBox(height: 48),
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton(
-              onPressed: onDownload,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.success600,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 20,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                'ดาวน์โหลด PDF',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+            Text(
+              'เอกสารสัญญา',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppColors.baseDarkGrey,
               ),
             ),
-          ),
-          const SizedBox(height: 12),
-          _buildSendButtonSection(
-            context: context,
-            theme: theme,
-            isSigned: contract?.sellerSignedContractUrl != null,
-            signedContractUrl: contract?.sellerSignedContractUrl,
-            buttonLabel: 'ส่งเอกสารไปยัง ผู้ให้เช่า',
-            onSend: onSendLessor,
-          ),
-          const SizedBox(height: 12),
-          _buildSendButtonSection(
-            context: context,
-            theme: theme,
-            isSigned: contract?.buyerSignedContractUrl != null,
-            signedContractUrl: contract?.buyerSignedContractUrl,
-            buttonLabel: 'ส่งเอกสารไปยัง ผู้เช่า',
-            onSend: onSendLessee,
-          ),
-        ],
+            const SizedBox(height: 24),
+            _row(context, 'เลขที่สัญญา:', contractIdText),
+            const SizedBox(height: 12),
+            _statusRow(context, 'สถานะสัญญา:', contract?.status),
+            const SizedBox(height: 12),
+            _statusNoteRow(
+              context,
+              'การลงนาม (ผู้ให้เช่า):',
+              contract?.sellerSignedAt != null,
+            ),
+            const SizedBox(height: 8),
+            _statusNoteRow(
+              context,
+              'การลงนาม (ผู้เช่า):',
+              contract?.buyerSignedAt != null,
+            ),
+            const SizedBox(height: 48),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: onDownload,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.success600,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 20,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  'ดาวน์โหลด PDF',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildSendButtonSection(
+              context: context,
+              theme: theme,
+              isSigned: contract?.sellerSignedContractUrl != null,
+              signedContractUrl: contract?.sellerSignedContractUrl,
+              buttonLabel: 'ส่งเอกสารไปยัง ผู้ให้เช่า',
+              onSend: onSendLessor,
+            ),
+            const SizedBox(height: 12),
+            _buildSendButtonSection(
+              context: context,
+              theme: theme,
+              isSigned: contract?.buyerSignedContractUrl != null,
+              signedContractUrl: contract?.buyerSignedContractUrl,
+              buttonLabel: 'ส่งเอกสารไปยัง ผู้เช่า',
+              onSend: onSendLessee,
+            ),
+          ],
         ),
       ),
     );
@@ -781,7 +771,7 @@ class _Sidebar extends StatelessWidget {
             label,
             style: Theme.of(
               context,
-            ).textTheme.bodyLarge?.copyWith(color: AppColors.gray400),
+            ).textTheme.bodyLarge?.copyWith(color: AppColors.baseGrey),
           ),
         ),
         Text(
@@ -807,7 +797,7 @@ class _Sidebar extends StatelessWidget {
             label,
             style: Theme.of(
               context,
-            ).textTheme.bodyLarge?.copyWith(color: AppColors.gray400),
+            ).textTheme.bodyLarge?.copyWith(color: AppColors.baseGrey),
           ),
         ),
         ContractStatusChip(status: status),
@@ -820,22 +810,22 @@ class _Sidebar extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-          label,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyLarge?.copyWith(color: AppColors.gray400),
+            label,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: AppColors.baseGrey),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: isSigned ? AppColors.success600 : AppColors.gray100,
+            color: isSigned ? AppColors.success600 : AppColors.basePaleGrey,
             borderRadius: BorderRadius.circular(16),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           child: Text(
             isSigned ? 'ลงนามแล้ว' : 'ยังไม่ได้ลงนาม',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: isSigned ? Colors.white : AppColors.gray600,
+              color: isSigned ? Colors.white : AppColors.baseDarkGrey,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -925,10 +915,7 @@ class _Sidebar extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.buttonPrimary,
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 20,
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),

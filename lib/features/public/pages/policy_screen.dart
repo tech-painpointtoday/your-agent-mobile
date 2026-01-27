@@ -87,9 +87,9 @@ class _PolicyScreenState extends State<PolicyScreen> {
   Widget build(BuildContext context) {
     final title = _title();
     return Scaffold(
-      backgroundColor: AppColors.gray50,
+      backgroundColor: AppColors.basePaleGrey,
       appBar: AppBar(
-        backgroundColor: AppColors.gray50,
+        backgroundColor: AppColors.basePaleGrey,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
@@ -100,7 +100,7 @@ class _PolicyScreenState extends State<PolicyScreen> {
           title,
           style: const TextStyle(
             fontWeight: FontWeight.w700,
-            color: AppColors.eerieBlack,
+            color: AppColors.baseDarkGrey,
           ),
         ),
         centerTitle: false,
@@ -131,8 +131,8 @@ class _PolicyScreenState extends State<PolicyScreen> {
             Container(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
               decoration: const BoxDecoration(
-                color: AppColors.gray50,
-                border: Border(top: BorderSide(color: AppColors.grayBorder)),
+                color: AppColors.basePaleGrey,
+                border: Border(top: BorderSide(color: AppColors.baseGrey)),
               ),
               child: Row(
                 children: [
@@ -140,8 +140,8 @@ class _PolicyScreenState extends State<PolicyScreen> {
                     child: OutlinedButton(
                       onPressed: () => context.pop(false),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.eerieBlack,
-                        side: const BorderSide(color: AppColors.grayBorder),
+                        foregroundColor: AppColors.baseDarkGrey,
+                        side: const BorderSide(color: AppColors.baseGrey),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -242,7 +242,7 @@ class _PolicyScreenState extends State<PolicyScreen> {
                   '${i + 1}.',
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
               ),
@@ -252,7 +252,7 @@ class _PolicyScreenState extends State<PolicyScreen> {
                   items[i],
                   style: const TextStyle(
                     height: 1.6,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
               ),

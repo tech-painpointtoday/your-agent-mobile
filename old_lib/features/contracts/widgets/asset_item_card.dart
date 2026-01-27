@@ -23,7 +23,7 @@ class AssetItemCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.gray200),
+        border: Border.all(color: AppColors.baseLightGrey),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -35,7 +35,9 @@ class AssetItemCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   itemName,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
               if (!isReadOnly && onRemove != null)
@@ -49,15 +51,21 @@ class AssetItemCard extends StatelessWidget {
           ),
           if (description != null) ...[
             const SizedBox(height: 8),
-            Text(description!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.gray600)),
+            Text(
+              description!,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.baseDarkGrey),
+            ),
           ],
           if (imageUrls.isNotEmpty) ...[
             const SizedBox(height: 12),
             Text(
               'ตัวอย่างรูปภาพ',
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: AppColors.gray700, fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.baseDarkGrey,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             const SizedBox(height: 8),
             Wrap(
@@ -75,8 +83,11 @@ class AssetItemCard extends StatelessWidget {
                       return Container(
                         width: 100,
                         height: 100,
-                        color: AppColors.gray100,
-                        child: const Icon(Icons.broken_image, color: AppColors.gray400),
+                        color: AppColors.basePaleGrey,
+                        child: const Icon(
+                          Icons.broken_image,
+                          color: AppColors.baseGrey,
+                        ),
                       );
                     },
                   ),

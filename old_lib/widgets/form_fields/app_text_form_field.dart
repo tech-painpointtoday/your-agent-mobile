@@ -74,15 +74,11 @@ class AppTextFormField extends StatelessWidget {
             fillColor: AppColors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: AppColors.grayBorder,
-              ),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: AppColors.grayBorder,
-              ),
+              borderSide: const BorderSide(color: AppColors.baseGrey),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -90,7 +86,7 @@ class AppTextFormField extends StatelessWidget {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.error600),
+              borderSide: const BorderSide(color: AppColors.supportRedDeep),
             ),
             suffix: suffix,
           ),

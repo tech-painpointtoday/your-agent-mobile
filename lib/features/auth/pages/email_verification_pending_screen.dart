@@ -59,7 +59,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.eerieBlack,
+                    color: AppColors.baseDarkGrey,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -68,7 +68,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: AppColors.gray400,
+                    color: AppColors.baseGrey,
                     height: 1.4,
                   ),
                 ),

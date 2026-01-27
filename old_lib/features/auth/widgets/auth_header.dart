@@ -135,7 +135,7 @@ class _AuthHeaderState extends State<AuthHeader> {
                                           l10n.app_title,
                                           style: GoogleFonts.anuphan(
                                             fontSize: logoFontSize,
-                                            color: AppColors.eerieBlack,
+                                            color: AppColors.baseDarkGrey,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -204,7 +204,7 @@ class _AuthHeaderState extends State<AuthHeader> {
                                       shortCode,
                                       style: GoogleFonts.anuphan(
                                         fontSize: buttonFontSize,
-                                        color: AppColors.eerieBlack,
+                                        color: AppColors.baseDarkGrey,
                                       ),
                                     ),
                                   );
@@ -235,7 +235,7 @@ class _AuthHeaderState extends State<AuthHeader> {
                                           shortCode,
                                           style: GoogleFonts.anuphan(
                                             fontSize: buttonFontSize,
-                                            color: AppColors.eerieBlack,
+                                            color: AppColors.baseDarkGrey,
                                           ),
                                         ),
                                       ],
@@ -282,7 +282,7 @@ class _AuthHeaderState extends State<AuthHeader> {
                                     _getRoleName(currentUser.role, l10n),
                                     style: GoogleFonts.anuphan(
                                       fontSize: buttonFontSize,
-                                      color: AppColors.eerieBlack,
+                                      color: AppColors.baseDarkGrey,
                                     ),
                                   ),
                                 ],
@@ -321,7 +321,7 @@ class _AuthHeaderState extends State<AuthHeader> {
                                       _getRoleName(role, l10n),
                                       style: GoogleFonts.anuphan(
                                         fontSize: buttonFontSize,
-                                        color: AppColors.eerieBlack,
+                                        color: AppColors.baseDarkGrey,
                                       ),
                                     ),
                                   );
@@ -333,7 +333,7 @@ class _AuthHeaderState extends State<AuthHeader> {
                                         _getRoleName(role, l10n),
                                         style: GoogleFonts.anuphan(
                                           fontSize: buttonFontSize,
-                                          color: AppColors.eerieBlack,
+                                          color: AppColors.baseDarkGrey,
                                         ),
                                       ),
                                     );
@@ -375,7 +375,7 @@ class _AuthHeaderState extends State<AuthHeader> {
                                       l10n.login,
                                       style: GoogleFonts.anuphan(
                                         fontSize: buttonFontSize,
-                                        color: AppColors.eerieBlack,
+                                        color: AppColors.baseDarkGrey,
                                       ),
                                     ),
                                   ],

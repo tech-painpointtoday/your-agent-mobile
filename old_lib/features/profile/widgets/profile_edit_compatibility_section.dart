@@ -102,7 +102,7 @@ class ProfileEditCompatibilitySection extends StatelessWidget {
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.error600),
+                borderSide: const BorderSide(color: AppColors.supportRedDeep),
               ),
               suffixText: '% ขึ้นไป',
               suffixStyle: theme.textTheme.bodyMedium?.copyWith(
