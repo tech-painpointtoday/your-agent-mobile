@@ -20,8 +20,6 @@ class AppTheme {
         onSurface: AppColors.baseBlack,
         onSurfaceVariant: AppColors.baseDarkGrey,
         outline: AppColors.baseLightGrey,
-        background: AppColors.baseWhite,
-        onBackground: AppColors.baseBlack,
       ),
       
       scaffoldBackgroundColor: AppColors.baseWhite,

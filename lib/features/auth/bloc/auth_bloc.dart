@@ -10,12 +10,20 @@ import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignInWithEmail signInWithEmailUseCase;
+  final RegisterWithEmail registerWithEmailUseCase;
   final RegisterAgent registerAgentUseCase;
+  final SignInWithGoogle signInWithGoogleUseCase;
+  final SignInWithFacebook signInWithFacebookUseCase;
+  final SignOut signOutUseCase;
   final AuthRepository authRepository;
 
   AuthBloc({
     required this.signInWithEmailUseCase,
+    required this.registerWithEmailUseCase,
     required this.registerAgentUseCase,
+    required this.signInWithGoogleUseCase,
+    required this.signInWithFacebookUseCase,
+    required this.signOutUseCase,
     required this.authRepository,
   }) : super(const AuthInitial()) {
     on<SignInWithEmailEvent>(_onSignInWithEmail);

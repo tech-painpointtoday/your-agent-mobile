@@ -7,13 +7,16 @@ import '../../core/theme/app_colors.dart';
 /// This is intentionally lightweight compared to the old `old_lib/` button
 /// implementation, but follows the same visual language and colors.
 
-enum AppButtonStyle { primary, destructive, outline }
+enum AppButtonStyle { primary, destructive, outline, ghost }
 
 class AppButton extends StatelessWidget {
   final String text;
   final AppButtonStyle style;
   final VoidCallback? onPressed;
   final double height;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final IconData? icon;
 
   const AppButton({
     super.key,
@@ -21,22 +24,36 @@ class AppButton extends StatelessWidget {
     required this.style,
     this.onPressed,
     this.height = 48,
+    this.backgroundColor,
+    this.textColor,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
     final bool enabled = onPressed != null;
-    final Color background = switch (style) {
+
+    Color background = switch (style) {
       AppButtonStyle.primary =>
         enabled ? AppColors.buttonPrimary : AppColors.buttonDisabledBg,
       AppButtonStyle.destructive =>
         enabled ? AppColors.supportRedDeep : AppColors.buttonDisabledBg,
       AppButtonStyle.outline => Colors.white,
+      AppButtonStyle.ghost => Colors.transparent,
     };
 
-    final Color textColor = style == AppButtonStyle.outline
+    if (backgroundColor != null && enabled) {
+      background = backgroundColor!;
+    }
+
+    Color textCol =
+        style == AppButtonStyle.outline || style == AppButtonStyle.ghost
         ? (enabled ? AppColors.baseDarkGrey : AppColors.buttonDisabledText)
         : Colors.white;
+
+    if (textColor != null && enabled) {
+      textCol = textColor!;
+    }
 
     return SizedBox(
       width: double.infinity,
@@ -45,7 +62,7 @@ class AppButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: background,
-          foregroundColor: textColor,
+          foregroundColor: textCol,
           disabledBackgroundColor: AppColors.buttonDisabledBg,
           disabledForegroundColor: AppColors.buttonDisabledText,
           shape: RoundedRectangleBorder(
@@ -61,12 +78,26 @@ class AppButton extends StatelessWidget {
           ),
           elevation: 0,
         ),
-        child: Text(
-          text,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 20),
+              const SizedBox(width: 8),
+            ],
+            Flexible(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ],
         ),
       ),
     );

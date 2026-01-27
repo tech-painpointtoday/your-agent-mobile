@@ -29,4 +29,3 @@ Future<void> main() async {
   await AppInitializer.initialize();
   runApp(const App());
 }
-

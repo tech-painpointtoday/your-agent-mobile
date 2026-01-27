@@ -3,7 +3,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/custom_header.dart';
-// import 'package:youragent/widgets/footer.dart';
 import 'package:youragent/features/property/widgets/property_form.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/features/property/widgets/property_form_header.dart';
@@ -39,8 +38,9 @@ class PropertyCreateScreen extends StatelessWidget {
         // resizing the screen (LayoutBuilder rebuilds) does NOT recreate
         // or reset the form state.
         BlocProvider<PropertyFormBloc>(
-          create: (context) => PropertyFormBloc()
-            ..add(const PropertyFormInitialized(property: null)),
+          create: (context) =>
+              PropertyFormBloc()
+                ..add(const PropertyFormInitialized(property: null)),
         ),
       ],
       child: _PropertyCreateView(changeLocale: changeLocale),
@@ -248,22 +248,24 @@ class _PropertyCreateViewState extends State<_PropertyCreateView> {
                                   ),
                                   // Form content (has its own scrolling)
                                   Expanded(
-                                    child: BlocBuilder<
-                                      PropertyCreateBloc,
-                                      PropertyCreateState
-                                    >(
-                                      builder: (context, state) {
-                                        return PropertyForm(
-                                          onSubmit: _handleSubmit,
-                                          onFormReady: (submitCallback) {
-                                            _submitFormCallback =
-                                                submitCallback;
+                                    child:
+                                        BlocBuilder<
+                                          PropertyCreateBloc,
+                                          PropertyCreateState
+                                        >(
+                                          builder: (context, state) {
+                                            return PropertyForm(
+                                              onSubmit: _handleSubmit,
+                                              onFormReady: (submitCallback) {
+                                                _submitFormCallback =
+                                                    submitCallback;
+                                              },
+                                              isSubmitting:
+                                                  state
+                                                      is PropertyCreateSubmitting,
+                                            );
                                           },
-                                          isSubmitting:
-                                              state is PropertyCreateSubmitting,
-                                        );
-                                      },
-                                    ),
+                                        ),
                                   ),
                                 ],
                               ),

@@ -35,7 +35,8 @@ class UserProfileModel {
       return null;
     }
 
-    final emailVerifiedRaw = json['email_verified_at'] ?? json['emailVerifiedAt'];
+    final emailVerifiedRaw =
+        json['email_verified_at'] ?? json['emailVerifiedAt'];
     final profilePhotoRaw =
         json['profile_photo'] ?? json['profile_photo_url'] ?? json['avatar'];
 
@@ -49,5 +50,14 @@ class UserProfileModel {
   }
 
   bool get isEmailVerified => emailVerifiedAt != null;
-}
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'profile_photo': profilePhoto,
+      'email_verified_at': emailVerifiedAt?.toIso8601String(),
+    };
+  }
+}

@@ -5,11 +5,13 @@ import 'package:youragent/data/mock/mock_property_data.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/features/home/pages/home_screen.dart';
 import 'package:youragent/features/property/pages/all_properties_screen.dart';
+import 'package:youragent/features/property/pages/create/create_property_screen.dart';
 import 'package:youragent/features/property/pages/fullscreen_map_screen.dart';
+import 'package:youragent/features/property/widgets/property_list_item.dart';
+import 'package:youragent/features/property/widgets/property_map_view.dart';
 import 'package:youragent/widgets/app_bars/silver_app_bar.dart';
-import '../widgets/property_list_item.dart';
-import '../widgets/property_map_view.dart';
 
+/// Main Property screen used in navigation tabs
 class PropertyScreen extends StatefulWidget {
   const PropertyScreen({super.key});
 
@@ -70,7 +72,12 @@ class _PropertyScreenState extends State<PropertyScreen> {
       title: 'อสังหาริมทรัพย์',
       actionWidget: InkWell(
         onTap: () {
-          debugPrint('Add property tapped');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CreatePropertyScreen(),
+            ),
+          );
         },
         borderRadius: BorderRadius.circular(24),
         child: Container(
@@ -129,7 +136,6 @@ class _PropertyScreenState extends State<PropertyScreen> {
       ),
     );
   }
-
 
   Widget _buildPropertyList() {
     return Container(

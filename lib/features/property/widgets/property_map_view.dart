@@ -10,12 +10,24 @@ class PropertyMapView extends StatefulWidget {
   final List<Property> properties;
   final double height;
   final VoidCallback? onMaximizeTapped;
+  final ValueChanged<LatLng>? onCameraIdle;
+  final ValueChanged<CameraPosition>? onCameraMove;
+  final bool showCenterMarker;
+  final LatLng? initialLocation;
+  final LatLng? cameraTarget;
+  final bool animateToTarget;
 
   const PropertyMapView({
     super.key,
     required this.properties,
     this.height = 248,
     this.onMaximizeTapped,
+    this.onCameraIdle,
+    this.onCameraMove,
+    this.showCenterMarker = false,
+    this.initialLocation,
+    this.cameraTarget,
+    this.animateToTarget = true,
   });
 
   @override
@@ -28,6 +40,7 @@ class _PropertyMapViewState extends State<PropertyMapView> {
   BitmapDescriptor? _customMarkerIcon;
   bool _mapError = false;
   bool _isMapReady = false;
+  LatLng? _lastTrackedPosition;
   // Set to true when Google Maps API key is configured in Info.plist
   static const bool _mapsEnabled = true;
 
@@ -57,6 +70,7 @@ class _PropertyMapViewState extends State<PropertyMapView> {
       if (mounted) {
         setState(() {
           _isMapReady = true;
+          _lastTrackedPosition = widget.initialLocation ?? _center;
         });
       }
     } catch (e) {
@@ -97,6 +111,15 @@ class _PropertyMapViewState extends State<PropertyMapView> {
     if (oldWidget.properties != widget.properties && _isMapReady) {
       _createMarkers();
       setState(() {});
+    }
+
+    final newTarget = widget.cameraTarget;
+    if (newTarget != null &&
+        oldWidget.cameraTarget != newTarget &&
+        _isMapReady &&
+        _mapController != null &&
+        widget.animateToTarget) {
+      _mapController!.animateCamera(CameraUpdate.newLatLng(newTarget));
     }
   }
 
@@ -177,18 +200,43 @@ class _PropertyMapViewState extends State<PropertyMapView> {
                 );
               }
               // Only create GoogleMap when _isMapReady is true
-              return GoogleMap(
-                initialCameraPosition: const CameraPosition(
-                  target: _center,
-                  zoom: 12,
-                ),
-                markers: _markers,
-                onMapCreated: (controller) {
-                  _mapController = controller;
-                },
-                myLocationButtonEnabled: false,
-                zoomControlsEnabled: true,
-                mapToolbarEnabled: false,
+              return Stack(
+                children: [
+                  GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: widget.initialLocation ?? _center,
+                      zoom: 12,
+                    ),
+                    markers: _markers,
+                    onMapCreated: (controller) {
+                      _mapController = controller;
+                    },
+                    onCameraMove: (position) {
+                      _lastTrackedPosition = position.target;
+                      widget.onCameraMove?.call(position);
+                    },
+                    onCameraIdle: () {
+                      if (widget.onCameraIdle != null &&
+                          _lastTrackedPosition != null) {
+                        widget.onCameraIdle!(_lastTrackedPosition!);
+                      }
+                    },
+                    myLocationButtonEnabled: false,
+                    zoomControlsEnabled: true,
+                    mapToolbarEnabled: false,
+                  ),
+                  if (widget.showCenterMarker)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 35),
+                        child: Icon(
+                          Icons.location_on,
+                          color: AppColors.supportRedDeep,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                ],
               );
             },
           ),

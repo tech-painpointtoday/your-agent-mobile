@@ -1,97 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:youragent/core/theme/app_colors.dart';
+import '../inputs/app_text_field.dart';
 
-/// Reusable text form field matching the design system
-/// Used in both change password dialog and edit profile form
+/// Wrapper for AppTextField to support legacy code using AppTextFormField
 class AppTextFormField extends StatelessWidget {
   final String label;
-  final String? hintText;
-  final TextEditingController controller;
-  final TextInputType? keyboardType;
-  final String? Function(String?)? validator;
-  final int? maxLines;
-  final Widget? suffix;
+  final TextEditingController? controller;
   final bool isRequired;
-  final bool isReadOnly;
+  final String? hintText;
+  final int maxLines;
+  final Widget? suffix;
+  final TextInputType? keyboardType;
+  final bool readOnly;
+  final VoidCallback? onTap;
+  final ValueChanged<String>? onChanged;
 
   const AppTextFormField({
     super.key,
     required this.label,
+    this.controller,
+    this.isRequired = false,
     this.hintText,
-    required this.controller,
-    this.keyboardType,
-    this.validator,
     this.maxLines = 1,
     this.suffix,
-    this.isRequired = false,
-    this.isReadOnly = false,
+    this.keyboardType,
+    this.readOnly = false,
+    this.onTap,
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              label,
-              style: theme.textTheme.titleSmall?.copyWith(
-                color: AppColors.baseDarkGrey,
-              ),
-            ),
-            if (isRequired) ...[
-              const SizedBox(width: 4),
-              Text(
-                '*',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: AppColors.supportRedDeep,
-                ),
-              ),
-            ],
-          ],
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          readOnly: isReadOnly,
-          enabled: !isReadOnly,
-          validator: validator,
-          decoration: InputDecoration(
-            hintText: hintText ?? label,
-            hintStyle: theme.textTheme.bodyLarge?.copyWith(
-              color: AppColors.baseGrey,
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-            filled: true,
-            fillColor: AppColors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.baseGrey),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.baseGrey),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.supportRedDeep),
-            ),
-            suffix: suffix,
-          ),
-        ),
-      ],
+    return AppTextField(
+      label: label,
+      controller: controller,
+      isRequired: isRequired,
+      hintText: hintText,
+      maxLines: maxLines,
+      suffix: suffix,
+      keyboardType: keyboardType,
+      readOnly: readOnly,
+      onTap: onTap,
+      onChanged: onChanged,
     );
   }
 }

@@ -102,7 +102,7 @@ class MockPropertyData {
     Property(
       id: '8',
       code: '000003',
-      title: 'อสังหาริมุทรัพย์ที่ 8',
+      title: 'อสังหาริมทรัพย์ที่ 8',
       description: 'บ้านเดี่ยว 2 ชั้น',
       location: 'รามคำแหง, กรุงเทพมหานคร',
       latitude: 13.7590,
