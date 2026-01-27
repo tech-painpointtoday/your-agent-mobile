@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -47,10 +48,14 @@ class NotificationDetailScreen extends StatelessWidget {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.baseDarkGrey,
-            size: 20,
+          icon: SvgPicture.asset(
+            'assets/icons/chevron-left.svg',
+            width: 20,
+            height: 20,
+            colorFilter: const ColorFilter.mode(
+              AppColors.baseDarkGrey,
+              BlendMode.srcIn,
+            ),
           ),
           onPressed: () => context.pop(),
         ),

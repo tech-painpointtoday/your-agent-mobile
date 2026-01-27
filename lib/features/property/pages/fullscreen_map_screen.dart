@@ -9,8 +9,13 @@ import 'package:youragent/utils/map_marker_utils.dart';
 /// Fullscreen map view for properties with all controls
 class FullscreenMapScreen extends StatefulWidget {
   final List<Property> properties;
+  final bool showSearch;
 
-  const FullscreenMapScreen({super.key, required this.properties});
+  const FullscreenMapScreen({
+    super.key,
+    required this.properties,
+    this.showSearch = true,
+  });
 
   @override
   State<FullscreenMapScreen> createState() => _FullscreenMapScreenState();
@@ -184,13 +189,14 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
               child: Column(
                 children: [
                   // Search Bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+                  if (widget.showSearch)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: const AppSearchBar(),
                     ),
-                    child: const AppSearchBar(),
-                  ),
 
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -211,7 +217,9 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
 
           Positioned(
             left: 16,
-            top: MediaQuery.of(context).padding.top + 84,
+            top:
+                MediaQuery.of(context).padding.top +
+                (widget.showSearch ? 84 : 0),
             child: _buildControlButton(
               iconPath: 'assets/icons/chevron-left.svg',
               onTap: () => Navigator.pop(context),
@@ -221,7 +229,9 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
           // Right Side Controls (Layers, Location, Zoom)
           Positioned(
             right: 16,
-            top: MediaQuery.of(context).padding.top + 84,
+            top:
+                MediaQuery.of(context).padding.top +
+                (widget.showSearch ? 84 : 0),
             child: Column(
               children: [
                 // Maximize/Exit Fullscreen Button

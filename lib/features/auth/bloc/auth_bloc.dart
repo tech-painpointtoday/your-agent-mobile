@@ -25,7 +25,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SetRoleEvent>(_onSetRole);
     on<AuthForgotPasswordRequested>(_onForgotPassword);
     on<AuthResetPasswordRequested>(_onResetPassword);
+    on<AuthResetPasswordRequested>(_onResetPassword);
     on<AuthResendVerificationPublicRequested>(_onResendVerificationPublic);
+    on<AuthSocialLoginRequested>(_onSocialLoginRequested);
+  }
+
+  Future<void> _onSocialLoginRequested(
+    AuthSocialLoginRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    final result = await authRepository.signInWithSocial(
+      provider: event.provider,
+      token: event.token,
+      role: event.role,
+    );
+
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (user) => emit(Authenticated(user)),
+    );
   }
 
   Future<void> _onSignInWithEmail(

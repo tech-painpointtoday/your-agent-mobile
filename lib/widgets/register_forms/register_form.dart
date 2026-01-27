@@ -9,6 +9,7 @@ import '../dialogs/status_dialog.dart';
 import '../form_fields/labeled_dropdown_field.dart';
 import '../form_fields/labeled_password_field.dart';
 import '../form_fields/labeled_text_form_field.dart';
+import '../form_fields/social_login_section.dart';
 
 class RegisterForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -189,6 +190,8 @@ class _RegisterFormState extends State<RegisterForm> {
                   }
                 : null,
           ),
+          const SizedBox(height: 24),
+          SocialLoginSection(role: widget.role),
         ],
       ),
     );

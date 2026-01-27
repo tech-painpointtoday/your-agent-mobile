@@ -81,10 +81,24 @@ class AuthResetPasswordRequested extends AuthEvent {
   List<Object?> get props => [token, email, password, passwordConfirmation];
 }
 
+class AuthSocialLoginRequested extends AuthEvent {
+  final String provider; // 'google' or 'facebook'
+  final String token;
+  final UserRole role;
+
+  const AuthSocialLoginRequested({
+    required this.provider,
+    required this.token,
+    required this.role,
+  });
+
+  @override
+  List<Object?> get props => [provider, token, role];
+}
+
 class AuthResendVerificationPublicRequested extends AuthEvent {
   final String email;
   const AuthResendVerificationPublicRequested({required this.email});
   @override
   List<Object?> get props => [email];
 }
-

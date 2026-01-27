@@ -17,6 +17,12 @@ abstract class AuthRepository {
     required String passwordConfirmation,
   });
 
+  Future<Either<Failure, User>> signInWithSocial({
+    required String provider,
+    required String token,
+    required UserRole role,
+  });
+
   Future<Either<Failure, void>> signOut();
 
   bool get isAuthenticated;

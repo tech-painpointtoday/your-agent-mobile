@@ -116,6 +116,46 @@ class AuthApiService {
     return _login(path: '/agency/login', email: email, password: password);
   }
 
+  Future<Map<String, dynamic>> socialLogin({
+    required String provider,
+    required String token,
+    required String role,
+  }) async {
+    try {
+      final response = await _apiClient.post(
+        '/auth/social-login',
+        data: {'provider': provider, 'token': token, 'role': role},
+      );
+      final data = response.data as Map<String, dynamic>;
+
+      // Save token logic similar to _login
+      String? authToken;
+      if (data['token'] != null) {
+        authToken = data['token'] as String?;
+      } else if (data['access_token'] != null) {
+        authToken = data['access_token'] as String?;
+      } else if (data['data'] is Map<String, dynamic>) {
+        final dataMap = data['data'] as Map<String, dynamic>;
+        authToken =
+            dataMap['token'] as String? ?? dataMap['access_token'] as String?;
+      }
+
+      if (authToken != null && authToken.isNotEmpty) {
+        await _apiClient.saveAuthToken(authToken);
+      }
+
+      return data;
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final message = (e.response?.data is Map<String, dynamic>)
+            ? (e.response?.data['message']?.toString())
+            : null;
+        throw Exception(message ?? 'Social login failed');
+      }
+      throw Exception('Failed to login with $provider: $e');
+    }
+  }
+
   Future<Map<String, dynamic>> getCurrentUser() async {
     final response = await _apiClient.get('/user');
     final data = response.data as Map<String, dynamic>;

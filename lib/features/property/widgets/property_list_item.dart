@@ -1,3 +1,4 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -120,12 +121,16 @@ class PropertyListItem extends StatelessWidget {
                       if (onEdit != null)
                         GestureDetector(
                           onTap: onEdit,
-                          child: Container(
+                          child: Padding(
                             padding: const EdgeInsets.all(2),
-                            child: const Icon(
-                              Icons.edit_outlined,
-                              size: 20,
-                              color: AppColors.baseDarkGrey,
+                            child: SvgPicture.asset(
+                              'assets/icons/edit.svg',
+                              width: 20,
+                              height: 20,
+                              colorFilter: const ColorFilter.mode(
+                                AppColors.baseDarkGrey,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),

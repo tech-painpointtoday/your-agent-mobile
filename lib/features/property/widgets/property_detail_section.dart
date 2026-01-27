@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 
@@ -6,6 +7,7 @@ import 'package:youragent/core/theme/app_colors.dart';
 class PropertyDetailSection extends StatelessWidget {
   final String title;
   final IconData? icon;
+  final String? svgIcon;
   final List<PropertyDetailRow> rows;
   final bool showDivider;
 
@@ -13,6 +15,7 @@ class PropertyDetailSection extends StatelessWidget {
     super.key,
     required this.title,
     this.icon,
+    this.svgIcon,
     required this.rows,
     this.showDivider = true,
   });
@@ -37,7 +40,18 @@ class PropertyDetailSection extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (icon != null) ...[
+              if (svgIcon != null) ...[
+                SvgPicture.asset(
+                  svgIcon!,
+                  width: 18,
+                  height: 18,
+                  colorFilter: const ColorFilter.mode(
+                    Color(0xFF181D27),
+                    BlendMode.srcIn,
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ] else if (icon != null) ...[
                 Icon(icon, size: 18, color: const Color(0xFF181D27)),
                 const SizedBox(width: 8),
               ],

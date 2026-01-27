@@ -74,11 +74,6 @@ class _PolicyScreenState extends State<PolicyScreen> {
         setState(() {
           _hasScrolledToBottom = true;
         });
-      } else if (currentScroll < maxScroll - threshold &&
-          _hasScrolledToBottom) {
-        setState(() {
-          _hasScrolledToBottom = false;
-        });
       }
     }
   }

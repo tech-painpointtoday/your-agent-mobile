@@ -13,6 +13,7 @@ import '../../../widgets/dialogs/status_dialog.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import '../../../widgets/form_fields/social_login_section.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function(Locale) changeLocale;
@@ -442,67 +443,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       const SizedBox(height: 18),
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Divider(color: AppColors.baseGrey),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text(
-                              l10n.or,
-                              style: const TextStyle(color: AppColors.baseGrey),
-                            ),
-                          ),
-                          const Expanded(
-                            child: Divider(color: AppColors.baseGrey),
-                          ),
-                        ],
-                      ),
+                      SocialLoginSection(role: _role),
                       const SizedBox(height: 14),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: null,
-                              icon: Image.asset(
-                                'assets/images/google-icon.png',
-                                width: 18,
-                                height: 18,
-                              ),
-                              label: const Text('Google'),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.baseDarkGrey,
-                                side: const BorderSide(
-                                  color: AppColors.baseGrey,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                minimumSize: const Size.fromHeight(48),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: null,
-                              icon: const Icon(Icons.facebook, size: 18),
-                              label: const Text('Facebook'),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.baseDarkGrey,
-                                side: const BorderSide(
-                                  color: AppColors.baseGrey,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                minimumSize: const Size.fromHeight(48),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                       const SizedBox(height: 14),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

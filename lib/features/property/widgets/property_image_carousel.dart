@@ -89,7 +89,7 @@ class _PropertyImageCarouselState extends State<PropertyImageCarousel> {
         // Image counter badge
         if (widget.imageUrls.length > 1)
           Positioned(
-            top: 12,
+            top: 12 + kToolbarHeight,
             right: 16,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -58,9 +59,14 @@ class _NotificationsScreenContent extends StatelessWidget {
                   elevation: 0,
                   pinned: true,
                   leading: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: AppColors.baseDarkGrey,
+                    icon: SvgPicture.asset(
+                      'assets/icons/chevron-left.svg',
+                      width: 20,
+                      height: 20,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.baseDarkGrey,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     onPressed: () => context.pop(),
                   ),
@@ -68,8 +74,7 @@ class _NotificationsScreenContent extends StatelessWidget {
                     'การแจ้งเตือน',
                     style: GoogleFonts.anuphan(
                       fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.baseDarkGrey,
+                      color: AppColors.baseBlack,
                     ),
                   ),
                   actions: [
@@ -81,7 +86,6 @@ class _NotificationsScreenContent extends StatelessWidget {
                         'อ่านทั้งหมด',
                         style: GoogleFonts.anuphan(
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
                           color: hasUnread
                               ? AppColors.primary
                               : AppColors.baseGrey,
@@ -154,10 +158,6 @@ class _NotificationsScreenContent extends StatelessWidget {
                                   },
                                 ),
                           ),
-                          const Divider(
-                            height: 1,
-                            color: AppColors.baseLightGrey,
-                          ),
                         ],
                       ),
                     ),
@@ -187,13 +187,7 @@ class _NotificationsScreenContent extends StatelessWidget {
                   )
                 else if (state is NotificationLoaded)
                   state.filteredNotifications.isEmpty
-                      ? SliverFillRemaining(
-                          child: NotificationEmptyState(
-                            title: 'ยังไม่มีการแจ้งเตือนตอนนี้',
-                            message:
-                                'เราจะแจ้งเตือนให้คุณทราบเมื่อมีอัปเดตใหม่',
-                          ),
-                        )
+                      ? SliverFillRemaining(child: NotificationEmptyState())
                       : SliverList(
                           delegate: SliverChildBuilderDelegate((
                             context,
@@ -250,8 +244,10 @@ class _FilterBadge extends StatelessWidget {
           label,
           style: GoogleFonts.anuphan(
             fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: isSelected ? AppColors.white : AppColors.baseDarkGrey,
+            fontWeight: FontWeight.w500,
+            color: isSelected
+                ? AppColors.supportBlueLight
+                : AppColors.baseDarkGrey,
           ),
         ),
       ),

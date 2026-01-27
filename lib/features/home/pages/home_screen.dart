@@ -10,7 +10,7 @@ import '../../../data/models/user_profile_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/image_url_helper.dart';
 import '../../../widgets/app_search_bar.dart';
-import '../../../widgets/backgrounds/blue_wave_background.dart';
+import '../../../widgets/app_bars/silver_app_bar.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_event.dart';
@@ -31,59 +31,29 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => NotificationBloc()..add(const LoadNotifications()),
-      child: Scaffold(
-        backgroundColor: AppColors.white,
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            final double headerHeight = constraints.maxHeight * 0.38;
-
-            return Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: headerHeight,
-                  child: const BlueWaveBackground(),
-                ),
-                SafeArea(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: const [
-                        SizedBox(height: 12),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: HomeHeader(),
-                        ),
-                        SizedBox(height: 14),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: HomeSearchBar(),
-                        ),
-                        SizedBox(height: 16),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: MenuGridCard(),
-                        ),
-                        SizedBox(height: 18),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: RecommendedSection(),
-                        ),
-                        SizedBox(height: 18),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: ActivitiesSection(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
+      child: SilverAppBarScreen(
+        preferredHeight: 132.0,
+        titleWidget: const HomeHeader(),
+        searchBar: const HomeSearchBar(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: MenuGridCard(),
+            ),
+            SizedBox(height: 18),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: RecommendedSection(),
+            ),
+            SizedBox(height: 18),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: ActivitiesSection(),
+            ),
+            SizedBox(height: 16),
+          ],
         ),
       ),
     );
@@ -232,13 +202,13 @@ class _HomeHeaderState extends State<HomeHeader> {
         ),
         const SizedBox(width: 10),
         _HeaderActionIcon(
-          svgPath: 'assets/images/bell-icon.svg',
+          svgPath: 'assets/icons/bell.svg',
           onTap: () => context.push('/notifications'),
           showBadge: true,
         ),
         const SizedBox(width: 10),
         _HeaderActionIcon(
-          svgPath: 'assets/images/message-icon.svg',
+          svgPath: 'assets/icons/message-round.svg',
           onTap: null,
         ),
         const SizedBox(width: 10),
@@ -535,7 +505,7 @@ class MenuGridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(12, 14, 12, 10),
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(20),
@@ -549,6 +519,7 @@ class MenuGridCard extends StatelessWidget {
       ),
       child: GridView.builder(
         shrinkWrap: true,
+        padding: const EdgeInsets.symmetric(vertical: 16),
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
