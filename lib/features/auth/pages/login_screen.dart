@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: BoxDecoration(
               color: selected ? AppColors.buttonLightGreen : AppColors.white,
               borderRadius: BorderRadius.circular(12),
-              border: role == UserRole.agent
+              border: selected
                   ? Border.all(color: const Color(0xFF32A792))
                   : null,
             ),

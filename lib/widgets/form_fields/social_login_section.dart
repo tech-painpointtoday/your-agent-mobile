@@ -117,7 +117,7 @@ class SocialLoginSection extends StatelessWidget {
           children: [
             Expanded(
               child: _SocialButton(
-                icon: 'assets/icons/google-icon.png',
+                icon: 'assets/logo/google.png',
                 label: 'Google',
                 onPressed: () => _handleGoogleLogin(context),
               ),
@@ -126,7 +126,7 @@ class SocialLoginSection extends StatelessWidget {
             Expanded(
               child: _SocialButton(
                 icon:
-                    'assets/icons/form/facebook-icon.png', // Assuming asset exists, fallback to empty container or text if not
+                    'assets/logo/facebook.png', // Assuming asset exists, fallback to empty container or text if not
                 label: 'Facebook',
                 onPressed: () => _handleFacebookLogin(context),
               ),
@@ -174,7 +174,7 @@ class _SocialButton extends StatelessWidget {
             label,
             style: GoogleFonts.anuphan(
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
               color: AppColors.baseBlack,
             ),
           ),

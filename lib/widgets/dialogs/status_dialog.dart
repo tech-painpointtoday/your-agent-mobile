@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
@@ -8,10 +11,68 @@ export 'status_dialog_components.dart';
 
 enum DialogType { info, success, error, warning, destructive }
 
+class _DialogRequest<T> {
+  final BuildContext context;
+  final Future<T> Function() builder;
+  final Completer<T> completer;
+
+  _DialogRequest(this.context, this.builder, this.completer);
+}
+
 /// Global Status Dialog Utility
 /// Provides consistent dialog styling across the app.
 /// Matches the new Clean UI design.
 class StatusDialog {
+  static final Queue<_DialogRequest> _dialogQueue = Queue();
+  static bool _isDialogShowing = false;
+
+  static Future<T?> _enqueue<T>({
+    required BuildContext context,
+    required Future<T> Function() builder,
+  }) async {
+    final completer = Completer<T>();
+    _dialogQueue.add(_DialogRequest<T>(context, builder, completer));
+    _processQueue();
+    return completer.future;
+  }
+
+  static Future<void> _processQueue() async {
+    if (_isDialogShowing || _dialogQueue.isEmpty) return;
+
+    final request = _dialogQueue.first;
+
+    // If context is no longer valid, skip this dialog and error the completer
+    if (!request.context.mounted) {
+      _dialogQueue.removeFirst();
+      // request.completer.completeError('Context not mounted'); // Or just complete with null/default?
+      // Since generic T, hard to return "null" if T is not nullable.
+      // But _enqueue returns Future<T?> so locally we handle null.
+      // But completer expects T.
+      // Let's just catch and move on.
+      try {
+        request.completer.completeError('Context not mounted');
+      } catch (_) {}
+      _processQueue();
+      return;
+    }
+
+    _isDialogShowing = true;
+    final currentRequest = _dialogQueue.removeFirst();
+
+    try {
+      final result = await currentRequest.builder();
+      currentRequest.completer.complete(result);
+    } catch (e) {
+      debugPrint('StatusDialog error: $e');
+      currentRequest.completer.completeError(e);
+    } finally {
+      _isDialogShowing = false;
+      // Small delay to ensure UI cleans up before showing next
+      await Future.delayed(const Duration(milliseconds: 150));
+      _processQueue();
+    }
+  }
+
   /// Show a Confirmation dialog (Primary Blue Action)
   static Future<bool> showConfirmation({
     required BuildContext context,
@@ -21,18 +82,24 @@ class StatusDialog {
     String cancelText = 'Cancel',
     VoidCallback? onConfirmed,
   }) async {
-    return await showDialog<bool>(
+    return await _enqueue<bool>(
           context: context,
-          builder: (context) => BaseStatusDialog(
-            title: title,
-            message: message,
-            confirmText: confirmText,
-            cancelText: cancelText,
-            confirmColor: AppColors.supportBlueDeep,
-            isDestructive: false,
-            type: DialogType.info,
-            onConfirm: onConfirmed,
-          ),
+          builder: () async {
+            final result = await showDialog<bool>(
+              context: context,
+              builder: (context) => BaseStatusDialog(
+                title: title,
+                message: message,
+                confirmText: confirmText,
+                cancelText: cancelText,
+                confirmColor: AppColors.supportBlueDeep,
+                isDestructive: false,
+                type: DialogType.info,
+                onConfirm: onConfirmed,
+              ),
+            );
+            return result ?? false;
+          },
         ) ??
         false;
   }
@@ -45,17 +112,23 @@ class StatusDialog {
     String confirmText = 'Delete',
     String cancelText = 'Cancel',
   }) async {
-    return await showDialog<bool>(
+    return await _enqueue<bool>(
           context: context,
-          builder: (context) => BaseStatusDialog(
-            title: title,
-            message: message,
-            confirmText: confirmText,
-            cancelText: cancelText,
-            confirmColor: AppColors.supportRedDeep,
-            isDestructive: true,
-            type: DialogType.destructive,
-          ),
+          builder: () async {
+            final result = await showDialog<bool>(
+              context: context,
+              builder: (context) => BaseStatusDialog(
+                title: title,
+                message: message,
+                confirmText: confirmText,
+                cancelText: cancelText,
+                confirmColor: AppColors.supportRedDeep,
+                isDestructive: true,
+                type: DialogType.destructive,
+              ),
+            );
+            return result ?? false;
+          },
         ) ??
         false;
   }
@@ -69,18 +142,23 @@ class StatusDialog {
     VoidCallback? onDismiss,
     Duration? callbackDelay, // Optional delay before running callback
   }) async {
-    await showDialog(
+    await _enqueue(
       context: context,
-      barrierColor: Colors.transparent,
-      barrierDismissible: true,
-      builder: (context) => StatusToast(
-        title: title,
-        message: message,
-        type: DialogType.success,
-        duration: duration,
-        onDismiss: onDismiss,
-        callbackDelay: callbackDelay,
-      ),
+      builder: () async {
+        await showDialog(
+          context: context,
+          barrierColor: Colors.transparent,
+          barrierDismissible: true,
+          builder: (context) => StatusToast(
+            title: title,
+            message: message,
+            type: DialogType.success,
+            duration: duration,
+            onDismiss: onDismiss,
+            callbackDelay: callbackDelay,
+          ),
+        );
+      },
     );
   }
 
@@ -93,18 +171,23 @@ class StatusDialog {
     VoidCallback? onDismiss,
     Duration? callbackDelay, // Optional delay before running callback
   }) async {
-    await showDialog(
+    await _enqueue(
       context: context,
-      barrierColor: Colors.transparent,
-      barrierDismissible: true,
-      builder: (context) => StatusToast(
-        title: title,
-        message: message,
-        type: DialogType.error,
-        duration: duration,
-        onDismiss: onDismiss,
-        callbackDelay: callbackDelay,
-      ),
+      builder: () async {
+        await showDialog(
+          context: context,
+          barrierColor: Colors.transparent,
+          barrierDismissible: true,
+          builder: (context) => StatusToast(
+            title: title,
+            message: message,
+            type: DialogType.error,
+            duration: duration,
+            onDismiss: onDismiss,
+            callbackDelay: callbackDelay,
+          ),
+        );
+      },
     );
   }
 
@@ -117,18 +200,135 @@ class StatusDialog {
     VoidCallback? onDismiss,
     Duration? callbackDelay, // Optional delay before running callback
   }) async {
-    await showDialog(
+    await _enqueue(
       context: context,
-      barrierColor: Colors.transparent,
-      barrierDismissible: true,
-      builder: (context) => StatusToast(
-        title: title,
-        message: message,
-        type: DialogType.warning,
-        duration: duration,
-        onDismiss: onDismiss,
-        callbackDelay: callbackDelay,
-      ),
+      builder: () async {
+        await showDialog(
+          context: context,
+          barrierColor: Colors.transparent,
+          barrierDismissible: true,
+          builder: (context) => StatusToast(
+            title: title,
+            message: message,
+            type: DialogType.warning,
+            duration: duration,
+            onDismiss: onDismiss,
+            callbackDelay: callbackDelay,
+          ),
+        );
+      },
+    );
+  }
+
+  // ==========================================
+  // Modal Dialogs (Center Screen, Single Action)
+  // ==========================================
+
+  /// Show Info Dialog (Blue, Single OK Action)
+  static Future<void> showInfoDialog({
+    required BuildContext context,
+    required String title,
+    String? message,
+    String buttonText = 'OK',
+    VoidCallback? onOk,
+  }) async {
+    await _enqueue(
+      context: context,
+      builder: () async {
+        await showDialog(
+          context: context,
+          builder: (context) => BaseStatusDialog(
+            title: title,
+            message: message,
+            confirmText: buttonText,
+            confirmColor: AppColors.supportBlueDeep,
+            isSingleAction: true,
+            type: DialogType.info,
+            onConfirm: onOk,
+          ),
+        );
+      },
+    );
+  }
+
+  /// Show Success Dialog (Green, Single OK Action)
+  static Future<void> showSuccessDialog({
+    required BuildContext context,
+    required String title,
+    String? message,
+    String buttonText = 'OK',
+    VoidCallback? onOk,
+  }) async {
+    await _enqueue(
+      context: context,
+      builder: () async {
+        await showDialog(
+          context: context,
+          builder: (context) => BaseStatusDialog(
+            title: title,
+            message: message,
+            confirmText: buttonText,
+            confirmColor: AppColors.supportGreenDark,
+            isSingleAction: true,
+            type: DialogType.success,
+            onConfirm: onOk,
+          ),
+        );
+      },
+    );
+  }
+
+  /// Show Error Dialog (Red, Single OK Action)
+  static Future<void> showErrorDialog({
+    required BuildContext context,
+    required String title,
+    String? message,
+    String buttonText = 'OK',
+    VoidCallback? onOk,
+  }) async {
+    await _enqueue(
+      context: context,
+      builder: () async {
+        await showDialog(
+          context: context,
+          builder: (context) => BaseStatusDialog(
+            title: title,
+            message: message,
+            confirmText: buttonText,
+            confirmColor: AppColors.supportRedDeep,
+            isSingleAction: true,
+            type: DialogType.error,
+            onConfirm: onOk,
+          ),
+        );
+      },
+    );
+  }
+
+  /// Show Warning Dialog (Orange, Single OK Action)
+  static Future<void> showWarningDialog({
+    required BuildContext context,
+    required String title,
+    String? message,
+    String buttonText = 'OK',
+    VoidCallback? onOk,
+  }) async {
+    await _enqueue(
+      context: context,
+      builder: () async {
+        await showDialog(
+          context: context,
+          builder: (context) => BaseStatusDialog(
+            title: title,
+            message: message,
+            confirmText: buttonText,
+            confirmColor: AppColors.supportOrangeDark,
+            isSingleAction: true,
+            type: DialogType.warning,
+            onConfirm: onOk,
+          ),
+        );
+      },
     );
   }
 

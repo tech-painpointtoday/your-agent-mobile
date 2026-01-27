@@ -33,7 +33,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SetRoleEvent>(_onSetRole);
     on<AuthForgotPasswordRequested>(_onForgotPassword);
     on<AuthResetPasswordRequested>(_onResetPassword);
-    on<AuthResetPasswordRequested>(_onResetPassword);
+
     on<AuthResendVerificationPublicRequested>(_onResendVerificationPublic);
     on<AuthSocialLoginRequested>(_onSocialLoginRequested);
   }

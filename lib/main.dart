@@ -5,6 +5,7 @@ import 'package:talker_bloc_logger/talker_bloc_logger.dart';
 import 'app.dart';
 import 'core/config/app_config.dart';
 import 'core/di/dependency_injection.dart';
+import 'core/error/app_error_handler.dart';
 import 'core/init/app_initializer.dart';
 import 'flavors.dart';
 
@@ -27,5 +28,6 @@ Future<void> main() async {
   }
 
   await AppInitializer.initialize();
+  AppErrorHandler.initialize();
   runApp(const App());
 }
