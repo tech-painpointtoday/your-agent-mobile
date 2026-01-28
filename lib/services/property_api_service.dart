@@ -265,6 +265,35 @@ class PropertyApiService {
     }
   }
 
+  /// Update an existing property
+  /// PUT /agent/properties/{id}
+  Future<Property> updateProperty({
+    String? role,
+    required int propertyId,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      final actualRole = role ?? _currentRole;
+      final response = await _apiClient.put(
+        '/$actualRole/properties/$propertyId',
+        data: data,
+      );
+      final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
+        response.data as Map<String, dynamic>,
+        (data) => data as Map<String, dynamic>,
+      );
+      if (!apiResponse.success || apiResponse.data == null) {
+        throw Exception(apiResponse.message ?? 'Failed to update property');
+      }
+      return Property.fromJson(apiResponse.data!);
+    } catch (e) {
+      if (e is DioException) {
+        throw Exception(ApiResponseService.getErrorMessage(e));
+      }
+      throw Exception('Failed to update property: $e');
+    }
+  }
+
   /// @deprecated Use createProperty with unified payload instead
   /// Create a new property (with optional photos)
   /// POST /agent/properties/create

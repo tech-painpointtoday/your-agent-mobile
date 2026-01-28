@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -51,18 +52,18 @@ class AppRouter {
 
       // Protected routes that require authentication
       final protectedRoutes = [
-        // '/',
-        // '/home-screen',
-        // '/property',
-        // '/money',
-        // '/calendar',
-        // '/contact',
-        // '/dashboard',
-        // '/co-agent',
-        // '/contract',
-        // '/bureau',
-        // '/activities',
-        // '/notifications',
+        '/',
+        '/home-screen',
+        '/property',
+        '/money',
+        '/calendar',
+        '/contact',
+        '/dashboard',
+        '/co-agent',
+        '/contract',
+        '/bureau',
+        '/activities',
+        '/notifications',
       ];
 
       final isProtectedRoute = protectedRoutes.any(
@@ -82,7 +83,7 @@ class AppRouter {
         return null; // Allow access to login/register when not logged in
       }
 
-      if (isProtectedRoute) {
+      if (isProtectedRoute || kDebugMode) {
         return '/login';
       }
       return null;

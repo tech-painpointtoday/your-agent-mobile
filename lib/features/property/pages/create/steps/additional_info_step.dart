@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import '../../../../../core/theme/app_colors.dart';
-import '../../../../../features/property/bloc/create_property/create_property_bloc.dart';
+import '../../../../../features/property/bloc/property_form/property_form_bloc.dart';
 import '../../../../../widgets/form_fields/app_text_form_field.dart';
 import '../../../../../widgets/inputs/app_selectable_grid.dart';
 import '../../../../../widgets/inputs/app_multi_select_chips.dart';
@@ -22,13 +22,13 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
   @override
   void initState() {
     super.initState();
-    final state = context.read<CreatePropertyBloc>().state;
+    final state = context.read<PropertyFormBloc>().state;
     _descriptionController = TextEditingController(
       text: state.description ?? '',
     );
 
     if (state.specificationFilters.multiSelect.isEmpty) {
-      context.read<CreatePropertyBloc>().add(CreatePropertyFiltersFetched());
+      context.read<PropertyFormBloc>().add(PropertyFormFiltersFetched());
     }
   }
 
@@ -40,7 +40,7 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CreatePropertyBloc, CreatePropertyState>(
+    return BlocConsumer<PropertyFormBloc, PropertyFormState>(
       listenWhen: (previous, current) =>
           previous.description != current.description,
       listener: (context, state) {
@@ -137,8 +137,8 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                     imagePath: 'assets/images/property_styles/other.jpg',
                   ),
                 ],
-                onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                  CreatePropertyStyleChanged(val),
+                onChanged: (val) => context.read<PropertyFormBloc>().add(
+                  PropertyFormStyleChanged(val),
                 ),
               ),
               const SizedBox(height: 24),
@@ -156,8 +156,8 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                             [],
                         options: filter.options,
                         onSelected: (val) =>
-                            context.read<CreatePropertyBloc>().add(
-                              CreatePropertyDynamicMultiSelectToggled(
+                            context.read<PropertyFormBloc>().add(
+                              PropertyFormDynamicMultiSelectToggled(
                                 filter.key,
                                 val,
                               ),
@@ -180,8 +180,8 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                     'ใกล้โรงพยาบาล',
                     'โครงการใหม่',
                   ],
-                  onSelected: (val) => context.read<CreatePropertyBloc>().add(
-                    CreatePropertyHighlightToggled(val),
+                  onSelected: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormHighlightToggled(val),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -199,8 +199,8 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                     'สนามกีฬา',
                     'เจ้าหน้าที่ รปภ.',
                   ],
-                  onSelected: (val) => context.read<CreatePropertyBloc>().add(
-                    CreatePropertyFacilityToggled(val),
+                  onSelected: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormFacilityToggled(val),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -211,8 +211,8 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                 label: 'รายละเอียดเพิ่มเติม',
                 controller: _descriptionController,
                 maxLines: 5,
-                onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                  CreatePropertyGeneralInfoUpdated(description: val),
+                onChanged: (val) => context.read<PropertyFormBloc>().add(
+                  PropertyFormGeneralInfoUpdated(description: val),
                 ),
               ),
               const SizedBox(height: 100),

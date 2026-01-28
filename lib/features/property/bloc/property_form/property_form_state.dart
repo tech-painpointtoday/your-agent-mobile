@@ -5,16 +5,16 @@ import '../../../../data/models/developer_model.dart';
 import '../../../../data/models/condo_project_model.dart';
 import '../../../../data/models/property_specification_filters.dart';
 
-enum CreatePropertyStatus {
+enum PropertyFormStatus {
   initial,
   submissionInProgress,
   submissionSuccess,
   submissionFailure,
 }
 
-class CreatePropertyState extends Equatable {
+class PropertyFormState extends Equatable {
   final int step;
-  final CreatePropertyStatus createPropertyStatus;
+  final PropertyFormStatus propertyFormStatus;
   final String? errorMessage;
   final int? propertyId; // Resulting property ID after success
 
@@ -86,9 +86,9 @@ class CreatePropertyState extends Equatable {
   final Map<String, dynamic>
   dynamicValues; // key -> value (String or List<String>)
 
-  const CreatePropertyState({
+  const PropertyFormState({
     this.step = 1,
-    this.createPropertyStatus = CreatePropertyStatus.initial,
+    this.propertyFormStatus = PropertyFormStatus.initial,
     this.errorMessage,
     this.propertyId,
     this.selectedPropertyType,
@@ -143,6 +143,106 @@ class CreatePropertyState extends Equatable {
     this.specificationFilters = const PropertySpecificationFilters(),
     this.dynamicValues = const {},
   });
+
+  factory PropertyFormState.fromProperty(
+    Property property, {
+    PropertySpecificationFilters? filters,
+  }) {
+    // Helper to safe parse int
+    int? safeInt(dynamic val) {
+      if (val == null) return null;
+      if (val is int) return val;
+      if (val is String) return int.tryParse(val);
+      return null;
+    }
+
+    // Map specs
+    final specs = property.specifications;
+    final specValues = property.specificationValues;
+
+    // Extract dynamic values (flattening specValues)
+    final dynamicMap = <String, dynamic>{};
+    specValues.forEach((key, value) {
+      dynamicMap[key] = value;
+    });
+    specs.forEach((key, value) {
+      if (!dynamicMap.containsKey(key)) {
+        dynamicMap[key] = value;
+      }
+    });
+
+    return PropertyFormState(
+      propertyId: property.id,
+      selectedPropertyType: property.propertyType,
+      name: property.name,
+      price: property.price,
+      description: property.description,
+      address: property.address,
+      latitude: property.latitude,
+      longitude: property.longitude,
+      bedrooms: property.bedrooms,
+      bathrooms: property.bathrooms,
+      garage: property.garage,
+      landSize: property.landSize,
+      buildingSize: property.buildingSize,
+      houseColor: property.houseColor,
+      built: property.built,
+      direction: property.direction,
+      availableFrom: property.availableFrom,
+      // Images logic needs handling XFiles vs URLs.
+      // For editing, we might need a separate field for existingImageUrls in State
+      // But for now, let's leave images empty as we might not convert URLs to XFiles easily here
+      // The PropertyImagesStep will need to handle existing URLs display.
+      images: [],
+
+      // Location
+      number: property.number,
+      city: property.city,
+      state: property.state,
+      country: property.country,
+      postalCode: property.postalCode,
+      subdistrict: property.subdistrict,
+      district: property.district,
+      province: property.state, // Map state to province
+      road: property.road,
+      soi: property.soi,
+      formattedAddressEn: property.formattedAddressEn,
+      formattedAddressTh: property.formattedAddressTh,
+
+      // Enum/Strings
+      listingType: property.listingType,
+      status: property.status,
+      totalFloors: property.totalFloors,
+      propertyStyle: property.propertyStyle,
+
+      // Lists
+      highlights:
+          (specValues['good_points'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      facilities:
+          (specValues['common_facilities'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+
+      specificationFilters: filters ?? const PropertySpecificationFilters(),
+      dynamicValues: dynamicMap,
+
+      // Attempt to map specific fields from specs if available
+      condoProjectId: safeInt(specs['condo_project_id']),
+      tower: specs['tower'] as String?,
+      condoFloor: specs['floor'] as String?,
+      unitNo: specs['unit_no'] as String?,
+      villageName: specs['village_name'] as String?,
+      moo: specs['moo'] as String?,
+      houseSubtype: specs['house_subtype'] as String?,
+      parkingType: specs['parking_type'] as String?,
+      isCornerPlot: specs['is_corner_plot'] == 'true',
+      houseNotes: specs['house_notes'] as String?,
+    );
+  }
 
   Map<String, dynamic> get data => {
     'selectedPropertyType': selectedPropertyType,
@@ -237,9 +337,9 @@ class CreatePropertyState extends Equatable {
     return true;
   }
 
-  CreatePropertyState copyWith({
+  PropertyFormState copyWith({
     int? step,
-    CreatePropertyStatus? createPropertyStatus,
+    PropertyFormStatus? propertyFormStatus,
     String? errorMessage,
     int? propertyId,
     String? selectedPropertyType,
@@ -294,9 +394,9 @@ class CreatePropertyState extends Equatable {
     PropertySpecificationFilters? specificationFilters,
     Map<String, dynamic>? dynamicValues,
   }) {
-    return CreatePropertyState(
+    return PropertyFormState(
       step: step ?? this.step,
-      createPropertyStatus: createPropertyStatus ?? this.createPropertyStatus,
+      propertyFormStatus: propertyFormStatus ?? this.propertyFormStatus,
       errorMessage: errorMessage ?? this.errorMessage,
       propertyId: propertyId ?? this.propertyId,
       selectedPropertyType: selectedPropertyType ?? this.selectedPropertyType,
@@ -435,7 +535,7 @@ class CreatePropertyState extends Equatable {
   @override
   List<Object?> get props => [
     step,
-    createPropertyStatus,
+    propertyFormStatus,
     errorMessage,
     propertyId,
     selectedPropertyType,

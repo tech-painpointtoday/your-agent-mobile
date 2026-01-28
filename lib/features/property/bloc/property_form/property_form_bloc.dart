@@ -3,73 +3,97 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../services/property_api_service.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../data/models/property_specification_filters.dart';
-import '../../../../domain/entities/user.dart';
-import 'create_property_event.dart';
-import 'create_property_state.dart';
 
-export 'create_property_event.dart';
-export 'create_property_state.dart';
+import '../../../../domain/entities/property.dart';
+import '../../../../data/models/developer_model.dart';
+import '../../../../data/models/condo_project_model.dart';
+import 'property_form_event.dart';
+import 'property_form_state.dart';
 
-class CreatePropertyBloc
-    extends Bloc<CreatePropertyEvent, CreatePropertyState> {
+export 'property_form_event.dart';
+export 'property_form_state.dart';
+
+class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
   final PropertyApiService _propertyApiService;
   final PropertySpecificationFilters? initialFilters;
+  final List<CondoProject> _allCondoProjects;
 
-  CreatePropertyBloc({
+  PropertyFormBloc({
     PropertyApiService? propertyApiService,
     this.initialFilters,
+    Property? initialProperty,
+    List<Developer>? initialDevelopers,
+    List<CondoProject>? initialCondoProjects,
   }) : _propertyApiService =
            propertyApiService ?? DependencyInjection.propertyApiService,
+       _allCondoProjects = initialCondoProjects ?? const [],
        super(
-         CreatePropertyState(
-           specificationFilters:
-               initialFilters ?? const PropertySpecificationFilters(),
-         ),
+         initialProperty != null
+             ? PropertyFormState.fromProperty(
+                 initialProperty,
+                 filters: initialFilters,
+               ).copyWith(
+                 developers: initialDevelopers, // Inject cached developers
+                 // Don't inject condoProjects yet as they need filtering
+               )
+             : PropertyFormState(
+                 specificationFilters:
+                     initialFilters ?? const PropertySpecificationFilters(),
+                 developers: initialDevelopers ?? const [],
+               ),
        ) {
-    on<CreatePropertyStepChanged>(_onStepChanged);
-    on<CreatePropertyTypeSelected>(_onTypeSelected);
-    on<CreatePropertyGeneralInfoUpdated>(_onGeneralInfoUpdated);
-    on<CreatePropertyDataUpdated>(_onDataUpdated);
-    on<CreatePropertyLocationUpdated>(_onLocationUpdated);
-    on<CreatePropertyLocationFieldUpdated>(_onLocationFieldUpdated);
-    on<CreatePropertyDetailsUpdated>(_onDetailsUpdated);
-    on<CreatePropertyAdditionalInfoUpdated>(_onAdditionalInfoUpdated);
-    on<CreatePropertyImagesUpdated>(_onImagesUpdated);
-    on<CreatePropertySubmitted>(_onSubmitted);
-    on<CreatePropertyReset>(_onReset);
+    on<PropertyFormStepChanged>(_onStepChanged);
+    on<PropertyFormTypeSelected>(_onTypeSelected);
+    on<PropertyFormGeneralInfoUpdated>(_onGeneralInfoUpdated);
+    on<PropertyFormDataUpdated>(_onDataUpdated);
+    on<PropertyFormLocationUpdated>(_onLocationUpdated);
+    on<PropertyFormLocationFieldUpdated>(_onLocationFieldUpdated);
+    on<PropertyFormDetailsUpdated>(_onDetailsUpdated);
+    on<PropertyFormAdditionalInfoUpdated>(_onAdditionalInfoUpdated);
+    on<PropertyFormImagesUpdated>(_onImagesUpdated);
+    on<PropertyFormSubmitted>(_onSubmitted);
+    on<PropertyFormReset>(_onReset);
 
     // New handlers for master data
-    on<CreatePropertyDevelopersFetched>(_onDevelopersFetched);
-    on<CreatePropertyCondoProjectsFetched>(_onCondoProjectsFetched);
-    on<CreatePropertyDeveloperChanged>(_onDeveloperChanged);
-    on<CreatePropertyCondoProjectChanged>(_onCondoProjectChanged);
-    on<CreatePropertyListingTypeChanged>(_onListingTypeChanged);
-    on<CreatePropertyStatusChanged>(_onStatusChanged);
-    on<CreatePropertyStyleChanged>(_onStyleChanged);
-    on<CreatePropertyHighlightToggled>(_onHighlightToggled);
-    on<CreatePropertyFacilityToggled>(_onFacilityToggled);
-    on<CreatePropertyFiltersFetched>(_onFiltersFetched);
-    on<CreatePropertyDynamicSingleSelectChanged>(_onDynamicSingleSelectChanged);
-    on<CreatePropertyDynamicMultiSelectToggled>(_onDynamicMultiSelectToggled);
+    on<PropertyFormDevelopersFetched>(_onDevelopersFetched);
+    on<PropertyFormCondoProjectsFetched>(_onCondoProjectsFetched);
+    on<PropertyFormDeveloperChanged>(_onDeveloperChanged);
+    on<PropertyFormCondoProjectChanged>(_onCondoProjectChanged);
+    on<PropertyFormListingTypeChanged>(_onListingTypeChanged);
+    on<PropertyFormStatusChanged>(_onStatusChanged);
+    on<PropertyFormStyleChanged>(_onStyleChanged);
+    on<PropertyFormHighlightToggled>(_onHighlightToggled);
+    on<PropertyFormFacilityToggled>(_onFacilityToggled);
+    on<PropertyFormFiltersFetched>(_onFiltersFetched);
+    on<PropertyFormDynamicSingleSelectChanged>(_onDynamicSingleSelectChanged);
+    on<PropertyFormDynamicMultiSelectToggled>(_onDynamicMultiSelectToggled);
+    on<PropertyFormResetStatus>(_onResetStatus);
+  }
+
+  void _onResetStatus(
+    PropertyFormResetStatus event,
+    Emitter<PropertyFormState> emit,
+  ) {
+    emit(state.copyWith(propertyFormStatus: PropertyFormStatus.initial));
   }
 
   void _onStepChanged(
-    CreatePropertyStepChanged event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormStepChanged event,
+    Emitter<PropertyFormState> emit,
   ) {
     emit(state.copyWith(step: event.step));
   }
 
   void _onTypeSelected(
-    CreatePropertyTypeSelected event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormTypeSelected event,
+    Emitter<PropertyFormState> emit,
   ) {
     emit(state.copyWith(selectedPropertyType: event.type));
   }
 
   void _onGeneralInfoUpdated(
-    CreatePropertyGeneralInfoUpdated event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormGeneralInfoUpdated event,
+    Emitter<PropertyFormState> emit,
   ) {
     emit(
       state.copyWith(
@@ -84,8 +108,8 @@ class CreatePropertyBloc
   }
 
   void _onDataUpdated(
-    CreatePropertyDataUpdated event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormDataUpdated event,
+    Emitter<PropertyFormState> emit,
   ) {
     // This is a generic way to update any field in the state.
     // For simplicity, we'll map key to field here.
@@ -115,8 +139,8 @@ class CreatePropertyBloc
   }
 
   void _onLocationUpdated(
-    CreatePropertyLocationUpdated event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormLocationUpdated event,
+    Emitter<PropertyFormState> emit,
   ) {
     final data = event.locationData;
     emit(
@@ -140,8 +164,8 @@ class CreatePropertyBloc
   }
 
   void _onLocationFieldUpdated(
-    CreatePropertyLocationFieldUpdated event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormLocationFieldUpdated event,
+    Emitter<PropertyFormState> emit,
   ) {
     switch (event.key) {
       case 'number':
@@ -178,8 +202,8 @@ class CreatePropertyBloc
   }
 
   void _onDetailsUpdated(
-    CreatePropertyDetailsUpdated event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormDetailsUpdated event,
+    Emitter<PropertyFormState> emit,
   ) {
     emit(
       state.copyWith(
@@ -195,8 +219,8 @@ class CreatePropertyBloc
   }
 
   void _onAdditionalInfoUpdated(
-    CreatePropertyAdditionalInfoUpdated event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormAdditionalInfoUpdated event,
+    Emitter<PropertyFormState> emit,
   ) {
     emit(
       state.copyWith(
@@ -208,72 +232,57 @@ class CreatePropertyBloc
   }
 
   void _onImagesUpdated(
-    CreatePropertyImagesUpdated event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormImagesUpdated event,
+    Emitter<PropertyFormState> emit,
   ) {
     emit(state.copyWith(images: event.images));
   }
 
   Future<void> _onSubmitted(
-    CreatePropertySubmitted event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormSubmitted event,
+    Emitter<PropertyFormState> emit,
   ) async {
+    // 1. Validate
+    if (!state.isValid) {
+      emit(
+        state.copyWith(
+          propertyFormStatus: PropertyFormStatus.submissionFailure,
+          errorMessage: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+        ),
+      );
+      return;
+    }
+
     emit(
       state.copyWith(
-        createPropertyStatus: CreatePropertyStatus.submissionInProgress,
+        propertyFormStatus: PropertyFormStatus.submissionInProgress,
       ),
     );
 
     try {
-      final role =
-          DependencyInjection.authRepository.currentRole ?? UserRole.agent;
-      final roleName = role.name;
+      final roleName = state.selectedDeveloperId != null ? 'agency' : 'agent';
 
-      final payload = <String, dynamic>{
-        ...state
-            .dynamicValues, // Include dynamic values (e.g. furniture, air_conditioning)
-        'built': state.built ?? '',
-        'name': state.name,
-        'type': state.selectedPropertyType,
-        'approval_status': 'pending',
-        'bedrooms': state.bedrooms,
-        'bathrooms': state.bathrooms,
-        'garage': state.garage,
-        'address': state.address,
-        'price': state.price,
-        'description': state.description,
-        'land_size': state.landSize,
-        'building_size': state.buildingSize,
-        'available_from': state.availableFrom,
-        'house_color': state.houseColor,
-        'direction': state.direction,
-        'latitude': state.latitude,
-        'longitude': state.longitude,
-        'number': state.number,
-        'city': state.city,
-        'state': state.state,
-        'province': state.province ?? state.state,
-        'postal_code': state.postalCode,
-        'country': state.country,
-        'subdistrict': state.subdistrict,
-        'district': state.district,
-        'road': state.road,
-        'soi': state.soi,
-        'formatted_address_en': state.formattedAddressEn ?? state.address ?? '',
-        'listing_type': state.listingType,
-        'status': state.status,
-        'total_floors': state.totalFloors,
-        'property_style': state.propertyStyle,
-        'highlights': state.highlights,
-        'facilities': state.facilities,
-      };
+      // 2. Build Payload (Unified)
+      // Use state.data which constructs the map for API
+      final payload = state.data;
 
-      final createResponse = await _propertyApiService.saveProperty(
-        role: roleName,
-        data: payload,
-      );
+      Property responseProperty;
 
-      final propertyId = createResponse.id;
+      if (state.propertyId != null) {
+        responseProperty = await _propertyApiService.updateProperty(
+          role: roleName,
+          propertyId: state.propertyId!,
+          data: payload,
+        );
+      } else {
+        // CREATE
+        responseProperty = await _propertyApiService.saveProperty(
+          role: roleName,
+          data: payload,
+        );
+      }
+
+      final propertyId = responseProperty.id;
 
       // Upload photos if any
       if (state.images.isNotEmpty && propertyId != null) {
@@ -287,28 +296,31 @@ class CreatePropertyBloc
 
       emit(
         state.copyWith(
-          createPropertyStatus: CreatePropertyStatus.submissionSuccess,
+          propertyFormStatus: PropertyFormStatus.submissionSuccess,
           propertyId: propertyId,
         ),
       );
     } catch (e) {
       emit(
         state.copyWith(
-          createPropertyStatus: CreatePropertyStatus.submissionFailure,
+          propertyFormStatus: PropertyFormStatus.submissionFailure,
           errorMessage: e.toString(),
         ),
       );
     }
   }
 
-  void _onReset(CreatePropertyReset event, Emitter<CreatePropertyState> emit) {
-    emit(const CreatePropertyState());
+  void _onReset(PropertyFormReset event, Emitter<PropertyFormState> emit) {
+    emit(const PropertyFormState());
   }
 
   Future<void> _onDevelopersFetched(
-    CreatePropertyDevelopersFetched event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormDevelopersFetched event,
+    Emitter<PropertyFormState> emit,
   ) async {
+    // 1. Use cached if available
+    if (state.developers.isNotEmpty) return;
+
     try {
       final developers = await _propertyApiService.getDevelopers();
       emit(state.copyWith(developers: developers));
@@ -318,9 +330,23 @@ class CreatePropertyBloc
   }
 
   Future<void> _onCondoProjectsFetched(
-    CreatePropertyCondoProjectsFetched event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormCondoProjectsFetched event,
+    Emitter<PropertyFormState> emit,
   ) async {
+    // 1. Use cached master list if available
+    if (_allCondoProjects.isNotEmpty) {
+      if (event.developerId == null) {
+        emit(state.copyWith(condoProjects: []));
+        return;
+      }
+      final filtered = _allCondoProjects
+          .where((p) => p.developerId == event.developerId)
+          .toList();
+      emit(state.copyWith(condoProjects: filtered));
+      return;
+    }
+
+    // 2. Fallback to API
     try {
       final projects = await _propertyApiService.getCondoProjects(
         developerId: event.developerId,
@@ -332,8 +358,8 @@ class CreatePropertyBloc
   }
 
   void _onDeveloperChanged(
-    CreatePropertyDeveloperChanged event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormDeveloperChanged event,
+    Emitter<PropertyFormState> emit,
   ) {
     emit(
       state.copyWith(
@@ -344,8 +370,8 @@ class CreatePropertyBloc
   }
 
   void _onCondoProjectChanged(
-    CreatePropertyCondoProjectChanged event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormCondoProjectChanged event,
+    Emitter<PropertyFormState> emit,
   ) {
     // Bidirectional sync: If project is selected, also select its developer
     int? devId;
@@ -369,29 +395,29 @@ class CreatePropertyBloc
   }
 
   void _onListingTypeChanged(
-    CreatePropertyListingTypeChanged event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormListingTypeChanged event,
+    Emitter<PropertyFormState> emit,
   ) {
     emit(state.copyWith(listingType: event.listingType));
   }
 
   void _onStatusChanged(
-    CreatePropertyStatusChanged event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormStatusChanged event,
+    Emitter<PropertyFormState> emit,
   ) {
     emit(state.copyWith(status: event.status));
   }
 
   void _onStyleChanged(
-    CreatePropertyStyleChanged event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormStyleChanged event,
+    Emitter<PropertyFormState> emit,
   ) {
     emit(state.copyWith(propertyStyle: event.style));
   }
 
   void _onHighlightToggled(
-    CreatePropertyHighlightToggled event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormHighlightToggled event,
+    Emitter<PropertyFormState> emit,
   ) {
     final current = List<String>.from(state.highlights);
     if (current.contains(event.highlight)) {
@@ -403,8 +429,8 @@ class CreatePropertyBloc
   }
 
   void _onFacilityToggled(
-    CreatePropertyFacilityToggled event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormFacilityToggled event,
+    Emitter<PropertyFormState> emit,
   ) {
     // Legacy fallback, map to dynamic if needed or keep parallel
     final current = List<String>.from(state.facilities);
@@ -417,8 +443,8 @@ class CreatePropertyBloc
   }
 
   Future<void> _onFiltersFetched(
-    CreatePropertyFiltersFetched event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormFiltersFetched event,
+    Emitter<PropertyFormState> emit,
   ) async {
     try {
       final filters = await _propertyApiService.getSpecificationFilters();
@@ -429,14 +455,14 @@ class CreatePropertyBloc
   }
 
   void _onDynamicSingleSelectChanged(
-    CreatePropertyDynamicSingleSelectChanged event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormDynamicSingleSelectChanged event,
+    Emitter<PropertyFormState> emit,
   ) {
     final newValues = Map<String, dynamic>.from(state.dynamicValues);
     newValues[event.key] = event.value;
 
     // Also sync with legacy fields if they match known keys for backward compatibility
-    CreatePropertyState newState = state.copyWith(dynamicValues: newValues);
+    PropertyFormState newState = state.copyWith(dynamicValues: newValues);
 
     switch (event.key) {
       case 'floors':
@@ -468,8 +494,8 @@ class CreatePropertyBloc
   }
 
   void _onDynamicMultiSelectToggled(
-    CreatePropertyDynamicMultiSelectToggled event,
-    Emitter<CreatePropertyState> emit,
+    PropertyFormDynamicMultiSelectToggled event,
+    Emitter<PropertyFormState> emit,
   ) {
     final newValues = Map<String, dynamic>.from(state.dynamicValues);
     final currentList =
@@ -484,7 +510,7 @@ class CreatePropertyBloc
     newValues[event.key] = newList;
 
     // Sync legacy
-    CreatePropertyState newState = state.copyWith(dynamicValues: newValues);
+    PropertyFormState newState = state.copyWith(dynamicValues: newValues);
     if (event.key == 'common_facilities') {
       newState = newState.copyWith(facilities: newList);
     } else if (event.key == 'good_points') {

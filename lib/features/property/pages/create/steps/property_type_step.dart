@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/features/property/bloc/create_property/create_property_bloc.dart';
+import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 
 class PropertyTypeStep extends StatelessWidget {
@@ -75,7 +75,7 @@ class _PropertyTypeGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+    return BlocBuilder<PropertyFormBloc, PropertyFormState>(
       buildWhen: (previous, current) =>
           previous.selectedPropertyType != current.selectedPropertyType,
       builder: (context, state) {
@@ -98,8 +98,8 @@ class _PropertyTypeGrid extends StatelessWidget {
               imagePath: type['image']!,
               isSelected: isSelected,
               onTap: () {
-                context.read<CreatePropertyBloc>().add(
-                  CreatePropertyTypeSelected(type['name']!),
+                context.read<PropertyFormBloc>().add(
+                  PropertyFormTypeSelected(type['name']!),
                 );
               },
             );

@@ -39,7 +39,7 @@ class _StatusToastState extends State<StatusToast>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 600),
       vsync: this,
     );
 
@@ -148,7 +148,7 @@ class _StatusToastState extends State<StatusToast>
           color: Colors.transparent,
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
+              padding: EdgeInsets.zero,
               child: Align(
                 alignment: Alignment.topCenter,
                 child: GestureDetector(
@@ -162,10 +162,10 @@ class _StatusToastState extends State<StatusToast>
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: AppColors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),

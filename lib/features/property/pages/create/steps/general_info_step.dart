@@ -9,7 +9,7 @@ import 'package:youragent/data/models/developer_model.dart';
 import 'package:youragent/data/models/condo_project_model.dart';
 import 'package:youragent/core/config/app_config.dart';
 import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/features/property/bloc/create_property/create_property_bloc.dart';
+import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 import 'package:youragent/features/property/pages/create/property_location_picker_screen.dart';
 import 'package:youragent/features/property/widgets/property_map_view.dart';
 import 'package:youragent/services/google_places_service.dart';
@@ -42,7 +42,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   @override
   void initState() {
     super.initState();
-    final state = context.read<CreatePropertyBloc>().state;
+    final state = context.read<PropertyFormBloc>().state;
     _titleController = TextEditingController(
       text: state.data['title'] as String?,
     );
@@ -96,25 +96,25 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
     // Initial fetch for developers and all condo projects if empty
     if (state.developers.isEmpty) {
-      context.read<CreatePropertyBloc>().add(
-        const CreatePropertyDevelopersFetched(),
+      context.read<PropertyFormBloc>().add(
+        const PropertyFormDevelopersFetched(),
       );
     }
     if (state.condoProjects.isEmpty) {
-      context.read<CreatePropertyBloc>().add(
-        const CreatePropertyCondoProjectsFetched(),
+      context.read<PropertyFormBloc>().add(
+        const PropertyFormCondoProjectsFetched(),
       );
     }
   }
 
   void _updateData(String key, String value) {
-    context.read<CreatePropertyBloc>().add(
-      CreatePropertyDataUpdated(key: key, value: value),
+    context.read<PropertyFormBloc>().add(
+      PropertyFormDataUpdated(key: key, value: value),
     );
   }
 
   Future<void> _openLocationSearch() async {
-    final state = context.read<CreatePropertyBloc>().state;
+    final state = context.read<PropertyFormBloc>().state;
     LatLng? current;
     if (state.data['latitude'] != null && state.data['longitude'] != null) {
       current = LatLng(
@@ -137,8 +137,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         _updateData('address', result.components['number']!);
       }
 
-      context.read<CreatePropertyBloc>().add(
-        CreatePropertyLocationUpdated({
+      context.read<PropertyFormBloc>().add(
+        PropertyFormLocationUpdated({
           'latitude': result.latLng.latitude,
           'longitude': result.latLng.longitude,
           'location_set': true,
@@ -177,8 +177,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       _updateData('address', result.components['number']!);
     }
 
-    context.read<CreatePropertyBloc>().add(
-      CreatePropertyLocationUpdated({
+    context.read<PropertyFormBloc>().add(
+      PropertyFormLocationUpdated({
         'latitude': result.latLng.latitude,
         'longitude': result.latLng.longitude,
         'location_set': true,
@@ -200,8 +200,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   }
 
   void _clearLocation() {
-    context.read<CreatePropertyBloc>().add(
-      const CreatePropertyLocationUpdated({
+    context.read<PropertyFormBloc>().add(
+      const PropertyFormLocationUpdated({
         'latitude': null,
         'longitude': null,
         'location_set': false,
@@ -250,8 +250,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       if (fullTh.isNotEmpty) {
         _locationController.text = fullTh;
       }
-      context.read<CreatePropertyBloc>().add(
-        CreatePropertyLocationUpdated({
+      context.read<PropertyFormBloc>().add(
+        PropertyFormLocationUpdated({
           'latitude': latLng.latitude,
           'longitude': latLng.longitude,
           'location_set': true,
@@ -289,7 +289,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CreatePropertyBloc, CreatePropertyState>(
+    return BlocConsumer<PropertyFormBloc, PropertyFormState>(
       listenWhen: (prev, curr) =>
           prev.selectedDeveloperId != curr.selectedDeveloperId ||
           prev.selectedCondoProjectId != curr.selectedCondoProjectId,
@@ -404,7 +404,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
               if (isCondoOrApt) ...[
                 // Developer
-                BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+                BlocBuilder<PropertyFormBloc, PropertyFormState>(
                   builder: (context, state) {
                     return TypeAheadField<Developer>(
                       controller: _developerController,
@@ -446,8 +446,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       onSelected: (developer) {
                         _developerController.text = developer.nameTh;
                         _projectController.clear();
-                        context.read<CreatePropertyBloc>().add(
-                          CreatePropertyDeveloperChanged(developer.id),
+                        context.read<PropertyFormBloc>().add(
+                          PropertyFormDeveloperChanged(developer.id),
                         );
                         FocusScope.of(context).unfocus();
                       },
@@ -461,7 +461,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 const SizedBox(height: 16),
 
                 // Project Name
-                BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+                BlocBuilder<PropertyFormBloc, PropertyFormState>(
                   builder: (context, state) {
                     return TypeAheadField<CondoProject>(
                       controller: _projectController,
@@ -522,8 +522,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                           }
                         }
 
-                        context.read<CreatePropertyBloc>().add(
-                          CreatePropertyCondoProjectChanged(project.id),
+                        context.read<PropertyFormBloc>().add(
+                          PropertyFormCondoProjectChanged(project.id),
                         );
 
                         // Unfocus to hide keyboard

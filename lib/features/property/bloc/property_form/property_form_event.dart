@@ -1,30 +1,30 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 
-abstract class CreatePropertyEvent extends Equatable {
-  const CreatePropertyEvent();
+abstract class PropertyFormEvent extends Equatable {
+  const PropertyFormEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class CreatePropertyStepChanged extends CreatePropertyEvent {
+class PropertyFormStepChanged extends PropertyFormEvent {
   final int step;
-  const CreatePropertyStepChanged(this.step);
+  const PropertyFormStepChanged(this.step);
 
   @override
   List<Object?> get props => [step];
 }
 
-class CreatePropertyTypeSelected extends CreatePropertyEvent {
+class PropertyFormTypeSelected extends PropertyFormEvent {
   final String type;
-  const CreatePropertyTypeSelected(this.type);
+  const PropertyFormTypeSelected(this.type);
 
   @override
   List<Object?> get props => [type];
 }
 
-class CreatePropertyGeneralInfoUpdated extends CreatePropertyEvent {
+class PropertyFormGeneralInfoUpdated extends PropertyFormEvent {
   final String? name;
   final double? price;
   final String? description;
@@ -32,7 +32,7 @@ class CreatePropertyGeneralInfoUpdated extends CreatePropertyEvent {
   final double? latitude;
   final double? longitude;
 
-  const CreatePropertyGeneralInfoUpdated({
+  const PropertyFormGeneralInfoUpdated({
     this.name,
     this.price,
     this.description,
@@ -52,18 +52,18 @@ class CreatePropertyGeneralInfoUpdated extends CreatePropertyEvent {
   ];
 }
 
-class CreatePropertyDataUpdated extends CreatePropertyEvent {
+class PropertyFormDataUpdated extends PropertyFormEvent {
   final String key;
   final dynamic value;
-  const CreatePropertyDataUpdated({required this.key, required this.value});
+  const PropertyFormDataUpdated({required this.key, required this.value});
 
   @override
   List<Object?> get props => [key, value];
 }
 
-class CreatePropertyLocationUpdated extends CreatePropertyEvent {
+class PropertyFormLocationUpdated extends PropertyFormEvent {
   final Map<String, dynamic> locationData;
-  const CreatePropertyLocationUpdated(this.locationData);
+  const PropertyFormLocationUpdated(this.locationData);
 
   @override
   List<Object?> get props => [locationData];
@@ -71,11 +71,11 @@ class CreatePropertyLocationUpdated extends CreatePropertyEvent {
 
 /// Update a single granular location field (road, soi, subdistrict, etc.)
 /// without touching latitude/longitude or other fields.
-class CreatePropertyLocationFieldUpdated extends CreatePropertyEvent {
+class PropertyFormLocationFieldUpdated extends PropertyFormEvent {
   final String key;
   final String? value;
 
-  const CreatePropertyLocationFieldUpdated({
+  const PropertyFormLocationFieldUpdated({
     required this.key,
     required this.value,
   });
@@ -84,7 +84,7 @@ class CreatePropertyLocationFieldUpdated extends CreatePropertyEvent {
   List<Object?> get props => [key, value];
 }
 
-class CreatePropertyDetailsUpdated extends CreatePropertyEvent {
+class PropertyFormDetailsUpdated extends PropertyFormEvent {
   final int? bedrooms;
   final int? bathrooms;
   final int? garage;
@@ -93,7 +93,7 @@ class CreatePropertyDetailsUpdated extends CreatePropertyEvent {
   final String? houseColor;
   final int? totalFloors;
 
-  const CreatePropertyDetailsUpdated({
+  const PropertyFormDetailsUpdated({
     this.bedrooms,
     this.bathrooms,
     this.garage,
@@ -115,12 +115,12 @@ class CreatePropertyDetailsUpdated extends CreatePropertyEvent {
   ];
 }
 
-class CreatePropertyAdditionalInfoUpdated extends CreatePropertyEvent {
+class PropertyFormAdditionalInfoUpdated extends PropertyFormEvent {
   final String? built;
   final String? direction;
   final String? availableFrom;
 
-  const CreatePropertyAdditionalInfoUpdated({
+  const PropertyFormAdditionalInfoUpdated({
     this.built,
     this.direction,
     this.availableFrom,
@@ -130,111 +130,118 @@ class CreatePropertyAdditionalInfoUpdated extends CreatePropertyEvent {
   List<Object?> get props => [built, direction, availableFrom];
 }
 
-class CreatePropertyImagesUpdated extends CreatePropertyEvent {
+class PropertyFormImagesUpdated extends PropertyFormEvent {
   final List<XFile> images;
-  const CreatePropertyImagesUpdated(this.images);
+  const PropertyFormImagesUpdated(this.images);
 
   @override
   List<Object?> get props => [images];
 }
 
-class CreatePropertySubmitted extends CreatePropertyEvent {
-  const CreatePropertySubmitted();
+class PropertyFormSubmitted extends PropertyFormEvent {
+  const PropertyFormSubmitted();
 }
 
-class CreatePropertyReset extends CreatePropertyEvent {
-  const CreatePropertyReset();
+class PropertyFormReset extends PropertyFormEvent {
+  const PropertyFormReset();
 }
 
-class CreatePropertyDevelopersFetched extends CreatePropertyEvent {
-  const CreatePropertyDevelopersFetched();
+class PropertyFormDevelopersFetched extends PropertyFormEvent {
+  const PropertyFormDevelopersFetched();
 }
 
-class CreatePropertyCondoProjectsFetched extends CreatePropertyEvent {
+class PropertyFormCondoProjectsFetched extends PropertyFormEvent {
   final int? developerId;
-  const CreatePropertyCondoProjectsFetched({this.developerId});
+  const PropertyFormCondoProjectsFetched({this.developerId});
 
   @override
   List<Object?> get props => [developerId];
 }
 
-class CreatePropertyDeveloperChanged extends CreatePropertyEvent {
+class PropertyFormDeveloperChanged extends PropertyFormEvent {
   final int? developerId;
-  const CreatePropertyDeveloperChanged(this.developerId);
+  const PropertyFormDeveloperChanged(this.developerId);
 
   @override
   List<Object?> get props => [developerId];
 }
 
-class CreatePropertyCondoProjectChanged extends CreatePropertyEvent {
+class PropertyFormCondoProjectChanged extends PropertyFormEvent {
   final int? projectId;
-  const CreatePropertyCondoProjectChanged(this.projectId);
+  const PropertyFormCondoProjectChanged(this.projectId);
 
   @override
   List<Object?> get props => [projectId];
 }
 
-class CreatePropertyListingTypeChanged extends CreatePropertyEvent {
+class PropertyFormListingTypeChanged extends PropertyFormEvent {
   final String listingType;
-  const CreatePropertyListingTypeChanged(this.listingType);
+  const PropertyFormListingTypeChanged(this.listingType);
 
   @override
   List<Object?> get props => [listingType];
 }
 
-class CreatePropertyStatusChanged extends CreatePropertyEvent {
+class PropertyFormStatusChanged extends PropertyFormEvent {
   final String status;
-  const CreatePropertyStatusChanged(this.status);
+  const PropertyFormStatusChanged(this.status);
 
   @override
   List<Object?> get props => [status];
 }
 
-class CreatePropertyStyleChanged extends CreatePropertyEvent {
+class PropertyFormStyleChanged extends PropertyFormEvent {
   final String? style;
-  const CreatePropertyStyleChanged(this.style);
+  const PropertyFormStyleChanged(this.style);
 
   @override
   List<Object?> get props => [style];
 }
 
-class CreatePropertyHighlightToggled extends CreatePropertyEvent {
+class PropertyFormHighlightToggled extends PropertyFormEvent {
   final String highlight;
-  const CreatePropertyHighlightToggled(this.highlight);
+  const PropertyFormHighlightToggled(this.highlight);
 
   @override
   List<Object?> get props => [highlight];
 }
 
-class CreatePropertyFacilityToggled extends CreatePropertyEvent {
+class PropertyFormFacilityToggled extends PropertyFormEvent {
   final String facility;
-  const CreatePropertyFacilityToggled(this.facility);
+  const PropertyFormFacilityToggled(this.facility);
 
   @override
   List<Object?> get props => [facility];
 }
 
-class CreatePropertyFiltersFetched extends CreatePropertyEvent {
-  const CreatePropertyFiltersFetched();
+class PropertyFormFiltersFetched extends PropertyFormEvent {
+  const PropertyFormFiltersFetched();
 
   @override
   List<Object?> get props => [];
 }
 
-class CreatePropertyDynamicSingleSelectChanged extends CreatePropertyEvent {
+class PropertyFormDynamicSingleSelectChanged extends PropertyFormEvent {
   final String key;
   final String value;
-  const CreatePropertyDynamicSingleSelectChanged(this.key, this.value);
+  const PropertyFormDynamicSingleSelectChanged(this.key, this.value);
 
   @override
   List<Object?> get props => [key, value];
 }
 
-class CreatePropertyDynamicMultiSelectToggled extends CreatePropertyEvent {
+class PropertyFormDynamicMultiSelectToggled extends PropertyFormEvent {
   final String key;
   final String value;
-  const CreatePropertyDynamicMultiSelectToggled(this.key, this.value);
+  const PropertyFormDynamicMultiSelectToggled(this.key, this.value);
 
   @override
   List<Object?> get props => [key, value];
+}
+
+class PropertyFormResetStatus extends PropertyFormEvent {
+  const PropertyFormResetStatus();
+
+  @override
+  List<Object?> get props => [];
 }

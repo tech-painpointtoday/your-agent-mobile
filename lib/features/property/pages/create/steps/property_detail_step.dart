@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:youragent/utils/currency_input_formatter.dart';
 import '../../../../../core/theme/app_colors.dart';
-import 'package:youragent/features/property/bloc/create_property/create_property_bloc.dart';
+import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 import '../../../../../widgets/form_fields/app_text_form_field.dart';
 import '../../../../../widgets/inputs/app_selection_pills.dart';
 import '../../../../../widgets/form_fields/app_dropdown_form_field.dart';
@@ -29,9 +29,9 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
   @override
   void initState() {
     super.initState();
-    final state = context.read<CreatePropertyBloc>().state;
-    context.read<CreatePropertyBloc>().add(
-      const CreatePropertyFiltersFetched(),
+    final state = context.read<PropertyFormBloc>().state;
+    context.read<PropertyFormBloc>().add(
+      const PropertyFormFiltersFetched(),
     );
     _builtController = TextEditingController(
       text: state.built != null
@@ -65,7 +65,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CreatePropertyBloc, CreatePropertyState>(
+    return BlocConsumer<PropertyFormBloc, PropertyFormState>(
       listenWhen: (previous, current) => previous.built != current.built,
       listener: (context, state) {
         if (state.built != null) {
@@ -124,8 +124,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   SelectionPillOption(label: 'เช่า', value: 'เช่า'),
                   SelectionPillOption(label: 'ขายและเช่า', value: 'ขายและเช่า'),
                 ],
-                onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                  CreatePropertyListingTypeChanged(val),
+                onChanged: (val) => context.read<PropertyFormBloc>().add(
+                  PropertyFormListingTypeChanged(val),
                 ),
               ),
               const SizedBox(height: 24),
@@ -139,8 +139,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   SelectionPillOption(label: 'ว่าง', value: 'ว่าง'),
                   SelectionPillOption(label: 'ไม่ว่าง', value: 'ไม่ว่าง'),
                 ],
-                onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                  CreatePropertyStatusChanged(val),
+                onChanged: (val) => context.read<PropertyFormBloc>().add(
+                  PropertyFormStatusChanged(val),
                 ),
               ),
               const SizedBox(height: 24),
@@ -161,8 +161,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                             )
                             .toList(),
                         onChanged: (val) =>
-                            context.read<CreatePropertyBloc>().add(
-                              CreatePropertyDynamicSingleSelectChanged(
+                            context.read<PropertyFormBloc>().add(
+                              PropertyFormDynamicSingleSelectChanged(
                                 filter.key,
                                 val,
                               ),
@@ -182,8 +182,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                     5,
                     (i) => SelectionPillOption(label: '${i + 1}', value: i + 1),
                   ),
-                  onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                    CreatePropertyDetailsUpdated(totalFloors: val),
+                  onChanged: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormDetailsUpdated(totalFloors: val),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -201,8 +201,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                     ),
                     const SelectionPillOption(label: 'Studio', value: 0),
                   ],
-                  onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                    CreatePropertyDetailsUpdated(bedrooms: val),
+                  onChanged: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormDetailsUpdated(bedrooms: val),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -216,8 +216,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                     8,
                     (i) => SelectionPillOption(label: '${i + 1}', value: i + 1),
                   ),
-                  onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                    CreatePropertyDetailsUpdated(bathrooms: val),
+                  onChanged: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormDetailsUpdated(bathrooms: val),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -231,8 +231,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                     8,
                     (i) => SelectionPillOption(label: '${i + 1}', value: i + 1),
                   ),
-                  onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                    CreatePropertyDetailsUpdated(garage: val),
+                  onChanged: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormDetailsUpdated(garage: val),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -266,8 +266,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                     lastDate: DateTime.now(),
                   );
                   if (picked != null) {
-                    context.read<CreatePropertyBloc>().add(
-                      CreatePropertyAdditionalInfoUpdated(
+                    context.read<PropertyFormBloc>().add(
+                      PropertyFormAdditionalInfoUpdated(
                         built: picked.toIso8601String(),
                       ),
                     );
@@ -296,8 +296,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   'ม่วง',
                   'ส้ม',
                 ],
-                onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                  CreatePropertyDetailsUpdated(houseColor: val),
+                onChanged: (val) => context.read<PropertyFormBloc>().add(
+                  PropertyFormDetailsUpdated(houseColor: val),
                 ),
               ),
               const SizedBox(height: 24),
@@ -314,8 +314,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                 ),
                 keyboardType: TextInputType.number,
-                onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                  CreatePropertyGeneralInfoUpdated(
+                onChanged: (val) => context.read<PropertyFormBloc>().add(
+                  PropertyFormGeneralInfoUpdated(
                     price: double.tryParse(val.replaceAll(',', '')),
                   ),
                 ),
@@ -344,8 +344,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                         decimal: true,
                       ),
                       onChanged: (val) =>
-                          context.read<CreatePropertyBloc>().add(
-                            CreatePropertyDetailsUpdated(
+                          context.read<PropertyFormBloc>().add(
+                            PropertyFormDetailsUpdated(
                               landSize: double.tryParse(val),
                             ),
                           ),
@@ -371,8 +371,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                         decimal: true,
                       ),
                       onChanged: (val) =>
-                          context.read<CreatePropertyBloc>().add(
-                            CreatePropertyDetailsUpdated(
+                          context.read<PropertyFormBloc>().add(
+                            PropertyFormDetailsUpdated(
                               buildingSize: double.tryParse(val),
                             ),
                           ),
@@ -397,8 +397,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   'ทิศตะวันตกเฉียงเหนือ',
                   'ทิศตะวันตกเฉียงใต้',
                 ],
-                onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                  CreatePropertyAdditionalInfoUpdated(direction: val),
+                onChanged: (val) => context.read<PropertyFormBloc>().add(
+                  PropertyFormAdditionalInfoUpdated(direction: val),
                 ),
               ),
               const SizedBox(height: 100), // Bottom padding

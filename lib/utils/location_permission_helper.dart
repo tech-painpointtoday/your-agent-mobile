@@ -8,7 +8,7 @@ class LocationPermissionHelper {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       if (!context.mounted) return false;
-      await StatusDialog.showWarning(
+      StatusDialog.showWarning(
         context: context,
         title: 'เปิดบริการตำแหน่ง',
         message: 'กรุณาเปิด Location Services เพื่อใช้งานตำแหน่งปัจจุบัน',
@@ -23,7 +23,7 @@ class LocationPermissionHelper {
 
     if (permission == LocationPermission.denied) {
       if (!context.mounted) return false;
-      await StatusDialog.showWarning(
+      StatusDialog.showWarning(
         context: context,
         title: 'ไม่ได้รับอนุญาต',
         message: 'กรุณาอนุญาตการเข้าถึงตำแหน่งเพื่อใช้งานฟีเจอร์นี้',
@@ -55,4 +55,3 @@ class LocationPermissionHelper {
     return Geolocator.getCurrentPosition();
   }
 }
-

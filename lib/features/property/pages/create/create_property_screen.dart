@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/features/property/bloc/create_property/create_property_bloc.dart';
+import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_bloc.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_event.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
@@ -27,7 +27,11 @@ class CreatePropertyScreen extends StatelessWidget {
     final filters = metadataState.specificationFilters;
 
     return BlocProvider(
-      create: (context) => CreatePropertyBloc(initialFilters: filters),
+      create: (context) => PropertyFormBloc(
+        initialFilters: filters,
+        initialDevelopers: metadataState.developers,
+        initialCondoProjects: metadataState.condoProjects,
+      ),
       child: const _CreatePropertyView(),
     );
   }
@@ -50,7 +54,7 @@ class _CreatePropertyView extends StatelessWidget {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+        title: BlocBuilder<PropertyFormBloc, PropertyFormState>(
           builder: (context, state) {
             return Text(
               state.step == 6 ? 'ยืนยันข้อมูล' : 'สร้างทรัพย์',
@@ -93,12 +97,12 @@ class _CreatePropertyView extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocListener<CreatePropertyBloc, CreatePropertyState>(
+      body: BlocListener<PropertyFormBloc, PropertyFormState>(
         listenWhen: (prev, curr) =>
-            prev.createPropertyStatus != curr.createPropertyStatus,
+            prev.propertyFormStatus != curr.propertyFormStatus,
         listener: (context, state) {
-          if (state.createPropertyStatus ==
-              CreatePropertyStatus.submissionSuccess) {
+          if (state.propertyFormStatus ==
+              PropertyFormStatus.submissionSuccess) {
             // Show Success Dialog then pop
             showDialog(
               context: context,
@@ -133,8 +137,8 @@ class _CreatePropertyView extends StatelessWidget {
                 ],
               ),
             );
-          } else if (state.createPropertyStatus ==
-              CreatePropertyStatus.submissionFailure) {
+          } else if (state.propertyFormStatus ==
+              PropertyFormStatus.submissionFailure) {
             showDialog(
               context: context,
               builder: (ctx) => AlertDialog(
@@ -169,7 +173,7 @@ class _CreatePropertyView extends StatelessWidget {
                 topRight: Radius.circular(24),
               ),
             ),
-            child: BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+            child: BlocBuilder<PropertyFormBloc, PropertyFormState>(
               builder: (context, state) {
                 switch (state.step) {
                   case 1:
@@ -215,7 +219,7 @@ class _CreatePropertyView extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+              child: BlocBuilder<PropertyFormBloc, PropertyFormState>(
                 buildWhen: (previous, current) => previous.step != current.step,
                 builder: (context, state) {
                   return AppButton(
@@ -224,8 +228,8 @@ class _CreatePropertyView extends StatelessWidget {
                         .outline, // Assuming outline style exists, or use ghost
                     onPressed: state.step > 1
                         ? () {
-                            context.read<CreatePropertyBloc>().add(
-                              CreatePropertyStepChanged(state.step - 1),
+                            context.read<PropertyFormBloc>().add(
+                              PropertyFormStepChanged(state.step - 1),
                             );
                           }
                         : null, // Disable if on step 1
@@ -235,11 +239,11 @@ class _CreatePropertyView extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+              child: BlocBuilder<PropertyFormBloc, PropertyFormState>(
                 buildWhen: (prev, curr) =>
                     prev.isValid != curr.isValid ||
                     prev.step != curr.step ||
-                    prev.createPropertyStatus != curr.createPropertyStatus,
+                    prev.propertyFormStatus != curr.propertyFormStatus,
                 builder: (context, state) {
                   final isLastStep = state.step == 6; // Confirmation step
                   return AppButton(
@@ -248,8 +252,8 @@ class _CreatePropertyView extends StatelessWidget {
                     // If creating, check validation AND not currently submitting
                     onPressed:
                         (state.isValid &&
-                            state.createPropertyStatus !=
-                                CreatePropertyStatus.submissionInProgress)
+                            state.propertyFormStatus !=
+                                PropertyFormStatus.submissionInProgress)
                         ? () {
                             if (isLastStep) {
                               // Confirmation Dialog
@@ -258,8 +262,8 @@ class _CreatePropertyView extends StatelessWidget {
                               // we can refactor this into a method.
                               _onNextPressed(context, state);
                             } else {
-                              context.read<CreatePropertyBloc>().add(
-                                CreatePropertyStepChanged(state.step + 1),
+                              context.read<PropertyFormBloc>().add(
+                                PropertyFormStepChanged(state.step + 1),
                               );
                             }
                           }
@@ -274,7 +278,7 @@ class _CreatePropertyView extends StatelessWidget {
     );
   }
 
-  void _onNextPressed(BuildContext context, CreatePropertyState state) {
+  void _onNextPressed(BuildContext context, PropertyFormState state) {
     if (state.step == 6) {
       // Show Confirm Dialog
       showDialog(
@@ -300,8 +304,8 @@ class _CreatePropertyView extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(ctx).pop(); // Close dialog
-                context.read<CreatePropertyBloc>().add(
-                  const CreatePropertySubmitted(),
+                context.read<PropertyFormBloc>().add(
+                  const PropertyFormSubmitted(),
                 );
               },
               child: Text(

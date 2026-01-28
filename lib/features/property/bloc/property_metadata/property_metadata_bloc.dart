@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youragent/services/property_api_service.dart';
+import 'package:youragent/data/models/developer_model.dart';
+import 'package:youragent/data/models/condo_project_model.dart';
+import 'package:youragent/data/models/property_specification_filters.dart';
 import 'property_metadata_event.dart';
 import 'property_metadata_state.dart';
 
@@ -26,11 +29,23 @@ class PropertyMetadataBloc
     emit(state.copyWith(status: PropertyMetadataStatus.loading));
 
     try {
-      final filters = await _propertyApiService.getSpecificationFilters();
+      final results = await Future.wait([
+        _propertyApiService.getSpecificationFilters(),
+        _propertyApiService.getDevelopers(),
+        // Fetch generic condo projects list (assuming backend returns reasonable default)
+        _propertyApiService.getCondoProjects(),
+      ]);
+
+      final filters = results[0] as PropertySpecificationFilters;
+      final developers = results[1] as List<Developer>;
+      final condoProjects = results[2] as List<CondoProject>;
+
       emit(
         state.copyWith(
           status: PropertyMetadataStatus.success,
           specificationFilters: filters,
+          developers: developers,
+          condoProjects: condoProjects,
         ),
       );
     } catch (e) {

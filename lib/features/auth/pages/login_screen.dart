@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (state is AuthError) {
       final l10n = AppLocalizations.of(context)!;
-      await StatusDialog.showError(
+      StatusDialog.showError(
         context: context,
         title: l10n.login_error,
         message: state.message,
@@ -98,13 +98,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (state is AuthOperationState) {
       if (state.forgotPasswordStatus == ForgotPasswordStatus.success) {
-        await StatusDialog.showSuccess(
+        StatusDialog.showSuccess(
           context: context,
           title: 'ส่งอีเมลสำเร็จ',
           message: 'กรุณาตรวจสอบอีเมลของคุณเพื่อรีเซ็ตรหัสผ่าน',
         );
       } else if (state.forgotPasswordStatus == ForgotPasswordStatus.failure) {
-        await StatusDialog.showError(
+        StatusDialog.showError(
           context: context,
           title: 'เกิดข้อผิดพลาด',
           message: state.errorMessage ?? 'ไม่สามารถส่งอีเมลได้',

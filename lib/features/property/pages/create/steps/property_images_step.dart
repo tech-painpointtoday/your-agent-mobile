@@ -9,7 +9,7 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import '../../../../../core/theme/app_colors.dart';
-import 'package:youragent/features/property/bloc/create_property/create_property_bloc.dart';
+import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 
 class PropertyImagesStep extends StatelessWidget {
   final int? step;
@@ -17,7 +17,7 @@ class PropertyImagesStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+    return BlocBuilder<PropertyFormBloc, PropertyFormState>(
       builder: (context, state) {
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -215,8 +215,8 @@ class PropertyImagesStep extends StatelessWidget {
                             onTap: () {
                               final newImages = List<XFile>.from(state.images)
                                 ..removeAt(index);
-                              context.read<CreatePropertyBloc>().add(
-                                CreatePropertyImagesUpdated(newImages),
+                              context.read<PropertyFormBloc>().add(
+                                PropertyFormImagesUpdated(newImages),
                               );
                             },
                             child: SvgPicture.asset(
@@ -243,8 +243,8 @@ class PropertyImagesStep extends StatelessWidget {
     );
   }
 
-  void _showImageSourceSheet(BuildContext context, CreatePropertyState state) {
-    final bloc = context.read<CreatePropertyBloc>();
+  void _showImageSourceSheet(BuildContext context, PropertyFormState state) {
+    final bloc = context.read<PropertyFormBloc>();
 
     showModalBottomSheet(
       context: context,
@@ -290,8 +290,8 @@ class PropertyImagesStep extends StatelessWidget {
                     source: ImageSource.camera,
                   );
                   if (image != null && context.mounted) {
-                    context.read<CreatePropertyBloc>().add(
-                      CreatePropertyImagesUpdated([...state.images, image]),
+                    context.read<PropertyFormBloc>().add(
+                      PropertyFormImagesUpdated([...state.images, image]),
                     );
                   }
                 },
@@ -317,7 +317,7 @@ class PropertyImagesStep extends StatelessWidget {
                   final List<XFile> images = await picker.pickMultiImage();
                   if (images.isNotEmpty) {
                     bloc.add(
-                      CreatePropertyImagesUpdated([...state.images, ...images]),
+                      PropertyFormImagesUpdated([...state.images, ...images]),
                     );
                   }
                 },
@@ -339,8 +339,8 @@ class PropertyImagesStep extends StatelessWidget {
       cancelLabel: 'ยกเลิก',
       style: ConfirmationStyle.destructive,
       onConfirm: () {
-        context.read<CreatePropertyBloc>().add(
-          const CreatePropertyImagesUpdated([]),
+        context.read<PropertyFormBloc>().add(
+          const PropertyFormImagesUpdated([]),
         );
         StatusDialog.showSuccess(
           context: context,

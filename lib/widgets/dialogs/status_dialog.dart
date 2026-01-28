@@ -4,8 +4,10 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
+// ตรวจสอบ path import ให้ตรงกับโปรเจคจริงของคุณ
 import 'base_status_dialog.dart';
 import 'status_toast.dart';
+
 export 'base_status_dialog.dart';
 export 'status_dialog_components.dart';
 
@@ -20,12 +22,14 @@ class _DialogRequest<T> {
 }
 
 /// Global Status Dialog Utility
-/// Provides consistent dialog styling across the app.
-/// Matches the new Clean UI design.
 class StatusDialog {
+  // Queue สำหรับ Modal Dialog (ที่ต้องรอและ Block หน้าจอ)
   static final Queue<_DialogRequest> _dialogQueue = Queue();
   static bool _isDialogShowing = false;
 
+  // ==========================================
+  // Private Queue Logic (สำหรับ Modal Dialog เท่านั้น)
+  // ==========================================
   static Future<T?> _enqueue<T>({
     required BuildContext context,
     required Future<T> Function() builder,
@@ -41,14 +45,8 @@ class StatusDialog {
 
     final request = _dialogQueue.first;
 
-    // If context is no longer valid, skip this dialog and error the completer
     if (!request.context.mounted) {
       _dialogQueue.removeFirst();
-      // request.completer.completeError('Context not mounted'); // Or just complete with null/default?
-      // Since generic T, hard to return "null" if T is not nullable.
-      // But _enqueue returns Future<T?> so locally we handle null.
-      // But completer expects T.
-      // Let's just catch and move on.
       try {
         request.completer.completeError('Context not mounted');
       } catch (_) {}
@@ -67,13 +65,11 @@ class StatusDialog {
       currentRequest.completer.completeError(e);
     } finally {
       _isDialogShowing = false;
-      // Small delay to ensure UI cleans up before showing next
       await Future.delayed(const Duration(milliseconds: 150));
       _processQueue();
     }
   }
 
-  // Helper for Slide from Top Animation
   static Future<T?> _showAnimatedDialog<T>({
     required BuildContext context,
     required WidgetBuilder builder,
@@ -85,26 +81,153 @@ class StatusDialog {
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 400),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return builder(context);
-      },
+      pageBuilder: (context, animation, secondaryAnimation) => builder(context),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
-        final curvedAnimation = CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOutCubic,
-        );
         return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, -1),
-            end: Offset.zero,
-          ).animate(curvedAnimation),
+          position: Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero)
+              .animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              ),
           child: child,
         );
       },
     );
   }
 
-  /// Show a Confirmation dialog (Primary Blue Action)
+  // ==========================================
+  // Toast Logic (Overlay - Non-Blocking)
+  // ==========================================
+
+  /// Internal method to show Overlay Toast
+  static void _showOverlayToast({
+    required BuildContext context,
+    required Widget child,
+    required Duration duration,
+    VoidCallback? onDismiss,
+    Duration? callbackDelay,
+  }) {
+    final overlayState = Overlay.of(context);
+    late OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (context) => _ToastAnimator(
+        duration: duration,
+        onDismissed: () {
+          overlayEntry.remove();
+          if (onDismiss != null) {
+            // รอเวลาเพิ่มเติมถ้ามี callbackDelay ก่อนเรียก onDismiss
+            if (callbackDelay != null) {
+              Future.delayed(callbackDelay, onDismiss);
+            } else {
+              onDismiss();
+            }
+          }
+        },
+        child: Material(
+          color: Colors.transparent,
+          type: MaterialType.transparency,
+          child: SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 16.0,
+                  left: 16.0,
+                  right: 16.0,
+                ),
+                child: child,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlayState.insert(overlayEntry);
+  }
+
+  // ------------------------------------------
+  // Toast Public Methods
+  // ------------------------------------------
+
+  /// Show Success Toast (Non-blocking, click-through)
+  static void showSuccess({
+    required BuildContext context,
+    required String title,
+    String? message,
+    Duration duration = const Duration(seconds: 2),
+    VoidCallback? onDismiss,
+    Duration? callbackDelay,
+  }) {
+    _showOverlayToast(
+      context: context,
+      duration: duration,
+      onDismiss: onDismiss,
+      callbackDelay: callbackDelay,
+      child: StatusToast(
+        title: title,
+        message: message,
+        type: DialogType.success,
+        duration: duration,
+        onDismiss: null, // Overlay จัดการ dismiss เอง
+      ),
+    );
+  }
+
+  /// Show Error Toast (Non-blocking, click-through)
+  static void showError({
+    required BuildContext context,
+    required String title,
+    String? message,
+    Duration duration = const Duration(seconds: 3),
+    VoidCallback? onDismiss,
+    Duration? callbackDelay,
+  }) {
+    _showOverlayToast(
+      context: context,
+      duration: duration,
+      onDismiss: onDismiss,
+      callbackDelay: callbackDelay,
+      child: StatusToast(
+        title: title,
+        message: message,
+        type: DialogType.error,
+        duration: duration,
+        onDismiss: null,
+      ),
+    );
+  }
+
+  /// Show Warning Toast (Non-blocking, click-through)
+  static void showWarning({
+    required BuildContext context,
+    required String title,
+    String? message,
+    Duration duration = const Duration(seconds: 3),
+    VoidCallback? onDismiss,
+    Duration? callbackDelay,
+  }) {
+    _showOverlayToast(
+      context: context,
+      duration: duration,
+      onDismiss: onDismiss,
+      callbackDelay: callbackDelay,
+      child: StatusToast(
+        title: title,
+        message: message,
+        type: DialogType.warning,
+        duration: duration,
+        onDismiss: null,
+      ),
+    );
+  }
+
+  // ==========================================
+  // Modal Dialogs (Blocking & Queueing)
+  // ==========================================
+  // ส่วนนี้ยังคงใช้ _enqueue และ showGeneralDialog เหมือนเดิม
+
+  /// Show a Confirmation dialog
   static Future<bool> showConfirmation({
     required BuildContext context,
     required String title,
@@ -135,7 +258,7 @@ class StatusDialog {
         false;
   }
 
-  /// Show a Destructive dialog (Red Action)
+  /// Show a Destructive dialog
   static Future<bool> showDestructive({
     required BuildContext context,
     required String title,
@@ -164,95 +287,6 @@ class StatusDialog {
         false;
   }
 
-  /// Show Success Toast (auto-dismiss in 3 seconds, top right corner)
-  static Future<void> showSuccess({
-    required BuildContext context,
-    required String title,
-    String? message,
-    Duration duration = const Duration(seconds: 3),
-    VoidCallback? onDismiss,
-    Duration? callbackDelay,
-  }) async {
-    await _enqueue(
-      context: context,
-      builder: () async {
-        await _showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) => StatusToast(
-            title: title,
-            message: message,
-            type: DialogType.success,
-            duration: duration,
-            onDismiss: onDismiss,
-            callbackDelay: callbackDelay,
-          ),
-        );
-      },
-    );
-  }
-
-  /// Show Error Toast (auto-dismiss in 3 seconds, top right corner)
-  static Future<void> showError({
-    required BuildContext context,
-    required String title,
-    String? message,
-    Duration duration = const Duration(seconds: 3),
-    VoidCallback? onDismiss,
-    Duration? callbackDelay,
-  }) async {
-    await _enqueue(
-      context: context,
-      builder: () async {
-        await _showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) => StatusToast(
-            title: title,
-            message: message,
-            type: DialogType.error,
-            duration: duration,
-            onDismiss: onDismiss,
-            callbackDelay: callbackDelay,
-          ),
-        );
-      },
-    );
-  }
-
-  /// Show Warning Toast (auto-dismiss in 3 seconds, top right corner)
-  static Future<void> showWarning({
-    required BuildContext context,
-    required String title,
-    String? message,
-    Duration duration = const Duration(seconds: 3),
-    VoidCallback? onDismiss,
-    Duration? callbackDelay,
-  }) async {
-    await _enqueue(
-      context: context,
-      builder: () async {
-        await _showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) => StatusToast(
-            title: title,
-            message: message,
-            type: DialogType.warning,
-            duration: duration,
-            onDismiss: onDismiss,
-            callbackDelay: callbackDelay,
-          ),
-        );
-      },
-    );
-  }
-
-  // ==========================================
-  // Modal Dialogs (Center Screen, Single Action)
-  // ==========================================
-
-  /// Show Info Dialog (Blue, Single OK Action)
   static Future<void> showInfoDialog({
     required BuildContext context,
     required String title,
@@ -279,7 +313,6 @@ class StatusDialog {
     );
   }
 
-  /// Show Success Dialog (Green, Single OK Action)
   static Future<void> showSuccessDialog({
     required BuildContext context,
     required String title,
@@ -306,7 +339,6 @@ class StatusDialog {
     );
   }
 
-  /// Show Error Dialog (Red, Single OK Action)
   static Future<void> showErrorDialog({
     required BuildContext context,
     required String title,
@@ -333,7 +365,6 @@ class StatusDialog {
     );
   }
 
-  /// Show Warning Dialog (Orange, Single OK Action)
   static Future<void> showWarningDialog({
     required BuildContext context,
     required String title,
@@ -360,7 +391,6 @@ class StatusDialog {
     );
   }
 
-  /// Show Loading Dialog
   static Future<void> showLoading({
     required BuildContext context,
     String message = 'Loading...',
@@ -393,13 +423,11 @@ class StatusDialog {
     );
   }
 
-  /// Show Loading Dialog while executing an async operation
   static Future<T?> showLoadingWhile<T>({
     required BuildContext context,
     required Future<T> Function() operation,
     String? message,
   }) async {
-    // Show loading dialog
     _showAnimatedDialog(
       context: context,
       barrierDismissible: false,
@@ -441,5 +469,91 @@ class StatusDialog {
       }
       rethrow;
     }
+  }
+}
+
+// ==========================================
+// Helper Widget for Overlay Animation
+// ==========================================
+class _ToastAnimator extends StatefulWidget {
+  final Widget child;
+  final Duration duration;
+  final VoidCallback onDismissed;
+
+  const _ToastAnimator({
+    required this.child,
+    required this.duration,
+    required this.onDismissed,
+  });
+
+  @override
+  State<_ToastAnimator> createState() => _ToastAnimatorState();
+}
+
+class _ToastAnimatorState extends State<_ToastAnimator>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+  late Animation<double> _fadeAnimation;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0, -1.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+
+    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+
+    // เริ่ม Animation เข้า
+    _controller.forward();
+
+    // ตั้งเวลาปิด
+    _timer = Timer(widget.duration, () {
+      if (mounted) {
+        _controller.reverse().then((_) {
+          widget.onDismissed();
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: SlideTransition(
+        position: _offsetAnimation,
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: GestureDetector(
+            // เพิ่มการปัดขึ้นเพื่อปิด Toast ก่อนเวลา
+            onVerticalDragEnd: (details) {
+              if (details.primaryVelocity! < 0) {
+                _timer?.cancel();
+                _controller.reverse().then((_) => widget.onDismissed());
+              }
+            },
+            child: widget.child,
+          ),
+        ),
+      ),
+    );
   }
 }

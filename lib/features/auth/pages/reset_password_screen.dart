@@ -66,7 +66,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       listener: (context, state) async {
         if (state is AuthOperationState) {
           if (state.resetPasswordStatus == ResetPasswordStatus.success) {
-            await StatusDialog.showSuccess(
+            StatusDialog.showSuccess(
               context: context,
               title: 'สำเร็จ',
               message: 'ตั้งรหัสผ่านใหม่สำเร็จ กรุณาเข้าสู่ระบบ',
@@ -76,7 +76,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               },
             );
           } else if (state.resetPasswordStatus == ResetPasswordStatus.failure) {
-            await StatusDialog.showError(
+            StatusDialog.showError(
               context: context,
               title: 'เกิดข้อผิดพลาด',
               message: state.errorMessage ?? 'ไม่สามารถตั้งรหัสผ่านใหม่ได้',
