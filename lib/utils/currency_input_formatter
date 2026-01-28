@@ -1,0 +1,83 @@
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+
+class CurrencyInputFormatter extends TextInputFormatter {
+  final int maxDigits;
+
+  CurrencyInputFormatter({this.maxDigits = 24});
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    // 1. If empty, return empty
+    if (newValue.text.isEmpty) {
+      return newValue;
+    }
+
+    // 2. clean the input (remove non-digits)
+    String newText = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Prevent overflow or empty states after cleaning
+    if (newText.isEmpty) {
+      return newValue.copyWith(text: '');
+    }
+    
+    // Limit length if needed
+    if (newText.length > maxDigits) {
+       newText = newText.substring(0, maxDigits);
+    }
+
+    // 3. Parse and Format (using NumberFormat from intl)
+    // using int.tryParse to handle potential large numbers gracefully
+    final int value = int.tryParse(newText) ?? 0;
+    final formatter = NumberFormat('#,###');
+    final String newString = formatter.format(value);
+
+    // 4. Calculate the cursor position
+    // We need to keep the cursor at the correct position relative to the digits,
+    // not the commas.
+    
+    // Count how many digits are to the left of the cursor in the RAW input
+    int cursorPosition = 0;
+    final int cursorIndex = newValue.selection.end;
+    
+    // If the cursor is at the beginning, keep it there
+    if (cursorIndex < 0) {
+      cursorPosition = 0;
+    } else {
+      // Count digits up to the cursor in the original unformatted input
+      // This is tricky because newValue contains the raw user input before our formatting
+      int digitsBeforeCursor = 0;
+      for (int i = 0; i < newValue.text.length && i < cursorIndex; i++) {
+        if (RegExp(r'[0-9]').hasMatch(newValue.text[i])) {
+          digitsBeforeCursor++;
+        }
+      }
+
+      // Now find the index in the NEW formatted string where we have seen that many digits
+      int digitsSeen = 0;
+      for (int i = 0; i < newString.length; i++) {
+        if (RegExp(r'[0-9]').hasMatch(newString[i])) {
+          digitsSeen++;
+        }
+        // If we found the spot, set cursor to the next char (i+1)
+        if (digitsSeen == digitsBeforeCursor) {
+          cursorPosition = i + 1;
+          break;
+        }
+      }
+    }
+    
+    // Handle edge case: if we are at the very start or end
+    if (cursorPosition > newString.length) {
+      cursorPosition = newString.length;
+    }
+
+    return TextEditingValue(
+      text: newString,
+      selection: TextSelection.collapsed(offset: cursorPosition),
+    );
+  }
+}

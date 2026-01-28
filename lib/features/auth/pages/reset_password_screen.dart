@@ -104,14 +104,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   const SizedBox(height: 24),
                   // Illustration
                   Center(
-                    child: SvgPicture.asset(
-                      'assets/icons/key.svg',
+                    child: Image.asset(
+                      'assets/images/auth/password_reset.png',
                       width: 150,
                       height: 150,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.primary,
-                        BlendMode.srcIn,
-                      ),
                     ),
                   ),
                   const SizedBox(height: 32),

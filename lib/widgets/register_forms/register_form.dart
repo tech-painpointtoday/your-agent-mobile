@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../domain/entities/user.dart';
@@ -218,7 +219,11 @@ class _RegisterFormState extends State<RegisterForm> {
             onTap: () => onChanged(!checked),
             child: RichText(
               text: TextSpan(
-                style: const TextStyle(color: AppColors.baseGrey),
+                style: GoogleFonts.anuphan(
+                  color: AppColors.baseGrey,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
                 children: [
                   TextSpan(text: l10n.i_have_read_and_accept),
                   WidgetSpan(
@@ -226,9 +231,12 @@ class _RegisterFormState extends State<RegisterForm> {
                       onTap: onLinkTap,
                       child: Text(
                         linkText,
-                        style: const TextStyle(
+                        style: GoogleFonts.anuphan(
                           color: AppColors.baseGrey,
                           decoration: TextDecoration.underline,
+                          decorationColor: AppColors.baseGrey,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),

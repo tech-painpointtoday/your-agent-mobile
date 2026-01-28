@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 
@@ -44,13 +45,29 @@ class _ExpandableDescriptionState extends State<ExpandableDescription> {
               _isExpanded = !_isExpanded;
             });
           },
-          child: Text(
-            _isExpanded ? 'เเสดงน้อยลง' : 'อ่านเพิ่มเติม',
-            style: GoogleFonts.anuphan(
-              color: AppColors.primary,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
+          child: Row(
+            children: [
+              Text(
+                _isExpanded ? 'เเสดงน้อยลง' : 'ดูเพิ่มเติม',
+                style: GoogleFonts.anuphan(
+                  color: AppColors.brandGreen,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(width: 4),
+              SvgPicture.asset(
+                _isExpanded
+                    ? 'assets/icons/chevron-up.svg'
+                    : 'assets/icons/chevron-down.svg',
+                colorFilter: ColorFilter.mode(
+                  AppColors.brandGreen,
+                  BlendMode.srcIn,
+                ),
+                width: 16,
+                height: 16,
+              ),
+            ],
           ),
         ),
       ],

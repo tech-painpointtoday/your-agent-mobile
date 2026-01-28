@@ -32,10 +32,30 @@ class LabeledDropdownField<T> extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         DropdownButtonFormField<T>(
+          selectedItemBuilder: (context) {
+            return items.map((item) {
+              return Text(
+                item.value.toString(),
+                style: GoogleFonts.anuphan(
+                  color: AppColors.baseBlack,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+              );
+            }).toList();
+          },
           initialValue: value,
-          icon: const Icon(
-            Icons.keyboard_arrow_down,
-            color: AppColors.baseGrey,
+          icon: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: SvgPicture.asset(
+              'assets/icons/chevron-down.svg',
+              width: 16,
+              height: 16,
+              colorFilter: const ColorFilter.mode(
+                AppColors.baseGrey,
+                BlendMode.srcIn,
+              ),
+            ),
           ),
           dropdownColor: AppColors.white,
           borderRadius: BorderRadius.circular(12),
@@ -71,16 +91,18 @@ class LabeledDropdownField<T> extends StatelessWidget {
     return InputDecoration(
       hintText: hintText ?? label,
       hintStyle: GoogleFonts.anuphan(color: AppColors.baseGrey),
+      labelStyle: GoogleFonts.anuphan(color: AppColors.baseLightGrey),
+      helperStyle: GoogleFonts.anuphan(color: AppColors.baseLightGrey),
       prefixIcon: prefixWidget,
 
       // 3. Ensures the field container also has the 12 radius
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.baseGrey),
+        borderSide: const BorderSide(color: AppColors.baseLightGrey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.baseGrey),
+        borderSide: const BorderSide(color: AppColors.baseLightGrey),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

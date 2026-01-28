@@ -7,6 +7,8 @@ import 'core/di/dependency_injection.dart';
 import 'core/theme/app_theme.dart';
 import 'flavors.dart';
 import 'l10n/app_localizations.dart';
+import 'features/property/bloc/property_metadata/property_metadata_bloc.dart';
+import 'features/property/bloc/property_metadata/property_metadata_event.dart';
 import 'widgets/debug/debug_log_floating_button.dart';
 
 class App extends StatefulWidget {
@@ -33,8 +35,15 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => DependencyInjection.authBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => DependencyInjection.authBloc),
+        BlocProvider(
+          create: (_) => PropertyMetadataBloc(
+            propertyApiService: DependencyInjection.propertyApiService,
+          )..add(const LoadPropertyMetadata()),
+        ),
+      ],
       child: MaterialApp.router(
         title: F.title,
         debugShowCheckedModeBanner: false,

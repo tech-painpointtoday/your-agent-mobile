@@ -79,9 +79,12 @@ class PropertySpec extends Equatable {
       horaStars: json['hora_stars'] as int?,
       houseColor: json['house_color'] as String?,
       availableFrom: json['available_from'] as String?,
-      specifications: json['specifications'] as Map<String, dynamic>?,
-      specificationValues:
-          json['specification_values'] as Map<String, dynamic>?,
+      specifications: json['specifications'] is Map<String, dynamic>
+          ? json['specifications'] as Map<String, dynamic>
+          : null,
+      specificationValues: json['specification_values'] is Map<String, dynamic>
+          ? json['specification_values'] as Map<String, dynamic>
+          : null,
     );
   }
 

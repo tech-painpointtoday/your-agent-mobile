@@ -102,6 +102,7 @@ flutter:
     - assets/icons/profile/
     - assets/icons/sidebar/
     - assets/images/
+    - assets/images/auth/
     - assets/images/home/
     - assets/images/property/
     - assets/images/property_styles/

@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/data/mock/mock_property_data.dart';
+import 'package:youragent/features/property/widgets/property_detail.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:intl/intl.dart';
 import '../widgets/property_image_carousel.dart';
 import '../widgets/property_detail_section.dart';
 import '../widgets/property_status_badge.dart';
 import '../widgets/property_map_view.dart';
+import 'edit/edit_property_menu_screen.dart';
 import 'expandable_description.dart';
 import 'fullscreen_map_screen.dart';
 
 class PropertyDetailScreen extends StatefulWidget {
-  final String propertyId;
+  final int? propertyId;
+  final Property? property; // Allow passing existing property object
 
-  const PropertyDetailScreen({super.key, required this.propertyId});
+  const PropertyDetailScreen({super.key, this.propertyId, this.property});
 
   @override
   State<PropertyDetailScreen> createState() => _PropertyDetailScreenState();
@@ -27,30 +29,45 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   bool _isLoading = true;
   Property? _property;
   String? _error;
+  final _propertyApiService = DependencyInjection.propertyApiService;
 
   @override
   void initState() {
     super.initState();
-    _fetchPropertyDetail();
+    // If property is passed, use it initially but still fetch fresh data
+    if (widget.property != null) {
+      _property = widget.property;
+      _isLoading = false; // Show content immediately
+    }
+
+    if (widget.propertyId != null) {
+      _fetchPropertyDetail();
+    }
   }
 
   Future<void> _fetchPropertyDetail() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
+    // If we don't have property yet, show loading
+    if (_property == null) {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
+    }
 
     try {
-      // Find property from mock data
-      final property = MockPropertyData.getAllProperties().firstWhere(
-        (p) => p.id == widget.propertyId,
-        orElse: () => throw Exception('Property not found'),
-      );
+      final propertyIdInt = widget.propertyId;
+      if (propertyIdInt == null) throw Exception('Invalid property ID');
 
-      setState(() {
-        _property = property;
-        _isLoading = false;
-      });
+      final property = await _propertyApiService.getPropertyById(propertyIdInt);
+
+      if (property != null) {
+        setState(() {
+          _property = property;
+          _isLoading = false;
+        });
+      } else {
+        throw Exception('Property not found');
+      }
     } catch (e) {
       setState(() {
         _error = e.toString();
@@ -69,7 +86,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       );
     }
 
-    if (_error != null || _property == null) {
+    if (_error != null && _property == null) {
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(backgroundColor: Colors.white, elevation: 0),
@@ -102,334 +119,10 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(children: [_buildBody(), _buildBottomBar()]),
-    );
-  }
-
-  Widget _buildBody() {
-    final property = _property!;
-    // Using placeholders/mock values for missing fields in Property entity
-    final imageUrls = [property.imageUrl];
-
-    // Calculate dynamic spacer height approx based on carousel height (280) and overlap (e.g. 40)
-    // We want the card to overlap the bottom of the image by some amount.
-    // If Image is 280, and we want Card top at 240.
-    const double carouselHeight = 280;
-    const double overlap = 40;
-    const double contentStartTop = carouselHeight - overlap;
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 100),
-      child: Stack(
+      body: Stack(
         children: [
-          // Background Image Layer
-          SizedBox(
-            height: carouselHeight,
-            width: double.infinity,
-            child: PropertyImageCarousel(
-              imageUrls: imageUrls,
-              height: carouselHeight,
-            ),
-          ),
-
-          // Content Layer (Spacer + Card + Rest)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Spacer to push content down to the overlap point
-              const SizedBox(height: contentStartTop),
-
-              // 2. Property Header Card
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        width: 1,
-                        color: AppColors.baseLightGrey,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    shadows: const [
-                      BoxShadow(
-                        color: Color(0x0A000000),
-                        blurRadius: 12,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'รหัส: ${property.code}',
-                        style: GoogleFonts.anuphan(
-                          color: AppColors.baseGrey,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        property.title,
-                        style: GoogleFonts.anuphan(
-                          color: const Color(0xFF181D27),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        property.location,
-                        style: GoogleFonts.anuphan(
-                          color: const Color(0xFF181D27),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      PropertyStatusBadge(status: property.status),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // 3. Location Section (Integrated PropertyMapView)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'สถานที่',
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.baseDarkGrey,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      property.address ?? property.location,
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.baseBlack,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    PropertyMapView(
-                      properties: [property],
-                      height: 160,
-                      onMaximizeTapped: () {
-                        // Open fullscreen map with current property
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FullscreenMapScreen(
-                              showSearch: false,
-                              properties: [property],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // 4. Property Detail Section (Updated Icon & Logic)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: PropertyDetailSection(
-                  title: 'รายละเอียดทรัพย์',
-                  svgIcon: 'assets/icons/menu.svg', // Updated Icon
-                  rows:
-                      [
-                            const PropertyDetailRow(
-                              label: 'ประเภททรัพย์',
-                              value: 'บ้าน',
-                            ),
-                            const PropertyDetailRow(
-                              label: 'ประเภทประกาศ',
-                              value: 'เช่า',
-                            ),
-                            PropertyDetailRow(
-                              label: 'สถานะ',
-                              value: property.status == PropertyStatus.approved
-                                  ? 'ว่าง'
-                                  : property.statusLabel,
-                            ),
-                            PropertyDetailRow(
-                              label: 'วันที่สร้าง',
-                              value: DateFormat(
-                                'dd ม.ค. yyyy',
-                                'th',
-                              ).format(property.createdAt),
-                            ),
-                            const PropertyDetailRow(
-                              label: 'สีทรัพย์',
-                              value: 'ขาว',
-                            ),
-                            const PropertyDetailRow(
-                              label: 'ราคา',
-                              value: '10,000,000 บาท',
-                            ),
-                            const PropertyDetailRow(
-                              label: 'จำนวนชั้น',
-                              value: '2 ชั้น',
-                            ),
-                            const PropertyDetailRow(
-                              label: 'จำนวนห้องนอน',
-                              value: '4 ห้อง',
-                            ),
-                            const PropertyDetailRow(
-                              label: 'จำนวนห้องน้ำ',
-                              value: '4 ห้อง',
-                            ),
-                            const PropertyDetailRow(
-                              label: 'จำนวนที่จอดรถ',
-                              value: '4 ที่',
-                            ),
-                            const PropertyDetailRow(
-                              label: 'ขนาดที่ดิน',
-                              value: '52.70 ตร.ว.',
-                            ),
-                            const PropertyDetailRow(
-                              label: 'ขนาดพื้นที่ใช้สอย',
-                              value: '80.00 ตร.ม.',
-                            ),
-                          ]
-                          .where((row) => row.value.isNotEmpty)
-                          .toList(), // Filter empty
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // 5. Additional Details Section (Updated Icon & Expandable Text)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(bottom: 8),
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            width: 1,
-                            color: AppColors.baseGrey,
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/icons/star-moving.svg',
-                            width: 18,
-                            height: 18,
-                            colorFilter: const ColorFilter.mode(
-                              Color(0xFF181D27),
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'รายละเอียดเพิ่มเติม',
-                            style: GoogleFonts.anuphan(
-                              color: const Color(0xFF181D27),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    Text(
-                      'สไตล์ทรัพย์',
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.baseDarkGrey,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    const AppBadge(label: 'โมเดิร์น', color: BadgeColor.blue),
-                    const SizedBox(height: 20),
-
-                    Text(
-                      'จุดเด่นทรัพย์',
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.baseDarkGrey,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        AppBadge(label: 'Pet-friendly', color: BadgeColor.blue),
-                        AppBadge(
-                          label: 'Elderly-friendly',
-                          color: BadgeColor.blue,
-                        ),
-                        AppBadge(label: 'ใกล้รถไฟฟ้า', color: BadgeColor.blue),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    Text(
-                      'พื้นที่ส่วนกลาง',
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.baseDarkGrey,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        AppBadge(
-                          label: 'Co-working space',
-                          color: BadgeColor.blue,
-                        ),
-                        AppBadge(label: 'สระว่ายน้ำ', color: BadgeColor.blue),
-                        AppBadge(label: 'ฟิตเนส', color: BadgeColor.blue),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    Text(
-                      'รายละเอียด',
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.baseDarkGrey,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // Expandable Description
-                    ExpandableDescription(text: property.description),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 32),
-            ],
-          ),
+          if (_property != null) PropertyDetail(property: _property!),
+          _buildBottomBar(),
         ],
       ),
     );
@@ -441,8 +134,12 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       left: 0,
       right: 0,
       child: Container(
-        height: 80,
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.fromLTRB(
+          16,
+          16,
+          16,
+          16 + MediaQuery.of(context).padding.bottom,
+        ),
         decoration: const BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -485,7 +182,15 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 text: 'แก้ไขข้อมูล',
                 style: AppButtonStyle.primary,
                 onPressed: () {
-                  // Confirmation logic
+                  if (_property != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditPropertyMenuScreen(property: _property!),
+                      ),
+                    ).then((_) => _fetchPropertyDetail()); // Refresh on return
+                  }
                 },
                 height: 44,
               ),

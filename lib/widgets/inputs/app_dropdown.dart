@@ -97,7 +97,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: const Color(0xFFE9EAEB)),
           ),
           child: Row(
@@ -185,7 +185,7 @@ class _DropdownOverlay<T> extends StatelessWidget {
                 width: width,
                 constraints: const BoxConstraints(maxHeight: 250),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: const Color(0xFFE9EAEB)),
                 ),
                 child: ListView(

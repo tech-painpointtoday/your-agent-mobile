@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/data/mock/mock_property_data.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/features/home/pages/home_screen.dart';
 import 'package:youragent/features/property/pages/all_properties_screen.dart';
 import 'package:youragent/features/property/pages/create/create_property_screen.dart';
 import 'package:youragent/features/property/pages/fullscreen_map_screen.dart';
+import 'package:youragent/features/property/pages/property_detail_screen.dart';
 import 'package:youragent/features/property/widgets/property_list_item.dart';
 import 'package:youragent/features/property/widgets/property_map_view.dart';
 import 'package:youragent/widgets/app_bars/silver_app_bar.dart';
@@ -21,9 +22,12 @@ class PropertyScreen extends StatefulWidget {
 
 class _PropertyScreenState extends State<PropertyScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final _propertyApiService = DependencyInjection.propertyApiService;
 
   List<Property> _properties = [];
   List<Property> _filteredProperties = [];
+  bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -39,11 +43,28 @@ class _PropertyScreenState extends State<PropertyScreen> {
     super.dispose();
   }
 
-  void _loadProperties() {
+  Future<void> _loadProperties() async {
     setState(() {
-      _properties = MockPropertyData.getAllProperties();
-      _filteredProperties = _properties;
+      _isLoading = true;
+      _error = null;
     });
+
+    try {
+      final properties = await _propertyApiService.getProperties();
+
+      setState(() {
+        _properties = properties;
+        _filteredProperties = properties;
+        _isLoading = false;
+      });
+      // Trigger search filter in case there was text
+      _onSearchChanged();
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
   }
 
   void _onSearchChanged() {
@@ -55,8 +76,8 @@ class _PropertyScreenState extends State<PropertyScreen> {
         _filteredProperties = _properties.where((property) {
           final normalizedQuery = _normalizeText(query);
           return _normalizeText(property.title).contains(normalizedQuery) ||
-              _normalizeText(property.location).contains(normalizedQuery) ||
-              _normalizeText(property.code).contains(normalizedQuery);
+              _normalizeText(property.address!).contains(normalizedQuery) ||
+              _normalizeText(property.code!).contains(normalizedQuery);
         }).toList();
       }
     });
@@ -71,13 +92,16 @@ class _PropertyScreenState extends State<PropertyScreen> {
     return SilverAppBarScreen(
       title: 'อสังหาริมทรัพย์',
       actionWidget: InkWell(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const CreatePropertyScreen(),
             ),
           );
+          if (result == true) {
+            _loadProperties();
+          }
         },
         borderRadius: BorderRadius.circular(24),
         child: Container(
@@ -92,8 +116,8 @@ class _PropertyScreenState extends State<PropertyScreen> {
           child: const Icon(Icons.add, size: 24, color: Colors.white),
         ),
       ),
-      searchBar: const HomeSearchBar(),
-      preferredHeight: 132.0, // Match original property screen height
+      searchBar: HomeSearchBar(controller: _searchController),
+      preferredHeight: 132.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -138,6 +162,21 @@ class _PropertyScreenState extends State<PropertyScreen> {
   }
 
   Widget _buildPropertyList() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_error != null) {
+      return Center(
+        child: Column(
+          children: [
+            Text('Error: $_error'),
+            TextButton(onPressed: _loadProperties, child: const Text('Retry')),
+          ],
+        ),
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -212,10 +251,19 @@ class _PropertyScreenState extends State<PropertyScreen> {
                     return PropertyListItem(
                       property: property,
                       onTap: () {
-                        debugPrint('Tapped on property: ${property.title}');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PropertyDetailScreen(
+                              propertyId: property.id,
+                              property: property,
+                            ),
+                          ),
+                        ).then((_) => _loadProperties());
                       },
                       onEdit: () {
-                        debugPrint('Edit property: ${property.title}');
+                        // Navigate to edit screen and reload on return
+                        // Navigator.push(...).then((_) => _loadProperties());
                       },
                     );
                   },

@@ -100,7 +100,7 @@ class SocialLoginSection extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'หรือเข้าสู่ระบบด้วย',
+                'หรือ',
                 style: GoogleFonts.anuphan(
                   fontSize: 14,
                   color: AppColors.baseGrey,

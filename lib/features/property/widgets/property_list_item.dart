@@ -48,7 +48,7 @@ class PropertyListItem extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: CachedNetworkImage(
-                imageUrl: property.imageUrl,
+                imageUrl: property.imageUrl ?? '',
                 width: 70,
                 height: 70,
                 fit: BoxFit.cover,
@@ -105,7 +105,7 @@ class PropertyListItem extends StatelessWidget {
                   const SizedBox(height: 4),
                   // Location
                   Text(
-                    property.location,
+                    property.address!,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseDarkGrey,
                       fontSize: 10,
@@ -117,7 +117,7 @@ class PropertyListItem extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      PropertyStatusBadge(status: property.status),
+                      PropertyStatusBadge(status: property.approvalStatus),
                       if (onEdit != null)
                         GestureDetector(
                           onTap: onEdit,

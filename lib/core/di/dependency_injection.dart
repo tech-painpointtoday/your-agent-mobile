@@ -57,6 +57,7 @@ class DependencyInjection {
 
   static final PropertyApiService _propertyApiService = PropertyApiService(
     _apiClient,
+    _authRepository,
   );
 
   static final ChatApiService _chatApiService = ChatApiService(_apiClient);

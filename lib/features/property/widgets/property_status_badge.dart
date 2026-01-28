@@ -5,7 +5,7 @@ import 'package:youragent/domain/entities/property.dart';
 
 /// Status badge widget that displays property status with appropriate colors
 class PropertyStatusBadge extends StatelessWidget {
-  final PropertyStatus status;
+  final PropertyApprovalStatus status;
 
   const PropertyStatusBadge({super.key, required this.status});
 
@@ -44,23 +44,30 @@ class PropertyStatusBadge extends StatelessWidget {
     );
   }
 
-  _StatusConfig _getStatusConfig(PropertyStatus status) {
+  _StatusConfig _getStatusConfig(PropertyApprovalStatus status) {
     switch (status) {
-      case PropertyStatus.pending:
+      case PropertyApprovalStatus.draft:
+        return const _StatusConfig(
+          label: 'ร่าง',
+          backgroundColor: Color(0xFFFFF6E8),
+          dotColor: Color(0xFFFA7C2E),
+          textColor: Color(0xFFFA7C2E),
+        );
+      case PropertyApprovalStatus.pending:
         return const _StatusConfig(
           label: 'รอการอนุมัติ',
           backgroundColor: Color(0xFFFFF6E8),
           dotColor: Color(0xFFFA7C2E),
           textColor: Color(0xFFFA7C2E),
         );
-      case PropertyStatus.approved:
+      case PropertyApprovalStatus.approved:
         return const _StatusConfig(
           label: 'อนุมัติแล้ว',
           backgroundColor: Color(0xFFE8FCEC),
           dotColor: Color(0xFF3FBE59),
           textColor: Color(0xFF3FBE59),
         );
-      case PropertyStatus.rejected:
+      case PropertyApprovalStatus.rejected:
         return const _StatusConfig(
           label: 'ไม่อนุมัติ',
           backgroundColor: Color(0xFFFFECEC),

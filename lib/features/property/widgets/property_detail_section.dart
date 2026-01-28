@@ -25,7 +25,7 @@ class PropertyDetailSection extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 8),
           decoration: const BoxDecoration(
             border: Border(
-              bottom: BorderSide(width: 1, color: AppColors.baseGrey),
+              bottom: BorderSide(width: 1, color: AppColors.baseLightGrey),
             ),
           ),
           child: Row(
@@ -77,20 +77,26 @@ class PropertyDetailRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: GoogleFonts.anuphan(
-              color: AppColors.baseDarkGrey,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
+          Expanded(
+            child: Text(
+              label,
+              textAlign: TextAlign.left,
+              style: GoogleFonts.anuphan(
+                color: AppColors.baseDarkGrey,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
-          Text(
-            value,
-            style: GoogleFonts.anuphan(
-              color: const Color(0xFF181D27),
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.left,
+              style: GoogleFonts.anuphan(
+                color: const Color(0xFF181D27),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ],

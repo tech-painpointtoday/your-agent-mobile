@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/property/bloc/create_property/create_property_bloc.dart';
+import 'package:youragent/features/property/bloc/property_metadata/property_metadata_bloc.dart';
+import 'package:youragent/features/property/bloc/property_metadata/property_metadata_event.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'steps/additional_info_step.dart';
 import 'steps/confirmation_step.dart';
@@ -16,8 +19,15 @@ class CreatePropertyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Ensure metadata is loaded/loading
+    final metadataBloc = context.read<PropertyMetadataBloc>();
+    metadataBloc.add(const LoadPropertyMetadata());
+
+    final metadataState = metadataBloc.state;
+    final filters = metadataState.specificationFilters;
+
     return BlocProvider(
-      create: (context) => CreatePropertyBloc(),
+      create: (context) => CreatePropertyBloc(initialFilters: filters),
       child: const _CreatePropertyView(),
     );
   }
@@ -34,7 +44,10 @@ class _CreatePropertyView extends StatelessWidget {
         backgroundColor: AppColors.primary,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.white),
+          icon: SvgPicture.asset(
+            'assets/icons/x.svg',
+            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
@@ -81,9 +94,11 @@ class _CreatePropertyView extends StatelessWidget {
         ],
       ),
       body: BlocListener<CreatePropertyBloc, CreatePropertyState>(
-        listenWhen: (prev, curr) => prev.status != curr.status,
+        listenWhen: (prev, curr) =>
+            prev.createPropertyStatus != curr.createPropertyStatus,
         listener: (context, state) {
-          if (state.status == CreatePropertyStatus.submissionSuccess) {
+          if (state.createPropertyStatus ==
+              CreatePropertyStatus.submissionSuccess) {
             // Show Success Dialog then pop
             showDialog(
               context: context,
@@ -118,7 +133,8 @@ class _CreatePropertyView extends StatelessWidget {
                 ],
               ),
             );
-          } else if (state.status == CreatePropertyStatus.submissionFailure) {
+          } else if (state.createPropertyStatus ==
+              CreatePropertyStatus.submissionFailure) {
             showDialog(
               context: context,
               builder: (ctx) => AlertDialog(
@@ -223,7 +239,7 @@ class _CreatePropertyView extends StatelessWidget {
                 buildWhen: (prev, curr) =>
                     prev.isValid != curr.isValid ||
                     prev.step != curr.step ||
-                    prev.status != curr.status,
+                    prev.createPropertyStatus != curr.createPropertyStatus,
                 builder: (context, state) {
                   final isLastStep = state.step == 6; // Confirmation step
                   return AppButton(
@@ -232,7 +248,7 @@ class _CreatePropertyView extends StatelessWidget {
                     // If creating, check validation AND not currently submitting
                     onPressed:
                         (state.isValid &&
-                            state.status !=
+                            state.createPropertyStatus !=
                                 CreatePropertyStatus.submissionInProgress)
                         ? () {
                             if (isLastStep) {

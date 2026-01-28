@@ -95,12 +95,12 @@ class _PropertyMapViewState extends State<PropertyMapView> {
     for (final property in widget.properties) {
       _markers.add(
         Marker(
-          markerId: MarkerId(property.id),
+          markerId: MarkerId(property.id?.toString() ?? property.code!),
           position: LatLng(property.latitude, property.longitude),
           icon: _customMarkerIcon ?? BitmapDescriptor.defaultMarker,
           infoWindow: InfoWindow(
             title: property.title,
-            snippet: property.location,
+            snippet: property.address,
           ),
         ),
       );

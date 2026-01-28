@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:youragent/domain/entities/user.dart';
+import 'package:youragent/domain/repositories/auth_repository.dart';
 import 'api_client.dart';
 import 'api_response_service.dart';
-import 'package:youragent/data/models/property_model.dart';
+import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/data/models/api_response.dart';
-import 'package:youragent/data/models/property_filter_options.dart';
 import 'package:youragent/data/models/developer_model.dart';
 import 'package:youragent/data/models/condo_project_model.dart';
 import 'package:youragent/data/models/property_specification_filters.dart';
@@ -28,32 +29,43 @@ class PhotoUploadData {
 class PropertyApiService {
   static PropertyApiService? _instance;
   final ApiClient _apiClient;
+  final AuthRepository _authRepository;
 
-  PropertyApiService._(this._apiClient);
+  PropertyApiService._(this._apiClient, this._authRepository);
 
-  factory PropertyApiService(ApiClient apiClient) {
-    _instance ??= PropertyApiService._(apiClient);
+  factory PropertyApiService(
+    ApiClient apiClient,
+    AuthRepository authRepository,
+  ) {
+    _instance ??= PropertyApiService._(apiClient, authRepository);
     return _instance!;
+  }
+
+  /// Get current user role string ('agent' or 'agency')
+  String get _currentRole {
+    final role = _authRepository.currentRole;
+    return role == UserRole.agency ? 'agency' : 'agent';
   }
 
   /// Get all properties (approved only)
   /// GET /$role/properties (e.g., /agent/properties)
-  Future<List<PropertyModel>> getProperties({
-    required String role, // 'agent' or 'agency'
+  Future<List<Property>> getProperties({
+    String? role, // Optional: defaults to current user role
     int? id,
   }) async {
     try {
+      final actualRole = role ?? _currentRole;
       final queryParams = <String, dynamic>{};
       if (id != null) queryParams['id'] = id;
 
       // Reduced logging: Only log essential info
       if (id != null) {
         debugPrint(
-          'PropertyApiService: getProperties called with role=$role, id=$id',
+          'PropertyApiService: getProperties called with role=$actualRole, id=$id',
         );
       }
       final response = await _apiClient.get(
-        '/$role/properties',
+        '/$actualRole/properties',
         queryParameters: queryParams,
       );
       final data = response.data;
@@ -119,7 +131,7 @@ class PropertyApiService {
           .map((json) {
             try {
               if (json is Map<String, dynamic>) {
-                final property = PropertyModel.fromJson(json);
+                final property = Property.fromJson(json);
                 // Only log errors, not successful parsing (too verbose for lists)
                 return property;
               }
@@ -132,7 +144,7 @@ class PropertyApiService {
               return null;
             }
           })
-          .whereType<PropertyModel>()
+          .whereType<Property>()
           .toList();
 
       // Summary log only
@@ -163,7 +175,7 @@ class PropertyApiService {
         // Summary only - don't log all details for each property
         final firstProperty = properties.first;
         debugPrint(
-          'PropertyApiService: Summary - ID: ${firstProperty.id}, specs: ${firstProperty.specs != null}, location: ${firstProperty.propertyLocation != null}, images: ${firstProperty.images?.length ?? 0}, floorPlans: ${firstProperty.floorPlans?.length ?? 0}',
+          'PropertyApiService: Summary - ID: ${firstProperty.id}, name: ${firstProperty.name}, location: ${firstProperty.address}, images: ${firstProperty.imageUrls?.length ?? 0}',
         );
       }
       return properties;
@@ -174,17 +186,17 @@ class PropertyApiService {
 
   /// Get property status
   /// GET /agent/properties/{id}/status or /agent/property/{id}/status
-  Future<PropertyModel> getPropertyStatus({
-    required String role,
+  Future<Property> getPropertyStatus({
+    String? role,
     required int propertyId,
   }) async {
     try {
-      // Try both possible endpoints if needed, but usually it's plural for agent stuff
+      final actualRole = role ?? _currentRole;
       debugPrint(
-        'PropertyApiService: getPropertyStatus called with role=$role, propertyId=$propertyId',
+        'PropertyApiService: getPropertyStatus called with role=$actualRole, propertyId=$propertyId',
       );
       final response = await _apiClient.get(
-        '/$role/properties/$propertyId/status',
+        '/$actualRole/properties/$propertyId/status',
       );
       final data = response.data as Map<String, dynamic>;
 
@@ -203,20 +215,21 @@ class PropertyApiService {
           ? data['data'] as Map<String, dynamic>
           : data;
 
-      final property = PropertyModel.fromJson(propertyData);
+      final property = Property.fromJson(propertyData);
       debugPrint('PropertyApiService: Parsed property ID: ${property.id}');
       return property;
     } catch (e) {
       // Fallback to singular if plural fails
       try {
+        final actualRole = role ?? _currentRole;
         final response = await _apiClient.get(
-          '/$role/property/$propertyId/status',
+          '/$actualRole/property/$propertyId/status',
         );
         final data = response.data as Map<String, dynamic>;
         final propertyData = data['property'] is Map<String, dynamic>
             ? data['property'] as Map<String, dynamic>
             : data;
-        return PropertyModel.fromJson(propertyData);
+        return Property.fromJson(propertyData);
       } catch (_) {
         throw Exception('Failed to get property status: $e');
       }
@@ -226,12 +239,16 @@ class PropertyApiService {
   /// Save a new property using unified endpoint
   /// POST /agent/properties
   /// This replaces the old multi-step process (createProperty + createPropertySpecs + createPropertyLocation)
-  Future<PropertyModel> saveProperty({
-    required String role,
+  Future<Property> saveProperty({
+    String? role,
     required Map<String, dynamic> data,
   }) async {
     try {
-      final response = await _apiClient.post('/$role/properties', data: data);
+      final actualRole = role ?? _currentRole;
+      final response = await _apiClient.post(
+        '/$actualRole/properties',
+        data: data,
+      );
       final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
         response.data as Map<String, dynamic>,
         (data) => data as Map<String, dynamic>,
@@ -239,7 +256,7 @@ class PropertyApiService {
       if (!apiResponse.success || apiResponse.data == null) {
         throw Exception(apiResponse.message ?? 'Failed to create property');
       }
-      return PropertyModel.fromJson(apiResponse.data!);
+      return Property.fromJson(apiResponse.data!);
     } catch (e) {
       if (e is DioException) {
         throw Exception(ApiResponseService.getErrorMessage(e));
@@ -251,14 +268,15 @@ class PropertyApiService {
   /// @deprecated Use createProperty with unified payload instead
   /// Create a new property (with optional photos)
   /// POST /agent/properties/create
-  @Deprecated('Use createProperty with unified payload instead')
-  Future<PropertyModel> createPropertyLegacy({
-    required String role,
+  @Deprecated('Use saveProperty with unified payload instead')
+  Future<Property> createPropertyLegacy({
+    String? role,
     required String built,
     Map<String, dynamic>? otherFields,
     List<XFile>? photos,
   }) async {
     try {
+      final actualRole = role ?? _currentRole;
       if (photos != null && photos.isNotEmpty) {
         final formData = FormData.fromMap({
           'built': built,
@@ -276,7 +294,7 @@ class PropertyApiService {
         }
 
         final response = await _apiClient.post(
-          '/$role/properties/create',
+          '/$actualRole/properties/create',
           data: formData,
           options: Options(contentType: 'multipart/form-data'),
         );
@@ -287,10 +305,10 @@ class PropertyApiService {
         if (!apiResponse.success || apiResponse.data == null) {
           throw Exception(apiResponse.message ?? 'Failed to create property');
         }
-        return PropertyModel.fromJson(apiResponse.data!);
+        return Property.fromJson(apiResponse.data!);
       } else {
         final response = await _apiClient.post(
-          '/$role/properties/create',
+          '/$actualRole/properties/create',
           data: {'built': built, if (otherFields != null) ...otherFields},
         );
         final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
@@ -300,7 +318,7 @@ class PropertyApiService {
         if (!apiResponse.success || apiResponse.data == null) {
           throw Exception(apiResponse.message ?? 'Failed to create property');
         }
-        return PropertyModel.fromJson(apiResponse.data!);
+        return Property.fromJson(apiResponse.data!);
       }
     } catch (e) {
       if (e is DioException) {
@@ -422,11 +440,12 @@ class PropertyApiService {
   /// - photos[0][tag]: gallery
   /// - photos[0][facing_direction]: N (Optional: N, NE, E, SE, S, SW, W, NW)
   Future<Map<String, dynamic>> uploadPhotos({
-    required String role,
+    String? role,
     required int propertyId,
     required List<PhotoUploadData> photos,
   }) async {
     try {
+      final actualRole = role ?? _currentRole;
       final formData = FormData.fromMap({'property_id': propertyId});
 
       // Add each photo with array index format
@@ -463,7 +482,7 @@ class PropertyApiService {
       );
 
       final response = await _apiClient.post(
-        '/$role/upload/photos',
+        '/$actualRole/upload/photos',
         data: formData,
         options: Options(contentType: 'multipart/form-data'),
       );
@@ -480,12 +499,13 @@ class PropertyApiService {
   /// Upload photos for a property (convenience method with simple XFile list)
   /// Automatically creates PhotoUploadData with default tag 'gallery'
   Future<Map<String, dynamic>> uploadPhotosSimple({
-    required String role,
+    String? role,
     required int propertyId,
     required List<XFile> photos,
     String tag = 'gallery',
     String? facingDirection,
   }) async {
+    final actualRole = role ?? _currentRole;
     final photoData = photos
         .map(
           (file) => PhotoUploadData(
@@ -496,18 +516,23 @@ class PropertyApiService {
         )
         .toList();
 
-    return uploadPhotos(role: role, propertyId: propertyId, photos: photoData);
+    return uploadPhotos(
+      role: actualRole,
+      propertyId: propertyId,
+      photos: photoData,
+    );
   }
 
   /// Refresh photo URLs (for S3 URLs that expired)
   /// POST /agent/refresh/photo-urls or /agency/refresh/photo-urls
   Future<Map<String, dynamic>> refreshPhotoUrls({
-    required String role,
+    String? role,
     required int propertyId,
   }) async {
     try {
+      final actualRole = role ?? _currentRole;
       final response = await _apiClient.post(
-        '/$role/refresh/photo-urls',
+        '/$actualRole/refresh/photo-urls',
         data: {'property_id': propertyId},
       );
       return response.data as Map<String, dynamic>;
@@ -559,7 +584,7 @@ class PropertyApiService {
 
   /// Get nearby properties by coordinates
   /// GET /api/properties/nearby?lat={lat}&lng={lng}&radius={radius}
-  Future<List<PropertyModel>> getNearbyProperties({
+  Future<List<Property>> getNearbyProperties({
     required double latitude,
     required double longitude,
     double radius = 0.01,
@@ -580,7 +605,7 @@ class PropertyApiService {
 
       if (response.data['success'] == true) {
         final properties = (response.data['properties'] as List)
-            .map((json) => PropertyModel.fromJson(json))
+            .map((json) => Property.fromJson(json))
             .toList();
         return properties;
       }
@@ -590,28 +615,24 @@ class PropertyApiService {
     }
   }
 
-  /// Get property by ID (public endpoint)
-  /// GET /api/properties/{id}
-  Future<PropertyModel?> getPropertyById(int propertyId) async {
+  /// Get property by ID (Authenticated status endpoint)
+  /// GET /$role/properties/{id}/status
+  Future<Property?> getPropertyById(int propertyId) async {
     try {
-      final response = await _apiClient.get('/api/properties/$propertyId');
-      if (response.data['success'] == true) {
-        return PropertyModel.fromJson(response.data['property']);
-      }
-      return null;
+      return await getPropertyStatus(propertyId: propertyId);
     } catch (e) {
+      debugPrint('PropertyApiService: Error in getPropertyById: $e');
+      // Fallback to public if needed, but per request using getPropertyStatus
       return null;
     }
   }
 
   /// Delete a property
   /// DELETE /agent/properties/{id}
-  Future<void> deleteProperty({
-    required String role,
-    required int propertyId,
-  }) async {
+  Future<void> deleteProperty({String? role, required int propertyId}) async {
     try {
-      await _apiClient.delete('/$role/properties/$propertyId');
+      final actualRole = role ?? _currentRole;
+      await _apiClient.delete('/$actualRole/properties/$propertyId');
     } catch (e) {
       throw Exception('Failed to delete property: $e');
     }

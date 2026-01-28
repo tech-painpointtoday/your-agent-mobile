@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/data/mock/mock_property_data.dart';
 import 'package:youragent/domain/entities/property.dart';
+import 'package:youragent/features/property/pages/property_detail_screen.dart';
 import 'package:youragent/features/property/widgets/property_list_item.dart';
 import 'package:youragent/features/property/widgets/property_filter_bottom_sheet.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
@@ -17,14 +18,17 @@ class AllPropertiesScreen extends StatefulWidget {
 
 class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final _propertyApiService = DependencyInjection.propertyApiService;
+
   List<Property> _allProperties = [];
   List<Property> _filteredProperties = [];
+  bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    _allProperties = MockPropertyData.mockProperties;
-    _filteredProperties = MockPropertyData.mockProperties;
+    _loadProperties();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -32,6 +36,29 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadProperties() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final properties = await _propertyApiService.getProperties();
+
+      setState(() {
+        _allProperties = properties;
+        _filteredProperties = properties;
+        _isLoading = false;
+      });
+      _onSearchChanged(); // Re-apply filter if any
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
   }
 
   void _onSearchChanged() {
@@ -42,8 +69,8 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
       } else {
         _filteredProperties = _allProperties.where((property) {
           return property.title.toLowerCase().contains(query) ||
-              property.code.toLowerCase().contains(query) ||
-              property.location.toLowerCase().contains(query);
+              property.code!.toLowerCase().contains(query) ||
+              property.address!.toLowerCase().contains(query);
         }).toList();
       }
     });
@@ -54,7 +81,6 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
-
       builder: (context) => const PropertyFilterBottomSheet(),
     );
   }
@@ -148,7 +174,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                           color: BadgeColor.blue,
                         ),
                       )
-                    else
+                    else if (!_isLoading && _error == null)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                         child: AppBadges.plain(
@@ -158,11 +184,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                       ),
 
                     // Property List or Empty State
-                    Expanded(
-                      child: _filteredProperties.isEmpty
-                          ? _buildEmptyState()
-                          : _buildPropertyList(),
-                    ),
+                    Expanded(child: _buildContent()),
 
                     // Search Bar at Bottom
                     Container(
@@ -224,13 +246,51 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
     );
   }
 
+  Widget _buildContent() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Error: $_error'),
+            TextButton(onPressed: _loadProperties, child: const Text('Retry')),
+          ],
+        ),
+      );
+    }
+
+    if (_filteredProperties.isEmpty) {
+      return _buildEmptyState();
+    }
+
+    return _buildPropertyList();
+  }
+
   Widget _buildPropertyList() {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: _filteredProperties.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        return PropertyListItem(property: _filteredProperties[index]);
+        final property = _filteredProperties[index];
+        return PropertyListItem(
+          property: property,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PropertyDetailScreen(
+                  propertyId: property.id,
+                  property: property,
+                ),
+              ),
+            ).then((_) => _loadProperties());
+          },
+        );
       },
     );
   }
@@ -248,6 +308,13 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
               child: Image.asset(
                 'assets/images/property/empty_state.png',
                 fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.image_not_supported,
+                    size: 60,
+                    color: AppColors.baseGrey,
+                  );
+                },
               ),
             ),
           ),

@@ -73,14 +73,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: 8),
                 Center(
-                  child: SvgPicture.asset(
-                    'assets/images/lock-3.svg',
+                  child: Image.asset(
+                    'assets/images/auth/password_forgot.png',
                     width: 160,
                     height: 160,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.primary,
-                      BlendMode.srcIn,
-                    ),
                   ),
                 ),
                 const SizedBox(height: 8),

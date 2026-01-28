@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:youragent/utils/currency_input_formatter.dart';
 import '../../../../../core/theme/app_colors.dart';
 import 'package:youragent/features/property/bloc/create_property/create_property_bloc.dart';
 import '../../../../../widgets/form_fields/app_text_form_field.dart';
@@ -132,14 +133,14 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
               // Occupancy Status
               AppSelectionPills<String>(
                 label: 'สถานะ',
-                value: state.occupancyStatus,
+                value: state.status,
                 isRequired: true,
                 options: const [
                   SelectionPillOption(label: 'ว่าง', value: 'ว่าง'),
                   SelectionPillOption(label: 'ไม่ว่าง', value: 'ไม่ว่าง'),
                 ],
                 onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                  CreatePropertyOccupancyStatusChanged(val),
+                  CreatePropertyStatusChanged(val),
                 ),
               ),
               const SizedBox(height: 24),
@@ -305,10 +306,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
               AppTextFormField(
                 label: 'ราคา',
                 controller: _priceController,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                ],
+                inputFormatters: [CurrencyInputFormatter()],
                 isRequired: true,
                 hintText: '0',
                 suffix: Text(
@@ -317,7 +315,9 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                 ),
                 keyboardType: TextInputType.number,
                 onChanged: (val) => context.read<CreatePropertyBloc>().add(
-                  CreatePropertyGeneralInfoUpdated(price: double.tryParse(val)),
+                  CreatePropertyGeneralInfoUpdated(
+                    price: double.tryParse(val.replaceAll(',', '')),
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
@@ -329,6 +329,10 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                     child: AppTextFormField(
                       label: 'ขนาดที่ดิน',
                       controller: _landSizeController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                      ],
                       isRequired: true,
                       hintText: '0.00',
                       suffix: Text(
@@ -336,6 +340,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                         style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                       ),
                       keyboardType: const TextInputType.numberWithOptions(
+                        signed: true,
                         decimal: true,
                       ),
                       onChanged: (val) =>
@@ -351,6 +356,10 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                     child: AppTextFormField(
                       label: 'พื้นที่ใช้สอย',
                       controller: _buildingSizeController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                      ],
                       isRequired: true,
                       hintText: '0.00',
                       suffix: Text(
@@ -358,6 +367,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                         style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                       ),
                       keyboardType: const TextInputType.numberWithOptions(
+                        signed: true,
                         decimal: true,
                       ),
                       onChanged: (val) =>

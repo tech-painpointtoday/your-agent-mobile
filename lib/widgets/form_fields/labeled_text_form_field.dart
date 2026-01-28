@@ -74,11 +74,11 @@ class LabeledTextFormField extends StatelessWidget {
       suffixIcon: suffixIcon,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.baseGrey),
+        borderSide: const BorderSide(color: AppColors.baseLightGrey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.baseGrey),
+        borderSide: const BorderSide(color: AppColors.baseLightGrey),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

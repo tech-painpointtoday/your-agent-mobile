@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../services/property_api_service.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../data/models/property_specification_filters.dart';
 import '../../../../domain/entities/user.dart';
 import 'create_property_event.dart';
 import 'create_property_state.dart';
@@ -12,11 +13,19 @@ export 'create_property_state.dart';
 class CreatePropertyBloc
     extends Bloc<CreatePropertyEvent, CreatePropertyState> {
   final PropertyApiService _propertyApiService;
+  final PropertySpecificationFilters? initialFilters;
 
-  CreatePropertyBloc({PropertyApiService? propertyApiService})
-    : _propertyApiService =
-          propertyApiService ?? DependencyInjection.propertyApiService,
-      super(const CreatePropertyState()) {
+  CreatePropertyBloc({
+    PropertyApiService? propertyApiService,
+    this.initialFilters,
+  }) : _propertyApiService =
+           propertyApiService ?? DependencyInjection.propertyApiService,
+       super(
+         CreatePropertyState(
+           specificationFilters:
+               initialFilters ?? const PropertySpecificationFilters(),
+         ),
+       ) {
     on<CreatePropertyStepChanged>(_onStepChanged);
     on<CreatePropertyTypeSelected>(_onTypeSelected);
     on<CreatePropertyGeneralInfoUpdated>(_onGeneralInfoUpdated);
@@ -35,7 +44,7 @@ class CreatePropertyBloc
     on<CreatePropertyDeveloperChanged>(_onDeveloperChanged);
     on<CreatePropertyCondoProjectChanged>(_onCondoProjectChanged);
     on<CreatePropertyListingTypeChanged>(_onListingTypeChanged);
-    on<CreatePropertyOccupancyStatusChanged>(_onOccupancyStatusChanged);
+    on<CreatePropertyStatusChanged>(_onStatusChanged);
     on<CreatePropertyStyleChanged>(_onStyleChanged);
     on<CreatePropertyHighlightToggled>(_onHighlightToggled);
     on<CreatePropertyFacilityToggled>(_onFacilityToggled);
@@ -203,14 +212,17 @@ class CreatePropertyBloc
     Emitter<CreatePropertyState> emit,
   ) {
     emit(state.copyWith(images: event.images));
-    print('images: ${state.images}');
   }
 
   Future<void> _onSubmitted(
     CreatePropertySubmitted event,
     Emitter<CreatePropertyState> emit,
   ) async {
-    emit(state.copyWith(status: CreatePropertyStatus.submissionInProgress));
+    emit(
+      state.copyWith(
+        createPropertyStatus: CreatePropertyStatus.submissionInProgress,
+      ),
+    );
 
     try {
       final role =
@@ -223,7 +235,7 @@ class CreatePropertyBloc
         'built': state.built ?? '',
         'name': state.name,
         'type': state.selectedPropertyType,
-        'status': 'pending',
+        'approval_status': 'pending',
         'bedrooms': state.bedrooms,
         'bathrooms': state.bathrooms,
         'garage': state.garage,
@@ -249,7 +261,7 @@ class CreatePropertyBloc
         'soi': state.soi,
         'formatted_address_en': state.formattedAddressEn ?? state.address ?? '',
         'listing_type': state.listingType,
-        'occupancy_status': state.occupancyStatus,
+        'status': state.status,
         'total_floors': state.totalFloors,
         'property_style': state.propertyStyle,
         'highlights': state.highlights,
@@ -262,17 +274,12 @@ class CreatePropertyBloc
       );
 
       final propertyId = createResponse.id;
-      final intPropertyId = int.tryParse(propertyId);
-
-      if (intPropertyId == null) {
-        throw Exception('Invalid property ID returned from server');
-      }
 
       // Upload photos if any
-      if (state.images.isNotEmpty) {
+      if (state.images.isNotEmpty && propertyId != null) {
         await _propertyApiService.uploadPhotosSimple(
           role: roleName,
-          propertyId: intPropertyId,
+          propertyId: propertyId,
           photos: state.images,
           tag: 'gallery',
         );
@@ -280,14 +287,14 @@ class CreatePropertyBloc
 
       emit(
         state.copyWith(
-          status: CreatePropertyStatus.submissionSuccess,
+          createPropertyStatus: CreatePropertyStatus.submissionSuccess,
           propertyId: propertyId,
         ),
       );
     } catch (e) {
       emit(
         state.copyWith(
-          status: CreatePropertyStatus.submissionFailure,
+          createPropertyStatus: CreatePropertyStatus.submissionFailure,
           errorMessage: e.toString(),
         ),
       );
@@ -368,11 +375,11 @@ class CreatePropertyBloc
     emit(state.copyWith(listingType: event.listingType));
   }
 
-  void _onOccupancyStatusChanged(
-    CreatePropertyOccupancyStatusChanged event,
+  void _onStatusChanged(
+    CreatePropertyStatusChanged event,
     Emitter<CreatePropertyState> emit,
   ) {
-    emit(state.copyWith(occupancyStatus: event.status));
+    emit(state.copyWith(status: event.status));
   }
 
   void _onStyleChanged(

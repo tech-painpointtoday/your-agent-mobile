@@ -47,7 +47,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                 // Illustration placeholder
                 Center(
                   child: Image.asset(
-                    'assets/icons/mail.png',
+                    'assets/images/auth/email_verification.png',
                     width: 170,
                     height: 170,
                   ),

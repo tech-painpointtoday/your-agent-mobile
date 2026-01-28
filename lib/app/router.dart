@@ -20,6 +20,7 @@ import '../features/notifications/bloc/notification_event.dart';
 import '../features/notifications/pages/notification_detail_screen.dart';
 import '../features/notifications/pages/notifications_screen.dart';
 import '../features/property/pages/property_detail_screen.dart';
+import '../features/property/pages/mock_property_test_screen.dart';
 import '../features/public/pages/policy_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../widgets/main_navigation_screen.dart';
@@ -50,18 +51,18 @@ class AppRouter {
 
       // Protected routes that require authentication
       final protectedRoutes = [
-        '/',
-        '/home-screen',
-        '/property',
-        '/money',
-        '/calendar',
-        '/contact',
-        '/dashboard',
-        '/co-agent',
-        '/contract',
-        '/bureau',
-        '/activities',
-        '/notifications',
+        // '/',
+        // '/home-screen',
+        // '/property',
+        // '/money',
+        // '/calendar',
+        // '/contact',
+        // '/dashboard',
+        // '/co-agent',
+        // '/contract',
+        // '/bureau',
+        // '/activities',
+        // '/notifications',
       ];
 
       final isProtectedRoute = protectedRoutes.any(
@@ -110,8 +111,12 @@ class AppRouter {
         path: '/property/:id',
         builder: (context, state) {
           final id = state.pathParameters['id']!;
-          return PropertyDetailScreen(propertyId: id);
+          return PropertyDetailScreen(propertyId: int.tryParse(id));
         },
+      ),
+      GoRoute(
+        path: '/test-mock-properties',
+        builder: (context, state) => const MockPropertyTestScreen(),
       ),
       GoRoute(
         path: '/money',

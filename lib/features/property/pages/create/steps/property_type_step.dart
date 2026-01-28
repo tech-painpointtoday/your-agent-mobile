@@ -160,10 +160,7 @@ class _PropertyTypeCard extends StatelessWidget {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(10),
                 ),
-                child: Image.network(
-                  "https://placehold.co/300x200", // Using placeholder for now
-                  fit: BoxFit.cover,
-                ),
+                child: Image.asset(imagePath, fit: BoxFit.cover),
               ),
             ),
             Expanded(

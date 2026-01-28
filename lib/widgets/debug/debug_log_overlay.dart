@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:youragent/core/di/dependency_injection.dart'
     show DependencyInjection, navigatorKey;
@@ -145,6 +146,23 @@ class _DebugLogOverlayWidgetState extends State<_DebugLogOverlayWidget> {
                             ),
                           ),
                           const Spacer(),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.home_work_outlined,
+                              size: 20,
+                              color: _hackerGreen,
+                            ),
+                            tooltip: 'Mock Properties',
+                            onPressed: () {
+                              DebugLogOverlay.hide();
+                              navigatorKey.currentContext?.push(
+                                '/test-mock-properties',
+                              );
+                            },
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          ),
+                          const SizedBox(width: 8),
                           IconButton(
                             icon: const Icon(
                               Icons.clear_all,

@@ -177,8 +177,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     role == UserRole.agent ? 'สำหรับเอเจนต์' : 'สำหรับบริษัท',
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                       color: selected
                           ? AppColors.jungleGreen
                           : AppColors.baseDarkGrey,
@@ -215,11 +215,11 @@ class _LoginScreenState extends State<LoginScreen> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.baseGrey),
+        borderSide: const BorderSide(color: AppColors.baseLightGrey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.baseGrey),
+        borderSide: const BorderSide(color: AppColors.baseLightGrey),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -245,8 +245,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 12),
                 // Illustration (placeholder using existing asset)
                 Center(
-                  child: SvgPicture.asset(
-                    'assets/images/undraw-business-call-w1gr-1.svg',
+                  child: Image.asset(
+                    _role == UserRole.agent
+                        ? 'assets/images/auth/login_agent.png'
+                        : 'assets/images/auth/login_agency.png',
                     width: 180,
                     height: 180,
                   ),
@@ -257,8 +259,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.baseDarkGrey,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.baseBlack,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -311,7 +313,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           prefix: Padding(
                             padding: const EdgeInsets.all(16),
                             child: SvgPicture.asset(
-                              'assets/icons/key.svg',
+                              'assets/icons/security-shield.svg',
                               width: 16,
                               height: 16,
                               colorFilter: const ColorFilter.mode(
@@ -451,13 +453,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           Text(
                             l10n.don_t_have_account,
-                            style: const TextStyle(color: AppColors.baseGrey),
+                            style: const TextStyle(
+                              color: AppColors.baseGrey,
+                              fontSize: 14,
+                            ),
                           ),
                           TextButton(
                             onPressed: () => context.go('/register'),
                             child: Text(
                               l10n.register_now,
-                              style: const TextStyle(color: AppColors.primary),
+                              style: const TextStyle(
+                                color: AppColors.primary,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ],

@@ -290,7 +290,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get or => 'หรือ';
 
   @override
-  String get don_t_have_account => 'ยังไม่มีบัญชี?';
+  String get don_t_have_account => 'ยังไม่มีบัญชีผู้ใช้งาน?';
 
   @override
   String get register_now => 'ลงทะเบียนเลย';

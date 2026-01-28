@@ -411,11 +411,16 @@ class _HeaderActionIcon extends StatelessWidget {
 
 /// Search bar for home screen with custom hint text
 class HomeSearchBar extends StatelessWidget {
-  const HomeSearchBar({super.key});
+  final TextEditingController? controller;
+
+  const HomeSearchBar({super.key, this.controller});
 
   @override
   Widget build(BuildContext context) {
-    return const AppSearchBar(hintText: 'ค้นหาทรัพย์ของคุณ...');
+    return AppSearchBar(
+      hintText: 'ค้นหาทรัพย์ของคุณ...',
+      controller: controller,
+    );
   }
 }
 

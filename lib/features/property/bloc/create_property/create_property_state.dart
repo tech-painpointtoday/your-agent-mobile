@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:youragent/domain/entities/property.dart';
 import '../../../../data/models/developer_model.dart';
 import '../../../../data/models/condo_project_model.dart';
 import '../../../../data/models/property_specification_filters.dart';
@@ -13,9 +14,9 @@ enum CreatePropertyStatus {
 
 class CreatePropertyState extends Equatable {
   final int step;
-  final CreatePropertyStatus status;
+  final CreatePropertyStatus createPropertyStatus;
   final String? errorMessage;
-  final String? propertyId; // Resulting property ID after success
+  final int? propertyId; // Resulting property ID after success
 
   // Data fields
   final String? selectedPropertyType;
@@ -38,7 +39,7 @@ class CreatePropertyState extends Equatable {
 
   // New Step 3 Fields
   final String? listingType; // 'ขาย', 'เช่า', 'ขายและเช่า'
-  final String? occupancyStatus; // 'ว่าง', 'ไม่ว่าง'
+  final String? status; // 'ว่าง', 'ไม่ว่าง'
   final int? totalFloors; // For houses or generic floor count
 
   // New Step 4 Fields
@@ -87,7 +88,7 @@ class CreatePropertyState extends Equatable {
 
   const CreatePropertyState({
     this.step = 1,
-    this.status = CreatePropertyStatus.initial,
+    this.createPropertyStatus = CreatePropertyStatus.initial,
     this.errorMessage,
     this.propertyId,
     this.selectedPropertyType,
@@ -134,7 +135,7 @@ class CreatePropertyState extends Equatable {
     this.selectedDeveloperId,
     this.selectedCondoProjectId,
     this.listingType,
-    this.occupancyStatus,
+    this.status,
     this.totalFloors,
     this.propertyStyle,
     this.highlights = const [],
@@ -161,7 +162,7 @@ class CreatePropertyState extends Equatable {
     'direction': direction,
     'availableFrom': availableFrom,
     'listingType': listingType,
-    'occupancyStatus': occupancyStatus,
+    'status': status,
     'totalFloors': totalFloors,
     'propertyStyle': propertyStyle,
     'highlights': highlights,
@@ -215,7 +216,7 @@ class CreatePropertyState extends Equatable {
     }
     if (step == 3) {
       return listingType != null &&
-          occupancyStatus != null &&
+          status != null &&
           totalFloors != null &&
           bedrooms != null &&
           bathrooms != null &&
@@ -238,9 +239,9 @@ class CreatePropertyState extends Equatable {
 
   CreatePropertyState copyWith({
     int? step,
-    CreatePropertyStatus? status,
+    CreatePropertyStatus? createPropertyStatus,
     String? errorMessage,
-    String? propertyId,
+    int? propertyId,
     String? selectedPropertyType,
     String? name,
     double? price,
@@ -285,7 +286,7 @@ class CreatePropertyState extends Equatable {
     int? selectedDeveloperId,
     int? selectedCondoProjectId,
     String? listingType,
-    String? occupancyStatus,
+    String? status,
     int? totalFloors,
     String? propertyStyle,
     List<String>? highlights,
@@ -295,7 +296,7 @@ class CreatePropertyState extends Equatable {
   }) {
     return CreatePropertyState(
       step: step ?? this.step,
-      status: status ?? this.status,
+      createPropertyStatus: createPropertyStatus ?? this.createPropertyStatus,
       errorMessage: errorMessage ?? this.errorMessage,
       propertyId: propertyId ?? this.propertyId,
       selectedPropertyType: selectedPropertyType ?? this.selectedPropertyType,
@@ -343,7 +344,7 @@ class CreatePropertyState extends Equatable {
       selectedCondoProjectId:
           selectedCondoProjectId ?? this.selectedCondoProjectId,
       listingType: listingType ?? this.listingType,
-      occupancyStatus: occupancyStatus ?? this.occupancyStatus,
+      status: status ?? this.status,
       totalFloors: totalFloors ?? this.totalFloors,
       propertyStyle: propertyStyle ?? this.propertyStyle,
       highlights: highlights ?? this.highlights,
@@ -353,10 +354,88 @@ class CreatePropertyState extends Equatable {
     );
   }
 
+  Property get toProperty {
+    // 1. Separate Dynamic Values into Specs (Scalar) and Values (Lists)
+    final specsMap = <String, dynamic>{};
+    final specValuesMap = <String, dynamic>{
+      'good_points': highlights,
+      'common_facilities': facilities,
+    };
+
+    dynamicValues.forEach((key, value) {
+      if (value is List) {
+        specValuesMap[key] = value;
+      } else {
+        specsMap[key] = value;
+      }
+    });
+
+    // Explicitly set key fields into specs map if API expects them there
+    specsMap['floors'] = totalFloors?.toString();
+    specsMap['bedrooms'] = bedrooms?.toString();
+
+    // 3. Create Entity
+    return Property(
+      // ID is null -> Indicates Draft
+      id: propertyId,
+
+      title: name ?? 'รายละเอียดทรัพย์สิน', // Fallback title
+      name: name,
+      description: description ?? '',
+      price: price ?? 0,
+
+      // Status
+      approvalStatus: PropertyApprovalStatus.draft, // Mark as draft for UI
+      listingType: listingType,
+      status: status, // mapped from state.status field
+      availableFrom: availableFrom,
+
+      // Location
+      address: address,
+      latitude: latitude ?? 0,
+      longitude: longitude ?? 0,
+      locationSet: latitude != null && longitude != null,
+      number: number,
+      city: city,
+      state: province ?? state,
+      district: district,
+      subdistrict: subdistrict,
+      road: road,
+      soi: soi,
+      postalCode: postalCode,
+      country: country,
+      formattedAddressEn: formattedAddressEn,
+      formattedAddressTh: formattedAddressTh,
+
+      // Physical Details
+      propertyType: selectedPropertyType ?? '',
+      propertyStyle: propertyStyle,
+      bedrooms: bedrooms ?? 0,
+      bathrooms: bathrooms ?? 0,
+      garage: garage,
+      landSize: landSize,
+      buildingSize: buildingSize,
+      totalFloors: totalFloors,
+      houseColor: houseColor,
+      built: built,
+      direction: direction,
+
+      // Collections
+      specifications: specsMap,
+      specificationValues: specValuesMap,
+
+      // Images (Pass local XFiles)
+      imageFiles: images,
+      imageUrls: const [], // No URLs yet
+
+      createdAt: DateTime.now(),
+    );
+  }
+
   @override
   List<Object?> get props => [
     step,
-    status,
+    createPropertyStatus,
     errorMessage,
     propertyId,
     selectedPropertyType,
@@ -403,7 +482,7 @@ class CreatePropertyState extends Equatable {
     selectedDeveloperId,
     selectedCondoProjectId,
     listingType,
-    occupancyStatus,
+    status,
     totalFloors,
     propertyStyle,
     highlights,

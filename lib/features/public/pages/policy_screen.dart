@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../widgets/buttons/app_button.dart';
@@ -80,25 +82,24 @@ class _PolicyScreenState extends State<PolicyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final title = _title();
     return Scaffold(
-      backgroundColor: AppColors.basePaleGrey,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.basePaleGrey,
+        backgroundColor: Colors.white,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: SvgPicture.asset(
+            'assets/icons/chevron-left.svg',
+            width: 24,
+            height: 24,
+            colorFilter: const ColorFilter.mode(
+              AppColors.baseDarkGrey,
+              BlendMode.srcIn,
+            ),
+          ),
           onPressed: () => context.pop(false),
         ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w700,
-            color: AppColors.baseDarkGrey,
-          ),
-        ),
-        centerTitle: false,
       ),
       body: SafeArea(
         child: Column(
@@ -106,19 +107,66 @@ class _PolicyScreenState extends State<PolicyScreen> {
             Expanded(
               child: SingleChildScrollView(
                 controller: _scrollController,
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+                padding: EdgeInsets.zero,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'บริษัท ยัวร์เอเจนต์ แพลตฟอร์ม จำกัด',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary,
+                    // Header Section
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _title(),
+                                  style: GoogleFonts.anuphan(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.baseBlack,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'บริษัท ยัวร์โฮม แพลตฟอร์ม จำกัด',
+                                  style: GoogleFonts.anuphan(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'อัปเดตล่าสุด 24 ธ.ค. 2568, 12:00 น.',
+                                  style: GoogleFonts.anuphan(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.baseGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Image.asset(
+                            'assets/images/auth/policy.png',
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.contain,
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    _content(),
+                    const SizedBox(height: 24),
+                    Divider(color: AppColors.baseLightGrey),
+                    const SizedBox(height: 24),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: _content(),
+                    ),
                   ],
                 ),
               ),
@@ -126,8 +174,15 @@ class _PolicyScreenState extends State<PolicyScreen> {
             Container(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
               decoration: const BoxDecoration(
-                color: AppColors.basePaleGrey,
-                border: Border(top: BorderSide(color: AppColors.baseGrey)),
+                color: Colors.white,
+                border: Border(top: BorderSide(color: AppColors.baseLightGrey)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x0A000000),
+                    blurRadius: 10,
+                    offset: Offset(0, -4),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
@@ -136,13 +191,16 @@ class _PolicyScreenState extends State<PolicyScreen> {
                       onPressed: () => context.pop(false),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.baseDarkGrey,
-                        side: const BorderSide(color: AppColors.baseGrey),
+                        side: const BorderSide(color: AppColors.baseLightGrey),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         minimumSize: const Size.fromHeight(52),
                       ),
-                      child: const Text('ไม่ยอมรับ'),
+                      child: Text(
+                        'ไม่ยอมรับ',
+                        style: GoogleFonts.anuphan(fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -168,7 +226,7 @@ class _PolicyScreenState extends State<PolicyScreen> {
   String _title() {
     switch (_selectedPolicy) {
       case PolicyType.terms:
-        return 'ข้อกำหนดและเงื่อนไขการใช้งาน';
+        return 'ข้อตกลงและเงื่อนไขการใช้งาน';
       case PolicyType.privacy:
         return 'นโยบายความเป็นส่วนตัว';
       case PolicyType.disclaimer:
@@ -228,32 +286,35 @@ class _PolicyScreenState extends State<PolicyScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (int i = 0; i < items.length; i++) ...[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 24,
-                child: Text(
-                  '${i + 1}.',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.baseDarkGrey,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 14),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 24,
+                  child: Text(
+                    '${i + 1}.',
+                    style: GoogleFonts.anuphan(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.baseDarkGrey,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  items[i],
-                  style: const TextStyle(
-                    height: 1.6,
-                    color: AppColors.baseDarkGrey,
+                Expanded(
+                  child: Text(
+                    items[i],
+                    style: GoogleFonts.anuphan(
+                      fontSize: 14,
+                      height: 1.6,
+                      color: AppColors.baseDarkGrey,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const SizedBox(height: 14),
         ],
       ],
     );

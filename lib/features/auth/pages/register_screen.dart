@@ -96,8 +96,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 const SizedBox(height: 12),
                 Center(
-                  child: SvgPicture.asset(
-                    'assets/images/undraw-business-call-w1gr-1.svg',
+                  child: Image.asset(
+                    _role == UserRole.agent
+                        ? 'assets/images/auth/register.png'
+                        : 'assets/images/auth/register.png',
                     width: 180,
                     height: 180,
                   ),
@@ -108,8 +110,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.baseDarkGrey,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.baseBlack,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -156,8 +158,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Text(
                                 'สำหรับเอเจนต์',
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
                                   color: _role == UserRole.agent
                                       ? AppColors.jungleGreen
                                       : AppColors.baseDarkGrey,
@@ -202,8 +204,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Text(
                                 'สำหรับบริษัท',
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
                                   color: _role == UserRole.agency
                                       ? AppColors.jungleGreen
                                       : AppColors.baseDarkGrey,
@@ -239,7 +241,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     );
                   },
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 36),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

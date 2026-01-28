@@ -182,9 +182,9 @@ class CreatePropertyListingTypeChanged extends CreatePropertyEvent {
   List<Object?> get props => [listingType];
 }
 
-class CreatePropertyOccupancyStatusChanged extends CreatePropertyEvent {
+class CreatePropertyStatusChanged extends CreatePropertyEvent {
   final String status;
-  const CreatePropertyOccupancyStatusChanged(this.status);
+  const CreatePropertyStatusChanged(this.status);
 
   @override
   List<Object?> get props => [status];

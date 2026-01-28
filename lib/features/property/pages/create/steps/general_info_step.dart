@@ -30,7 +30,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   // Controllers
   late final TextEditingController _titleController;
   late final TextEditingController _addressController;
-  late final TextEditingController _priceController;
   late final TextEditingController _projectController;
   late final TextEditingController _developerController;
   late final TextEditingController _buildingController;
@@ -78,13 +77,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     );
     _addressController.addListener(
       () => _updateData('address', _addressController.text),
-    );
-    _priceController.addListener(
-      () => context.read<CreatePropertyBloc>().add(
-        CreatePropertyGeneralInfoUpdated(
-          price: double.tryParse(_priceController.text),
-        ),
-      ),
     );
     _projectController.addListener(
       () => _updateData('project', _projectController.text),
@@ -286,7 +278,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   void dispose() {
     _titleController.dispose();
     _addressController.dispose();
-    _priceController.dispose();
     _projectController.dispose();
     _developerController.dispose();
     _buildingController.dispose();
@@ -393,142 +384,160 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               ),
               const SizedBox(height: 24),
 
-              // Developer
-              BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
-                builder: (context, state) {
-                  return TypeAheadField<Developer>(
-                    controller: _developerController,
-                    builder: (context, controller, focusNode) =>
-                        AppTextFormField(
-                          label: 'ผู้พัฒนาโครงการ',
-                          controller: controller,
-                          focusNode: focusNode,
-                          hintText: 'ค้นหาผู้พัฒนาโครงการ',
-                          isRequired: isCondoOrApt,
-                          suffix: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: SvgPicture.asset(
-                              'assets/icons/search.svg',
-                              width: 16,
-                              height: 16,
-                              colorFilter: const ColorFilter.mode(
-                                AppColors.baseGrey,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                        ),
-                    suggestionsCallback: (pattern) {
-                      final developers = state.developers;
-                      if (pattern.isEmpty) return developers;
-                      final lower = pattern.toLowerCase();
-                      return developers.where((dev) {
-                        return dev.nameTh.toLowerCase().contains(lower) ||
-                            dev.nameEn.toLowerCase().contains(lower);
-                      }).toList();
-                    },
-                    itemBuilder: (context, developer) {
-                      return ListTile(
-                        title: Text(developer.nameTh),
-                        subtitle: Text(developer.nameEn),
-                      );
-                    },
-                    onSelected: (developer) {
-                      _developerController.text = developer.nameTh;
-                      _projectController.clear();
-                      context.read<CreatePropertyBloc>().add(
-                        CreatePropertyDeveloperChanged(developer.id),
-                      );
-                      FocusScope.of(context).unfocus();
-                    },
-                    emptyBuilder: (context) => const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text('ไม่พบข้อมูล'),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
+              if (!isCondoOrApt) ...[
+                // Developer
+                AppTextFormField(
+                  label: 'ผู้พัฒนาโครงการ',
+                  controller: _developerController,
+                  hintText: 'ผู้พัฒนาโครงการ',
+                ),
+                const SizedBox(height: 16),
 
-              // Project Name
-              BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
-                builder: (context, state) {
-                  return TypeAheadField<CondoProject>(
-                    controller: _projectController,
-                    builder: (context, controller, focusNode) =>
-                        AppTextFormField(
-                          label: 'ชื่อโครงการ',
-                          controller: controller,
-                          focusNode: focusNode,
-                          hintText: 'ชื่อโครงการ',
-                          isRequired: isCondoOrApt,
-                          suffix: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: SvgPicture.asset(
-                              'assets/icons/search.svg',
-                              width: 16,
-                              height: 16,
-                              colorFilter: const ColorFilter.mode(
-                                AppColors.baseGrey,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                        ),
-                    suggestionsCallback: (pattern) {
-                      final projects = state.condoProjects;
-                      final devId = state.selectedDeveloperId;
-
-                      Iterable<CondoProject> filtered = projects;
-                      if (devId != null) {
-                        filtered = projects.where(
-                          (p) => p.developerId == devId,
-                        );
-                      }
-
-                      if (pattern.isEmpty) return filtered.toList();
-                      final lower = pattern.toLowerCase();
-                      return filtered.where((p) {
-                        return p.name.toLowerCase().contains(lower);
-                      }).toList();
-                    },
-                    itemBuilder: (context, project) {
-                      return ListTile(title: Text(project.name));
-                    },
-                    onSelected: (project) {
-                      _projectController.text = project.name;
-
-                      // Auto-fill developer if currently empty OR if we want to force match
-                      // Checking empty is safer to avoid overwriting user's specific choice if they made one
-                      // asking for "still empty" implies we only fill if it's blank.
-                      if (_developerController.text.isEmpty) {
-                        final dev = state.developers
-                            .where((d) => d.id == project.developerId)
-                            .firstOrNull;
-                        if (dev != null) {
-                          _developerController.text = dev.nameTh;
-                          // Trigger update data to ensure state is consistent
-                          _updateData('developer', dev.nameTh);
-                        }
-                      }
-
-                      context.read<CreatePropertyBloc>().add(
-                        CreatePropertyCondoProjectChanged(project.id),
-                      );
-
-                      // Unfocus to hide keyboard
-                      FocusScope.of(context).unfocus();
-                    },
-                    emptyBuilder: (context) => const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text('ไม่พบข้อมูล'),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
+                // Project Name
+                AppTextFormField(
+                  label: 'ชื่อโครงการ',
+                  controller: _projectController,
+                  hintText: 'ชื่อโครงการ',
+                ),
+                const SizedBox(height: 16),
+              ],
 
               if (isCondoOrApt) ...[
+                // Developer
+                BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+                  builder: (context, state) {
+                    return TypeAheadField<Developer>(
+                      controller: _developerController,
+                      builder: (context, controller, focusNode) =>
+                          AppTextFormField(
+                            label: 'ผู้พัฒนาโครงการ',
+                            controller: controller,
+                            focusNode: focusNode,
+                            hintText: 'ค้นหาผู้พัฒนาโครงการ',
+                            isRequired: isCondoOrApt,
+                            suffix: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: SvgPicture.asset(
+                                'assets/icons/search.svg',
+                                width: 16,
+                                height: 16,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.baseGrey,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          ),
+                      suggestionsCallback: (pattern) {
+                        final developers = state.developers;
+                        if (pattern.isEmpty) return developers;
+                        final lower = pattern.toLowerCase();
+                        return developers.where((dev) {
+                          return dev.nameTh.toLowerCase().contains(lower) ||
+                              dev.nameEn.toLowerCase().contains(lower);
+                        }).toList();
+                      },
+                      itemBuilder: (context, developer) {
+                        return ListTile(
+                          title: Text(developer.nameTh),
+                          subtitle: Text(developer.nameEn),
+                        );
+                      },
+                      onSelected: (developer) {
+                        _developerController.text = developer.nameTh;
+                        _projectController.clear();
+                        context.read<CreatePropertyBloc>().add(
+                          CreatePropertyDeveloperChanged(developer.id),
+                        );
+                        FocusScope.of(context).unfocus();
+                      },
+                      emptyBuilder: (context) => const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text('ไม่พบข้อมูล'),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // Project Name
+                BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+                  builder: (context, state) {
+                    return TypeAheadField<CondoProject>(
+                      controller: _projectController,
+                      builder: (context, controller, focusNode) =>
+                          AppTextFormField(
+                            label: 'ชื่อโครงการ',
+                            controller: controller,
+                            focusNode: focusNode,
+                            hintText: 'ชื่อโครงการ',
+                            isRequired: isCondoOrApt,
+                            suffix: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: SvgPicture.asset(
+                                'assets/icons/search.svg',
+                                width: 16,
+                                height: 16,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.baseGrey,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          ),
+                      suggestionsCallback: (pattern) {
+                        final projects = state.condoProjects;
+                        final devId = state.selectedDeveloperId;
+
+                        Iterable<CondoProject> filtered = projects;
+                        if (devId != null) {
+                          filtered = projects.where(
+                            (p) => p.developerId == devId,
+                          );
+                        }
+
+                        if (pattern.isEmpty) return filtered.toList();
+                        final lower = pattern.toLowerCase();
+                        return filtered.where((p) {
+                          return p.name.toLowerCase().contains(lower);
+                        }).toList();
+                      },
+                      itemBuilder: (context, project) {
+                        return ListTile(title: Text(project.name));
+                      },
+                      onSelected: (project) {
+                        _projectController.text = project.name;
+
+                        // Auto-fill developer if currently empty OR if we want to force match
+                        // Checking empty is safer to avoid overwriting user's specific choice if they made one
+                        // asking for "still empty" implies we only fill if it's blank.
+                        if (_developerController.text.isEmpty) {
+                          final dev = state.developers
+                              .where((d) => d.id == project.developerId)
+                              .firstOrNull;
+                          if (dev != null) {
+                            _developerController.text = dev.nameTh;
+                            // Trigger update data to ensure state is consistent
+                            _updateData('developer', dev.nameTh);
+                          }
+                        }
+
+                        context.read<CreatePropertyBloc>().add(
+                          CreatePropertyCondoProjectChanged(project.id),
+                        );
+
+                        // Unfocus to hide keyboard
+                        FocusScope.of(context).unfocus();
+                      },
+                      emptyBuilder: (context) => const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text('ไม่พบข้อมูล'),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+
                 // Building Info
                 AppTextFormField(
                   label: 'ตึก/อาคาร',
