@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../data/models/developer_model.dart';
+import '../../../../data/models/condo_project_model.dart';
+import '../../../../data/models/property_specification_filters.dart';
 
 enum CreatePropertyStatus {
   initial,
@@ -33,6 +36,16 @@ class CreatePropertyState extends Equatable {
   final String? availableFrom;
   final List<XFile> images;
 
+  // New Step 3 Fields
+  final String? listingType; // 'ขาย', 'เช่า', 'ขายและเช่า'
+  final String? occupancyStatus; // 'ว่าง', 'ไม่ว่าง'
+  final int? totalFloors; // For houses or generic floor count
+
+  // New Step 4 Fields
+  final String? propertyStyle;
+  final List<String> highlights;
+  final List<String> facilities;
+
   // Location Details
   final String? number;
   final String? city;
@@ -44,6 +57,7 @@ class CreatePropertyState extends Equatable {
   final String? road;
   final String? soi;
   final String? formattedAddressEn;
+  final String? formattedAddressTh;
   final String? province;
 
   // Condo Details
@@ -59,6 +73,17 @@ class CreatePropertyState extends Equatable {
   final String? parkingType;
   final bool? isCornerPlot;
   final String? houseNotes;
+
+  // Selection Data
+  final List<Developer> developers;
+  final List<CondoProject> condoProjects;
+  final int? selectedDeveloperId;
+  final int? selectedCondoProjectId;
+
+  // Dynamic Filters
+  final PropertySpecificationFilters specificationFilters;
+  final Map<String, dynamic>
+  dynamicValues; // key -> value (String or List<String>)
 
   const CreatePropertyState({
     this.step = 1,
@@ -92,6 +117,7 @@ class CreatePropertyState extends Equatable {
     this.road,
     this.soi,
     this.formattedAddressEn,
+    this.formattedAddressTh,
     this.province,
     this.condoProjectId,
     this.tower,
@@ -103,6 +129,18 @@ class CreatePropertyState extends Equatable {
     this.parkingType,
     this.isCornerPlot,
     this.houseNotes,
+    this.developers = const [],
+    this.condoProjects = const [],
+    this.selectedDeveloperId,
+    this.selectedCondoProjectId,
+    this.listingType,
+    this.occupancyStatus,
+    this.totalFloors,
+    this.propertyStyle,
+    this.highlights = const [],
+    this.facilities = const [],
+    this.specificationFilters = const PropertySpecificationFilters(),
+    this.dynamicValues = const {},
   });
 
   Map<String, dynamic> get data => {
@@ -122,6 +160,12 @@ class CreatePropertyState extends Equatable {
     'built': built,
     'direction': direction,
     'availableFrom': availableFrom,
+    'listingType': listingType,
+    'occupancyStatus': occupancyStatus,
+    'totalFloors': totalFloors,
+    'propertyStyle': propertyStyle,
+    'highlights': highlights,
+    'facilities': facilities,
     'location_set': latitude != null && longitude != null,
     'number': number,
     'city': city,
@@ -134,6 +178,7 @@ class CreatePropertyState extends Equatable {
     'road': road,
     'soi': soi,
     'formatted_address_en': formattedAddressEn,
+    'formatted_address_th': formattedAddressTh,
     'condoProjectId': condoProjectId,
     'tower': tower,
     'condoFloor': condoFloor,
@@ -148,8 +193,47 @@ class CreatePropertyState extends Equatable {
 
   bool get isValid {
     if (step == 1) return selectedPropertyType != null;
-    if (step == 2) return name != null && name!.isNotEmpty && price != null;
-    return true; // Simplified for now
+    if (step == 2) {
+      final baseValid =
+          (name?.isNotEmpty == true) &&
+          (address?.isNotEmpty == true) &&
+          (formattedAddressTh?.isNotEmpty == true);
+
+      if (!baseValid) return false;
+
+      final isCondoOrApt =
+          selectedPropertyType == 'คอนโดมิเนียม' ||
+          selectedPropertyType == 'อพาร์ตเมนต์';
+
+      if (isCondoOrApt) {
+        return selectedDeveloperId != null &&
+            selectedCondoProjectId != null &&
+            (condoFloor?.isNotEmpty == true) &&
+            (unitNo?.isNotEmpty == true);
+      }
+      return true;
+    }
+    if (step == 3) {
+      return listingType != null &&
+          occupancyStatus != null &&
+          totalFloors != null &&
+          bedrooms != null &&
+          bathrooms != null &&
+          garage != null &&
+          built != null &&
+          houseColor != null &&
+          price != null &&
+          landSize != null &&
+          buildingSize != null &&
+          direction != null;
+    }
+    if (step == 4) {
+      return propertyStyle != null;
+    }
+    if (step == 5) {
+      return images.isNotEmpty;
+    }
+    return true;
   }
 
   CreatePropertyState copyWith({
@@ -184,6 +268,7 @@ class CreatePropertyState extends Equatable {
     String? road,
     String? soi,
     String? formattedAddressEn,
+    String? formattedAddressTh,
     String? province,
     int? condoProjectId,
     String? tower,
@@ -195,6 +280,18 @@ class CreatePropertyState extends Equatable {
     String? parkingType,
     bool? isCornerPlot,
     String? houseNotes,
+    List<Developer>? developers,
+    List<CondoProject>? condoProjects,
+    int? selectedDeveloperId,
+    int? selectedCondoProjectId,
+    String? listingType,
+    String? occupancyStatus,
+    int? totalFloors,
+    String? propertyStyle,
+    List<String>? highlights,
+    List<String>? facilities,
+    PropertySpecificationFilters? specificationFilters,
+    Map<String, dynamic>? dynamicValues,
   }) {
     return CreatePropertyState(
       step: step ?? this.step,
@@ -229,6 +326,7 @@ class CreatePropertyState extends Equatable {
       road: road ?? this.road,
       soi: soi ?? this.soi,
       formattedAddressEn: formattedAddressEn ?? this.formattedAddressEn,
+      formattedAddressTh: formattedAddressTh ?? this.formattedAddressTh,
       condoProjectId: condoProjectId ?? this.condoProjectId,
       tower: tower ?? this.tower,
       condoFloor: condoFloor ?? this.condoFloor,
@@ -239,6 +337,19 @@ class CreatePropertyState extends Equatable {
       parkingType: parkingType ?? this.parkingType,
       isCornerPlot: isCornerPlot ?? this.isCornerPlot,
       houseNotes: houseNotes ?? this.houseNotes,
+      developers: developers ?? this.developers,
+      condoProjects: condoProjects ?? this.condoProjects,
+      selectedDeveloperId: selectedDeveloperId ?? this.selectedDeveloperId,
+      selectedCondoProjectId:
+          selectedCondoProjectId ?? this.selectedCondoProjectId,
+      listingType: listingType ?? this.listingType,
+      occupancyStatus: occupancyStatus ?? this.occupancyStatus,
+      totalFloors: totalFloors ?? this.totalFloors,
+      propertyStyle: propertyStyle ?? this.propertyStyle,
+      highlights: highlights ?? this.highlights,
+      facilities: facilities ?? this.facilities,
+      specificationFilters: specificationFilters ?? this.specificationFilters,
+      dynamicValues: dynamicValues ?? this.dynamicValues,
     );
   }
 
@@ -276,6 +387,7 @@ class CreatePropertyState extends Equatable {
     road,
     soi,
     formattedAddressEn,
+    formattedAddressTh,
     condoProjectId,
     tower,
     condoFloor,
@@ -286,5 +398,17 @@ class CreatePropertyState extends Equatable {
     parkingType,
     isCornerPlot,
     houseNotes,
+    developers,
+    condoProjects,
+    selectedDeveloperId,
+    selectedCondoProjectId,
+    listingType,
+    occupancyStatus,
+    totalFloors,
+    propertyStyle,
+    highlights,
+    facilities,
+    specificationFilters,
+    dynamicValues,
   ];
 }

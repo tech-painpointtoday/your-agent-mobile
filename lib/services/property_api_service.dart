@@ -7,6 +7,7 @@ import 'package:youragent/data/models/api_response.dart';
 import 'package:youragent/data/models/property_filter_options.dart';
 import 'package:youragent/data/models/developer_model.dart';
 import 'package:youragent/data/models/condo_project_model.dart';
+import 'package:youragent/data/models/property_specification_filters.dart';
 import 'package:image_picker/image_picker.dart';
 
 /// Photo upload data structure
@@ -790,19 +791,20 @@ class PropertyApiService {
     }
   }
 
-  /// Get public filter info
-  /// GET /public/info
-  Future<PropertyFilterOptions> getPublicFilterInfo() async {
+  /// Get specification filters
+  /// GET /public/specification-filters
+  Future<PropertySpecificationFilters> getSpecificationFilters() async {
     try {
-      final response = await _apiClient.get('/public/info');
+      final response = await _apiClient.get('/public/specification-filters');
       final data = response.data as Map<String, dynamic>;
 
       if (data['success'] == true && data['data'] != null) {
-        final filtersData = data['data']['filters'] as Map<String, dynamic>;
-        return PropertyFilterOptions.fromJson(filtersData);
+        return PropertySpecificationFilters.fromJson(data['data']);
       }
 
-      throw Exception('Invalid response format from /public/info');
+      throw Exception(
+        'Invalid response format from /public/specification-filters',
+      );
     } catch (e) {
       if (e is DioException) {
         throw Exception(ApiResponseService.getErrorMessage(e));

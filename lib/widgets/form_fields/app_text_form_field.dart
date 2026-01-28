@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../inputs/app_text_field.dart';
 
 /// Wrapper for AppTextField to support legacy code using AppTextFormField
@@ -9,10 +10,14 @@ class AppTextFormField extends StatelessWidget {
   final String? hintText;
   final int maxLines;
   final Widget? suffix;
+  final Widget? prefix;
   final TextInputType? keyboardType;
   final bool readOnly;
   final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
+  final FocusNode? focusNode;
+  final bool showCursor;
+  final List<TextInputFormatter>? inputFormatters;
 
   const AppTextFormField({
     super.key,
@@ -22,10 +27,14 @@ class AppTextFormField extends StatelessWidget {
     this.hintText,
     this.maxLines = 1,
     this.suffix,
+    this.prefix,
     this.keyboardType,
     this.readOnly = false,
     this.onTap,
     this.onChanged,
+    this.focusNode,
+    this.showCursor = true,
+    this.inputFormatters,
   });
 
   @override
@@ -37,10 +46,14 @@ class AppTextFormField extends StatelessWidget {
       hintText: hintText,
       maxLines: maxLines,
       suffix: suffix,
+      prefix: prefix,
       keyboardType: keyboardType,
       readOnly: readOnly,
       onTap: onTap,
       onChanged: onChanged,
+      focusNode: focusNode,
+      showCursor: showCursor,
+      inputFormatters: inputFormatters,
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../services/property_api_service.dart';
 import '../../../../core/di/dependency_injection.dart';
@@ -27,6 +28,20 @@ class CreatePropertyBloc
     on<CreatePropertyImagesUpdated>(_onImagesUpdated);
     on<CreatePropertySubmitted>(_onSubmitted);
     on<CreatePropertyReset>(_onReset);
+
+    // New handlers for master data
+    on<CreatePropertyDevelopersFetched>(_onDevelopersFetched);
+    on<CreatePropertyCondoProjectsFetched>(_onCondoProjectsFetched);
+    on<CreatePropertyDeveloperChanged>(_onDeveloperChanged);
+    on<CreatePropertyCondoProjectChanged>(_onCondoProjectChanged);
+    on<CreatePropertyListingTypeChanged>(_onListingTypeChanged);
+    on<CreatePropertyOccupancyStatusChanged>(_onOccupancyStatusChanged);
+    on<CreatePropertyStyleChanged>(_onStyleChanged);
+    on<CreatePropertyHighlightToggled>(_onHighlightToggled);
+    on<CreatePropertyFacilityToggled>(_onFacilityToggled);
+    on<CreatePropertyFiltersFetched>(_onFiltersFetched);
+    on<CreatePropertyDynamicSingleSelectChanged>(_onDynamicSingleSelectChanged);
+    on<CreatePropertyDynamicMultiSelectToggled>(_onDynamicMultiSelectToggled);
   }
 
   void _onStepChanged(
@@ -110,6 +125,7 @@ class CreatePropertyBloc
         country: data['country'] as String?,
         district: data['district'] as String?,
         formattedAddressEn: data['formatted_address_en'] as String?,
+        formattedAddressTh: data['formatted_address_th'] as String?,
       ),
     );
   }
@@ -164,6 +180,7 @@ class CreatePropertyBloc
         landSize: event.landSize,
         buildingSize: event.buildingSize,
         houseColor: event.houseColor,
+        totalFloors: event.totalFloors,
       ),
     );
   }
@@ -186,6 +203,7 @@ class CreatePropertyBloc
     Emitter<CreatePropertyState> emit,
   ) {
     emit(state.copyWith(images: event.images));
+    print('images: ${state.images}');
   }
 
   Future<void> _onSubmitted(
@@ -200,6 +218,8 @@ class CreatePropertyBloc
       final roleName = role.name;
 
       final payload = <String, dynamic>{
+        ...state
+            .dynamicValues, // Include dynamic values (e.g. furniture, air_conditioning)
         'built': state.built ?? '',
         'name': state.name,
         'type': state.selectedPropertyType,
@@ -227,8 +247,13 @@ class CreatePropertyBloc
         'district': state.district,
         'road': state.road,
         'soi': state.soi,
-        'formatted_address_en':
-            state.formattedAddressEn ?? state.address ?? '',
+        'formatted_address_en': state.formattedAddressEn ?? state.address ?? '',
+        'listing_type': state.listingType,
+        'occupancy_status': state.occupancyStatus,
+        'total_floors': state.totalFloors,
+        'property_style': state.propertyStyle,
+        'highlights': state.highlights,
+        'facilities': state.facilities,
       };
 
       final createResponse = await _propertyApiService.saveProperty(
@@ -271,5 +296,194 @@ class CreatePropertyBloc
 
   void _onReset(CreatePropertyReset event, Emitter<CreatePropertyState> emit) {
     emit(const CreatePropertyState());
+  }
+
+  Future<void> _onDevelopersFetched(
+    CreatePropertyDevelopersFetched event,
+    Emitter<CreatePropertyState> emit,
+  ) async {
+    try {
+      final developers = await _propertyApiService.getDevelopers();
+      emit(state.copyWith(developers: developers));
+    } catch (e) {
+      // Silently fail or log
+    }
+  }
+
+  Future<void> _onCondoProjectsFetched(
+    CreatePropertyCondoProjectsFetched event,
+    Emitter<CreatePropertyState> emit,
+  ) async {
+    try {
+      final projects = await _propertyApiService.getCondoProjects(
+        developerId: event.developerId,
+      );
+      emit(state.copyWith(condoProjects: projects));
+    } catch (e) {
+      // Silently fail or log
+    }
+  }
+
+  void _onDeveloperChanged(
+    CreatePropertyDeveloperChanged event,
+    Emitter<CreatePropertyState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        selectedDeveloperId: event.developerId,
+        selectedCondoProjectId: null,
+      ),
+    );
+  }
+
+  void _onCondoProjectChanged(
+    CreatePropertyCondoProjectChanged event,
+    Emitter<CreatePropertyState> emit,
+  ) {
+    // Bidirectional sync: If project is selected, also select its developer
+    int? devId;
+    if (event.projectId != null) {
+      try {
+        final project = state.condoProjects.firstWhere(
+          (p) => p.id == event.projectId,
+        );
+        devId = project.developerId;
+      } catch (_) {
+        devId = state.selectedDeveloperId;
+      }
+    }
+
+    emit(
+      state.copyWith(
+        selectedCondoProjectId: event.projectId,
+        selectedDeveloperId: devId ?? state.selectedDeveloperId,
+      ),
+    );
+  }
+
+  void _onListingTypeChanged(
+    CreatePropertyListingTypeChanged event,
+    Emitter<CreatePropertyState> emit,
+  ) {
+    emit(state.copyWith(listingType: event.listingType));
+  }
+
+  void _onOccupancyStatusChanged(
+    CreatePropertyOccupancyStatusChanged event,
+    Emitter<CreatePropertyState> emit,
+  ) {
+    emit(state.copyWith(occupancyStatus: event.status));
+  }
+
+  void _onStyleChanged(
+    CreatePropertyStyleChanged event,
+    Emitter<CreatePropertyState> emit,
+  ) {
+    emit(state.copyWith(propertyStyle: event.style));
+  }
+
+  void _onHighlightToggled(
+    CreatePropertyHighlightToggled event,
+    Emitter<CreatePropertyState> emit,
+  ) {
+    final current = List<String>.from(state.highlights);
+    if (current.contains(event.highlight)) {
+      current.remove(event.highlight);
+    } else {
+      current.add(event.highlight);
+    }
+    emit(state.copyWith(highlights: current));
+  }
+
+  void _onFacilityToggled(
+    CreatePropertyFacilityToggled event,
+    Emitter<CreatePropertyState> emit,
+  ) {
+    // Legacy fallback, map to dynamic if needed or keep parallel
+    final current = List<String>.from(state.facilities);
+    if (current.contains(event.facility)) {
+      current.remove(event.facility);
+    } else {
+      current.add(event.facility);
+    }
+    emit(state.copyWith(facilities: current));
+  }
+
+  Future<void> _onFiltersFetched(
+    CreatePropertyFiltersFetched event,
+    Emitter<CreatePropertyState> emit,
+  ) async {
+    try {
+      final filters = await _propertyApiService.getSpecificationFilters();
+      emit(state.copyWith(specificationFilters: filters));
+    } catch (e) {
+      debugPrint('Error fetching filters: $e');
+    }
+  }
+
+  void _onDynamicSingleSelectChanged(
+    CreatePropertyDynamicSingleSelectChanged event,
+    Emitter<CreatePropertyState> emit,
+  ) {
+    final newValues = Map<String, dynamic>.from(state.dynamicValues);
+    newValues[event.key] = event.value;
+
+    // Also sync with legacy fields if they match known keys for backward compatibility
+    CreatePropertyState newState = state.copyWith(dynamicValues: newValues);
+
+    switch (event.key) {
+      case 'floors':
+        // Try parsing float first then int, "10+" -> 10 ??
+        // The API returns strings like "10+", "1".
+        // State expects Int for totalFloors.
+        final cleanVal = event.value.replaceAll(RegExp(r'[^0-9]'), '');
+        newState = newState.copyWith(totalFloors: int.tryParse(cleanVal));
+        break;
+      case 'bedrooms':
+        if (event.value == 'Studio') {
+          newState = newState.copyWith(bedrooms: 0);
+        } else {
+          final cleanVal = event.value.replaceAll(RegExp(r'[^0-9]'), '');
+          newState = newState.copyWith(bedrooms: int.tryParse(cleanVal));
+        }
+        break;
+      case 'bathrooms':
+        final cleanVal = event.value.replaceAll(RegExp(r'[^0-9]'), '');
+        newState = newState.copyWith(bathrooms: int.tryParse(cleanVal));
+        break;
+      case 'parking_spaces':
+        final cleanVal = event.value.replaceAll(RegExp(r'[^0-9]'), '');
+        newState = newState.copyWith(garage: int.tryParse(cleanVal));
+        break;
+    }
+
+    emit(newState);
+  }
+
+  void _onDynamicMultiSelectToggled(
+    CreatePropertyDynamicMultiSelectToggled event,
+    Emitter<CreatePropertyState> emit,
+  ) {
+    final newValues = Map<String, dynamic>.from(state.dynamicValues);
+    final currentList =
+        (newValues[event.key] as List<dynamic>?)?.cast<String>() ?? [];
+    final newList = List<String>.from(currentList);
+
+    if (newList.contains(event.value)) {
+      newList.remove(event.value);
+    } else {
+      newList.add(event.value);
+    }
+    newValues[event.key] = newList;
+
+    // Sync legacy
+    CreatePropertyState newState = state.copyWith(dynamicValues: newValues);
+    if (event.key == 'common_facilities') {
+      newState = newState.copyWith(facilities: newList);
+    } else if (event.key == 'good_points') {
+      newState = newState.copyWith(highlights: newList);
+    }
+
+    emit(newState);
   }
 }

@@ -1,12 +1,19 @@
+import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:youragent/widgets/badges/app_badge.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import '../../../../../core/theme/app_colors.dart';
 import 'package:youragent/features/property/bloc/create_property/create_property_bloc.dart';
 
 class PropertyImagesStep extends StatelessWidget {
-  const PropertyImagesStep({super.key});
+  final int? step;
+  const PropertyImagesStep({super.key, this.step});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,7 @@ class PropertyImagesStep extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
@@ -38,81 +45,172 @@ class PropertyImagesStep extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text(
-                    '5/5',
-                    style: GoogleFonts.anuphan(
-                      color: AppColors.baseGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  if (step != null)
+                    AppBadge(color: BadgeColor.default_, label: '$step/5'),
                 ],
               ),
               const SizedBox(height: 24),
 
               InkWell(
-                onTap: () async {
-                  final ImagePicker picker = ImagePicker();
-                  final List<XFile> images = await picker.pickMultiImage();
-                  if (images.isNotEmpty && context.mounted) {
-                    context.read<CreatePropertyBloc>().add(
-                      CreatePropertyImagesUpdated([...state.images, ...images]),
-                    );
-                  }
-                },
-                child: Container(
-                  height: 150,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppColors.baseLightGrey,
-                      style: BorderStyle.solid,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.grey[50],
+                onTap: () => _showImageSourceSheet(context, state),
+                child: CustomPaint(
+                  painter: DashedBorderPainter(
+                    color: AppColors.baseLightGrey,
+                    strokeWidth: 1,
+                    dashWidth: 6,
+                    dashSpace: 4,
+                    radius: 12,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.add_photo_alternate_outlined,
-                        size: 48,
-                        color: AppColors.baseGrey,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'คลิเพื่อเพิ่มรูปภาพ',
-                        style: GoogleFonts.anuphan(color: AppColors.baseGrey),
-                      ),
-                    ],
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/icons/image.svg',
+                              width: 24,
+                              height: 24,
+                              colorFilter: const ColorFilter.mode(
+                                AppColors.baseGrey,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'อัปโหลดรูปภาพ',
+                              style: GoogleFonts.anuphan(
+                                color: AppColors.baseDarkGrey,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Center(
+                child: Text(
+                  'อัปโหลดรูปภาพอย่างน้อย 1 รูป (JPEG, PNG, WebP)',
+                  style: GoogleFonts.anuphan(
+                    color: AppColors.baseDarkGrey,
+                    fontSize: 12,
                   ),
                 ),
               ),
               const SizedBox(height: 16),
 
-              if (state.images.isNotEmpty)
+              if (state.images.isNotEmpty) ...[
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'ตัวอย่างรูปภาพ',
+                      style: GoogleFonts.anuphan(
+                        color: AppColors.baseBlack,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => _showDeleteConfirmation(context),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/trash.svg',
+                            width: 16,
+                            height: 16,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.error,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'ลบรูปภาพทั้งหมด',
+                            style: GoogleFonts.anuphan(
+                              color: AppColors.error,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 1.3,
                   ),
                   itemCount: state.images.length,
                   itemBuilder: (context, index) {
+                    final image = state.images[index];
                     return Stack(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: const Icon(
-                            Icons.image,
-                            size: 100,
-                          ), // Placeholder for picker image
+                        Positioned.fill(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.file(
+                              File(image.path),
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                    color: Colors.grey[200],
+                                    child: const Icon(
+                                      Icons.image,
+                                      size: 50,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(12),
+                              bottomRight: Radius.circular(12),
+                            ),
+                            child: Container(
+                              width: double.infinity,
+                              color: Colors.black.withValues(alpha: 0.5),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 6,
+                              ),
+                              child: Text(
+                                image.name,
+                                style: GoogleFonts.anuphan(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
                         ),
                         Positioned(
-                          top: 4,
-                          right: 4,
+                          top: 8,
+                          right: 8,
                           child: InkWell(
                             onTap: () {
                               final newImages = List<XFile>.from(state.images)
@@ -121,16 +219,13 @@ class PropertyImagesStep extends StatelessWidget {
                                 CreatePropertyImagesUpdated(newImages),
                               );
                             },
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.close,
-                                size: 16,
-                                color: Colors.white,
+                            child: SvgPicture.asset(
+                              'assets/icons/x-circle-filled.svg',
+                              width: 16,
+                              height: 16,
+                              colorFilter: ColorFilter.mode(
+                                AppColors.baseWhite,
+                                BlendMode.srcIn,
                               ),
                             ),
                           ),
@@ -139,10 +234,172 @@ class PropertyImagesStep extends StatelessWidget {
                     );
                   },
                 ),
+                const SizedBox(height: 100),
+              ],
             ],
           ),
         );
       },
     );
+  }
+
+  void _showImageSourceSheet(BuildContext context, CreatePropertyState state) {
+    final bloc = context.read<CreatePropertyBloc>();
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                title: Text(
+                  'ถ่ายรูปภาพ',
+                  style: GoogleFonts.anuphan(fontSize: 16),
+                ),
+                trailing: SvgPicture.asset(
+                  'assets/icons/camera.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(
+                    AppColors.baseDarkGrey,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                onTap: () async {
+                  Navigator.pop(context); // Close the modal first
+                  final ImagePicker picker = ImagePicker();
+                  final XFile? image = await picker.pickImage(
+                    source: ImageSource.camera,
+                  );
+                  if (image != null && context.mounted) {
+                    context.read<CreatePropertyBloc>().add(
+                      CreatePropertyImagesUpdated([...state.images, image]),
+                    );
+                  }
+                },
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                title: Text(
+                  'เลือกจากอัลบั้ม',
+                  style: GoogleFonts.anuphan(fontSize: 16),
+                ),
+                trailing: SvgPicture.asset(
+                  'assets/icons/image.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(
+                    AppColors.baseDarkGrey,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final ImagePicker picker = ImagePicker();
+                  final List<XFile> images = await picker.pickMultiImage();
+                  if (images.isNotEmpty) {
+                    bloc.add(
+                      CreatePropertyImagesUpdated([...state.images, ...images]),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    AppConfirmationBottomSheet.show(
+      context: context,
+      title: 'ลบรูปภาพทั้งหมด?',
+      description: 'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้',
+      confirmLabel: 'ลบทั้งหมด',
+      cancelLabel: 'ยกเลิก',
+      style: ConfirmationStyle.destructive,
+      onConfirm: () {
+        context.read<CreatePropertyBloc>().add(
+          const CreatePropertyImagesUpdated([]),
+        );
+        StatusDialog.showSuccess(
+          context: context,
+          title: 'สำเร็จ',
+          message: 'ลบรูปภาพทั้งหมดเรียบร้อยแล้ว',
+        );
+      },
+    );
+  }
+}
+
+class DashedBorderPainter extends CustomPainter {
+  final Color color;
+  final double strokeWidth;
+  final double dashWidth;
+  final double dashSpace;
+  final double radius;
+
+  DashedBorderPainter({
+    required this.color,
+    this.strokeWidth = 1,
+    this.dashWidth = 5,
+    this.dashSpace = 3,
+    this.radius = 12,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+
+    final RRect rrect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      Radius.circular(radius),
+    );
+
+    final Path path = Path()..addRRect(rrect);
+    final Path dashedPath = Path();
+    for (final ui.PathMetric metric in path.computeMetrics()) {
+      double distance = 0.0;
+      while (distance < metric.length) {
+        dashedPath.addPath(
+          metric.extractPath(distance, distance + dashWidth),
+          Offset.zero,
+        );
+        distance += dashWidth + dashSpace;
+      }
+    }
+    canvas.drawPath(dashedPath, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant DashedBorderPainter oldDelegate) {
+    return color != oldDelegate.color ||
+        strokeWidth != oldDelegate.strokeWidth ||
+        dashWidth != oldDelegate.dashWidth ||
+        dashSpace != oldDelegate.dashSpace ||
+        radius != oldDelegate.radius;
   }
 }

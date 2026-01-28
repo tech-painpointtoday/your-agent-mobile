@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/property/bloc/create_property/create_property_bloc.dart';
+import 'package:youragent/widgets/badges/app_badge.dart';
 
 class PropertyTypeStep extends StatelessWidget {
-  const PropertyTypeStep({super.key});
+  final int? step;
+  const PropertyTypeStep({super.key, this.step});
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +37,8 @@ class PropertyTypeStep extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
-                '1/5',
-                style: GoogleFonts.anuphan(
-                  color: AppColors.baseGrey,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              if (step != null)
+                AppBadge(color: BadgeColor.default_, label: '$step/5'),
             ],
           ),
           const SizedBox(height: 24),

@@ -91,6 +91,7 @@ class CreatePropertyDetailsUpdated extends CreatePropertyEvent {
   final double? landSize;
   final double? buildingSize;
   final String? houseColor;
+  final int? totalFloors;
 
   const CreatePropertyDetailsUpdated({
     this.bedrooms,
@@ -99,6 +100,7 @@ class CreatePropertyDetailsUpdated extends CreatePropertyEvent {
     this.landSize,
     this.buildingSize,
     this.houseColor,
+    this.totalFloors,
   });
 
   @override
@@ -109,6 +111,7 @@ class CreatePropertyDetailsUpdated extends CreatePropertyEvent {
     landSize,
     buildingSize,
     houseColor,
+    totalFloors,
   ];
 }
 
@@ -141,4 +144,97 @@ class CreatePropertySubmitted extends CreatePropertyEvent {
 
 class CreatePropertyReset extends CreatePropertyEvent {
   const CreatePropertyReset();
+}
+
+class CreatePropertyDevelopersFetched extends CreatePropertyEvent {
+  const CreatePropertyDevelopersFetched();
+}
+
+class CreatePropertyCondoProjectsFetched extends CreatePropertyEvent {
+  final int? developerId;
+  const CreatePropertyCondoProjectsFetched({this.developerId});
+
+  @override
+  List<Object?> get props => [developerId];
+}
+
+class CreatePropertyDeveloperChanged extends CreatePropertyEvent {
+  final int? developerId;
+  const CreatePropertyDeveloperChanged(this.developerId);
+
+  @override
+  List<Object?> get props => [developerId];
+}
+
+class CreatePropertyCondoProjectChanged extends CreatePropertyEvent {
+  final int? projectId;
+  const CreatePropertyCondoProjectChanged(this.projectId);
+
+  @override
+  List<Object?> get props => [projectId];
+}
+
+class CreatePropertyListingTypeChanged extends CreatePropertyEvent {
+  final String listingType;
+  const CreatePropertyListingTypeChanged(this.listingType);
+
+  @override
+  List<Object?> get props => [listingType];
+}
+
+class CreatePropertyOccupancyStatusChanged extends CreatePropertyEvent {
+  final String status;
+  const CreatePropertyOccupancyStatusChanged(this.status);
+
+  @override
+  List<Object?> get props => [status];
+}
+
+class CreatePropertyStyleChanged extends CreatePropertyEvent {
+  final String? style;
+  const CreatePropertyStyleChanged(this.style);
+
+  @override
+  List<Object?> get props => [style];
+}
+
+class CreatePropertyHighlightToggled extends CreatePropertyEvent {
+  final String highlight;
+  const CreatePropertyHighlightToggled(this.highlight);
+
+  @override
+  List<Object?> get props => [highlight];
+}
+
+class CreatePropertyFacilityToggled extends CreatePropertyEvent {
+  final String facility;
+  const CreatePropertyFacilityToggled(this.facility);
+
+  @override
+  List<Object?> get props => [facility];
+}
+
+class CreatePropertyFiltersFetched extends CreatePropertyEvent {
+  const CreatePropertyFiltersFetched();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class CreatePropertyDynamicSingleSelectChanged extends CreatePropertyEvent {
+  final String key;
+  final String value;
+  const CreatePropertyDynamicSingleSelectChanged(this.key, this.value);
+
+  @override
+  List<Object?> get props => [key, value];
+}
+
+class CreatePropertyDynamicMultiSelectToggled extends CreatePropertyEvent {
+  final String key;
+  final String value;
+  const CreatePropertyDynamicMultiSelectToggled(this.key, this.value);
+
+  @override
+  List<Object?> get props => [key, value];
 }

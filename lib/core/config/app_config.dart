@@ -19,5 +19,7 @@ class AppConfig {
   static bool get isDev => currentEnvironment == AppEnvironment.dev;
   static bool get isStaging => currentEnvironment == AppEnvironment.staging;
   static bool get isProd => currentEnvironment == AppEnvironment.prod;
-}
 
+  static const String googleMapsApiKey =
+      'AIzaSyCfEojoebHhrPHCZEOoqgBdb1YCgAelEFg';
+}

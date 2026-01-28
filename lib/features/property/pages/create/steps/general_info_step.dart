@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:youragent/data/models/developer_model.dart';
+import 'package:youragent/data/models/condo_project_model.dart';
+import 'package:youragent/core/config/app_config.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/property/bloc/create_property/create_property_bloc.dart';
 import 'package:youragent/features/property/pages/create/property_location_picker_screen.dart';
 import 'package:youragent/features/property/widgets/property_map_view.dart';
 import 'package:youragent/services/google_places_service.dart';
 import 'package:youragent/utils/location_permission_helper.dart';
+import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 
 class GeneralInfoStep extends StatefulWidget {
-  const GeneralInfoStep({super.key});
+  final int? step;
+  const GeneralInfoStep({super.key, this.step});
 
   @override
   State<GeneralInfoStep> createState() => _GeneralInfoStepState();
@@ -23,6 +30,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   // Controllers
   late final TextEditingController _titleController;
   late final TextEditingController _addressController;
+  late final TextEditingController _priceController;
   late final TextEditingController _projectController;
   late final TextEditingController _developerController;
   late final TextEditingController _buildingController;
@@ -61,7 +69,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       text: state.data['formatted_address_th'] as String?,
     );
 
-    const apiKey = String.fromEnvironment('GOOGLE_MAPS_API_KEY');
+    final apiKey = AppConfig.googleMapsApiKey;
     _places = GooglePlacesService(apiKey: apiKey);
 
     // Add listeners to update Bloc
@@ -70,6 +78,13 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     );
     _addressController.addListener(
       () => _updateData('address', _addressController.text),
+    );
+    _priceController.addListener(
+      () => context.read<CreatePropertyBloc>().add(
+        CreatePropertyGeneralInfoUpdated(
+          price: double.tryParse(_priceController.text),
+        ),
+      ),
     );
     _projectController.addListener(
       () => _updateData('project', _projectController.text),
@@ -86,6 +101,18 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     _roomNoController.addListener(
       () => _updateData('room_number', _roomNoController.text),
     );
+
+    // Initial fetch for developers and all condo projects if empty
+    if (state.developers.isEmpty) {
+      context.read<CreatePropertyBloc>().add(
+        const CreatePropertyDevelopersFetched(),
+      );
+    }
+    if (state.condoProjects.isEmpty) {
+      context.read<CreatePropertyBloc>().add(
+        const CreatePropertyCondoProjectsFetched(),
+      );
+    }
   }
 
   void _updateData(String key, String value) {
@@ -111,6 +138,13 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
     if (result != null && mounted) {
       _locationController.text = result.formattedAddressTh;
+
+      // Sync house number if found
+      if (result.components['number']?.isNotEmpty == true) {
+        _addressController.text = result.components['number']!;
+        _updateData('address', result.components['number']!);
+      }
+
       context.read<CreatePropertyBloc>().add(
         CreatePropertyLocationUpdated({
           'latitude': result.latLng.latitude,
@@ -144,6 +178,13 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     );
     if (result == null || !mounted) return;
     _locationController.text = result.formattedAddressTh;
+
+    // Sync house number if found
+    if (result.components['number']?.isNotEmpty == true) {
+      _addressController.text = result.components['number']!;
+      _updateData('address', result.components['number']!);
+    }
+
     context.read<CreatePropertyBloc>().add(
       CreatePropertyLocationUpdated({
         'latitude': result.latLng.latitude,
@@ -245,6 +286,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   void dispose() {
     _titleController.dispose();
     _addressController.dispose();
+    _priceController.dispose();
     _projectController.dispose();
     _developerController.dispose();
     _buildingController.dispose();
@@ -256,7 +298,35 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+    return BlocConsumer<CreatePropertyBloc, CreatePropertyState>(
+      listenWhen: (prev, curr) =>
+          prev.selectedDeveloperId != curr.selectedDeveloperId ||
+          prev.selectedCondoProjectId != curr.selectedCondoProjectId,
+      listener: (context, state) {
+        // Sync Developer Controller
+        if (state.selectedDeveloperId != null) {
+          final developer = state.developers
+              .where((d) => d.id == state.selectedDeveloperId)
+              .firstOrNull;
+          if (developer != null &&
+              _developerController.text != developer.nameTh) {
+            _developerController.text = developer.nameTh;
+            // Also notify listener to update Bloc data key
+            _updateData('developer', developer.nameTh);
+          }
+        }
+
+        // Sync Project Controller if needed (optional, mainly for when clearing)
+        if (state.selectedCondoProjectId != null) {
+          final project = state.condoProjects
+              .where((p) => p.id == state.selectedCondoProjectId)
+              .firstOrNull;
+          if (project != null && _projectController.text != project.name) {
+            _projectController.text = project.name;
+            _updateData('project', project.name);
+          }
+        }
+      },
       builder: (context, state) {
         final isCondoOrApt =
             state.selectedPropertyType == 'คอนโดมิเนียม' ||
@@ -271,6 +341,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         }
 
         return SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,14 +367,11 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       ),
                     ),
                   ),
-                  Text(
-                    '2/5',
-                    style: GoogleFonts.anuphan(
-                      color: AppColors.baseGrey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                  if (widget.step != null)
+                    AppBadge(
+                      color: BadgeColor.default_,
+                      label: '${widget.step}/5',
                     ),
-                  ),
                 ],
               ),
               const SizedBox(height: 24),
@@ -325,20 +393,138 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               ),
               const SizedBox(height: 24),
 
-              // Project & Developer
-              AppTextFormField(
-                label: 'ผู้พัฒนาโครงการ',
-                controller: _developerController,
-                hintText: 'ผู้พัฒนาโครงการ',
-                suffix: const Icon(Icons.search, color: AppColors.baseGrey),
+              // Developer
+              BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+                builder: (context, state) {
+                  return TypeAheadField<Developer>(
+                    controller: _developerController,
+                    builder: (context, controller, focusNode) =>
+                        AppTextFormField(
+                          label: 'ผู้พัฒนาโครงการ',
+                          controller: controller,
+                          focusNode: focusNode,
+                          hintText: 'ค้นหาผู้พัฒนาโครงการ',
+                          isRequired: isCondoOrApt,
+                          suffix: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: SvgPicture.asset(
+                              'assets/icons/search.svg',
+                              width: 16,
+                              height: 16,
+                              colorFilter: const ColorFilter.mode(
+                                AppColors.baseGrey,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                        ),
+                    suggestionsCallback: (pattern) {
+                      final developers = state.developers;
+                      if (pattern.isEmpty) return developers;
+                      final lower = pattern.toLowerCase();
+                      return developers.where((dev) {
+                        return dev.nameTh.toLowerCase().contains(lower) ||
+                            dev.nameEn.toLowerCase().contains(lower);
+                      }).toList();
+                    },
+                    itemBuilder: (context, developer) {
+                      return ListTile(
+                        title: Text(developer.nameTh),
+                        subtitle: Text(developer.nameEn),
+                      );
+                    },
+                    onSelected: (developer) {
+                      _developerController.text = developer.nameTh;
+                      _projectController.clear();
+                      context.read<CreatePropertyBloc>().add(
+                        CreatePropertyDeveloperChanged(developer.id),
+                      );
+                      FocusScope.of(context).unfocus();
+                    },
+                    emptyBuilder: (context) => const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text('ไม่พบข้อมูล'),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 16),
-              AppTextFormField(
-                label: 'ชื่อโครงการ',
-                controller: _projectController,
-                hintText: 'ชื่อโครงการ',
-                isRequired: false,
-                suffix: const Icon(Icons.search, color: AppColors.baseGrey),
+
+              // Project Name
+              BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+                builder: (context, state) {
+                  return TypeAheadField<CondoProject>(
+                    controller: _projectController,
+                    builder: (context, controller, focusNode) =>
+                        AppTextFormField(
+                          label: 'ชื่อโครงการ',
+                          controller: controller,
+                          focusNode: focusNode,
+                          hintText: 'ชื่อโครงการ',
+                          isRequired: isCondoOrApt,
+                          suffix: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: SvgPicture.asset(
+                              'assets/icons/search.svg',
+                              width: 16,
+                              height: 16,
+                              colorFilter: const ColorFilter.mode(
+                                AppColors.baseGrey,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                        ),
+                    suggestionsCallback: (pattern) {
+                      final projects = state.condoProjects;
+                      final devId = state.selectedDeveloperId;
+
+                      Iterable<CondoProject> filtered = projects;
+                      if (devId != null) {
+                        filtered = projects.where(
+                          (p) => p.developerId == devId,
+                        );
+                      }
+
+                      if (pattern.isEmpty) return filtered.toList();
+                      final lower = pattern.toLowerCase();
+                      return filtered.where((p) {
+                        return p.name.toLowerCase().contains(lower);
+                      }).toList();
+                    },
+                    itemBuilder: (context, project) {
+                      return ListTile(title: Text(project.name));
+                    },
+                    onSelected: (project) {
+                      _projectController.text = project.name;
+
+                      // Auto-fill developer if currently empty OR if we want to force match
+                      // Checking empty is safer to avoid overwriting user's specific choice if they made one
+                      // asking for "still empty" implies we only fill if it's blank.
+                      if (_developerController.text.isEmpty) {
+                        final dev = state.developers
+                            .where((d) => d.id == project.developerId)
+                            .firstOrNull;
+                        if (dev != null) {
+                          _developerController.text = dev.nameTh;
+                          // Trigger update data to ensure state is consistent
+                          _updateData('developer', dev.nameTh);
+                        }
+                      }
+
+                      context.read<CreatePropertyBloc>().add(
+                        CreatePropertyCondoProjectChanged(project.id),
+                      );
+
+                      // Unfocus to hide keyboard
+                      FocusScope.of(context).unfocus();
+                    },
+                    emptyBuilder: (context) => const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text('ไม่พบข้อมูล'),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 16),
 
@@ -382,8 +568,20 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 hintText: 'ตำแหน่งที่ตั้ง',
                 isRequired: true,
                 readOnly: true,
+                showCursor: false,
                 onTap: _openLocationSearch,
-                suffix: const Icon(Icons.search, color: AppColors.baseGrey),
+                suffix: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SvgPicture.asset(
+                    'assets/icons/search.svg',
+                    width: 16,
+                    height: 16,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.baseGrey,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -395,7 +593,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               ),
               const SizedBox(height: 16),
 
-              // Map Preview
+              // Map
               Container(
                 height: 200,
                 decoration: BoxDecoration(
@@ -405,9 +603,11 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: PropertyMapView(
+                    key: const ValueKey('general_info_map'),
                     properties: const [],
                     height: 200,
                     initialLocation: currentLatLng,
+                    cameraTarget: currentLatLng,
                     showCenterMarker: true,
                     onCameraIdle: _updateLocationFromLatLng,
                     onMaximizeTapped: _openLocationSearch,
@@ -427,7 +627,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       onPressed: _useCurrentLocation,
                       backgroundColor: AppColors.brandLightGreen,
                       textColor: AppColors.brandGreen,
-                      icon: Icons.near_me,
+                      iconPath: 'assets/icons/direction-up-right.svg',
                     ),
                   ),
                   const SizedBox(width: 12),

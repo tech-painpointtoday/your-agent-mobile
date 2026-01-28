@@ -164,6 +164,7 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
               }
               // Only create GoogleMap when _isMapReady is true
               return GoogleMap(
+                key: const ValueKey('fullscreen_map'),
                 initialCameraPosition: const CameraPosition(
                   target: _center,
                   zoom: 12,
@@ -197,19 +198,6 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
                       ),
                       child: const AppSearchBar(),
                     ),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Back Button
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),

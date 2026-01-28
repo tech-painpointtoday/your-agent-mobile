@@ -141,34 +141,40 @@ class _CreatePropertyView extends StatelessWidget {
             );
           }
         },
-        child: Container(
-          height: double.infinity,
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.translucent,
+          child: Container(
+            height: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
             ),
-          ),
-          child: BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
-            builder: (context, state) {
-              switch (state.step) {
-                case 1:
-                  return const PropertyTypeStep();
-                case 2:
-                  return const GeneralInfoStep();
-                case 3:
-                  return const PropertyDetailStep();
-                case 4:
-                  return const AdditionalInfoStep();
-                case 5:
-                  return const PropertyImagesStep();
-                case 6:
-                  return const PropertyConfirmationStep();
-                default:
-                  return Center(child: Text('Step ${state.step} Coming Soon'));
-              }
-            },
+            child: BlocBuilder<CreatePropertyBloc, CreatePropertyState>(
+              builder: (context, state) {
+                switch (state.step) {
+                  case 1:
+                    return PropertyTypeStep(step: state.step);
+                  case 2:
+                    return GeneralInfoStep(step: state.step);
+                  case 3:
+                    return PropertyDetailStep(step: state.step);
+                  case 4:
+                    return AdditionalInfoStep(step: state.step);
+                  case 5:
+                    return PropertyImagesStep(step: state.step);
+                  case 6:
+                    return PropertyConfirmationStep();
+                  default:
+                    return Center(
+                      child: Text('Step ${state.step} Coming Soon'),
+                    );
+                }
+              },
+            ),
           ),
         ),
       ),
@@ -183,7 +189,7 @@ class _CreatePropertyView extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             offset: const Offset(0, -4),
             blurRadius: 16,
           ),

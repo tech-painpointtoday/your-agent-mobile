@@ -73,6 +73,37 @@ class StatusDialog {
     }
   }
 
+  // Helper for Slide from Top Animation
+  static Future<T?> _showAnimatedDialog<T>({
+    required BuildContext context,
+    required WidgetBuilder builder,
+    bool barrierDismissible = true,
+  }) {
+    return showGeneralDialog<T>(
+      context: context,
+      barrierDismissible: barrierDismissible,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return builder(context);
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final curvedAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        );
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, -1),
+            end: Offset.zero,
+          ).animate(curvedAnimation),
+          child: child,
+        );
+      },
+    );
+  }
+
   /// Show a Confirmation dialog (Primary Blue Action)
   static Future<bool> showConfirmation({
     required BuildContext context,
@@ -85,7 +116,7 @@ class StatusDialog {
     return await _enqueue<bool>(
           context: context,
           builder: () async {
-            final result = await showDialog<bool>(
+            final result = await _showAnimatedDialog<bool>(
               context: context,
               builder: (context) => BaseStatusDialog(
                 title: title,
@@ -115,7 +146,7 @@ class StatusDialog {
     return await _enqueue<bool>(
           context: context,
           builder: () async {
-            final result = await showDialog<bool>(
+            final result = await _showAnimatedDialog<bool>(
               context: context,
               builder: (context) => BaseStatusDialog(
                 title: title,
@@ -140,14 +171,13 @@ class StatusDialog {
     String? message,
     Duration duration = const Duration(seconds: 3),
     VoidCallback? onDismiss,
-    Duration? callbackDelay, // Optional delay before running callback
+    Duration? callbackDelay,
   }) async {
     await _enqueue(
       context: context,
       builder: () async {
-        await showDialog(
+        await _showAnimatedDialog(
           context: context,
-          barrierColor: Colors.transparent,
           barrierDismissible: true,
           builder: (context) => StatusToast(
             title: title,
@@ -169,14 +199,13 @@ class StatusDialog {
     String? message,
     Duration duration = const Duration(seconds: 3),
     VoidCallback? onDismiss,
-    Duration? callbackDelay, // Optional delay before running callback
+    Duration? callbackDelay,
   }) async {
     await _enqueue(
       context: context,
       builder: () async {
-        await showDialog(
+        await _showAnimatedDialog(
           context: context,
-          barrierColor: Colors.transparent,
           barrierDismissible: true,
           builder: (context) => StatusToast(
             title: title,
@@ -198,14 +227,13 @@ class StatusDialog {
     String? message,
     Duration duration = const Duration(seconds: 3),
     VoidCallback? onDismiss,
-    Duration? callbackDelay, // Optional delay before running callback
+    Duration? callbackDelay,
   }) async {
     await _enqueue(
       context: context,
       builder: () async {
-        await showDialog(
+        await _showAnimatedDialog(
           context: context,
-          barrierColor: Colors.transparent,
           barrierDismissible: true,
           builder: (context) => StatusToast(
             title: title,
@@ -235,7 +263,7 @@ class StatusDialog {
     await _enqueue(
       context: context,
       builder: () async {
-        await showDialog(
+        await _showAnimatedDialog(
           context: context,
           builder: (context) => BaseStatusDialog(
             title: title,
@@ -262,7 +290,7 @@ class StatusDialog {
     await _enqueue(
       context: context,
       builder: () async {
-        await showDialog(
+        await _showAnimatedDialog(
           context: context,
           builder: (context) => BaseStatusDialog(
             title: title,
@@ -289,7 +317,7 @@ class StatusDialog {
     await _enqueue(
       context: context,
       builder: () async {
-        await showDialog(
+        await _showAnimatedDialog(
           context: context,
           builder: (context) => BaseStatusDialog(
             title: title,
@@ -316,7 +344,7 @@ class StatusDialog {
     await _enqueue(
       context: context,
       builder: () async {
-        await showDialog(
+        await _showAnimatedDialog(
           context: context,
           builder: (context) => BaseStatusDialog(
             title: title,
@@ -337,7 +365,7 @@ class StatusDialog {
     required BuildContext context,
     String message = 'Loading...',
   }) async {
-    await showDialog(
+    await _showAnimatedDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
@@ -366,14 +394,13 @@ class StatusDialog {
   }
 
   /// Show Loading Dialog while executing an async operation
-  /// Returns the result of the operation and dismisses the dialog when done
   static Future<T?> showLoadingWhile<T>({
     required BuildContext context,
     required Future<T> Function() operation,
     String? message,
   }) async {
     // Show loading dialog
-    showDialog(
+    _showAnimatedDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
@@ -404,13 +431,11 @@ class StatusDialog {
 
     try {
       final result = await operation();
-      // Dismiss loading dialog
       if (context.mounted) {
         Navigator.of(context, rootNavigator: true).pop();
       }
       return result;
     } catch (e) {
-      // Dismiss loading dialog
       if (context.mounted) {
         Navigator.of(context, rootNavigator: true).pop();
       }

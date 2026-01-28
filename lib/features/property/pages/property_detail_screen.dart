@@ -109,11 +109,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   Widget _buildBody() {
     final property = _property!;
     // Using placeholders/mock values for missing fields in Property entity
-    final imageUrls = [
-      property.imageUrl,
-      "https://placehold.co/600x400",
-      "https://placehold.co/600x400",
-    ];
+    final imageUrls = [property.imageUrl];
 
     // Calculate dynamic spacer height approx based on carousel height (280) and overlap (e.g. 40)
     // We want the card to overlap the bottom of the image by some amount.

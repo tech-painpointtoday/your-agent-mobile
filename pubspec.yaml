@@ -54,6 +54,7 @@ dependencies:
   flutter_slidable: ^4.0.3
   google_maps_flutter: ^2.14.0
   image_picker: ^1.2.1
+  flutter_typeahead: ^5.2.0
 
   # Notifications & Firebase
   flutter_local_notifications: ^19.5.0
@@ -103,6 +104,9 @@ flutter:
     - assets/images/
     - assets/images/home/
     - assets/images/property/
+    - assets/images/property_styles/
+    - assets/images/property_types/
+    - assets/images/dialog/
     - assets/fonts/
     - assets/etc/
     - assets/logo/

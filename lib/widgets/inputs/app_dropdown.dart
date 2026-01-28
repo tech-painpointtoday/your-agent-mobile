@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 
@@ -100,7 +101,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
             border: Border.all(color: const Color(0xFFE9EAEB)),
           ),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
@@ -117,7 +118,15 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(Icons.arrow_drop_down, size: 24),
+              SvgPicture.asset(
+                'assets/icons/chevron-down.svg',
+                width: 16,
+                height: 16,
+                colorFilter: ColorFilter.mode(
+                  AppColors.baseGrey,
+                  BlendMode.srcIn,
+                ),
+              ),
             ],
           ),
         ),

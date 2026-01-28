@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../core/theme/app_colors.dart';
 
@@ -17,6 +18,7 @@ class AppButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final IconData? icon;
+  final String? iconPath;
 
   const AppButton({
     super.key,
@@ -27,6 +29,7 @@ class AppButton extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.icon,
+    this.iconPath,
   });
 
   @override
@@ -81,8 +84,19 @@ class AppButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (icon != null) ...[
-              Icon(icon, size: 20),
+            if (icon != null || iconPath != null) ...[
+              if (iconPath != null)
+                SvgPicture.asset(
+                  iconPath!,
+                  width: 20,
+                  height: 20,
+                  colorFilter: ColorFilter.mode(
+                    textColor ?? AppColors.baseBlack,
+                    BlendMode.srcIn,
+                  ),
+                )
+              else
+                Icon(icon, size: 20),
               const SizedBox(width: 8),
             ],
             Flexible(

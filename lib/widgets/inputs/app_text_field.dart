@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 
@@ -9,10 +10,14 @@ class AppTextField extends StatelessWidget {
   final String? hintText;
   final int maxLines;
   final Widget? suffix;
+  final Widget? prefix;
   final TextInputType? keyboardType;
   final bool readOnly;
   final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
+  final FocusNode? focusNode;
+  final bool showCursor;
+  final List<TextInputFormatter>? inputFormatters;
 
   const AppTextField({
     super.key,
@@ -22,10 +27,14 @@ class AppTextField extends StatelessWidget {
     this.hintText,
     this.maxLines = 1,
     this.suffix,
+    this.prefix,
     this.keyboardType,
     this.readOnly = false,
     this.onTap,
     this.onChanged,
+    this.focusNode,
+    this.showCursor = true,
+    this.inputFormatters,
   });
 
   @override
@@ -33,34 +42,40 @@ class AppTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          text: TextSpan(
-            text: label,
-            style: GoogleFonts.anuphan(
-              color: AppColors.baseBlack,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            children: [
-              if (isRequired)
-                TextSpan(
-                  text: ' *',
-                  style: GoogleFonts.anuphan(
-                    color: AppColors.supportRedDeep,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+        if (label.isNotEmpty) ...[
+          RichText(
+            text: TextSpan(
+              text: label,
+              style: GoogleFonts.anuphan(
+                color: AppColors.baseBlack,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+              children: [
+                if (isRequired)
+                  TextSpan(
+                    text: ' *',
+                    style: GoogleFonts.anuphan(
+                      color: AppColors.supportRedDeep,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
+          const SizedBox(height: 8),
+        ],
         TextFormField(
+          focusNode: focusNode,
           controller: controller,
           maxLines: maxLines,
           keyboardType: keyboardType,
           readOnly: readOnly,
           onTap: onTap,
+          onChanged: onChanged,
+          showCursor: showCursor,
+          inputFormatters: inputFormatters,
           style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseBlack),
           decoration: InputDecoration(
             hintText: hintText ?? label,
@@ -72,7 +87,12 @@ class AppTextField extends StatelessWidget {
               horizontal: 16,
               vertical: 12,
             ),
-            suffixIcon: suffix,
+            suffixIcon: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: suffix,
+            ),
+            prefixIcon: prefix,
+            suffixIconConstraints: const BoxConstraints(),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(color: AppColors.baseLightGrey),
@@ -89,7 +109,7 @@ class AppTextField extends StatelessWidget {
               ),
             ),
             filled: true,
-            fillColor: readOnly ? Colors.grey[50] : Colors.white,
+            fillColor: AppColors.baseWhite,
           ),
         ),
       ],

@@ -44,7 +44,7 @@ class _StatusToastState extends State<StatusToast>
     );
 
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
+      begin: const Offset(0.0, -1.0),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
@@ -148,9 +148,9 @@ class _StatusToastState extends State<StatusToast>
           color: Colors.transparent,
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(top: 16, right: 16),
+              padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
               child: Align(
-                alignment: Alignment.topRight,
+                alignment: Alignment.topCenter,
                 child: GestureDetector(
                   onTap: _dismiss,
                   behavior: HitTestBehavior.opaque,

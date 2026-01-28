@@ -41,6 +41,7 @@ class _PropertyMapViewState extends State<PropertyMapView> {
   bool _mapError = false;
   bool _isMapReady = false;
   LatLng? _lastTrackedPosition;
+  late final Key _mapKey;
   // Set to true when Google Maps API key is configured in Info.plist
   static const bool _mapsEnabled = true;
 
@@ -50,6 +51,7 @@ class _PropertyMapViewState extends State<PropertyMapView> {
   @override
   void initState() {
     super.initState();
+    _mapKey = UniqueKey();
     if (!_mapsEnabled) {
       // Don't initialize map if not enabled
       _mapError = true;
@@ -203,6 +205,7 @@ class _PropertyMapViewState extends State<PropertyMapView> {
               return Stack(
                 children: [
                   GoogleMap(
+                    key: _mapKey,
                     initialCameraPosition: CameraPosition(
                       target: widget.initialLocation ?? _center,
                       zoom: 12,
@@ -275,7 +278,6 @@ class _PropertyMapViewState extends State<PropertyMapView> {
 
   @override
   void dispose() {
-    _mapController?.dispose();
     super.dispose();
   }
 }
