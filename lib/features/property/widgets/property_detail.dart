@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
@@ -177,6 +178,10 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     PropertyMapView(
                       properties: [property],
                       height: 160,
+                      initialLocation: LatLng(
+                        property.latitude,
+                        property.longitude,
+                      ),
                       onMaximizeTapped: () {
                         // Open fullscreen map with current property
                         Navigator.push(

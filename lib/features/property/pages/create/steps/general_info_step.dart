@@ -133,13 +133,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     );
 
     if (result != null && mounted) {
-      _locationController.text = result.formattedAddressTh;
-
-      // Sync house number if found
-      if (result.components['number']?.isNotEmpty == true) {
-        _addressController.text = result.components['number']!;
-        _updateData('address', result.components['number']!);
-      }
+      _addressController.text = result.formattedAddressTh;
 
       context.read<PropertyFormBloc>().add(
         PropertyFormLocationUpdated({
@@ -323,9 +317,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         }
       },
       builder: (context, state) {
-        final isCondoOrApt =
-            state.selectedPropertyType == 'คอนโดมิเนียม' ||
-            state.selectedPropertyType == 'อพาร์ตเมนต์';
+        final isCondoOrApt = state.isCondoOrApt;
 
         LatLng? currentLatLng;
         if (state.data['latitude'] != null && state.data['longitude'] != null) {
@@ -467,6 +459,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 // Project Name
                 BlocBuilder<PropertyFormBloc, PropertyFormState>(
                   builder: (context, state) {
+                    print('state.condoProjects: ${state.condoProjects.length}');
                     return TypeAheadField<CondoProject>(
                       controller: _projectController,
                       builder: (context, controller, focusNode) =>
@@ -578,7 +571,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               // Location Section
               AppTextFormField(
                 label: 'ตำแหน่งที่ตั้ง',
-                controller: _locationController,
+                controller: _addressController,
                 hintText: 'ตำแหน่งที่ตั้ง',
                 isRequired: true,
                 readOnly: true,

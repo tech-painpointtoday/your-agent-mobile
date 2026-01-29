@@ -67,26 +67,25 @@ class EditPropertyMenuScreen extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 16),
-
-              _buildMenuItem(
-                context,
-                title: 'ตำแหน่งทรัพย์',
-                subtitle: 'ตำแหน่งทรัพย์บนแผนที่',
-                iconPath: 'assets/icons/map-pin.svg',
-                iconColor: AppColors.brandGreen,
-                bgColor: AppColors.supportGreenLight,
-                onTap: () {
-                  context.push(
-                    '/property/edit-form',
-                    extra: {
-                      'property': property,
-                      'stepType': EditPropertyStepType.generalInfo,
-                      'title': 'ตำแหน่งทรัพย์',
-                    },
-                  );
-                },
-              ),
+              // const SizedBox(height: 16),
+              // _buildMenuItem(
+              //   context,
+              //   title: 'ตำแหน่งทรัพย์',
+              //   subtitle: 'ตำแหน่งทรัพย์บนแผนที่',
+              //   iconPath: 'assets/icons/map-pin.svg',
+              //   iconColor: AppColors.brandGreen,
+              //   bgColor: AppColors.supportGreenLight,
+              //   onTap: () {
+              //     context.push(
+              //       '/property/edit-form',
+              //       extra: {
+              //         'property': property,
+              //         'stepType': EditPropertyStepType.generalInfo,
+              //         'title': 'ตำแหน่งทรัพย์',
+              //       },
+              //     );
+              //   },
+              // ),
               const SizedBox(height: 16),
               _buildMenuItem(
                 context,

@@ -122,25 +122,46 @@ class _PropertyMapSelectionState extends State<PropertyMapSelection> {
     bool updateSearchText = false,
   }) async {
     try {
-      final placemarks = await placemarkFromCoordinates(
-        latLng.latitude,
-        latLng.longitude,
-      );
-      final p = placemarks.isNotEmpty ? placemarks.first : null;
-      final formattedTh = p != null ? _formatPlacemarkTh(p) : '';
-
+      String formattedTh = '';
       String formattedEn = '';
       Map<String, String> components = const {};
+
       if (_places.isConfigured) {
-        final r = await _places.reverseGeocode(
+        // 1. Fetch Thai Address
+        final resTh = await _places.reverseGeocode(
+          lat: latLng.latitude,
+          lng: latLng.longitude,
+          language: 'th',
+        );
+        if (resTh != null) {
+          formattedTh = resTh
+              .formattedAddressEn; // This helper currently uses this field name for any language
+          components = resTh.components;
+        }
+
+        // 2. Fetch English Address
+        final resEn = await _places.reverseGeocode(
           lat: latLng.latitude,
           lng: latLng.longitude,
           language: 'en',
         );
-        if (r != null) {
-          formattedEn = r.formattedAddressEn;
-          components = r.components;
+        if (resEn != null) {
+          formattedEn = resEn.formattedAddressEn;
+          // Merge components if they differ, though usually they are the same keys
+          if (components.isEmpty) {
+            components = resEn.components;
+          }
         }
+      }
+
+      // Fallback to geocoding package if Google API failed or not configured
+      if (formattedTh.isEmpty) {
+        final placemarks = await placemarkFromCoordinates(
+          latLng.latitude,
+          latLng.longitude,
+        );
+        final p = placemarks.isNotEmpty ? placemarks.first : null;
+        formattedTh = p != null ? _formatPlacemarkTh(p) : '';
       }
 
       if (!mounted) return;

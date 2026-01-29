@@ -616,5 +616,6 @@ class PropertyFormState extends Equatable {
   ];
 
   bool get isCondoOrApt =>
-      selectedPropertyType == 'คอนโด' || selectedPropertyType == 'อพาร์ตเมนต์';
+      selectedPropertyType == 'คอนโดมิเนียม' ||
+      selectedPropertyType == 'อพาร์ตเมนต์';
 }

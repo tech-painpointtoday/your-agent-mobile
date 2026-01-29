@@ -33,13 +33,14 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
                  initialProperty,
                  filters: initialFilters,
                ).copyWith(
-                 developers: initialDevelopers, // Inject cached developers
-                 // Don't inject condoProjects yet as they need filtering
+                 developers: initialDevelopers,
+                 condoProjects: initialCondoProjects,
                )
              : PropertyFormState(
                  specificationFilters:
                      initialFilters ?? const PropertySpecificationFilters(),
                  developers: initialDevelopers ?? const [],
+                 condoProjects: initialCondoProjects ?? const [],
                ),
        ) {
     on<PropertyFormStepChanged>(_onStepChanged);
@@ -413,7 +414,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     // 1. Use cached master list if available
     if (_allCondoProjects.isNotEmpty) {
       if (event.developerId == null) {
-        emit(state.copyWith(condoProjects: []));
+        emit(state.copyWith(condoProjects: _allCondoProjects));
         return;
       }
       final filtered = _allCondoProjects
@@ -430,20 +431,29 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       );
       emit(state.copyWith(condoProjects: projects));
     } catch (e) {
-      // Silently fail or log
+      debugPrint(e.toString());
     }
   }
 
-  void _onDeveloperChanged(
+  Future<void> _onDeveloperChanged(
     PropertyFormDeveloperChanged event,
     Emitter<PropertyFormState> emit,
-  ) {
+  ) async {
     emit(
       state.copyWith(
         selectedDeveloperId: event.developerId,
         selectedCondoProjectId: null,
       ),
     );
+
+    try {
+      final projects = await _propertyApiService.getCondoProjects(
+        developerId: event.developerId,
+      );
+      emit(state.copyWith(condoProjects: projects));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   void _onCondoProjectChanged(
