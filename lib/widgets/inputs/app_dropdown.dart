@@ -13,6 +13,7 @@ class AppDropdown<T> extends StatefulWidget {
   final Function(T?) onChanged;
   final bool showAbove;
   final double? width;
+  final String Function(T)? itemLabel;
 
   const AppDropdown({
     super.key,
@@ -22,6 +23,7 @@ class AppDropdown<T> extends StatefulWidget {
     required this.onChanged,
     this.showAbove = false,
     this.width,
+    this.itemLabel,
   });
 
   @override
@@ -71,6 +73,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         hint: widget.hint,
         selectedValue: widget.value,
         showAbove: widget.showAbove,
+        itemLabel: widget.itemLabel,
         width: widget.width ?? size.width,
         onSelected: (value) {
           widget.onChanged(value);
@@ -106,7 +109,10 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
             children: [
               Flexible(
                 child: Text(
-                  widget.value != null ? widget.value.toString() : widget.hint,
+                  widget.value != null
+                      ? (widget.itemLabel?.call(widget.value as T) ??
+                            widget.value.toString())
+                      : widget.hint,
                   style: GoogleFonts.anuphan(
                     fontSize: 14,
                     // Placeholder (no value) should use #A4A7AE
@@ -144,6 +150,7 @@ class _DropdownOverlay<T> extends StatelessWidget {
   final VoidCallback onDismiss;
   final bool showAbove;
   final double width;
+  final String Function(T)? itemLabel;
 
   const _DropdownOverlay({
     required this.layerLink,
@@ -154,6 +161,7 @@ class _DropdownOverlay<T> extends StatelessWidget {
     required this.onDismiss,
     required this.width,
     this.showAbove = false,
+    this.itemLabel,
   });
 
   @override
@@ -202,7 +210,7 @@ class _DropdownOverlay<T> extends StatelessWidget {
                     ...items.map(
                       (item) => _DropdownItem<T>(
                         value: item,
-                        text: item.toString(),
+                        text: itemLabel?.call(item) ?? item.toString(),
                         isSelected: selectedValue == item,
                         onTap: () => onSelected(item),
                       ),

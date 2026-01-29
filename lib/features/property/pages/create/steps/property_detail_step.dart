@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/utils/currency_input_formatter.dart';
 import '../../../../../core/theme/app_colors.dart';
 import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
@@ -30,9 +31,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
   void initState() {
     super.initState();
     final state = context.read<PropertyFormBloc>().state;
-    context.read<PropertyFormBloc>().add(
-      const PropertyFormFiltersFetched(),
-    );
+    context.read<PropertyFormBloc>().add(const PropertyFormFiltersFetched());
     _builtController = TextEditingController(
       text: state.built != null
           ? DateFormat('dd/MM/yyyy').format(DateTime.parse(state.built!))
@@ -40,10 +39,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
     );
     _priceController = TextEditingController(
       text: state.price != null
-          // If decimal is 0, show integer to avoid "1000.0"
-          ? (state.price! % 1 == 0
-                ? state.price!.toInt().toString()
-                : state.price.toString())
+          ? NumberFormat.decimalPattern('en_US').format(state.price)
           : '',
     );
     _landSizeController = TextEditingController(
@@ -78,6 +74,8 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
         }
       },
       builder: (context, state) {
+        final isCondoOrApt = state.isCondoOrApt;
+
         return SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
           padding: const EdgeInsets.all(16.0),
@@ -277,25 +275,13 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
               const SizedBox(height: 24),
 
               // Property Color (Asset Color) - Updated to use AppDropdownFormField
-              AppDropdownFormField<String>(
+              AppDropdownFormField<PropertyColor>(
                 label: 'สีทรัพย์',
                 value: state.houseColor,
                 isRequired: true,
                 hint: 'เลือกสีทรัพย์',
-                items: const [
-                  'ขาว',
-                  'ครีม',
-                  'เทา',
-                  'ดำ',
-                  'น้ำตาล',
-                  'แดง',
-                  'เหลือง',
-                  'เขียว',
-                  'ฟ้า',
-                  'ชมพู',
-                  'ม่วง',
-                  'ส้ม',
-                ],
+                items: PropertyColor.values,
+                itemLabel: (color) => color.label,
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
                   PropertyFormDetailsUpdated(houseColor: val),
                 ),
@@ -325,39 +311,43 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
               // Land Size & Building Size
               Row(
                 children: [
-                  Expanded(
-                    child: AppTextFormField(
-                      label: 'ขนาดที่ดิน',
-                      controller: _landSizeController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                      ],
-                      isRequired: true,
-                      hintText: '0.00',
-                      suffix: Text(
-                        'ตร.ว.',
-                        style: GoogleFonts.anuphan(color: AppColors.baseGrey),
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        signed: true,
-                        decimal: true,
-                      ),
-                      onChanged: (val) =>
-                          context.read<PropertyFormBloc>().add(
-                            PropertyFormDetailsUpdated(
-                              landSize: double.tryParse(val),
+                  if (!isCondoOrApt) ...[
+                    Expanded(
+                      child: AppTextFormField(
+                        label: 'ขนาดที่ดิน',
+                        controller: _landSizeController,
+                        maxLength: 6,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                          FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                        ],
+                        isRequired: true,
+                        hintText: '0.00',
+                        suffix: Text(
+                          'ตร.ว.',
+                          style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          signed: true,
+                          decimal: true,
+                        ),
+                        onChanged: (val) =>
+                            context.read<PropertyFormBloc>().add(
+                              PropertyFormDetailsUpdated(
+                                landSize: double.tryParse(val),
+                              ),
                             ),
-                          ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
+                    const SizedBox(width: 16),
+                  ],
                   Expanded(
                     child: AppTextFormField(
                       label: 'พื้นที่ใช้สอย',
                       controller: _buildingSizeController,
+                      maxLength: 6,
                       inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
                         FilteringTextInputFormatter.deny(RegExp(r'\s')),
                       ],
                       isRequired: true,
@@ -370,12 +360,11 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                         signed: true,
                         decimal: true,
                       ),
-                      onChanged: (val) =>
-                          context.read<PropertyFormBloc>().add(
-                            PropertyFormDetailsUpdated(
-                              buildingSize: double.tryParse(val),
-                            ),
-                          ),
+                      onChanged: (val) => context.read<PropertyFormBloc>().add(
+                        PropertyFormDetailsUpdated(
+                          buildingSize: double.tryParse(val),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -383,20 +372,12 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
               const SizedBox(height: 24),
 
               // Direction - Updated to use AppDropdownFormField
-              AppDropdownFormField<String>(
+              AppDropdownFormField<PropertyDirection>(
                 label: 'ทิศหน้าบ้าน',
                 value: state.direction,
                 hint: 'เลือกทิศหน้าบ้าน',
-                items: const [
-                  'ทิศเหนือ',
-                  'ทิศใต้',
-                  'ทิศตะวันออก',
-                  'ทิศตะวันตก',
-                  'ทิศตะวันออกเฉียงเหนือ',
-                  'ทิศตะวันออกเฉียงใต้',
-                  'ทิศตะวันตกเฉียงเหนือ',
-                  'ทิศตะวันตกเฉียงใต้',
-                ],
+                items: PropertyDirection.values,
+                itemLabel: (dir) => dir.label,
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
                   PropertyFormAdditionalInfoUpdated(direction: val),
                 ),

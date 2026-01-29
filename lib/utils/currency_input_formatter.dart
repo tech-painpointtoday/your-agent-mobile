@@ -2,19 +2,15 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class CurrencyInputFormatter extends TextInputFormatter {
-  final NumberFormat _formatter;
-  final bool allowDecimals;
   final int decimalPlaces;
+  final bool allowDecimals;
+  final NumberFormat _integerFormatter;
 
   CurrencyInputFormatter({
     this.allowDecimals = true,
     this.decimalPlaces = 2,
     String locale = 'en_US',
-  }) : _formatter = NumberFormat.currency(
-         locale: locale,
-         symbol: '',
-         decimalDigits: decimalPlaces,
-       );
+  }) : _integerFormatter = NumberFormat.decimalPattern(locale);
 
   @override
   TextEditingValue formatEditUpdate(
@@ -26,64 +22,79 @@ class CurrencyInputFormatter extends TextInputFormatter {
       return newValue.copyWith(text: '');
     }
 
-    // Remove all non-digit characters except decimal point (if allowed)
-    String newText = newValue.text.replaceAll(RegExp(r'[^\d.]'), '');
+    // 1. Clean data: keep only digits and the first decimal point
+    String cleanText = newValue.text.replaceAll(RegExp(r'[^\d.]'), '');
 
-    // Handle multiple decimal points
-    if (allowDecimals) {
-      int firstDecimal = newText.indexOf('.');
-      if (firstDecimal != -1) {
-        String afterDecimal = newText
-            .substring(firstDecimal + 1)
-            .replaceAll('.', '');
-        // Limit decimal places
-        if (afterDecimal.length > decimalPlaces) {
-          afterDecimal = afterDecimal.substring(0, decimalPlaces);
-        }
-        newText = newText.substring(0, firstDecimal + 1) + afterDecimal;
-      }
+    // Handle decimal points
+    if (!allowDecimals) {
+      cleanText = cleanText.replaceAll('.', '');
     } else {
-      newText = newText.replaceAll('.', '');
+      int dotIndex = cleanText.indexOf('.');
+      if (dotIndex != -1) {
+        String beforeDot = cleanText.substring(0, dotIndex);
+        String afterDot = cleanText.substring(dotIndex + 1).replaceAll('.', '');
+        if (afterDot.length > decimalPlaces) {
+          afterDot = afterDot.substring(0, decimalPlaces);
+        }
+        cleanText = '$beforeDot.$afterDot';
+      }
     }
 
-    // Parse the number
-    double value = double.tryParse(newText) ?? 0.0;
-
-    // Format string
-    // If user is typing decimal, don't force formatting yet otherwise it's hard to type
-    if (newText.endsWith('.') && allowDecimals) {
-      return newValue.copyWith(
-        text: newText,
-        selection: TextSelection.collapsed(offset: newText.length),
-      );
+    if (cleanText.isEmpty) {
+      return newValue.copyWith(text: '');
     }
 
-    // If there are decimals but not full amount, keep them
-    if (allowDecimals && newText.contains('.')) {
-      // Check if there are trailing zeros that formatter removes
-      // We want to keep user input if they typed "10.0" -> "10.0" not "10"
-      return newValue.copyWith(
-        text: newText,
-        selection: TextSelection.collapsed(offset: newText.length),
-      );
+    // 2. Split into parts
+    bool hasDot = cleanText.contains('.');
+    String integerPart = hasDot ? cleanText.split('.')[0] : cleanText;
+    String decimalPart = hasDot
+        ? (cleanText.split('.').length > 1 ? cleanText.split('.')[1] : '')
+        : '';
+
+    // 3. Format integer part
+    String formattedText = '';
+    if (integerPart.isNotEmpty) {
+      double? val = double.tryParse(integerPart);
+      if (val != null) {
+        formattedText = _integerFormatter.format(val);
+      } else {
+        formattedText = integerPart; // Fallback
+      }
+    } else if (hasDot) {
+      formattedText = '0';
     }
 
-    String formatted = _formatter.format(value).trim();
+    // 4. Add decimal part
+    if (hasDot) {
+      formattedText += '.$decimalPart';
+    }
 
-    // Calculate cursor position
-    // This is a simple heuristic; for complex cases usually cursor logic is more involved
-    // but for simple adding commas it usually works to just put at end if standard forward typing
-    // If backspacing, need more logic.
-    // Since this is a simple implementation, let's just return formatted value with cursor at end unless specified otherwise
+    // 5. Calculate cursor position
+    // Count non-separator characters before the selection in newValue.text
+    int selectionIndex = newValue.selection.end;
+    int nonSeparatorCountBeforeSelection = 0;
+    for (int i = 0; i < selectionIndex && i < newValue.text.length; i++) {
+      String char = newValue.text[i];
+      if (char == '.' || RegExp(r'\d').hasMatch(char)) {
+        nonSeparatorCountBeforeSelection++;
+      }
+    }
 
-    // Better implementation to keep cursor relative position?
-    // Let's stick to standard behavior for now: cursor at end is often acceptable for basic currency input
-    // or we can try to preserve selection.
+    // Find the new selection index in formattedText
+    int newSelectionIndex = 0;
+    int currentCount = 0;
+    while (newSelectionIndex < formattedText.length &&
+        currentCount < nonSeparatorCountBeforeSelection) {
+      String char = formattedText[newSelectionIndex];
+      if (char == '.' || RegExp(r'\d').hasMatch(char)) {
+        currentCount++;
+      }
+      newSelectionIndex++;
+    }
 
-    // Basic approach:
     return TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
+      text: formattedText,
+      selection: TextSelection.collapsed(offset: newSelectionIndex),
     );
   }
 }

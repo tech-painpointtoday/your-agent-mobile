@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
@@ -129,7 +130,9 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                   // Add Button
                   InkWell(
                     onTap: () {
-                      // TODO: Navigate to add property screen
+                      context
+                          .push('/property/create')
+                          .then((_) => _loadProperties());
                     },
                     borderRadius: BorderRadius.circular(100),
                     child: Container(

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:youragent/domain/entities/property.dart';
+import 'property_form_state.dart';
 
 abstract class PropertyFormEvent extends Equatable {
   const PropertyFormEvent();
@@ -90,7 +91,7 @@ class PropertyFormDetailsUpdated extends PropertyFormEvent {
   final int? garage;
   final double? landSize;
   final double? buildingSize;
-  final String? houseColor;
+  final PropertyColor? houseColor;
   final int? totalFloors;
 
   const PropertyFormDetailsUpdated({
@@ -117,7 +118,7 @@ class PropertyFormDetailsUpdated extends PropertyFormEvent {
 
 class PropertyFormAdditionalInfoUpdated extends PropertyFormEvent {
   final String? built;
-  final String? direction;
+  final PropertyDirection? direction;
   final String? availableFrom;
 
   const PropertyFormAdditionalInfoUpdated({
@@ -131,7 +132,7 @@ class PropertyFormAdditionalInfoUpdated extends PropertyFormEvent {
 }
 
 class PropertyFormImagesUpdated extends PropertyFormEvent {
-  final List<XFile> images;
+  final List<PropertyFormImage> images;
   const PropertyFormImagesUpdated(this.images);
 
   @override

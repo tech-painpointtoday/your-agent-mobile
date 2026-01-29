@@ -9,6 +9,7 @@ class AppTextField extends StatelessWidget {
   final bool isRequired;
   final String? hintText;
   final int maxLines;
+  final int? maxLength;
   final Widget? suffix;
   final Widget? prefix;
   final TextInputType? keyboardType;
@@ -26,6 +27,7 @@ class AppTextField extends StatelessWidget {
     this.isRequired = false,
     this.hintText,
     this.maxLines = 1,
+    this.maxLength,
     this.suffix,
     this.prefix,
     this.keyboardType,
@@ -70,6 +72,7 @@ class AppTextField extends StatelessWidget {
           focusNode: focusNode,
           controller: controller,
           maxLines: maxLines,
+          maxLength: maxLength,
           keyboardType: keyboardType,
           readOnly: readOnly,
           onTap: onTap,
@@ -78,6 +81,7 @@ class AppTextField extends StatelessWidget {
           inputFormatters: inputFormatters,
           style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseBlack),
           decoration: InputDecoration(
+            counterText: '',
             hintText: hintText ?? label,
             hintStyle: GoogleFonts.anuphan(
               color: AppColors.baseGrey,

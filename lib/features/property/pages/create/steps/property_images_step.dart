@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -167,19 +168,82 @@ class PropertyImagesStep extends StatelessWidget {
                         Positioned.fill(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: Image.file(
-                              File(image.path),
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Container(
-                                    color: Colors.grey[200],
-                                    child: const Icon(
-                                      Icons.image,
-                                      size: 50,
-                                      color: Colors.grey,
+                            child: image.isNetwork
+                                ? CachedNetworkImage(
+                                    imageUrl: image.path,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(),
                                     ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  )
+                                : Image.file(
+                                    File(image.path),
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Container(
+                                              color: Colors.grey[200],
+                                              child: const Icon(
+                                                Icons.image,
+                                                size: 50,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
                                   ),
-                            ),
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: image.isNetwork
+                                ? Image.network(
+                                    image.path,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                          if (loadingProgress == null)
+                                            return child;
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              value:
+                                                  loadingProgress
+                                                          .expectedTotalBytes !=
+                                                      null
+                                                  ? loadingProgress
+                                                            .cumulativeBytesLoaded /
+                                                        loadingProgress
+                                                            .expectedTotalBytes!
+                                                  : null,
+                                            ),
+                                          );
+                                        },
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Container(
+                                              color: Colors.grey[200],
+                                              child: const Icon(
+                                                Icons.image,
+                                                size: 50,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                  )
+                                : Image.file(
+                                    File(image.path),
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Container(
+                                              color: Colors.grey[200],
+                                              child: const Icon(
+                                                Icons.image,
+                                                size: 50,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                  ),
                           ),
                         ),
                         Align(
@@ -213,8 +277,9 @@ class PropertyImagesStep extends StatelessWidget {
                           right: 8,
                           child: InkWell(
                             onTap: () {
-                              final newImages = List<XFile>.from(state.images)
-                                ..removeAt(index);
+                              final newImages = List<PropertyFormImage>.from(
+                                state.images,
+                              )..removeAt(index);
                               context.read<PropertyFormBloc>().add(
                                 PropertyFormImagesUpdated(newImages),
                               );
@@ -291,7 +356,10 @@ class PropertyImagesStep extends StatelessWidget {
                   );
                   if (image != null && context.mounted) {
                     context.read<PropertyFormBloc>().add(
-                      PropertyFormImagesUpdated([...state.images, image]),
+                      PropertyFormImagesUpdated([
+                        ...state.images,
+                        PropertyFormImage.fromXFile(image),
+                      ]),
                     );
                   }
                 },
@@ -317,7 +385,12 @@ class PropertyImagesStep extends StatelessWidget {
                   final List<XFile> images = await picker.pickMultiImage();
                   if (images.isNotEmpty) {
                     bloc.add(
-                      PropertyFormImagesUpdated([...state.images, ...images]),
+                      PropertyFormImagesUpdated([
+                        ...state.images,
+                        ...images.map(
+                          (img) => PropertyFormImage.fromXFile(img),
+                        ),
+                      ]),
                     );
                   }
                 },

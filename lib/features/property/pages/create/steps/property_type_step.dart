@@ -91,12 +91,14 @@ class _PropertyTypeGrid extends StatelessWidget {
           itemCount: _propertyTypes.length,
           itemBuilder: (context, index) {
             final type = _propertyTypes[index];
+            final hasSelection = state.selectedPropertyType != null;
             final isSelected = state.selectedPropertyType == type['name'];
 
             return _PropertyTypeCard(
               name: type['name']!,
               imagePath: type['image']!,
               isSelected: isSelected,
+              hasSelection: hasSelection,
               onTap: () {
                 context.read<PropertyFormBloc>().add(
                   PropertyFormTypeSelected(type['name']!),
@@ -114,12 +116,14 @@ class _PropertyTypeCard extends StatelessWidget {
   final String name;
   final String imagePath;
   final bool isSelected;
+  final bool hasSelection;
   final VoidCallback onTap;
 
   const _PropertyTypeCard({
     required this.name,
     required this.imagePath,
     required this.isSelected,
+    required this.hasSelection,
     required this.onTap,
   });
 
@@ -127,64 +131,68 @@ class _PropertyTypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
+      child: AnimatedOpacity(
         duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.baseLightGrey,
-            width: isSelected ? 2 : 1,
-          ),
-          boxShadow: [
-            if (isSelected)
-              BoxShadow(
-                color: AppColors.primary.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              )
-            else
-              const BoxShadow(
-                color: Color(0x0A000000),
-                blurRadius: 10,
-                offset: Offset(0, 2),
-              ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              flex: 4,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(10),
-                ),
-                child: Image.asset(imagePath, fit: BoxFit.cover),
-              ),
+        opacity: hasSelection && !isSelected ? 0.5 : 1.0,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? AppColors.primary : AppColors.baseLightGrey,
+              width: isSelected ? 2 : 1,
             ),
-            Expanded(
-              flex: 2,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(
-                    name,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.anuphan(
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.baseDarkGrey,
-                      fontSize: 14,
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.w400,
+            boxShadow: [
+              if (isSelected)
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                )
+              else
+                const BoxShadow(
+                  color: Color(0x0A000000),
+                  blurRadius: 10,
+                  offset: Offset(0, 2),
+                ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 4,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(10),
+                  ),
+                  child: Image.asset(imagePath, fit: BoxFit.cover),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      name,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.anuphan(
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.baseDarkGrey,
+                        fontSize: 14,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

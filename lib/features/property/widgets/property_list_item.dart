@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/core/theme/app_colors.dart';
+import 'package:youragent/utils/app_utils.dart';
 import 'property_status_badge.dart';
 
 /// Property list item card widget
@@ -67,10 +68,17 @@ class PropertyListItem extends StatelessWidget {
                   width: 70,
                   height: 70,
                   color: AppColors.basePaleGrey,
-                  child: const Icon(
-                    Icons.image_outlined,
-                    color: AppColors.baseGrey,
-                    size: 32,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SvgPicture.asset(
+                      'assets/icons/image.svg',
+                      width: 16,
+                      height: 16,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.baseGrey,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -83,7 +91,7 @@ class PropertyListItem extends StatelessWidget {
                 children: [
                   // Code
                   Text(
-                    'รหัส: ${property.code}',
+                    'รหัส: ${property.id != null ? AppUtils.generatePropertyCode(propertyId: property.id!, createdAt: property.createdAt) : "???"}',
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseGrey,
                       fontSize: 10,

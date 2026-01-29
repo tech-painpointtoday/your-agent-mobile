@@ -39,7 +39,7 @@ class _ExpandableDescriptionState extends State<ExpandableDescription> {
           ),
         ),
         const SizedBox(height: 8),
-        InkWell(
+        GestureDetector(
           onTap: () {
             setState(() {
               _isExpanded = !_isExpanded;

@@ -175,7 +175,7 @@ class PropertyApiService {
         // Summary only - don't log all details for each property
         final firstProperty = properties.first;
         debugPrint(
-          'PropertyApiService: Summary - ID: ${firstProperty.id}, name: ${firstProperty.name}, location: ${firstProperty.address}, images: ${firstProperty.imageUrls?.length ?? 0}',
+          'PropertyApiService: Summary - ID: ${firstProperty.id}, name: ${firstProperty.name}, location: ${firstProperty.address}, images: ${firstProperty.imageUrls.length ?? 0}',
         );
       }
       return properties;

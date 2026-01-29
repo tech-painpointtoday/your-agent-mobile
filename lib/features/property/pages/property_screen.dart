@@ -6,7 +6,6 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/features/home/pages/home_screen.dart';
 import 'package:youragent/features/property/pages/all_properties_screen.dart';
-import 'package:youragent/features/property/pages/create/create_property_screen.dart';
 import 'package:youragent/features/property/pages/fullscreen_map_screen.dart';
 import 'package:youragent/features/property/pages/property_detail_screen.dart';
 import 'package:youragent/features/property/widgets/property_list_item.dart';
@@ -244,15 +243,9 @@ class _PropertyScreenState extends State<PropertyScreen> {
                     return PropertyListItem(
                       property: property,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PropertyDetailScreen(
-                              propertyId: property.id,
-                              property: property,
-                            ),
-                          ),
-                        ).then((_) => _loadProperties());
+                        context
+                            .push('/property/${property.id}', extra: property)
+                            .then((_) => _loadProperties());
                       },
                       onEdit: () {
                         // Navigate to edit screen and reload on return

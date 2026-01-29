@@ -12,6 +12,7 @@ import '../../services/session_service.dart';
 import '../models/agent_login_response.dart';
 import '../models/user_profile_model.dart';
 import '../../services/user_profile_storage_service.dart';
+import '../../utils/crypto_utils.dart';
 
 class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
   final AuthApiService _authApiService;
@@ -229,15 +230,30 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
         return Left(CancellationFailure('User cancelled Google Sign-In'));
       }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final String? token = googleAuth.idToken ?? googleAuth.accessToken;
+      final String email = googleUser.email;
+      final String name = googleUser.displayName ?? 'Google User';
+      final String socialId = googleUser.id;
 
-      if (token == null) {
-        return Left(ServerFailure('Failed to get token from Google'));
-      }
+      final password = CryptoUtils.generateDeterministicPassword(socialId);
 
-      return signInWithSocial(provider: 'google', token: token, role: role);
+      // Try login first
+      final loginResult = await signInWithEmail(
+        email: email,
+        password: password,
+        role: role,
+      );
+
+      return loginResult.fold((failure) async {
+        // If login fails, try to register (legacy backend requirement)
+        // Simple heuristic: if it's a server failure or unauthorized, try register.
+        // In a real app, you'd check for a specific "USER_NOT_FOUND" error code.
+        return registerWithEmail(
+          name: name,
+          email: email,
+          password: password,
+          role: role,
+        );
+      }, (user) => Right(user));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -248,12 +264,33 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
     try {
       final LoginResult result = await FacebookAuth.instance.login();
       if (result.status == LoginStatus.success) {
-        final AccessToken accessToken = result.accessToken!;
-        return signInWithSocial(
-          provider: 'facebook',
-          token: accessToken.tokenString,
+        final userData = await FacebookAuth.instance.getUserData();
+        final String? email = userData['email'] as String?;
+        final String name = userData['name'] as String? ?? 'Facebook User';
+        final String? socialId = userData['id'] as String?;
+
+        if (email == null || socialId == null) {
+          return Left(ServerFailure('Failed to get email or ID from Facebook'));
+        }
+
+        final password = CryptoUtils.generateDeterministicPassword(socialId);
+
+        // Try login first
+        final loginResult = await signInWithEmail(
+          email: email,
+          password: password,
           role: role,
         );
+
+        return loginResult.fold((failure) async {
+          // If login fails, try to register
+          return registerWithEmail(
+            name: name,
+            email: email,
+            password: password,
+            role: role,
+          );
+        }, (user) => Right(user));
       } else if (result.status == LoginStatus.cancelled) {
         return Left(CancellationFailure('User cancelled Facebook Sign-In'));
       } else {

@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 
 /// Represents the status/approval state of a property listing
 enum PropertyApprovalStatus {
@@ -8,6 +7,76 @@ enum PropertyApprovalStatus {
   approved, // อนุมัติแล้ว
   rejected, // ไม่อนุมัติ
   draft, // แบบร่าง (สำหรับ Preview)
+}
+
+enum PropertyColor {
+  white,
+  cream,
+  grey,
+  black,
+  brown,
+  red,
+  yellow,
+  green,
+  blue,
+  pink,
+  purple,
+  orange;
+
+  String get label => switch (this) {
+    white => 'ขาว',
+    cream => 'ครีม',
+    grey => 'เทา',
+    black => 'ดำ',
+    brown => 'น้ำตาล',
+    red => 'แดง',
+    yellow => 'เหลือง',
+    green => 'เขียว',
+    blue => 'ฟ้า',
+    pink => 'ชมพู',
+    purple => 'ม่วง',
+    orange => 'ส้ม',
+  };
+
+  static PropertyColor? fromLabel(String? label) {
+    if (label == null) return null;
+    try {
+      return PropertyColor.values.firstWhere((e) => e.label == label);
+    } catch (_) {
+      return null;
+    }
+  }
+}
+
+enum PropertyDirection {
+  north,
+  south,
+  east,
+  west,
+  northEast,
+  southEast,
+  northWest,
+  southWest;
+
+  String get label => switch (this) {
+    north => 'ทิศเหนือ',
+    south => 'ทิศใต้',
+    east => 'ทิศตะวันออก',
+    west => 'ทิศตะวันตก',
+    northEast => 'ทิศตะวันออกเฉียงเหนือ',
+    southEast => 'ทิศตะวันออกเฉียงใต้',
+    northWest => 'ทิศตะวันตกเฉียงเหนือ',
+    southWest => 'ทิศตะวันตกเฉียงใต้',
+  };
+
+  static PropertyDirection? fromLabel(String? label) {
+    if (label == null) return null;
+    try {
+      return PropertyDirection.values.firstWhere((e) => e.label == label);
+    } catch (_) {
+      return null;
+    }
+  }
 }
 
 class Property extends Equatable {
@@ -52,9 +121,9 @@ class Property extends Equatable {
   final String propertyType;
   final String? propertyStyle;
   final int? totalFloors; // Total floors of the property
-  final String? houseColor;
+  final PropertyColor? houseColor;
   final String? built; // Year/Date built
-  final String? direction;
+  final PropertyDirection? direction;
 
   // Dynamic / Collections
   final List<String> highlights;
@@ -184,7 +253,7 @@ class Property extends Equatable {
     // 4. Parse Images
     final imagesList = (data['images'] is List) ? data['images'] as List : [];
     final parsedImageUrls = imagesList.map((img) {
-      if (img is Map) return (img['url'] ?? img['display_url']).toString();
+      if (img is Map) return (img['validated_url'] ?? img['url']).toString();
       return img.toString();
     }).toList();
     final firstImage = parsedImageUrls.isNotEmpty
@@ -253,9 +322,9 @@ class Property extends Equatable {
       propertyStyle:
           parseString(specs['property_style']) ??
           parseString(data['property_style']),
-      houseColor: parseString(specs['house_color']),
+      houseColor: PropertyColor.fromLabel(parseString(specs['house_color'])),
       built: parseString(data['built']),
-      direction: parseString(specs['direction']),
+      direction: PropertyDirection.fromLabel(parseString(specs['direction'])),
       totalFloors: parseInt(
         specs['total_floors'] ?? rawSpecs['floors'],
       ), // Try spec object then raw map
@@ -288,8 +357,8 @@ class Property extends Equatable {
       'status': status,
       'built': built,
       'available_from': availableFrom,
-      'house_color': houseColor,
-      'direction': direction,
+      'house_color': houseColor?.label,
+      'direction': direction?.label,
 
       // Main Stats
       'bedrooms': bedrooms,

@@ -11,6 +11,7 @@ class AppDropdownFormField<T> extends StatelessWidget {
   final Function(T?) onChanged;
   final bool isRequired;
   final bool showAbove;
+  final String Function(T)? itemLabel;
 
   const AppDropdownFormField({
     super.key,
@@ -21,6 +22,7 @@ class AppDropdownFormField<T> extends StatelessWidget {
     required this.onChanged,
     this.isRequired = false,
     this.showAbove = false,
+    this.itemLabel,
   });
 
   @override
@@ -58,6 +60,7 @@ class AppDropdownFormField<T> extends StatelessWidget {
           items: items,
           onChanged: onChanged,
           showAbove: showAbove,
+          itemLabel: itemLabel,
         ),
       ],
     );

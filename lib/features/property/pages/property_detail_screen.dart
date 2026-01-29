@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/features/property/widgets/property_detail.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:intl/intl.dart';
-import '../widgets/property_image_carousel.dart';
-import '../widgets/property_detail_section.dart';
-import '../widgets/property_status_badge.dart';
-import '../widgets/property_map_view.dart';
-import 'edit/edit_property_menu_screen.dart';
-import 'expandable_description.dart';
-import 'fullscreen_map_screen.dart';
 
 class PropertyDetailScreen extends StatefulWidget {
   final int? propertyId;

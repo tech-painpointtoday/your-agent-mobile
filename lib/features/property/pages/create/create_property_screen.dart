@@ -50,6 +50,8 @@ class _CreatePropertyView extends StatelessWidget {
         leading: IconButton(
           icon: SvgPicture.asset(
             'assets/icons/x.svg',
+            height: 24,
+            width: 24,
             colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
           onPressed: () => Navigator.of(context).pop(),

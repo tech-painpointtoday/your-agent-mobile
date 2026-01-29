@@ -12,6 +12,26 @@ enum PropertyFormStatus {
   submissionFailure,
 }
 
+class PropertyFormImage extends Equatable {
+  final XFile? file;
+  final String? url;
+
+  const PropertyFormImage({this.file, this.url});
+
+  factory PropertyFormImage.fromXFile(XFile file) =>
+      PropertyFormImage(file: file);
+  factory PropertyFormImage.fromUrl(String url) => PropertyFormImage(url: url);
+
+  bool get isNetwork => url != null;
+  bool get isFile => file != null;
+
+  String get name => isFile ? file!.name : (url?.split('/').last ?? 'image');
+  String get path => isFile ? file!.path : (url ?? '');
+
+  @override
+  List<Object?> get props => [file, url];
+}
+
 class PropertyFormState extends Equatable {
   final int step;
   final PropertyFormStatus propertyFormStatus;
@@ -31,11 +51,11 @@ class PropertyFormState extends Equatable {
   final int? garage;
   final double? landSize;
   final double? buildingSize;
-  final String? houseColor;
+  final PropertyColor? houseColor;
   final String? built;
-  final String? direction;
+  final PropertyDirection? direction;
   final String? availableFrom;
-  final List<XFile> images;
+  final List<PropertyFormImage> images;
 
   // New Step 3 Fields
   final String? listingType; // 'ขาย', 'เช่า', 'ขายและเช่า'
@@ -189,11 +209,9 @@ class PropertyFormState extends Equatable {
       built: property.built,
       direction: property.direction,
       availableFrom: property.availableFrom,
-      // Images logic needs handling XFiles vs URLs.
-      // For editing, we might need a separate field for existingImageUrls in State
-      // But for now, let's leave images empty as we might not convert URLs to XFiles easily here
-      // The PropertyImagesStep will need to handle existing URLs display.
-      images: [],
+      images: property.imageUrls
+          .map((url) => PropertyFormImage.fromUrl(url))
+          .toList(),
 
       // Location
       number: property.number,
@@ -257,9 +275,9 @@ class PropertyFormState extends Equatable {
     'garage': garage,
     'landSize': landSize,
     'buildingSize': buildingSize,
-    'houseColor': houseColor,
+    'houseColor': houseColor?.label,
     'built': built,
-    'direction': direction,
+    'direction': direction?.label,
     'availableFrom': availableFrom,
     'listingType': listingType,
     'status': status,
@@ -354,11 +372,11 @@ class PropertyFormState extends Equatable {
     int? garage,
     double? landSize,
     double? buildingSize,
-    String? houseColor,
+    PropertyColor? houseColor,
     String? built,
-    String? direction,
+    PropertyDirection? direction,
     String? availableFrom,
-    List<XFile>? images,
+    List<PropertyFormImage>? images,
     String? number,
     String? city,
     String? state,
@@ -525,8 +543,14 @@ class PropertyFormState extends Equatable {
       specificationValues: specValuesMap,
 
       // Images (Pass local XFiles)
-      imageFiles: images,
-      imageUrls: const [], // No URLs yet
+      imageFiles: images
+          .where((img) => img.isFile)
+          .map((img) => img.file!)
+          .toList(),
+      imageUrls: images
+          .where((img) => img.isNetwork)
+          .map((img) => img.url!)
+          .toList(),
 
       createdAt: DateTime.now(),
     );
@@ -590,4 +614,7 @@ class PropertyFormState extends Equatable {
     specificationFilters,
     dynamicValues,
   ];
+
+  bool get isCondoOrApt =>
+      selectedPropertyType == 'คอนโด' || selectedPropertyType == 'อพาร์ตเมนต์';
 }

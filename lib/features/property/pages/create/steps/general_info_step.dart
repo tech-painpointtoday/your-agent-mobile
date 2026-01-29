@@ -29,6 +29,7 @@ class GeneralInfoStep extends StatefulWidget {
 class _GeneralInfoStepState extends State<GeneralInfoStep> {
   // Controllers
   late final TextEditingController _titleController;
+  late final TextEditingController _houseNoController;
   late final TextEditingController _addressController;
   late final TextEditingController _projectController;
   late final TextEditingController _developerController;
@@ -46,6 +47,9 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     _titleController = TextEditingController(
       text: state.data['title'] as String?,
     );
+    _houseNoController = TextEditingController(
+      text: state.data['number'] as String?,
+    );
     _addressController = TextEditingController(
       text: state.data['address'] as String?,
     );
@@ -62,7 +66,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       text: state.data['floor'] as String?,
     );
     _roomNoController = TextEditingController(
-      text: state.data['room_number'] as String?,
+      text: state.data['unitNo'] as String?,
     );
     _locationController = TextEditingController(
       text: state.data['formatted_address_th'] as String?,
@@ -562,12 +566,13 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               ],
 
               // Address
-              AppTextFormField(
-                label: 'เลขที่บ้าน',
-                controller: _addressController,
-                isRequired: true,
-                hintText: 'เลขที่บ้าน',
-              ),
+              if (!isCondoOrApt)
+                AppTextFormField(
+                  label: 'เลขที่บ้าน',
+                  controller: _houseNoController,
+                  isRequired: true,
+                  hintText: 'เลขที่บ้าน',
+                ),
               const SizedBox(height: 16),
 
               // Location Section

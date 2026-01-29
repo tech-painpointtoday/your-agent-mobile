@@ -7,6 +7,7 @@ import 'package:youragent/domain/entities/property.dart';
 import 'package:intl/intl.dart';
 import 'package:youragent/features/property/pages/expandable_description.dart';
 import 'package:youragent/features/property/pages/fullscreen_map_screen.dart';
+import 'package:youragent/utils/app_utils.dart';
 import '../widgets/property_image_carousel.dart';
 import '../widgets/property_detail_section.dart';
 import '../widgets/property_status_badge.dart';
@@ -106,9 +107,9 @@ class _PropertyDetailState extends State<PropertyDetail> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (property.code != null && property.code!.isNotEmpty)
+                      if (property.id != null)
                         Text(
-                          'รหัส: ${property.code}',
+                          'รหัส: ${AppUtils.generatePropertyCode(propertyId: property.id!, createdAt: property.createdAt)}',
                           style: GoogleFonts.anuphan(
                             color: AppColors.baseGrey,
                             fontSize: 12,
@@ -248,7 +249,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     if (property.houseColor != null)
                       PropertyDetailRow(
                         label: 'สีทรัพย์',
-                        value: property.houseColor!,
+                        value: property.houseColor!.label,
                       ),
                     if (property.price > 0)
                       PropertyDetailRow(
@@ -269,7 +270,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     if (property.direction != null)
                       PropertyDetailRow(
                         label: 'ทิศบ้าน',
-                        value: property.direction!,
+                        value: property.direction!.label,
                       ),
                   ],
                 ),

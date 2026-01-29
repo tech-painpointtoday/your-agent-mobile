@@ -285,11 +285,15 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       final propertyId = responseProperty.id;
 
       // Upload photos if any
-      if (state.images.isNotEmpty && propertyId != null) {
+      final localImages = state.images
+          .where((img) => img.isFile)
+          .map((img) => img.file!)
+          .toList();
+      if (localImages.isNotEmpty && propertyId != null) {
         await _propertyApiService.uploadPhotosSimple(
           role: roleName,
           propertyId: propertyId,
-          photos: state.images,
+          photos: localImages,
           tag: 'gallery',
         );
       }
@@ -355,11 +359,15 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       }
 
       // Upload photos if any
-      if (state.images.isNotEmpty && state.step == 5) {
+      final localImages = state.images
+          .where((img) => img.isFile)
+          .map((img) => img.file!)
+          .toList();
+      if (localImages.isNotEmpty && state.step == 5) {
         await _propertyApiService.uploadPhotosSimple(
           role: roleName,
           propertyId: state.propertyId!,
-          photos: state.images,
+          photos: localImages,
           tag: 'gallery',
         );
       }
@@ -556,6 +564,16 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       case 'parking_spaces':
         final cleanVal = event.value.replaceAll(RegExp(r'[^0-9]'), '');
         newState = newState.copyWith(garage: int.tryParse(cleanVal));
+        break;
+      case 'house_color':
+        newState = newState.copyWith(
+          houseColor: PropertyColor.fromLabel(event.value),
+        );
+        break;
+      case 'direction':
+        newState = newState.copyWith(
+          direction: PropertyDirection.fromLabel(event.value),
+        );
         break;
     }
 

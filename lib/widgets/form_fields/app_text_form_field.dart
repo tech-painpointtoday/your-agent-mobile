@@ -9,6 +9,7 @@ class AppTextFormField extends StatelessWidget {
   final bool isRequired;
   final String? hintText;
   final int maxLines;
+  final int? maxLength;
   final Widget? suffix;
   final Widget? prefix;
   final TextInputType? keyboardType;
@@ -26,6 +27,7 @@ class AppTextFormField extends StatelessWidget {
     this.isRequired = false,
     this.hintText,
     this.maxLines = 1,
+    this.maxLength,
     this.suffix,
     this.prefix,
     this.keyboardType,
@@ -45,6 +47,7 @@ class AppTextFormField extends StatelessWidget {
       isRequired: isRequired,
       hintText: hintText,
       maxLines: maxLines,
+      maxLength: maxLength,
       suffix: suffix,
       prefix: prefix,
       keyboardType: keyboardType,
