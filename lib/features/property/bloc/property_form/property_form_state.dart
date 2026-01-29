@@ -36,7 +36,6 @@ class PropertyFormState extends Equatable {
   final String? direction;
   final String? availableFrom;
   final List<XFile> images;
-  final List<String> imageUrls;
 
   // New Step 3 Fields
   final String? listingType; // 'ขาย', 'เช่า', 'ขายและเช่า'
@@ -109,7 +108,6 @@ class PropertyFormState extends Equatable {
     this.direction,
     this.availableFrom,
     this.images = const [],
-    this.imageUrls = const [],
     this.number,
     this.city,
     this.state,

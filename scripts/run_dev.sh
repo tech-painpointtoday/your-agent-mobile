@@ -1,3 +1,3 @@
 #!/bin/bash
 # Run dev flavor
-flutter run -t lib/main_dev.dart "$@"
+flutter run  --flavor dev -t lib/main_dev.dart "$@"
