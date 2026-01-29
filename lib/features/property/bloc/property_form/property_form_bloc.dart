@@ -310,6 +310,75 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     }
   }
 
+  Future<void> _onUpdated(
+    PropertyFormSubmitted event,
+    Emitter<PropertyFormState> emit,
+  ) async {
+    // 1. Validate
+    if (!state.isValid) {
+      emit(
+        state.copyWith(
+          propertyFormStatus: PropertyFormStatus.submissionFailure,
+          errorMessage: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+        ),
+      );
+      return;
+    } else if (state.propertyId == null) {
+      emit(
+        state.copyWith(
+          propertyFormStatus: PropertyFormStatus.submissionFailure,
+          errorMessage: 'ไม่พบข้อมูลทรัพย์สิน',
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        propertyFormStatus: PropertyFormStatus.submissionInProgress,
+      ),
+    );
+
+    try {
+      final roleName = state.selectedDeveloperId != null ? 'agency' : 'agent';
+
+      // 2. Build Payload (Unified)
+      // Use state.data which constructs the map for API
+      final payload = state.data;
+
+      if (state.step >= 1 && state.step <= 4) {
+        await _propertyApiService.updateProperty(
+          role: roleName,
+          propertyId: state.propertyId!,
+          data: payload,
+        );
+      }
+
+      // Upload photos if any
+      if (state.images.isNotEmpty && state.step == 5) {
+        await _propertyApiService.uploadPhotosSimple(
+          role: roleName,
+          propertyId: state.propertyId!,
+          photos: state.images,
+          tag: 'gallery',
+        );
+      }
+
+      emit(
+        state.copyWith(
+          propertyFormStatus: PropertyFormStatus.submissionSuccess,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          propertyFormStatus: PropertyFormStatus.submissionFailure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
   void _onReset(PropertyFormReset event, Emitter<PropertyFormState> emit) {
     emit(const PropertyFormState());
   }

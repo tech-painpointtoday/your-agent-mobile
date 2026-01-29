@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
@@ -183,13 +184,9 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 style: AppButtonStyle.primary,
                 onPressed: () {
                   if (_property != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            EditPropertyMenuScreen(property: _property!),
-                      ),
-                    ).then((_) => _fetchPropertyDetail()); // Refresh on return
+                    context
+                        .push('/property/edit', extra: _property)
+                        .then((_) => _fetchPropertyDetail());
                   }
                 },
                 height: 44,

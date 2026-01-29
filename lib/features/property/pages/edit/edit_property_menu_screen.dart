@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
@@ -56,15 +57,13 @@ class EditPropertyMenuScreen extends StatelessWidget {
                 iconColor: AppColors.brandBlue,
                 bgColor: AppColors.supportBlueLight,
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPropertyFormScreen(
-                        property: property,
-                        stepType: EditPropertyStepType.generalInfo,
-                        title: 'ข้อมูลทั่วไป',
-                      ),
-                    ),
+                  context.push(
+                    '/property/edit-form',
+                    extra: {
+                      'property': property,
+                      'stepType': EditPropertyStepType.generalInfo,
+                      'title': 'ข้อมูลทั่วไป',
+                    },
                   );
                 },
               ),
@@ -78,29 +77,13 @@ class EditPropertyMenuScreen extends StatelessWidget {
                 iconColor: AppColors.brandGreen,
                 bgColor: AppColors.supportGreenLight,
                 onTap: () {
-                  // Location is part of General Info step but visually we might want to separate or jump to that section.
-                  // For now, reusing General Info step as location is there. Or create specific Location step type.
-                  // User requirement says: "ตำแหน่งทรัพย์ will open to edit for step GeneralInfoStep without step"
-                  // Re-reading user request: "Location (ตำแหน่งทรัพย์) -> ?".
-                  // Wait, checking user request again.
-                  // "ข้อมูลทั่วไป (General Info) will open to edit for step GeneralInfoStep without step"
-                  // "รายละเอียดทรัพย์ (Property Details): PropertyDetailStep"
-                  // "รายละเอียดเพิ่มเติม (Additional Details): AdditionalInfoStep"
-                  // "รูปภาพทรัพย์ (Property Images): PropertyImagesStep"
-                  // The user added "ตำแหน่งทรัพย์" in the screenshot code edit earlier but didn't explicitly map it in the prompt text "EditPropertyMenuScreen will open...".
-                  // But "GeneralInfoStep" contains location.
-                  // Let's assume General Info covers location for now, or I can add a specific case if needed.
-                  // Actually, if I look at `GeneralInfoStep`, it contains Name, Address, Location.
-                  // So navigating to GeneralInfoStep covers Location.
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPropertyFormScreen(
-                        property: property,
-                        stepType: EditPropertyStepType.generalInfo,
-                        title: 'ตำแหน่งทรัพย์',
-                      ),
-                    ),
+                  context.push(
+                    '/property/edit-form',
+                    extra: {
+                      'property': property,
+                      'stepType': EditPropertyStepType.generalInfo,
+                      'title': 'ตำแหน่งทรัพย์',
+                    },
                   );
                 },
               ),
@@ -113,15 +96,13 @@ class EditPropertyMenuScreen extends StatelessWidget {
                 iconColor: const Color(0xFF7F56D9), // Purple
                 bgColor: const Color(0xFFF9F5FF), // Light Purple
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPropertyFormScreen(
-                        property: property,
-                        stepType: EditPropertyStepType.propertyDetail,
-                        title: 'รายละเอียดทรัพย์',
-                      ),
-                    ),
+                  context.push(
+                    '/property/edit-form',
+                    extra: {
+                      'property': property,
+                      'stepType': EditPropertyStepType.propertyDetail,
+                      'title': 'รายละเอียดทรัพย์',
+                    },
                   );
                 },
               ),
@@ -134,15 +115,13 @@ class EditPropertyMenuScreen extends StatelessWidget {
                 iconColor: const Color(0xFFE94A88), // Pink
                 bgColor: const Color(0xFFFDF2FA), // Light Pink
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPropertyFormScreen(
-                        property: property,
-                        stepType: EditPropertyStepType.additionalInfo,
-                        title: 'รายละเอียดเพิ่มเติม',
-                      ),
-                    ),
+                  context.push(
+                    '/property/edit-form',
+                    extra: {
+                      'property': property,
+                      'stepType': EditPropertyStepType.additionalInfo,
+                      'title': 'รายละเอียดเพิ่มเติม',
+                    },
                   );
                 },
               ),
@@ -155,15 +134,13 @@ class EditPropertyMenuScreen extends StatelessWidget {
                 iconColor: AppColors.supportOrangeDark,
                 bgColor: AppColors.supportOrangeLight,
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPropertyFormScreen(
-                        property: property,
-                        stepType: EditPropertyStepType.propertyImages,
-                        title: 'รูปภาพทรัพย์',
-                      ),
-                    ),
+                  context.push(
+                    '/property/edit-form',
+                    extra: {
+                      'property': property,
+                      'stepType': EditPropertyStepType.propertyImages,
+                      'title': 'รูปภาพทรัพย์',
+                    },
                   );
                 },
               ),

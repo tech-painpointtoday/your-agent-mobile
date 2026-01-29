@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
@@ -43,12 +44,28 @@ class EditPropertyFormScreen extends StatelessWidget {
 
     return BlocProvider(
       create: (context) {
+        int initialStep = 1;
+        switch (stepType) {
+          case EditPropertyStepType.generalInfo:
+            initialStep = 2;
+            break;
+          case EditPropertyStepType.propertyDetail:
+            initialStep = 3;
+            break;
+          case EditPropertyStepType.additionalInfo:
+            initialStep = 4;
+            break;
+          case EditPropertyStepType.propertyImages:
+            initialStep = 5;
+            break;
+        }
+
         return PropertyFormBloc(
           initialFilters: metadataState.specificationFilters,
           initialProperty: property,
           initialDevelopers: metadataState.developers,
           initialCondoProjects: metadataState.condoProjects,
-        );
+        )..add(PropertyFormStepChanged(initialStep));
       },
       child: Scaffold(
         backgroundColor: AppColors.primary,
@@ -101,7 +118,7 @@ class EditPropertyFormScreen extends StatelessWidget {
             title: 'สำเร็จ',
             message: 'บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว',
           );
-          Navigator.of(context).pop();
+          context.pop();
         } else if (state.propertyFormStatus ==
             PropertyFormStatus.submissionFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -148,26 +165,29 @@ class EditPropertyFormScreen extends StatelessWidget {
             Expanded(
               child: BlocBuilder<PropertyFormBloc, PropertyFormState>(
                 builder: (context, state) {
+                  final isValid = state.isValid;
+
                   return AppButton(
                     text: 'บันทึก',
                     style: AppButtonStyle.primary,
-                    // TODO: Add proper validation check per step
-                    onPressed: () {
-                      AppConfirmationBottomSheet.show(
-                        context: context,
-                        title: 'บันทึกการเปลี่ยนแปลง?',
-                        description:
-                            'คุณต้องการบันทึกการเปลี่ยนแปลงนี้ใช่หรือไม่',
-                        confirmLabel: 'บันทึก',
-                        cancelLabel: 'ยกเลิก',
-                        style: ConfirmationStyle.normal,
-                        onConfirm: () {
-                          context.read<PropertyFormBloc>().add(
-                            const PropertyFormSubmitted(),
-                          );
-                        },
-                      );
-                    },
+                    onPressed: isValid
+                        ? () {
+                            AppConfirmationBottomSheet.show(
+                              context: context,
+                              title: 'บันทึกการเปลี่ยนแปลง?',
+                              description:
+                                  'คุณต้องการบันทึกการเปลี่ยนแปลงนี้ใช่หรือไม่',
+                              confirmLabel: 'บันทึก',
+                              cancelLabel: 'ยกเลิก',
+                              style: ConfirmationStyle.normal,
+                              onConfirm: () {
+                                context.read<PropertyFormBloc>().add(
+                                  const PropertyFormSubmitted(),
+                                );
+                              },
+                            );
+                          }
+                        : null,
                   );
                 },
               ),

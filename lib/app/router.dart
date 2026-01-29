@@ -2,8 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:youragent/features/property/pages/create/create_property_screen.dart';
+import 'package:youragent/features/property/pages/edit/edit_property_form_screen.dart';
+import 'package:youragent/features/property/pages/edit/edit_property_menu_screen.dart';
 
 import '../core/di/dependency_injection.dart';
+import '../domain/entities/property.dart';
 import '../domain/entities/user.dart';
 import '../features/activities/pages/all_activities_screen.dart';
 import '../features/auth/pages/email_verification_pending_screen.dart';
@@ -55,6 +59,9 @@ class AppRouter {
         '/',
         '/home-screen',
         '/property',
+        '/property/create',
+        '/property/edit',
+        '/property/edit-form',
         '/money',
         '/calendar',
         '/contact',
@@ -107,6 +114,28 @@ class AppRouter {
         path: '/property',
         builder: (context, state) =>
             const MainNavigationScreen(initialIndex: 1),
+      ),
+      GoRoute(
+        path: '/property/create',
+        builder: (context, state) => const CreatePropertyScreen(),
+      ),
+      GoRoute(
+        path: '/property/edit',
+        builder: (context, state) {
+          final property = state.extra as Property;
+          return EditPropertyMenuScreen(property: property);
+        },
+      ),
+      GoRoute(
+        path: '/property/edit-form',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return EditPropertyFormScreen(
+            property: extra['property'] as Property,
+            stepType: extra['stepType'] as EditPropertyStepType,
+            title: extra['title'] as String,
+          );
+        },
       ),
       GoRoute(
         path: '/property/:id',

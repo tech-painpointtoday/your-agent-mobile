@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
@@ -93,15 +94,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
       title: 'อสังหาริมทรัพย์',
       actionWidget: InkWell(
         onTap: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CreatePropertyScreen(),
-            ),
-          );
-          if (result == true) {
-            _loadProperties();
-          }
+          context.push('/property/create').then((_) => _loadProperties());
         },
         borderRadius: BorderRadius.circular(24),
         child: Container(
