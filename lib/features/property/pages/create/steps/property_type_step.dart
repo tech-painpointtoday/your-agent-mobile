@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
+import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 
@@ -52,23 +53,29 @@ class PropertyTypeStep extends StatelessWidget {
 class _PropertyTypeGrid extends StatelessWidget {
   const _PropertyTypeGrid();
 
-  static const List<Map<String, String>> _propertyTypes = [
-    {'name': 'บ้าน', 'image': 'assets/images/property_types/house.jpg'},
-    {'name': 'คอนโดมิเนียม', 'image': 'assets/images/property_types/condo.jpg'},
+  static final List<Map<String, dynamic>> _propertyTypes = [
     {
-      'name': 'ทาวน์เฮาส์/ทาวน์โฮม',
+      'type': PropertyType.house,
+      'image': 'assets/images/property_types/house.jpg',
+    },
+    {
+      'type': PropertyType.condo,
+      'image': 'assets/images/property_types/condo.jpg',
+    },
+    {
+      'type': PropertyType.townhome,
       'image': 'assets/images/property_types/townhome.jpg',
     },
     {
-      'name': 'อพาร์ตเมนต์',
+      'type': PropertyType.apartment,
       'image': 'assets/images/property_types/apartment.jpg',
     },
     {
-      'name': 'โฮมออฟฟิศ',
+      'type': PropertyType.homeOffice,
       'image': 'assets/images/property_types/home_office.jpg',
     },
     {
-      'name': 'พูลวิลล่า',
+      'type': PropertyType.poolVilla,
       'image': 'assets/images/property_types/pool_villa.jpg',
     },
   ];
@@ -90,18 +97,19 @@ class _PropertyTypeGrid extends StatelessWidget {
           ),
           itemCount: _propertyTypes.length,
           itemBuilder: (context, index) {
-            final type = _propertyTypes[index];
+            final typeData = _propertyTypes[index];
+            final typeEnum = typeData['type'] as PropertyType;
             final hasSelection = state.selectedPropertyType != null;
-            final isSelected = state.selectedPropertyType == type['name'];
+            final isSelected = state.selectedPropertyType == typeEnum;
 
             return _PropertyTypeCard(
-              name: type['name']!,
-              imagePath: type['image']!,
+              name: typeEnum.label,
+              imagePath: typeData['image']!,
               isSelected: isSelected,
               hasSelection: hasSelection,
               onTap: () {
                 context.read<PropertyFormBloc>().add(
-                  PropertyFormTypeSelected(type['name']!),
+                  PropertyFormTypeSelected(typeEnum),
                 );
               },
             );

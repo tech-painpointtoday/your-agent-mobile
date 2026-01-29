@@ -264,6 +264,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                     lastDate: DateTime.now(),
                   );
                   if (picked != null) {
+                    if (!mounted) return;
                     context.read<PropertyFormBloc>().add(
                       PropertyFormAdditionalInfoUpdated(
                         built: picked.toIso8601String(),

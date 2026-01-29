@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
+import '../../../../../domain/entities/property.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../features/property/bloc/property_form/property_form_bloc.dart';
 import '../../../../../widgets/form_fields/app_text_form_field.dart';
@@ -85,55 +86,55 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
               const SizedBox(height: 24),
 
               // Property Style
-              AppSelectableGrid<String>(
+              AppSelectableGrid<PropertyStyle>(
                 label: 'สไตล์ทรัพย์',
                 value: state.propertyStyle,
                 isRequired: true,
                 items: const [
                   GridItem(
                     label: 'โคโลเนียล',
-                    value: 'colonial',
+                    value: PropertyStyle.colonial,
                     imagePath: 'assets/images/property_styles/colonial.jpg',
                   ),
                   GridItem(
                     label: 'ร่วมสมัย',
-                    value: 'contemporary',
+                    value: PropertyStyle.contemporary,
                     imagePath: 'assets/images/property_styles/contemporary.jpg',
                   ),
                   GridItem(
                     label: 'ลอฟท์',
-                    value: 'loft',
+                    value: PropertyStyle.loft,
                     imagePath: 'assets/images/property_styles/loft.jpg',
                   ),
                   GridItem(
                     label: 'มินิมอล',
-                    value: 'minimal',
+                    value: PropertyStyle.minimal,
                     imagePath: 'assets/images/property_styles/minimal.jpg',
                   ),
                   GridItem(
                     label: 'เนเชอรัล',
-                    value: 'natural',
+                    value: PropertyStyle.natural,
                     imagePath: 'assets/images/property_styles/natural.jpg',
                   ),
                   GridItem(
                     label: 'นอร์ดิก',
-                    value: 'nordic',
-                    imagePath: 'assets/images/property_styles/nodic.jpg',
+                    value: PropertyStyle.nordic,
+                    imagePath: 'assets/images/property_styles/nordic.jpg',
                   ),
                   GridItem(
                     label: 'ไทยร่วมสมัย',
-                    value: 'thai_contemporary',
+                    value: PropertyStyle.thaiContemporary,
                     imagePath:
                         'assets/images/property_styles/thai_contemporary.jpg',
                   ),
                   GridItem(
                     label: 'วินเทจ',
-                    value: 'vintage',
+                    value: PropertyStyle.vintage,
                     imagePath: 'assets/images/property_styles/vintage.jpg',
                   ),
                   GridItem(
                     label: 'อื่นๆ',
-                    value: 'other',
+                    value: PropertyStyle.other,
                     imagePath: 'assets/images/property_styles/other.jpg',
                   ),
                 ],
@@ -166,51 +167,14 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                       const SizedBox(height: 24),
                     ],
                   );
-                })
-              else ...[
-                // Fallback: Highlights
-                AppMultiSelectChips<String>(
-                  label: 'จุดเด่นทรัพย์',
-                  values: state.highlights,
-                  options: const [
-                    'Pet-friendly',
-                    'Elderly-Friendly',
-                    'ใกล้ทางด่วน',
-                    'ใกล้รถไฟฟ้า',
-                    'ใกล้โรงพยาบาล',
-                    'โครงการใหม่',
-                  ],
-                  onSelected: (val) => context.read<PropertyFormBloc>().add(
-                    PropertyFormHighlightToggled(val),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Fallback: Facilities
-                AppMultiSelectChips<String>(
-                  label: 'ส่วนกลาง',
-                  values: state.facilities,
-                  options: const [
-                    'Co-working space',
-                    'สระว่ายน้ำ',
-                    'ฟิตเนส',
-                    'สนามหญ้า',
-                    'สนามเด็กเล่น',
-                    'สนามกีฬา',
-                    'เจ้าหน้าที่ รปภ.',
-                  ],
-                  onSelected: (val) => context.read<PropertyFormBloc>().add(
-                    PropertyFormFacilityToggled(val),
-                  ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                }),
 
               // Description
               AppTextFormField(
                 label: 'รายละเอียดเพิ่มเติม',
                 controller: _descriptionController,
                 maxLines: 5,
+                isRequired: true,
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
                   PropertyFormGeneralInfoUpdated(description: val),
                 ),

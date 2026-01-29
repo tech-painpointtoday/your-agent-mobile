@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 
-class GridItem {
+class GridItem<T> {
   final String label;
-  final String value;
+  final T value;
   final String? imagePath;
 
   const GridItem({required this.label, required this.value, this.imagePath});
@@ -13,7 +13,7 @@ class GridItem {
 class AppSelectableGrid<T> extends StatelessWidget {
   final String label;
   final T? value;
-  final List<GridItem> items;
+  final List<GridItem<T>> items;
   final ValueChanged<T> onChanged;
   final bool isRequired;
 
@@ -72,7 +72,7 @@ class AppSelectableGrid<T> extends StatelessWidget {
             final hasSelection = value != null;
 
             return GestureDetector(
-              onTap: () => onChanged(item.value as T),
+              onTap: () => onChanged(item.value),
               child: AnimatedOpacity(
                 duration: const Duration(milliseconds: 200),
                 opacity: hasSelection && !isSelected ? 0.5 : 1.0,

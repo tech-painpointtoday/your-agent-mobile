@@ -18,7 +18,7 @@ class MockPropertyData {
       bedrooms: 3,
       bathrooms: 2,
       area: 150,
-      propertyType: 'บ้านเดี่ยว',
+      propertyType: PropertyType.house,
       imageUrl: 'https://placehold.co/600x400',
     ),
     Property(

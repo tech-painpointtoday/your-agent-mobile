@@ -69,10 +69,97 @@ enum PropertyDirection {
     southWest => 'ทิศตะวันตกเฉียงใต้',
   };
 
+  String get value => switch (this) {
+    north => 'N',
+    south => 'S',
+    east => 'E',
+    west => 'W',
+    northEast => 'NE',
+    southEast => 'SE',
+    northWest => 'NW',
+    southWest => 'SW',
+  };
+
   static PropertyDirection? fromLabel(String? label) {
     if (label == null) return null;
     try {
       return PropertyDirection.values.firstWhere((e) => e.label == label);
+    } catch (_) {
+      return null;
+    }
+  }
+}
+
+enum PropertyType {
+  house,
+  condo,
+  townhome,
+  apartment,
+  homeOffice,
+  poolVilla;
+
+  String get label => switch (this) {
+    house => 'บ้าน',
+    condo => 'คอนโดมิเนียม',
+    townhome => 'ทาวน์เฮาส์/ทาวน์โฮม',
+    apartment => 'อพาร์ตเมนต์',
+    homeOffice => 'โฮมออฟฟิศ',
+    poolVilla => 'พูลวิลล่า',
+  };
+
+  String get value => switch (this) {
+    house => 'House',
+    condo => 'Condo',
+    townhome => 'Townhome',
+    apartment => 'Apartment',
+    homeOffice => 'HomeOffice',
+    poolVilla => 'PoolVilla',
+  };
+
+  static PropertyType? fromLabel(String? label) {
+    if (label == null) return null;
+    try {
+      return PropertyType.values.firstWhere((e) => e.label == label);
+    } catch (_) {
+      return null;
+    }
+  }
+}
+
+enum PropertyStyle {
+  colonial,
+  contemporary,
+  loft,
+  minimal,
+  natural,
+  nordic,
+  thaiContemporary,
+  vintage,
+  other;
+
+  String get label => switch (this) {
+    colonial => 'โคโลเนียล',
+    contemporary => 'ร่วมสมัย',
+    loft => 'ลอฟท์',
+    minimal => 'มินิมอล',
+    natural => 'เนเชอรัล',
+    nordic => 'นอร์ดิก',
+    thaiContemporary => 'ไทยร่วมสมัย',
+    vintage => 'วินเทจ',
+    other => 'อื่นๆ',
+  };
+
+  String get value => switch (this) {
+    thaiContemporary => 'thai_contemporary',
+    _ => name,
+  };
+
+  static PropertyStyle? fromValue(String? value) {
+    if (value == null) return null;
+    try {
+      return PropertyStyle.values.firstWhere(
+        (e) => e.value == value || e.label == value,
+      );
     } catch (_) {
       return null;
     }
@@ -118,16 +205,14 @@ class Property extends Equatable {
   final double area; // Usable area (sqm)
   final double? landSize; // Land area (sq wah)
   final double? buildingSize;
-  final String propertyType;
-  final String? propertyStyle;
+  final PropertyType? propertyType;
+  final PropertyStyle? propertyStyle;
   final int? totalFloors; // Total floors of the property
   final PropertyColor? houseColor;
   final String? built; // Year/Date built
   final PropertyDirection? direction;
 
   // Dynamic / Collections
-  final List<String> highlights;
-  final List<String> facilities;
   final Map<String, dynamic>
   specifications; // raw dynamic specs (e.g. "floors": "2")
   final Map<String, dynamic> specificationValues; // raw dynamic values
@@ -177,14 +262,12 @@ class Property extends Equatable {
     this.area = 0,
     this.landSize,
     this.buildingSize,
-    this.propertyType = '',
+    this.propertyType,
     this.propertyStyle,
     this.totalFloors,
     this.houseColor,
     this.built,
     this.direction,
-    this.highlights = const [],
-    this.facilities = const [],
     this.specifications = const {},
     this.specificationValues = const {},
     this.imageUrl,
@@ -309,19 +392,19 @@ class Property extends Equatable {
       formattedAddressEn: parseString(location['formatted_address_en']),
 
       // Details
-      propertyType:
-          parseString(specs['type']) ??
-          parseString(data['property_type']) ??
-          '',
+      propertyType: PropertyType.fromLabel(
+        parseString(specs['type']) ?? parseString(data['property_type']),
+      ),
       bedrooms: parseInt(specs['bedrooms']),
       bathrooms: parseInt(specs['bathrooms']),
       garage: parseInt(specs['garage']),
       area: parseDouble(specs['building_size'] ?? specs['area']),
       landSize: parseDouble(specs['land_size']),
       buildingSize: parseDouble(specs['building_size']),
-      propertyStyle:
-          parseString(specs['property_style']) ??
-          parseString(data['property_style']),
+      propertyStyle: PropertyStyle.fromValue(
+        parseString(specs['property_style']) ??
+            parseString(data['property_style']),
+      ),
       houseColor: PropertyColor.fromLabel(parseString(specs['house_color'])),
       built: parseString(data['built']),
       direction: PropertyDirection.fromLabel(parseString(specs['direction'])),
@@ -331,8 +414,6 @@ class Property extends Equatable {
       // Dynamic Values
       specifications: Map<String, dynamic>.from(rawSpecs),
       specificationValues: Map<String, dynamic>.from(specValues),
-      highlights: parseList(specValues['good_points']),
-      facilities: parseList(specValues['common_facilities']),
 
       // Images
       imageUrl: firstImage,
@@ -350,11 +431,12 @@ class Property extends Equatable {
   Map<String, dynamic> toCreatePayload() {
     return {
       'name': title, // API expects 'name'
-      'type': propertyType,
+      'type': propertyType?.label,
       'price': price,
       'description': description,
       'listing_type': listingType,
       'status': status,
+      'property_style': propertyStyle?.value,
       'built': built,
       'available_from': availableFrom,
       'house_color': houseColor?.label,

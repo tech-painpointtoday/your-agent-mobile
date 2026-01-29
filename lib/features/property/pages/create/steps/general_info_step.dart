@@ -28,7 +28,7 @@ class GeneralInfoStep extends StatefulWidget {
 
 class _GeneralInfoStepState extends State<GeneralInfoStep> {
   // Controllers
-  late final TextEditingController _titleController;
+  late final TextEditingController _nameController;
   late final TextEditingController _houseNoController;
   late final TextEditingController _addressController;
   late final TextEditingController _projectController;
@@ -44,8 +44,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   void initState() {
     super.initState();
     final state = context.read<PropertyFormBloc>().state;
-    _titleController = TextEditingController(
-      text: state.data['title'] as String?,
+    _nameController = TextEditingController(
+      text: state.data['name'] as String?,
     );
     _houseNoController = TextEditingController(
       text: state.data['number'] as String?,
@@ -76,8 +76,11 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     _places = GooglePlacesService(apiKey: apiKey);
 
     // Add listeners to update Bloc
-    _titleController.addListener(
-      () => _updateData('title', _titleController.text),
+    _nameController.addListener(
+      () => _updateData('name', _nameController.text),
+    );
+    _houseNoController.addListener(
+      () => _updateData('number', _houseNoController.text),
     );
     _addressController.addListener(
       () => _updateData('address', _addressController.text),
@@ -135,6 +138,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     if (result != null && mounted) {
       _addressController.text = result.formattedAddressTh;
 
+      print('||||||: ${result.components}');
       context.read<PropertyFormBloc>().add(
         PropertyFormLocationUpdated({
           'latitude': result.latLng.latitude,
@@ -142,7 +146,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
           'location_set': true,
           'formatted_address_th': result.formattedAddressTh,
           'formatted_address_en': result.formattedAddressEn,
-          'number': result.components['number'] ?? '',
           'road': result.components['road'] ?? '',
           'soi': result.components['soi'] ?? '',
           'subdistrict': result.components['subdistrict'] ?? '',
@@ -274,7 +277,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
   @override
   void dispose() {
-    _titleController.dispose();
+    _nameController.dispose();
     _addressController.dispose();
     _projectController.dispose();
     _developerController.dispose();
@@ -320,7 +323,9 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         final isCondoOrApt = state.isCondoOrApt;
 
         LatLng? currentLatLng;
-        if (state.data['latitude'] != null && state.data['longitude'] != null) {
+        if (state.address?.isNotEmpty == true &&
+            state.data['latitude'] != null &&
+            state.data['longitude'] != null) {
           currentLatLng = LatLng(
             state.data['latitude'] as double,
             state.data['longitude'] as double,
@@ -366,7 +371,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               // Title
               AppTextFormField(
                 label: 'ชื่ออสังหาฯ',
-                controller: _titleController,
+                controller: _nameController,
                 isRequired: true,
                 hintText: 'ชื่ออสังหาฯ',
               ),
@@ -459,7 +464,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 // Project Name
                 BlocBuilder<PropertyFormBloc, PropertyFormState>(
                   builder: (context, state) {
-                    print('state.condoProjects: ${state.condoProjects.length}');
                     return TypeAheadField<CondoProject>(
                       controller: _projectController,
                       builder: (context, controller, focusNode) =>

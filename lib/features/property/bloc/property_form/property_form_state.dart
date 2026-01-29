@@ -39,7 +39,7 @@ class PropertyFormState extends Equatable {
   final int? propertyId; // Resulting property ID after success
 
   // Data fields
-  final String? selectedPropertyType;
+  final PropertyType? selectedPropertyType;
   final String? name;
   final double? price;
   final String? description;
@@ -63,9 +63,7 @@ class PropertyFormState extends Equatable {
   final int? totalFloors; // For houses or generic floor count
 
   // New Step 4 Fields
-  final String? propertyStyle;
-  final List<String> highlights;
-  final List<String> facilities;
+  final PropertyStyle? propertyStyle;
 
   // Location Details
   final String? number;
@@ -158,8 +156,6 @@ class PropertyFormState extends Equatable {
     this.status,
     this.totalFloors,
     this.propertyStyle,
-    this.highlights = const [],
-    this.facilities = const [],
     this.specificationFilters = const PropertySpecificationFilters(),
     this.dynamicValues = const {},
   });
@@ -233,18 +229,6 @@ class PropertyFormState extends Equatable {
       totalFloors: property.totalFloors,
       propertyStyle: property.propertyStyle,
 
-      // Lists
-      highlights:
-          (specValues['good_points'] as List?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          [],
-      facilities:
-          (specValues['common_facilities'] as List?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          [],
-
       specificationFilters: filters ?? const PropertySpecificationFilters(),
       dynamicValues: dynamicMap,
 
@@ -263,8 +247,9 @@ class PropertyFormState extends Equatable {
   }
 
   Map<String, dynamic> get data => {
-    'selectedPropertyType': selectedPropertyType,
-    'title': name,
+    'selectedPropertyType': selectedPropertyType?.label,
+    'name': name,
+    'type': selectedPropertyType?.value,
     'price': price,
     'description': description,
     'address': address,
@@ -273,24 +258,22 @@ class PropertyFormState extends Equatable {
     'bedrooms': bedrooms,
     'bathrooms': bathrooms,
     'garage': garage,
-    'landSize': landSize,
-    'buildingSize': buildingSize,
-    'houseColor': houseColor?.label,
+    'land_size': landSize,
+    'building_size': buildingSize,
+    'house_color': houseColor?.label,
     'built': built,
-    'direction': direction?.label,
-    'availableFrom': availableFrom,
-    'listingType': listingType,
+    'direction': direction?.value,
+    'available_from': availableFrom,
+    'listing_type': listingType,
     'status': status,
-    'totalFloors': totalFloors,
-    'propertyStyle': propertyStyle,
-    'highlights': highlights,
-    'facilities': facilities,
+    'total_floors': totalFloors,
+    'style': propertyStyle?.value,
     'location_set': latitude != null && longitude != null,
     'number': number,
     'city': city,
     'state': state,
     'country': country,
-    'postalCode': postalCode,
+    'postal_code': postalCode,
     'subdistrict': subdistrict,
     'district': district,
     'province': province,
@@ -302,12 +285,12 @@ class PropertyFormState extends Equatable {
     'tower': tower,
     'condoFloor': condoFloor,
     'unitNo': unitNo,
-    'villageName': villageName,
+    'village_name': villageName,
     'moo': moo,
-    'houseSubtype': houseSubtype,
-    'parkingType': parkingType,
-    'isCornerPlot': isCornerPlot,
-    'houseNotes': houseNotes,
+    'house_subtype': houseSubtype,
+    'parking_type': parkingType,
+    'is_corner_plot': isCornerPlot,
+    'house_notes': houseNotes,
   };
 
   bool get isValid {
@@ -320,9 +303,7 @@ class PropertyFormState extends Equatable {
 
       if (!baseValid) return false;
 
-      final isCondoOrApt =
-          selectedPropertyType == 'คอนโดมิเนียม' ||
-          selectedPropertyType == 'อพาร์ตเมนต์';
+      final isCondoOrApt = this.isCondoOrApt;
 
       if (isCondoOrApt) {
         return selectedDeveloperId != null &&
@@ -360,7 +341,7 @@ class PropertyFormState extends Equatable {
     PropertyFormStatus? propertyFormStatus,
     String? errorMessage,
     int? propertyId,
-    String? selectedPropertyType,
+    PropertyType? selectedPropertyType,
     String? name,
     double? price,
     String? description,
@@ -406,9 +387,7 @@ class PropertyFormState extends Equatable {
     String? listingType,
     String? status,
     int? totalFloors,
-    String? propertyStyle,
-    List<String>? highlights,
-    List<String>? facilities,
+    PropertyStyle? propertyStyle,
     PropertySpecificationFilters? specificationFilters,
     Map<String, dynamic>? dynamicValues,
   }) {
@@ -465,8 +444,6 @@ class PropertyFormState extends Equatable {
       status: status ?? this.status,
       totalFloors: totalFloors ?? this.totalFloors,
       propertyStyle: propertyStyle ?? this.propertyStyle,
-      highlights: highlights ?? this.highlights,
-      facilities: facilities ?? this.facilities,
       specificationFilters: specificationFilters ?? this.specificationFilters,
       dynamicValues: dynamicValues ?? this.dynamicValues,
     );
@@ -475,10 +452,7 @@ class PropertyFormState extends Equatable {
   Property get toProperty {
     // 1. Separate Dynamic Values into Specs (Scalar) and Values (Lists)
     final specsMap = <String, dynamic>{};
-    final specValuesMap = <String, dynamic>{
-      'good_points': highlights,
-      'common_facilities': facilities,
-    };
+    final specValuesMap = <String, dynamic>{};
 
     dynamicValues.forEach((key, value) {
       if (value is List) {
@@ -526,7 +500,7 @@ class PropertyFormState extends Equatable {
       formattedAddressTh: formattedAddressTh,
 
       // Physical Details
-      propertyType: selectedPropertyType ?? '',
+      propertyType: selectedPropertyType,
       propertyStyle: propertyStyle,
       bedrooms: bedrooms ?? 0,
       bathrooms: bathrooms ?? 0,
@@ -609,13 +583,11 @@ class PropertyFormState extends Equatable {
     status,
     totalFloors,
     propertyStyle,
-    highlights,
-    facilities,
     specificationFilters,
     dynamicValues,
   ];
 
   bool get isCondoOrApt =>
-      selectedPropertyType == 'คอนโดมิเนียม' ||
-      selectedPropertyType == 'อพาร์ตเมนต์';
+      selectedPropertyType == PropertyType.condo ||
+      selectedPropertyType == PropertyType.apartment;
 }

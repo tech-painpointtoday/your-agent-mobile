@@ -16,6 +16,7 @@ import 'package:youragent/services/chat_api_service.dart';
 // import 'package:youragent/services/contract_api_service.dart';
 // import 'package:youragent/services/availability_api_service.dart';
 import 'package:youragent/services/auth_api_service.dart';
+import 'package:youragent/services/address_lookup_service.dart';
 import 'package:youragent/core/config/app_config.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -62,8 +63,12 @@ class DependencyInjection {
 
   static final ChatApiService _chatApiService = ChatApiService(_apiClient);
 
+  static final AddressLookupService _addressLookupService =
+      AddressLookupService();
+
   static void init(BuildContext context) {
     // This function can be called during app startup to register dependencies
+    _addressLookupService.loadData();
   }
 
   // Factory methods for dependencies - all return singleton instances
@@ -74,6 +79,8 @@ class DependencyInjection {
   static ChatApiService get chatApiService => _chatApiService;
 
   static AuthApiService get authApiService => _authApiService;
+
+  static AddressLookupService get addressLookupService => _addressLookupService;
 
   // Auth dependencies - singleton
   static AuthRepository get authRepository => _authRepository;

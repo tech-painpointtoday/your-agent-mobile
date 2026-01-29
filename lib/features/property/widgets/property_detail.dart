@@ -208,10 +208,10 @@ class _PropertyDetailState extends State<PropertyDetail> {
                   title: 'รายละเอียดทรัพย์',
                   svgIcon: 'assets/icons/menu.svg', // Updated Icon
                   rows: [
-                    if (property.propertyType.isNotEmpty)
+                    if (property.propertyType != null)
                       PropertyDetailRow(
                         label: 'ประเภททรัพย์',
-                        value: property.propertyType,
+                        value: property.propertyType!.label,
                       ),
                     if (property.listingType?.isNotEmpty == true)
                       PropertyDetailRow(
@@ -324,8 +324,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                       ),
                     ),
                     // Property Style
-                    if (property.propertyStyle != null &&
-                        property.propertyStyle!.isNotEmpty) ...[
+                    if (property.propertyStyle != null) ...[
                       const SizedBox(height: 24),
                       Text(
                         'สไตล์ทรัพย์',
@@ -339,7 +338,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: [_buildTag(property.propertyStyle!)],
+                        children: [_buildTag(property.propertyStyle!.label)],
                       ),
                     ],
 

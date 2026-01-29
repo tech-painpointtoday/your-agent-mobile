@@ -18,7 +18,7 @@ class PropertyFormStepChanged extends PropertyFormEvent {
 }
 
 class PropertyFormTypeSelected extends PropertyFormEvent {
-  final String type;
+  final PropertyType type;
   const PropertyFormTypeSelected(this.type);
 
   @override
@@ -192,7 +192,7 @@ class PropertyFormStatusChanged extends PropertyFormEvent {
 }
 
 class PropertyFormStyleChanged extends PropertyFormEvent {
-  final String? style;
+  final PropertyStyle? style;
   const PropertyFormStyleChanged(this.style);
 
   @override

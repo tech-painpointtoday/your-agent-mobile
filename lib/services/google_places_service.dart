@@ -30,10 +30,7 @@ class GooglePlacesService {
   final Dio _dio;
   final String apiKey;
 
-  GooglePlacesService({
-    Dio? dio,
-    required this.apiKey,
-  }) : _dio = dio ?? Dio();
+  GooglePlacesService({Dio? dio, required this.apiKey}) : _dio = dio ?? Dio();
 
   bool get isConfigured => apiKey.trim().isNotEmpty;
 
@@ -43,12 +40,16 @@ class GooglePlacesService {
     String components = 'country:th',
   }) async {
     if (!isConfigured) return const [];
-    final uri = Uri.https('maps.googleapis.com', '/maps/api/place/autocomplete/json', {
-      'input': input,
-      'language': language,
-      'components': components,
-      'key': apiKey,
-    });
+    final uri = Uri.https(
+      'maps.googleapis.com',
+      '/maps/api/place/autocomplete/json',
+      {
+        'input': input,
+        'language': language,
+        'components': components,
+        'key': apiKey,
+      },
+    );
 
     final res = await _dio.getUri(uri);
     final data = _ensureMap(res.data);
@@ -73,12 +74,13 @@ class GooglePlacesService {
     String language = 'en',
   }) async {
     if (!isConfigured) return null;
-    final uri = Uri.https('maps.googleapis.com', '/maps/api/place/details/json', {
-      'place_id': placeId,
-      'fields': 'geometry,formatted_address,address_component',
-      'language': language,
-      'key': apiKey,
-    });
+    final uri =
+        Uri.https('maps.googleapis.com', '/maps/api/place/details/json', {
+          'place_id': placeId,
+          'fields': 'geometry,formatted_address,address_component',
+          'language': language,
+          'key': apiKey,
+        });
 
     final res = await _dio.getUri(uri);
     final data = _ensureMap(res.data);
@@ -93,7 +95,9 @@ class GooglePlacesService {
     if (lat == null || lng == null) return null;
 
     final formatted = (result['formatted_address'] ?? '').toString();
-    final components = _mapAddressComponents(result['address_components'] as List?);
+    final components = _mapAddressComponents(
+      result['address_components'] as List?,
+    );
 
     return PlaceResolvedLocation(
       lat: lat,
@@ -126,7 +130,9 @@ class GooglePlacesService {
 
     final first = results.first as Map;
     final formatted = (first['formatted_address'] ?? '').toString();
-    final components = _mapAddressComponents(first['address_components'] as List?);
+    final components = _mapAddressComponents(
+      first['address_components'] as List?,
+    );
 
     return PlaceResolvedLocation(
       lat: lat,
@@ -143,7 +149,9 @@ class GooglePlacesService {
     String? getByType(String type) {
       for (final c in components) {
         final m = c as Map;
-        final types = (m['types'] as List? ?? const []).map((e) => e.toString()).toList();
+        final types = (m['types'] as List? ?? const [])
+            .map((e) => e.toString())
+            .toList();
         if (types.contains(type)) {
           return (m['long_name'] ?? '').toString();
         }
@@ -153,16 +161,31 @@ class GooglePlacesService {
 
     // Thailand mapping heuristics (Google types)
     out['number'] = getByType('street_number') ?? '';
-    out['road'] = getByType('route') ?? '';
+
+    String road = getByType('route') ?? '';
+    String soi = getByType('sublocality_level_3') ?? '';
+
+    // Optimization: Google often puts "Soi" in the "route" field for Thai addresses.
+    // If detected, move it to the 'soi' field.
+    if (road.contains('ซอย') || road.toLowerCase().contains('soi')) {
+      if (soi.isEmpty) {
+        soi = road;
+      }
+    }
+
+    out['road'] = road;
+    out['soi'] = soi;
     out['postal_code'] = getByType('postal_code') ?? '';
     out['province'] = getByType('administrative_area_level_1') ?? '';
-    out['district'] = getByType('administrative_area_level_2') ?? '';
+    out['district'] =
+        getByType('administrative_area_level_2') ??
+        getByType('sublocality_level_2') ??
+        '';
     // subdistrict often under sublocality_level_1 in Thailand
     out['subdistrict'] =
         getByType('sublocality_level_1') ?? getByType('sublocality') ?? '';
-    // soi is not consistently modeled; keep empty unless available
-    out['soi'] = getByType('sublocality_level_3') ?? '';
-    out['city'] = getByType('locality') ?? '';
+    out['city'] =
+        getByType('locality') ?? getByType('sublocality_level_1') ?? '';
     out['state'] = out['province'] ?? '';
 
     return out;
@@ -175,4 +198,3 @@ class GooglePlacesService {
     return const <String, dynamic>{};
   }
 }
-

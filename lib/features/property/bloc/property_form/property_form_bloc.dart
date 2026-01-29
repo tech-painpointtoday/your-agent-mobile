@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../services/property_api_service.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../data/models/property_specification_filters.dart';
+import '../../../../services/address_lookup_service.dart';
 
 import '../../../../domain/entities/property.dart';
 import '../../../../data/models/developer_model.dart';
@@ -15,17 +16,21 @@ export 'property_form_state.dart';
 
 class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
   final PropertyApiService _propertyApiService;
+  final AddressLookupService _addressLookupService;
   final PropertySpecificationFilters? initialFilters;
   final List<CondoProject> _allCondoProjects;
 
   PropertyFormBloc({
     PropertyApiService? propertyApiService,
+    AddressLookupService? addressLookupService,
     this.initialFilters,
     Property? initialProperty,
     List<Developer>? initialDevelopers,
     List<CondoProject>? initialCondoProjects,
   }) : _propertyApiService =
            propertyApiService ?? DependencyInjection.propertyApiService,
+       _addressLookupService =
+           addressLookupService ?? DependencyInjection.addressLookupService,
        _allCondoProjects = initialCondoProjects ?? const [],
        super(
          initialProperty != null
@@ -63,8 +68,6 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     on<PropertyFormListingTypeChanged>(_onListingTypeChanged);
     on<PropertyFormStatusChanged>(_onStatusChanged);
     on<PropertyFormStyleChanged>(_onStyleChanged);
-    on<PropertyFormHighlightToggled>(_onHighlightToggled);
-    on<PropertyFormFacilityToggled>(_onFacilityToggled);
     on<PropertyFormFiltersFetched>(_onFiltersFetched);
     on<PropertyFormDynamicSingleSelectChanged>(_onDynamicSingleSelectChanged);
     on<PropertyFormDynamicMultiSelectToggled>(_onDynamicMultiSelectToggled);
@@ -115,7 +118,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     // This is a generic way to update any field in the state.
     // For simplicity, we'll map key to field here.
     switch (event.key) {
-      case 'title':
+      case 'name':
         emit(state.copyWith(name: event.value as String?));
         break;
       case 'address':
@@ -263,9 +266,55 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     try {
       final roleName = state.selectedDeveloperId != null ? 'agency' : 'agent';
 
-      // 2. Build Payload (Unified)
+      // 2. Auto-fill Address Lookup
+      PropertyFormState currentState = state;
+
+      // Check if critical fields are missing
+      final bool missingSubdistrict =
+          currentState.subdistrict == null || currentState.subdistrict!.isEmpty;
+      final bool missingDistrict =
+          currentState.district == null || currentState.district!.isEmpty;
+      final bool missingProvince =
+          currentState.province == null || currentState.province!.isEmpty;
+      final bool missingPostalCode =
+          currentState.postalCode == null || currentState.postalCode!.isEmpty;
+
+      if (missingSubdistrict ||
+          missingDistrict ||
+          missingProvince ||
+          missingPostalCode) {
+        final lookupResult = _addressLookupService.lookup(
+          district: currentState.subdistrict,
+          city: currentState.district,
+          province: currentState.province,
+          postalCode: currentState.postalCode,
+        );
+
+        if (lookupResult != null) {
+          final foundAmphoe = lookupResult['amphoe'] as String;
+          final foundDistrict = lookupResult['district'] as String;
+          final foundProvince = lookupResult['province'] as String;
+          final foundZipcode = lookupResult['zipcode'].toString();
+
+          currentState = currentState.copyWith(
+            subdistrict: missingSubdistrict
+                ? foundDistrict
+                : currentState.subdistrict,
+            district: missingDistrict ? foundAmphoe : currentState.district,
+            city: (currentState.city == null || currentState.city!.isEmpty)
+                ? foundAmphoe
+                : currentState.city,
+            province: missingProvince ? foundProvince : currentState.province,
+            postalCode: missingPostalCode
+                ? foundZipcode
+                : currentState.postalCode,
+          );
+        }
+      }
+
+      // 3. Build Payload (Unified)
       // Use state.data which constructs the map for API
-      final payload = state.data;
+      final payload = currentState.data;
 
       Property responseProperty;
 
@@ -303,79 +352,6 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         state.copyWith(
           propertyFormStatus: PropertyFormStatus.submissionSuccess,
           propertyId: propertyId,
-        ),
-      );
-    } catch (e) {
-      emit(
-        state.copyWith(
-          propertyFormStatus: PropertyFormStatus.submissionFailure,
-          errorMessage: e.toString(),
-        ),
-      );
-    }
-  }
-
-  Future<void> _onUpdated(
-    PropertyFormSubmitted event,
-    Emitter<PropertyFormState> emit,
-  ) async {
-    // 1. Validate
-    if (!state.isValid) {
-      emit(
-        state.copyWith(
-          propertyFormStatus: PropertyFormStatus.submissionFailure,
-          errorMessage: 'กรุณากรอกข้อมูลให้ครบถ้วน',
-        ),
-      );
-      return;
-    } else if (state.propertyId == null) {
-      emit(
-        state.copyWith(
-          propertyFormStatus: PropertyFormStatus.submissionFailure,
-          errorMessage: 'ไม่พบข้อมูลทรัพย์สิน',
-        ),
-      );
-      return;
-    }
-
-    emit(
-      state.copyWith(
-        propertyFormStatus: PropertyFormStatus.submissionInProgress,
-      ),
-    );
-
-    try {
-      final roleName = state.selectedDeveloperId != null ? 'agency' : 'agent';
-
-      // 2. Build Payload (Unified)
-      // Use state.data which constructs the map for API
-      final payload = state.data;
-
-      if (state.step >= 1 && state.step <= 4) {
-        await _propertyApiService.updateProperty(
-          role: roleName,
-          propertyId: state.propertyId!,
-          data: payload,
-        );
-      }
-
-      // Upload photos if any
-      final localImages = state.images
-          .where((img) => img.isFile)
-          .map((img) => img.file!)
-          .toList();
-      if (localImages.isNotEmpty && state.step == 5) {
-        await _propertyApiService.uploadPhotosSimple(
-          role: roleName,
-          propertyId: state.propertyId!,
-          photos: localImages,
-          tag: 'gallery',
-        );
-      }
-
-      emit(
-        state.copyWith(
-          propertyFormStatus: PropertyFormStatus.submissionSuccess,
         ),
       );
     } catch (e) {
@@ -502,33 +478,6 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     emit(state.copyWith(propertyStyle: event.style));
   }
 
-  void _onHighlightToggled(
-    PropertyFormHighlightToggled event,
-    Emitter<PropertyFormState> emit,
-  ) {
-    final current = List<String>.from(state.highlights);
-    if (current.contains(event.highlight)) {
-      current.remove(event.highlight);
-    } else {
-      current.add(event.highlight);
-    }
-    emit(state.copyWith(highlights: current));
-  }
-
-  void _onFacilityToggled(
-    PropertyFormFacilityToggled event,
-    Emitter<PropertyFormState> emit,
-  ) {
-    // Legacy fallback, map to dynamic if needed or keep parallel
-    final current = List<String>.from(state.facilities);
-    if (current.contains(event.facility)) {
-      current.remove(event.facility);
-    } else {
-      current.add(event.facility);
-    }
-    emit(state.copyWith(facilities: current));
-  }
-
   Future<void> _onFiltersFetched(
     PropertyFormFiltersFetched event,
     Emitter<PropertyFormState> emit,
@@ -605,15 +554,6 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       newList.add(event.value);
     }
     newValues[event.key] = newList;
-
-    // Sync legacy
-    PropertyFormState newState = state.copyWith(dynamicValues: newValues);
-    if (event.key == 'common_facilities') {
-      newState = newState.copyWith(facilities: newList);
-    } else if (event.key == 'good_points') {
-      newState = newState.copyWith(highlights: newList);
-    }
-
-    emit(newState);
+    emit(state.copyWith(dynamicValues: newValues));
   }
 }
