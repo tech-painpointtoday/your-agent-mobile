@@ -1,0 +1,204 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:youragent/core/theme/app_colors.dart';
+import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
+import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
+import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
+import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'steps/contract_step_placeholder.dart';
+import 'steps/basic_info_step.dart';
+import 'steps/property_owner_step.dart';
+
+import 'package:youragent/core/di/dependency_injection.dart';
+
+class AddContractScreen extends StatelessWidget {
+  const AddContractScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => ContractFormBloc(
+        propertyApiService: DependencyInjection.propertyApiService,
+      ),
+      child: const _AddContractView(),
+    );
+  }
+}
+
+class _AddContractView extends StatelessWidget {
+  const _AddContractView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.primary,
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: SvgPicture.asset(
+            'assets/icons/x.svg',
+            height: 24,
+            width: 24,
+            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          ),
+          onPressed: () {
+            final step = context.read<ContractFormBloc>().state.step;
+            if (step == 1) {
+              Navigator.of(context).pop();
+              return;
+            }
+
+            AppConfirmationBottomSheet.show(
+              context: context,
+              title: 'ยืนยันการยกเลิก',
+              description:
+                  'ข้อมูลที่คุณกรอกไว้จะหายไป คุณต้องการยกเลิกใช่หรือไม่?',
+              confirmLabel: 'ยืนยันการยกเลิก',
+              cancelLabel: 'กลับไปทำต่อ',
+              style: ConfirmationStyle.destructive,
+              onConfirm: () => Navigator.of(context).pop(),
+            );
+          },
+        ),
+        title: BlocBuilder<ContractFormBloc, ContractFormState>(
+          builder: (context, state) {
+            String title = 'สร้างสัญญา';
+            if (state.step == 7) title = 'ยืนยันข้อมูล';
+
+            return Text(
+              title,
+              style: GoogleFonts.anuphan(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            );
+          },
+        ),
+      ),
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        child: BlocBuilder<ContractFormBloc, ContractFormState>(
+          builder: (context, state) {
+            switch (state.step) {
+              case 1:
+                return const BasicInfoStep();
+              case 2:
+                return const PropertyOwnerStep();
+              case 3:
+                return const ContractStepPlaceholder(
+                  step: 3,
+                  title: 'ข้อมูลคู่สัญญา',
+                );
+              case 4:
+                return const ContractStepPlaceholder(
+                  step: 4,
+                  title: 'เงื่อนไขและข้อตกลง',
+                );
+              case 5:
+                return const ContractStepPlaceholder(
+                  step: 5,
+                  title: 'รายละเอียดการชำระเงิน',
+                );
+              case 6:
+                return const ContractStepPlaceholder(
+                  step: 6,
+                  title: 'เอกสารแนบ',
+                );
+              case 7:
+                return const ContractStepPlaceholder(
+                  step: 7,
+                  title: 'ตรวจสอบและยืนยัน',
+                );
+              default:
+                return const Center(child: Text('Unknown Step'));
+            }
+          },
+        ),
+      ),
+      bottomNavigationBar: _buildBottomBar(context),
+    );
+  }
+
+  Widget _buildBottomBar(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            offset: const Offset(0, -4),
+            blurRadius: 16,
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              child: BlocBuilder<ContractFormBloc, ContractFormState>(
+                buildWhen: (prev, curr) => prev.step != curr.step,
+                builder: (context, state) {
+                  return AppButton(
+                    text: 'ย้อนกลับ',
+                    style: AppButtonStyle.outline,
+                    onPressed: state.step > 1
+                        ? () => context.read<ContractFormBloc>().add(
+                            ContractFormStepChanged(state.step - 1),
+                          )
+                        : null,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: BlocBuilder<ContractFormBloc, ContractFormState>(
+                buildWhen: (prev, curr) =>
+                    prev.isValid != curr.isValid ||
+                    prev.step != curr.step ||
+                    prev.status != curr.status,
+                builder: (context, state) {
+                  final isLastStep = state.step == 7;
+                  final isLoading =
+                      state.status == ContractFormStatus.submmitting;
+
+                  return AppButton(
+                    text: isLastStep ? 'สร้างสัญญา' : 'ถัดไป',
+                    style: AppButtonStyle.primary,
+                    onPressed: (state.isValid && !isLoading)
+                        ? () {
+                            if (isLastStep) {
+                              context.read<ContractFormBloc>().add(
+                                const ContractFormSubmitted(),
+                              );
+                            } else {
+                              context.read<ContractFormBloc>().add(
+                                ContractFormStepChanged(state.step + 1),
+                              );
+                            }
+                          }
+                        : null,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

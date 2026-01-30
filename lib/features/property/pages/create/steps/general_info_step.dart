@@ -138,7 +138,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     if (result != null && mounted) {
       _addressController.text = result.formattedAddressTh;
 
-      print('||||||: ${result.components}');
       context.read<PropertyFormBloc>().add(
         PropertyFormLocationUpdated({
           'latitude': result.latLng.latitude,

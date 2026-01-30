@@ -16,6 +16,7 @@ import 'package:youragent/services/chat_api_service.dart';
 // import 'package:youragent/services/contract_api_service.dart';
 // import 'package:youragent/services/availability_api_service.dart';
 import 'package:youragent/services/auth_api_service.dart';
+import 'package:youragent/services/contract_api_service.dart';
 import 'package:youragent/services/address_lookup_service.dart';
 import 'package:youragent/core/config/app_config.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -63,6 +64,10 @@ class DependencyInjection {
 
   static final ChatApiService _chatApiService = ChatApiService(_apiClient);
 
+  static final ContractApiService _contractApiService = ContractApiService(
+    _apiClient,
+  );
+
   static final AddressLookupService _addressLookupService =
       AddressLookupService();
 
@@ -77,6 +82,8 @@ class DependencyInjection {
   static PropertyApiService get propertyApiService => _propertyApiService;
 
   static ChatApiService get chatApiService => _chatApiService;
+
+  static ContractApiService get contractApiService => _contractApiService;
 
   static AuthApiService get authApiService => _authApiService;
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
@@ -47,6 +48,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
 
     try {
       final properties = await _propertyApiService.getProperties();
+      if (!mounted) return;
 
       setState(() {
         _allProperties = properties;
@@ -102,21 +104,25 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Back Button
                   InkWell(
                     onTap: () => Navigator.pop(context),
                     borderRadius: BorderRadius.circular(8),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Colors.white,
-                        size: 20,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: SvgPicture.asset(
+                        'assets/icons/chevron-left.svg',
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
+                        width: 18,
+                        height: 18,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
                   // Title
                   const Text(
                     'ทรัพย์ของคุณ',
@@ -136,18 +142,23 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                     },
                     borderRadius: BorderRadius.circular(100),
                     child: Container(
-                      width: 40,
-                      height: 40,
+                      width: 36,
+                      height: 36,
+                      padding: EdgeInsets.all(8),
                       decoration: ShapeDecoration(
                         color: const Color(0x19F7FAFF),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
                       ),
-                      child: const Icon(
-                        Icons.add,
-                        size: 24,
-                        color: Colors.white,
+                      child: SvgPicture.asset(
+                        'assets/icons/plus.svg',
+                        width: 20,
+                        height: 20,
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ),
@@ -229,10 +240,15 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                                   ),
                                 ],
                               ),
-                              child: const Icon(
-                                Icons.tune,
-                                color: AppColors.baseDarkGrey,
-                                size: 20,
+                              child: SvgPicture.asset(
+                                'assets/icons/filter.svg',
+                                width: 16,
+                                height: 16,
+                                fit: BoxFit.scaleDown,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.baseDarkGrey,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                             ),
                           ),

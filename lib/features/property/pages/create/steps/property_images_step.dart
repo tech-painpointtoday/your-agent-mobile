@@ -410,6 +410,7 @@ class PropertyImagesStep extends StatelessWidget {
       description: 'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้',
       confirmLabel: 'ลบทั้งหมด',
       cancelLabel: 'ยกเลิก',
+      icon: 'assets/icons/trash.svg',
       style: ConfirmationStyle.destructive,
       onConfirm: () {
         context.read<PropertyFormBloc>().add(

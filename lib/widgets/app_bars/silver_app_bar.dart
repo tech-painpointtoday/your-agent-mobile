@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/theme/app_colors.dart';
 import '../backgrounds/blue_wave_background.dart';
 
 /// A reusable silver app bar widget that can be used in CustomScrollView
@@ -12,6 +11,7 @@ class SilverAppBarWidget extends StatefulWidget {
   final Widget? searchBar;
   final double fadeThreshold;
   final double preferredHeight;
+  final bool hasFilter;
 
   const SilverAppBarWidget({
     super.key,
@@ -21,6 +21,7 @@ class SilverAppBarWidget extends StatefulWidget {
     this.searchBar,
     this.fadeThreshold = 100.0,
     this.preferredHeight = 132.0,
+    this.hasFilter = false,
   });
 
   @override
@@ -43,59 +44,49 @@ class _SilverAppBarWidgetState extends State<SilverAppBarWidget> {
     return SliverAppBar(
       pinned: true,
       floating: false,
-      expandedHeight: 0,
-      toolbarHeight: 0, // Set to 0 since we're using bottom property
+      expandedHeight: widget.preferredHeight,
+      collapsedHeight: widget.preferredHeight,
+      toolbarHeight: widget.preferredHeight,
+
+      primary: true,
       backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
+      bottom: null,
+
       flexibleSpace: Stack(
         children: [
-          // Fading blue curtain
-          Positioned.fill(
+          SafeArea(
+            top: false,
             child: Opacity(
               opacity: _appBarOpacity,
-              child: const BlueWaveBackground(
+              child: BlueWaveBackground(
                 firstColor: Color(0xFF1743C7),
                 secondColor: Color(0xFF1743C7),
+                hasFilter: widget.hasFilter,
               ),
             ),
           ),
-        ],
-      ),
-      bottom: PreferredSize(
-        preferredSize: Size.fromHeight(widget.preferredHeight),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: widget.preferredHeight),
-          child: Stack(
-            children: [
-              // Use the actual BlueWaveBackground widget with opacity
-              Positioned.fill(
-                child: Opacity(
-                  opacity: _appBarOpacity,
-                  child: const BlueWaveBackground(),
-                ),
-              ),
-              // Content on top
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Header above search
-                  _buildHeader(),
-                  if (widget.searchBar != null) ...[
-                    const SizedBox(height: 8),
-                    // Search bar below header
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      child: widget.searchBar!,
-                    ),
-                  ] else
-                    const SizedBox(height: 16),
-                ],
-              ),
-            ],
+
+          SafeArea(
+            top: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildHeader(),
+                if (widget.searchBar != null) ...[
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: widget.searchBar!,
+                  ),
+                ] else
+                  const SizedBox(height: 16),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -152,6 +143,7 @@ class SilverAppBarScreen extends StatefulWidget {
   final Widget child;
   final double fadeThreshold;
   final double backgroundHeight;
+  final bool hasFilter;
 
   const SilverAppBarScreen({
     super.key,
@@ -163,6 +155,7 @@ class SilverAppBarScreen extends StatefulWidget {
     this.fadeThreshold = 100.0,
     this.backgroundHeight = 280.0,
     this.preferredHeight = 160.0,
+    this.hasFilter = false,
   });
 
   final double preferredHeight;
@@ -205,43 +198,53 @@ class _SilverAppBarScreenState extends State<SilverAppBarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Stack(
-        children: [
-          // Layer 1 (Bottom): Fixed BlueWaveBackground with inverse opacity
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: widget.backgroundHeight,
-            child: Opacity(
-              opacity: 1.0 - _appBarOpacity, // Fade out as app bar fades in
-              child: const BlueWaveBackground(),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          colors: [Color(0xFFF5F8FF), Color(0xFFFFFFFF), Color(0xFFFFFFFF)],
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: [
+            // Layer 1 (Bottom): Fixed BlueWaveBackground with inverse opacity
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: widget.backgroundHeight,
+              child: Opacity(
+                opacity: 1.0 - _appBarOpacity, // Fade out as app bar fades in
+                child: BlueWaveBackground(hasFilter: widget.hasFilter),
+              ),
             ),
-          ),
 
-          // Layer 2 (Top): Scrollable Content
-          Positioned.fill(
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                // Sticky App Bar with fade effect
-                SilverAppBarWidget(
-                  key: _appBarKey,
-                  title: widget.title,
-                  titleWidget: widget.titleWidget,
-                  actionWidget: widget.actionWidget,
-                  searchBar: widget.searchBar,
-                  preferredHeight: widget.preferredHeight,
-                ),
+            // Layer 2 (Top): Scrollable Content
+            Positioned.fill(
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  // Sticky App Bar with fade effect
+                  SilverAppBarWidget(
+                    key: _appBarKey,
+                    title: widget.title,
+                    titleWidget: widget.titleWidget,
+                    actionWidget: widget.actionWidget,
+                    searchBar: widget.searchBar,
+                    preferredHeight: widget.preferredHeight,
+                    hasFilter: widget.hasFilter,
+                  ),
 
-                // Content
-                SliverToBoxAdapter(child: widget.child),
-              ],
+                  // Content
+                  SliverToBoxAdapter(child: widget.child),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

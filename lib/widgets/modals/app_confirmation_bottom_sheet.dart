@@ -17,6 +17,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
   final VoidCallback onConfirm;
   final VoidCallback? onCancel;
   final ConfirmationStyle style;
+  final String? icon;
 
   const AppConfirmationBottomSheet({
     super.key,
@@ -27,6 +28,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
     required this.onConfirm,
     this.onCancel,
     this.style = ConfirmationStyle.normal,
+    this.icon,
   });
 
   static Future<void> show({
@@ -36,6 +38,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
     required String confirmLabel,
     String cancelLabel = 'ยกเลิก',
     required VoidCallback onConfirm,
+    String? icon,
     VoidCallback? onCancel,
     ConfirmationStyle style = ConfirmationStyle.normal,
   }) {
@@ -45,6 +48,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
       isScrollControlled: true,
       builder: (context) => AppConfirmationBottomSheet(
         title: title,
+        icon: icon,
         description: description,
         confirmLabel: confirmLabel,
         cancelLabel: cancelLabel,
@@ -57,10 +61,11 @@ class AppConfirmationBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine assets and colors based on style
-    final imageAsset = style == ConfirmationStyle.destructive
-        ? 'assets/images/dialog/confirmation_red.png'
-        : 'assets/images/dialog/confirmation_blue.png';
+    final imageAsset =
+        icon ??
+        (style == ConfirmationStyle.destructive
+            ? 'assets/images/dialog/confirmation_red.png'
+            : 'assets/images/dialog/confirmation_blue.png');
 
     // The primary button style for "Destructive" is red, for "Normal" is blue (typically primary).
     // AppButtonStyle.destructive usually maps to red. AppButtonStyle.primary usually maps to blue/brand.

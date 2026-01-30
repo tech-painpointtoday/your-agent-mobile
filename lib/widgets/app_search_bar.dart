@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 
 /// Reusable search bar widget for the app
@@ -53,13 +54,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 12,
-            offset: Offset(0, 6),
-          ),
-        ],
+        border: Border.all(color: AppColors.baseLightGrey),
       ),
       child: Row(
         children: [
@@ -102,10 +97,14 @@ class _AppSearchBarState extends State<AppSearchBar> {
                 });
               },
               borderRadius: BorderRadius.circular(12),
-              child: Icon(
-                Icons.clear,
-                size: 18,
-                color: AppColors.baseGrey.withOpacity(0.6),
+              child: SvgPicture.asset(
+                'assets/icons/x.svg',
+                width: 16,
+                height: 16,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.baseGrey,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
         ],

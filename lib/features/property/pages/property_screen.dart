@@ -51,6 +51,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
 
     try {
       final properties = await _propertyApiService.getProperties();
+      if (!mounted) return;
 
       setState(() {
         _properties = properties;
@@ -90,6 +91,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
   @override
   Widget build(BuildContext context) {
     return SilverAppBarScreen(
+      hasFilter: true,
       title: 'อสังหาริมทรัพย์',
       actionWidget: InkWell(
         onTap: () async {

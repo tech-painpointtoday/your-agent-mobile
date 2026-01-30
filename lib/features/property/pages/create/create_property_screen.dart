@@ -7,6 +7,7 @@ import 'package:youragent/features/property/bloc/property_form/property_form_blo
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_bloc.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_event.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'steps/additional_info_step.dart';
 import 'steps/confirmation_step.dart';
 import 'steps/general_info_step.dart';
@@ -54,7 +55,25 @@ class _CreatePropertyView extends StatelessWidget {
             width: 24,
             colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () async {
+            if (context.read<PropertyFormBloc>().state.step == 1) {
+              Navigator.of(context).pop();
+              return;
+            }
+
+            AppConfirmationBottomSheet.show(
+              context: context,
+              title: 'ยืนยันข้อมูล',
+              description: 'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้',
+              confirmLabel: 'ลบทั้งหมด',
+              cancelLabel: 'ยกเลิก',
+              icon: 'assets/images/dialog/confirmation_clear.png',
+              style: ConfirmationStyle.destructive,
+              onConfirm: () {
+                Navigator.of(context).pop();
+              },
+            );
+          },
         ),
         title: BlocBuilder<PropertyFormBloc, PropertyFormState>(
           builder: (context, state) {

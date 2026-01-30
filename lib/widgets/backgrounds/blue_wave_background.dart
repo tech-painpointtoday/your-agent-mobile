@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../core/theme/app_colors.dart';
 
@@ -6,22 +9,80 @@ class ColorsWaveBackground extends StatelessWidget {
   final Widget? child;
   final Color firstColor;
   final Color secondColor;
+  final bool hasFilter;
 
   const ColorsWaveBackground({
     super.key,
     this.child,
     this.firstColor = const Color(0xFF1743C7),
     this.secondColor = const Color(0xFF64D6FF),
+    this.hasFilter = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _BlueWavePainter(
-        firstColor: firstColor,
-        secondColor: secondColor,
-      ),
-      child: SizedBox.expand(child: child),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double parentWidth = constraints.maxWidth;
+        final double parentHeight = constraints.maxHeight.isInfinite
+            ? MediaQuery.of(context).size.height
+            : constraints.maxHeight;
+
+        final double glowWidth = parentWidth * 1.5;
+        final double glowHeight = parentWidth * 1.2;
+
+        final double positionRight = -glowWidth * 0.4;
+        final double positionBottom = -glowHeight * 0.65;
+
+        return Stack(
+          children: [
+            if (!hasFilter)
+              CustomPaint(
+                painter: _BlueWavePainter(
+                  firstColor: firstColor,
+                  secondColor: secondColor,
+                ),
+                size: Size(parentWidth, parentHeight),
+                child: SizedBox.expand(child: child),
+              )
+            else
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [firstColor, secondColor],
+                  ),
+                ),
+                child: SizedBox.expand(child: child),
+              ),
+
+            if (hasFilter)
+              Positioned(
+                right: positionRight,
+                bottom: positionBottom,
+                width: glowWidth,
+                height: glowHeight,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.elliptical(glowWidth, glowHeight),
+                    ),
+                    gradient: RadialGradient(
+                      center: Alignment.center,
+                      radius: 0.64,
+                      colors: [
+                        Color(0xFF7EFF81).withOpacity(0.8),
+                        Color(0xFF7EFF81).withOpacity(0.0),
+                      ],
+                      stops: const [0.4, 0.8],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }
@@ -90,5 +151,6 @@ class BlueWaveBackground extends ColorsWaveBackground {
     super.child,
     super.firstColor,
     super.secondColor,
+    super.hasFilter,
   });
 }

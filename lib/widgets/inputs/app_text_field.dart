@@ -19,6 +19,7 @@ class AppTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final bool showCursor;
   final List<TextInputFormatter>? inputFormatters;
+  final bool obscureText;
 
   const AppTextField({
     super.key,
@@ -37,6 +38,7 @@ class AppTextField extends StatelessWidget {
     this.focusNode,
     this.showCursor = true,
     this.inputFormatters,
+    this.obscureText = false,
   });
 
   @override
@@ -71,6 +73,7 @@ class AppTextField extends StatelessWidget {
         TextFormField(
           focusNode: focusNode,
           controller: controller,
+          obscureText: obscureText,
           maxLines: maxLines,
           maxLength: maxLength,
           keyboardType: keyboardType,
