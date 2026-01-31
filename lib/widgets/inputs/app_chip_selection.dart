@@ -54,18 +54,16 @@ class AppChipSelection<T> extends StatelessWidget {
           ),
           const SizedBox(height: 12),
         ],
-        Row(
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
           children: options.map((option) {
             final isSelected = value == option.value;
-            final isLast = option == options.last;
 
-            return Padding(
-              padding: EdgeInsets.only(right: isLast ? 0 : 12),
-              child: _ChipButton(
-                label: option.label,
-                isSelected: isSelected,
-                onTap: () => onChanged(option.value),
-              ),
+            return _ChipButton(
+              label: option.label,
+              isSelected: isSelected,
+              onTap: () => onChanged(option.value),
             );
           }).toList(),
         ),
@@ -91,19 +89,23 @@ class _ChipButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(100),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withOpacity(0.1) : Colors.white,
+          color: isSelected ? AppColors.supportBlueLight : Colors.white,
           borderRadius: BorderRadius.circular(100),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.baseLightGrey,
+            color: isSelected
+                ? AppColors.supportBlueDark
+                : AppColors.baseLightGrey,
             width: 1,
           ),
         ),
         child: Text(
           label,
           style: GoogleFonts.anuphan(
-            color: isSelected ? AppColors.primary : AppColors.baseDarkGrey,
+            color: isSelected
+                ? AppColors.supportBlueDark
+                : AppColors.baseDarkGrey,
             fontSize: 16,
             fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
           ),

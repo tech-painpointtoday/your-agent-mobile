@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/person_type.dart';
-import 'package:youragent/domain/entities/property_owner.dart';
+import 'package:youragent/domain/entities/buyer.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
@@ -14,34 +14,32 @@ import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import '../../../widgets/user_registration_bottom_sheet.dart';
 
-class PropertyOwnerStep extends StatefulWidget {
-  const PropertyOwnerStep({super.key});
+class BuyerInfoStep extends StatefulWidget {
+  const BuyerInfoStep({super.key});
 
   @override
-  State<PropertyOwnerStep> createState() => _PropertyOwnerStepState();
+  State<BuyerInfoStep> createState() => _BuyerInfoStepState();
 }
 
-class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
+class _BuyerInfoStepState extends State<BuyerInfoStep> {
   late final TextEditingController _nameController;
   late final TextEditingController _idCardController;
   late final TextEditingController _addressController;
   late final TextEditingController _phoneController;
   late final TextEditingController _emailController;
-  late final TextEditingController _signatoryController;
 
   @override
   void initState() {
     super.initState();
     final state = context.read<ContractFormBloc>().state;
-    _nameController = TextEditingController(text: state.ownerName);
-    _idCardController = TextEditingController(text: state.ownerIdCard);
-    _addressController = TextEditingController(text: state.ownerAddress);
-    _phoneController = TextEditingController(text: state.ownerPhone);
-    _emailController = TextEditingController(text: state.ownerEmail);
-    _signatoryController = TextEditingController(text: state.ownerSignatory);
+    _nameController = TextEditingController(text: state.buyerName);
+    _idCardController = TextEditingController(text: state.buyerIdCard);
+    _addressController = TextEditingController(text: state.buyerAddress);
+    _phoneController = TextEditingController(text: state.buyerPhone);
+    _emailController = TextEditingController(text: state.buyerEmail);
 
-    // Initial fetch for owners if needed
-    context.read<ContractFormBloc>().add(const ContractFormOwnersFetched(''));
+    // Initial fetch for buyers if needed
+    context.read<ContractFormBloc>().add(const ContractFormBuyersFetched(''));
   }
 
   @override
@@ -51,22 +49,20 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
     _addressController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
-    _signatoryController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<ContractFormBloc, ContractFormState>(
-      listenWhen: (prev, curr) => prev.selectedOwner != curr.selectedOwner,
+      listenWhen: (prev, curr) => prev.selectedBuyer != curr.selectedBuyer,
       listener: (context, state) {
-        if (state.selectedOwner != null) {
-          _nameController.text = state.ownerName;
-          _idCardController.text = state.ownerIdCard;
-          _addressController.text = state.ownerAddress;
-          _phoneController.text = state.ownerPhone;
-          _emailController.text = state.ownerEmail;
-          _signatoryController.text = state.ownerSignatory;
+        if (state.selectedBuyer != null) {
+          _nameController.text = state.buyerName;
+          _idCardController.text = state.buyerIdCard;
+          _addressController.text = state.buyerAddress;
+          _phoneController.text = state.buyerPhone;
+          _emailController.text = state.buyerEmail;
         }
       },
       child: BlocBuilder<ContractFormBloc, ContractFormState>(
@@ -83,14 +79,14 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppBadge(
-                        label: 'ข้อมูลเจ้าของทรัพย์',
+                        label: 'ข้อมูลผู้ซื้อ',
                         fontSize: 16,
                         color: BadgeColor.blue,
                       ),
                       AppBadge(
                         color: BadgeColor.default_,
-                        label: '${state.step}/7',
                         fontSize: 16,
+                        label: '${state.step}/7',
                       ),
                     ],
                   ),
@@ -100,7 +96,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                   AppChipSelection<PersonType>(
                     label: 'ประเภทบุคคล',
                     isRequired: true,
-                    value: state.ownerType,
+                    value: state.buyerType,
                     options: const [
                       AppChipOption(
                         label: 'บุคคลธรรมดา',
@@ -112,13 +108,13 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                       ),
                     ],
                     onChanged: (type) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerTypeUpdated(type),
+                      ContractFormBuyerTypeUpdated(type),
                     ),
                   ),
                   const SizedBox(height: 24),
 
-                  // Owner Name with TypeAhead
-                  TypeAheadField<PropertyOwner>(
+                  // Buyer Name with TypeAhead
+                  TypeAheadField<Buyer>(
                     controller: _nameController,
                     builder: (context, controller, focusNode) => AppTextField(
                       label: 'ชื่อ-นามสกุล / ชื่อบริษัท',
@@ -128,7 +124,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                       hintText: 'ชื่อ-นามสกุล / ชื่อบริษัท',
                       onChanged: (value) => context
                           .read<ContractFormBloc>()
-                          .add(ContractFormOwnerNameUpdated(value)),
+                          .add(ContractFormBuyerNameUpdated(value)),
                       suffix: Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: 16.0,
@@ -147,34 +143,33 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     ),
                     suggestionsCallback: (pattern) {
                       context.read<ContractFormBloc>().add(
-                        ContractFormOwnersFetched(pattern),
+                        ContractFormBuyersFetched(pattern),
                       );
-                      return state.owners;
+                      return state.buyers;
                     },
-                    itemBuilder: (context, owner) {
+                    itemBuilder: (context, buyer) {
                       return ListTile(
-                        title: Text(owner.name),
-                        subtitle: Text(owner.email ?? owner.phone ?? ''),
+                        title: Text(buyer.name),
+                        subtitle: Text(buyer.email ?? buyer.phone ?? ''),
                       );
                     },
-                    onSelected: (owner) {
+                    onSelected: (buyer) {
                       context.read<ContractFormBloc>().add(
-                        ContractFormOwnerSelected(owner),
+                        ContractFormBuyerSelected(buyer),
                       );
-
                       FocusScope.of(context).unfocus();
                     },
                     emptyBuilder: (context) => Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        'ไม่พบข้อมูลเจ้าของทรัพย์',
+                        'ไม่พบข้อมูลผู้ซื้อ',
                         style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                       ),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'ค้นหาชื่อเจ้าของทรัพย์ในระบบ เพื่อเชื่อมต่อข้อมูล',
+                    'ค้นหาชื่อเจ้าของทรัพย์ในระบบ เพื่อเชื่อมต่อข้อมูล', // Hint text from image
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseGrey,
                       fontSize: 12,
@@ -189,7 +184,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     child: OutlinedButton.icon(
                       onPressed: () => UserRegistrationBottomSheet.show(
                         context,
-                        RegistrationUserType.owner,
+                        RegistrationUserType.buyer,
                       ),
                       icon: const Icon(Icons.add, size: 20),
                       label: Text(
@@ -221,7 +216,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     isRequired: true,
                     hintText: 'เลขบัตรประชาชน / เลขนิติบุคคล',
                     onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerIdCardUpdated(value),
+                      ContractFormBuyerIdCardUpdated(value),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -233,7 +228,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     isRequired: true,
                     hintText: 'ที่อยู่ปัจจุบัน',
                     onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerAddressUpdated(value),
+                      ContractFormBuyerAddressUpdated(value),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -246,7 +241,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     hintText: 'หมายเลขโทรศัพท์',
                     keyboardType: TextInputType.phone,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerPhoneUpdated(value),
+                      ContractFormBuyerPhoneUpdated(value),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -259,19 +254,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     hintText: 'อีเมล',
                     keyboardType: TextInputType.emailAddress,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerEmailUpdated(value),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Signatory
-                  AppTextField(
-                    label: 'ผู้มีอำนาจลงนาม',
-                    controller: _signatoryController,
-                    isRequired: true,
-                    hintText: 'ผู้มีอำนาจลงนาม',
-                    onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerSignatoryUpdated(value),
+                      ContractFormBuyerEmailUpdated(value),
                     ),
                   ),
                   const SizedBox(height: 32),

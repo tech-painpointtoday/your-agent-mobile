@@ -20,6 +20,8 @@ class AppTextField extends StatelessWidget {
   final bool showCursor;
   final List<TextInputFormatter>? inputFormatters;
   final bool obscureText;
+  final ScrollController? scrollController;
+  final bool showScrollbar;
 
   const AppTextField({
     super.key,
@@ -39,6 +41,8 @@ class AppTextField extends StatelessWidget {
     this.showCursor = true,
     this.inputFormatters,
     this.obscureText = false,
+    this.scrollController,
+    this.showScrollbar = false,
   });
 
   @override
@@ -71,6 +75,7 @@ class AppTextField extends StatelessWidget {
           const SizedBox(height: 8),
         ],
         TextFormField(
+          scrollPhysics: const ClampingScrollPhysics(),
           focusNode: focusNode,
           controller: controller,
           obscureText: obscureText,
@@ -80,8 +85,10 @@ class AppTextField extends StatelessWidget {
           readOnly: readOnly,
           onTap: onTap,
           onChanged: onChanged,
-          showCursor: showCursor,
+          showCursor: readOnly ? false : showCursor,
+          enabled: !readOnly,
           inputFormatters: inputFormatters,
+          scrollController: scrollController,
           style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseBlack),
           decoration: InputDecoration(
             counterText: '',
@@ -95,7 +102,9 @@ class AppTextField extends StatelessWidget {
               vertical: 12,
             ),
             suffixIcon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: showScrollbar
+                  ? EdgeInsets.only(right: 32)
+                  : EdgeInsets.symmetric(horizontal: 8),
               child: suffix,
             ),
             prefixIcon: prefix,
@@ -115,11 +124,35 @@ class AppTextField extends StatelessWidget {
                 width: 1.5,
               ),
             ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.baseLightGrey),
+            ),
             filled: true,
-            fillColor: AppColors.baseWhite,
+            fillColor: readOnly ? AppColors.baseOffWhite : AppColors.baseWhite,
           ),
-        ),
+        ).let((child) {
+          if (showScrollbar) {
+            return RawScrollbar(
+              thickness: 8,
+              controller: scrollController,
+              thumbVisibility: true,
+              thumbColor: AppColors.baseLightGrey,
+              minThumbLength: 64,
+              radius: Radius.circular(8),
+              mainAxisMargin: 16,
+              crossAxisMargin: 16,
+              trackVisibility: false,
+              child: child,
+            );
+          }
+          return child;
+        }),
       ],
     );
   }
+}
+
+extension LetExtension<T> on T {
+  R let<R>(R Function(T) block) => block(this);
 }

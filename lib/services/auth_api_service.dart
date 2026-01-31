@@ -57,6 +57,98 @@ class AuthApiService {
     }
   }
 
+  Future<Map<String, dynamic>> sellerRegister({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+    required String address,
+  }) async {
+    try {
+      final response = await _apiClient.post(
+        '/seller/register',
+        data: {
+          'name': name,
+          'email': email,
+          'password': password,
+          'password_confirmation': passwordConfirmation,
+          'address': address,
+        },
+      );
+      final data = response.data as Map<String, dynamic>;
+
+      // Save token if present
+      String? token;
+      if (data['token'] != null) {
+        token = data['token'] as String?;
+      } else if (data['access_token'] != null) {
+        token = data['access_token'] as String?;
+      } else if (data['data'] is Map<String, dynamic>) {
+        final dataMap = data['data'] as Map<String, dynamic>;
+        token =
+            dataMap['token'] as String? ?? dataMap['access_token'] as String?;
+      }
+      if (token != null && token.isNotEmpty) {
+        await _apiClient.saveAuthToken(token);
+      }
+
+      return data;
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final message = (e.response?.data is Map<String, dynamic>)
+            ? (e.response?.data['message']?.toString())
+            : null;
+        throw Exception(message ?? 'Seller registration failed');
+      }
+      throw Exception('Failed to register seller: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> buyerRegister({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      final response = await _apiClient.post(
+        '/buyer/register',
+        data: {
+          'name': name,
+          'email': email,
+          'password': password,
+          'password_confirmation': passwordConfirmation,
+        },
+      );
+      final data = response.data as Map<String, dynamic>;
+
+      // Save token if present
+      String? token;
+      if (data['token'] != null) {
+        token = data['token'] as String?;
+      } else if (data['access_token'] != null) {
+        token = data['access_token'] as String?;
+      } else if (data['data'] is Map<String, dynamic>) {
+        final dataMap = data['data'] as Map<String, dynamic>;
+        token =
+            dataMap['token'] as String? ?? dataMap['access_token'] as String?;
+      }
+      if (token != null && token.isNotEmpty) {
+        await _apiClient.saveAuthToken(token);
+      }
+
+      return data;
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final message = (e.response?.data is Map<String, dynamic>)
+            ? (e.response?.data['message']?.toString())
+            : null;
+        throw Exception(message ?? 'Buyer registration failed');
+      }
+      throw Exception('Failed to register buyer: $e');
+    }
+  }
+
   Future<Map<String, dynamic>> agentRegister({
     required String name,
     required String email,

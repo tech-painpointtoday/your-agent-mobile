@@ -3,6 +3,9 @@ import 'package:youragent/domain/entities/contract_type.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/person_type.dart';
 import 'package:youragent/domain/entities/property_owner.dart';
+import 'package:youragent/domain/entities/buyer.dart';
+import 'package:youragent/domain/entities/appliance_item.dart';
+import 'package:youragent/domain/entities/furniture_item.dart';
 
 abstract class ContractFormEvent extends Equatable {
   const ContractFormEvent();
@@ -61,6 +64,28 @@ class ContractFormTypeUpdated extends ContractFormEvent {
 
 class ContractFormSubmitted extends ContractFormEvent {
   const ContractFormSubmitted();
+}
+
+// Step 1 Refinement Events
+class ContractFormLeaseFormatUpdated extends ContractFormEvent {
+  final String format;
+  const ContractFormLeaseFormatUpdated(this.format);
+  @override
+  List<Object?> get props => [format];
+}
+
+class ContractFormLeaseStartDateUpdated extends ContractFormEvent {
+  final DateTime? date;
+  const ContractFormLeaseStartDateUpdated(this.date);
+  @override
+  List<Object?> get props => [date];
+}
+
+class ContractFormLeaseEndDateUpdated extends ContractFormEvent {
+  final DateTime? date;
+  const ContractFormLeaseEndDateUpdated(this.date);
+  @override
+  List<Object?> get props => [date];
 }
 
 // Step 2 Events
@@ -125,4 +150,265 @@ class ContractFormOwnerSelected extends ContractFormEvent {
   const ContractFormOwnerSelected(this.owner);
   @override
   List<Object?> get props => [owner];
+}
+
+// Step 3 Events
+class ContractFormBuyerTypeUpdated extends ContractFormEvent {
+  final PersonType type;
+  const ContractFormBuyerTypeUpdated(this.type);
+  @override
+  List<Object?> get props => [type];
+}
+
+class ContractFormBuyerNameUpdated extends ContractFormEvent {
+  final String name;
+  const ContractFormBuyerNameUpdated(this.name);
+  @override
+  List<Object?> get props => [name];
+}
+
+class ContractFormBuyerIdCardUpdated extends ContractFormEvent {
+  final String idCard;
+  const ContractFormBuyerIdCardUpdated(this.idCard);
+  @override
+  List<Object?> get props => [idCard];
+}
+
+class ContractFormBuyerAddressUpdated extends ContractFormEvent {
+  final String address;
+  const ContractFormBuyerAddressUpdated(this.address);
+  @override
+  List<Object?> get props => [address];
+}
+
+class ContractFormBuyerPhoneUpdated extends ContractFormEvent {
+  final String phone;
+  const ContractFormBuyerPhoneUpdated(this.phone);
+  @override
+  List<Object?> get props => [phone];
+}
+
+class ContractFormBuyerEmailUpdated extends ContractFormEvent {
+  final String email;
+  const ContractFormBuyerEmailUpdated(this.email);
+  @override
+  List<Object?> get props => [email];
+}
+
+class ContractFormBuyersFetched extends ContractFormEvent {
+  final String query;
+  const ContractFormBuyersFetched(this.query);
+  @override
+  List<Object?> get props => [query];
+}
+
+class ContractFormBuyerSelected extends ContractFormEvent {
+  final Buyer buyer;
+  const ContractFormBuyerSelected(this.buyer);
+  @override
+  List<Object?> get props => [buyer];
+}
+
+// Step 4 Events
+class ContractFormApplianceAdded extends ContractFormEvent {
+  const ContractFormApplianceAdded();
+  @override
+  List<Object?> get props => [];
+}
+
+class ContractFormApplianceRemoved extends ContractFormEvent {
+  final String id;
+  const ContractFormApplianceRemoved(this.id);
+  @override
+  List<Object?> get props => [id];
+}
+
+class ContractFormApplianceUpdated extends ContractFormEvent {
+  final ApplianceItem item;
+  const ContractFormApplianceUpdated(this.item);
+  @override
+  List<Object?> get props => [item];
+}
+
+class ContractFormApplianceImagesAdded extends ContractFormEvent {
+  final String id;
+  final List<String> images;
+  const ContractFormApplianceImagesAdded(this.id, this.images);
+  @override
+  List<Object?> get props => [id, images];
+}
+
+class ContractFormApplianceImageRemoved extends ContractFormEvent {
+  final String id;
+  final String imagePath;
+  const ContractFormApplianceImageRemoved(this.id, this.imagePath);
+  @override
+  List<Object?> get props => [id, imagePath];
+}
+
+class ContractFormPropertyDataFetched extends ContractFormEvent {
+  final int propertyId;
+  const ContractFormPropertyDataFetched(this.propertyId);
+
+  @override
+  List<Object?> get props => [propertyId];
+}
+
+class ContractFormAppliancePropertyImageSelected extends ContractFormEvent {
+  final String applianceId;
+  final int propertyImageId;
+  final String url;
+
+  const ContractFormAppliancePropertyImageSelected({
+    required this.applianceId,
+    required this.propertyImageId,
+    required this.url,
+  });
+
+  @override
+  List<Object?> get props => [applianceId, propertyImageId, url];
+}
+
+// Step 5 Events
+class ContractFormFurnitureAdded extends ContractFormEvent {
+  const ContractFormFurnitureAdded();
+  @override
+  List<Object?> get props => [];
+}
+
+class ContractFormFurnitureRemoved extends ContractFormEvent {
+  final String id;
+  const ContractFormFurnitureRemoved(this.id);
+  @override
+  List<Object?> get props => [id];
+}
+
+class ContractFormFurnitureUpdated extends ContractFormEvent {
+  final FurnitureItem item;
+  const ContractFormFurnitureUpdated(this.item);
+  @override
+  List<Object?> get props => [item];
+}
+
+class ContractFormFurnitureImagesAdded extends ContractFormEvent {
+  final String id;
+  final List<String> images;
+  const ContractFormFurnitureImagesAdded(this.id, this.images);
+  @override
+  List<Object?> get props => [id, images];
+}
+
+class ContractFormFurnitureImageRemoved extends ContractFormEvent {
+  final String id;
+  final String imagePath;
+  const ContractFormFurnitureImageRemoved(this.id, this.imagePath);
+  @override
+  List<Object?> get props => [id, imagePath];
+}
+
+class ContractFormFurniturePropertyImageSelected extends ContractFormEvent {
+  final String furnitureId;
+  final int propertyImageId;
+  final String url;
+
+  const ContractFormFurniturePropertyImageSelected({
+    required this.furnitureId,
+    required this.propertyImageId,
+    required this.url,
+  });
+
+  @override
+  List<Object?> get props => [furnitureId, propertyImageId, url];
+}
+
+// Step 6 Events
+class ContractFormPriceUpdated extends ContractFormEvent {
+  final double price;
+  const ContractFormPriceUpdated(this.price);
+  @override
+  List<Object?> get props => [price];
+}
+
+class ContractFormCommonFeeUpdated extends ContractFormEvent {
+  final double fee;
+  const ContractFormCommonFeeUpdated(this.fee);
+  @override
+  List<Object?> get props => [fee];
+}
+
+class ContractFormOtherServiceFeeUpdated extends ContractFormEvent {
+  final double fee;
+  const ContractFormOtherServiceFeeUpdated(this.fee);
+  @override
+  List<Object?> get props => [fee];
+}
+
+class ContractFormAdvanceRentUpdated extends ContractFormEvent {
+  final double rent;
+  const ContractFormAdvanceRentUpdated(this.rent);
+  @override
+  List<Object?> get props => [rent];
+}
+
+class ContractFormSecurityDepositUpdated extends ContractFormEvent {
+  final double deposit;
+  const ContractFormSecurityDepositUpdated(this.deposit);
+  @override
+  List<Object?> get props => [deposit];
+}
+
+class ContractFormDueDateUpdated extends ContractFormEvent {
+  final int? dueDate;
+  const ContractFormDueDateUpdated(this.dueDate);
+  @override
+  List<Object?> get props => [dueDate];
+}
+
+class ContractFormLateFeeUpdated extends ContractFormEvent {
+  final double fee;
+  const ContractFormLateFeeUpdated(this.fee);
+  @override
+  List<Object?> get props => [fee];
+}
+
+class ContractFormPaymentMethodUpdated extends ContractFormEvent {
+  final String method;
+  const ContractFormPaymentMethodUpdated(this.method);
+  @override
+  List<Object?> get props => [method];
+}
+
+class ContractFormBankCodeUpdated extends ContractFormEvent {
+  final String? code;
+  const ContractFormBankCodeUpdated(this.code);
+  @override
+  List<Object?> get props => [code];
+}
+
+class ContractFormBankBranchUpdated extends ContractFormEvent {
+  final String branch;
+  const ContractFormBankBranchUpdated(this.branch);
+  @override
+  List<Object?> get props => [branch];
+}
+
+class ContractFormAccountNameUpdated extends ContractFormEvent {
+  final String name;
+  const ContractFormAccountNameUpdated(this.name);
+  @override
+  List<Object?> get props => [name];
+}
+
+class ContractFormAccountNumberUpdated extends ContractFormEvent {
+  final String number;
+  const ContractFormAccountNumberUpdated(this.number);
+  @override
+  List<Object?> get props => [number];
+}
+
+class ContractFormAdditionalConditionsUpdated extends ContractFormEvent {
+  final String conditions;
+  const ContractFormAdditionalConditionsUpdated(this.conditions);
+  @override
+  List<Object?> get props => [conditions];
 }

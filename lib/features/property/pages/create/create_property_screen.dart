@@ -49,6 +49,8 @@ class _CreatePropertyView extends StatelessWidget {
         backgroundColor: AppColors.primary,
         elevation: 0,
         leading: IconButton(
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
           icon: SvgPicture.asset(
             'assets/icons/x.svg',
             height: 24,
@@ -75,6 +77,7 @@ class _CreatePropertyView extends StatelessWidget {
             );
           },
         ),
+        titleSpacing: 0,
         title: BlocBuilder<PropertyFormBloc, PropertyFormState>(
           builder: (context, state) {
             return Text(
@@ -98,10 +101,14 @@ class _CreatePropertyView extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.description_outlined,
-                    size: 16,
-                    color: Colors.white,
+                  SvgPicture.asset(
+                    'assets/icons/file.svg',
+                    height: 16,
+                    width: 16,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
                   ),
                   const SizedBox(width: 4),
                   Text(

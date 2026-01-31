@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../domain/entities/contract.dart';
+import '../domain/entities/contract_create_data.dart';
 import 'api_client.dart';
 import 'api_response_service.dart';
 
@@ -65,6 +66,38 @@ class ContractApiService {
         throw Exception(errorMessage);
       }
       throw Exception('Failed to delete contract: $e');
+    }
+  }
+
+  /// Get Contract Create Data
+  /// GET /agent/contracts/properties/{id}/create
+  Future<ContractCreateData> getContractCreateData({
+    required int propertyId,
+  }) async {
+    try {
+      final response = await _apiClient.get(
+        '/agent/contracts/properties/$propertyId/create',
+      );
+
+      final apiResponse =
+          ApiResponseService.parseResponse<Map<String, dynamic>>(
+            response,
+            (json) => json is Map<String, dynamic> ? json : <String, dynamic>{},
+          );
+
+      if (!apiResponse.success || apiResponse.data == null) {
+        throw Exception(
+          apiResponse.message ?? 'Failed to get contract create data',
+        );
+      }
+
+      return ContractCreateData.fromJson(apiResponse.data!);
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to get contract create data: $e');
     }
   }
 }

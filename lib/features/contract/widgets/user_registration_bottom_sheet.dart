@@ -1,51 +1,114 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
+import 'package:youragent/core/di/dependency_injection.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 
-class OwnerRegistrationBottomSheet extends StatefulWidget {
-  const OwnerRegistrationBottomSheet({super.key});
+enum RegistrationUserType { owner, buyer }
 
-  static Future<void> show(BuildContext context) {
+class UserRegistrationBottomSheet extends StatefulWidget {
+  final RegistrationUserType type;
+
+  const UserRegistrationBottomSheet({super.key, required this.type});
+
+  static Future<void> show(BuildContext context, RegistrationUserType type) {
     return showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => const OwnerRegistrationBottomSheet(),
+      builder: (context) => UserRegistrationBottomSheet(type: type),
     );
   }
 
   @override
-  State<OwnerRegistrationBottomSheet> createState() =>
-      _OwnerRegistrationBottomSheetState();
+  State<UserRegistrationBottomSheet> createState() =>
+      _UserRegistrationBottomSheetState();
 }
 
-class _OwnerRegistrationBottomSheetState
-    extends State<OwnerRegistrationBottomSheet> {
+class _UserRegistrationBottomSheetState
+    extends State<UserRegistrationBottomSheet> {
   final _formKey = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
+  final _addressController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
+    _addressController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
 
+  Future<void> _handleRegister() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final authService = DependencyInjection.authApiService;
+
+      if (widget.type == RegistrationUserType.owner) {
+        await authService.sellerRegister(
+          name: _nameController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+          passwordConfirmation: _confirmPasswordController.text,
+          address: _addressController.text,
+        );
+      } else {
+        await authService.buyerRegister(
+          name: _nameController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+          passwordConfirmation: _confirmPasswordController.text,
+        );
+      }
+
+      if (mounted) {
+        Navigator.pop(context);
+        StatusDialog.showSuccess(
+          context: context,
+          title: 'ลงทะเบียนสำเร็จ',
+          message: 'บัญชีถูกสร้างเรียบร้อยแล้ว',
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        StatusDialog.showError(
+          context: context,
+          title: 'เกิดข้อผิดพลาด',
+          message: e.toString().replaceFirst('Exception: ', ''),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final title = 'สร้างบัญชีใหม่';
+    final subtitle = widget.type == RegistrationUserType.owner
+        ? 'ลงทะเบียนข้อมูลเจ้าของทรัพย์ เพื่อทำสัญญา'
+        : 'ลงทะเบียนข้อมูลผู้ซื้อ เพื่อทำสัญญา';
+
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -81,7 +144,7 @@ class _OwnerRegistrationBottomSheetState
 
             // Title
             Text(
-              'สร้างบัญชีใหม่',
+              title,
               style: GoogleFonts.anuphan(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -90,7 +153,7 @@ class _OwnerRegistrationBottomSheetState
             ),
             const SizedBox(height: 4),
             Text(
-              'ลงทะเบียนข้อมูลเจ้าของทรัพย์ เพื่อทำสัญญา',
+              subtitle,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
                 color: AppColors.baseGrey,
@@ -125,6 +188,15 @@ class _OwnerRegistrationBottomSheetState
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 20),
+                  if (widget.type == RegistrationUserType.owner) ...[
+                    AppTextField(
+                      label: 'ที่อยู่',
+                      controller: _addressController,
+                      isRequired: true,
+                      hintText: 'ที่อยู่ปัจจุบัน',
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                   AppTextField(
                     label: 'รหัสผ่าน',
                     controller: _passwordController,
@@ -151,12 +223,16 @@ class _OwnerRegistrationBottomSheetState
                     hintText: 'ยืนยันรหัสผ่าน',
                     obscureText: _obscureConfirmPassword,
                     suffix: IconButton(
-                      icon: Icon(
+                      icon: SvgPicture.asset(
                         _obscureConfirmPassword
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        color: AppColors.baseGrey,
-                        size: 20,
+                            ? 'assets/icons/eye-off.svg'
+                            : 'assets/icons/eye.svg',
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.baseGrey,
+                          BlendMode.srcIn,
+                        ),
+                        width: 20,
+                        height: 20,
                       ),
                       onPressed: () => setState(
                         () =>
@@ -172,12 +248,9 @@ class _OwnerRegistrationBottomSheetState
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                text: 'สมัครสมาชิก',
+                text: _isLoading ? 'กำลังสมัคร...' : 'สมัครสมาชิก',
                 style: AppButtonStyle.primary,
-                onPressed: () {
-                  // TODO: Implement registration logic
-                  Navigator.pop(context);
-                },
+                onPressed: _isLoading ? null : _handleRegister,
               ),
             ),
           ],

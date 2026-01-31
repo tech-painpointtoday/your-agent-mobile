@@ -59,10 +59,15 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    AppBadge(label: 'ข้อมูลทั่วไป', color: BadgeColor.blue),
+                    AppBadge(
+                      label: 'ข้อมูลทั่วไป',
+                      fontSize: 16,
+                      color: BadgeColor.blue,
+                    ),
                     AppBadge(
                       color: BadgeColor.default_,
                       label: '${state.step}/7',
+                      fontSize: 16,
                     ),
                   ],
                 ),
@@ -241,11 +246,125 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                     ContractFormTypeUpdated(type),
                   ),
                 ),
+
+                if (state.contractType == ContractType.rent) ...[
+                  const SizedBox(height: 24),
+                  AppChipSelection<String>(
+                    label: 'รูปแบบสัญญา',
+                    value: state.leaseFormat.isEmpty ? null : state.leaseFormat,
+                    options: const [
+                      AppChipOption(
+                        label: 'สัญญาเช่า 6 เดือน',
+                        value: 'สัญญาเช่า 6 เดือน',
+                      ),
+                      AppChipOption(
+                        label: 'สัญญาเช่า 12 เดือน',
+                        value: 'สัญญาเช่า 12 เดือน',
+                      ),
+                    ],
+                    onChanged: (format) {
+                      context.read<ContractFormBloc>().add(
+                        ContractFormLeaseFormatUpdated(format),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  AppTextField(
+                    label: 'วันที่เริ่มสัญญา',
+                    isRequired: true,
+                    controller: TextEditingController(
+                      text: state.leaseStartDate != null
+                          ? '${state.leaseStartDate!.day}/${state.leaseStartDate!.month}/${state.leaseStartDate!.year + 543}'
+                          : '',
+                    ),
+                    hintText: 'เลือกวันที่เริ่มสัญญา',
+                    onTap: () async {
+                      final date = await showDatePicker(
+                        context: context,
+                        initialDate: state.leaseStartDate ?? DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (date != null && context.mounted) {
+                        context.read<ContractFormBloc>().add(
+                          ContractFormLeaseStartDateUpdated(date),
+                        );
+                      }
+                    },
+                    suffix: _buildDateIcon(),
+                  ),
+                  const SizedBox(height: 24),
+                  AppTextField(
+                    label: 'วันที่สิ้นสุดสัญญา',
+                    isRequired: true,
+                    readOnly: state.leaseFormat.isNotEmpty,
+                    controller: TextEditingController(
+                      text: state.leaseEndDate != null
+                          ? '${state.leaseEndDate!.day}/${state.leaseEndDate!.month}/${state.leaseEndDate!.year + 543}'
+                          : '',
+                    ),
+                    hintText: 'เลือกวันที่สิ้นสุดสัญญา',
+                    onTap: state.leaseFormat.isNotEmpty
+                        ? null
+                        : () async {
+                            final date = await showDatePicker(
+                              context: context,
+                              initialDate:
+                                  state.leaseEndDate ??
+                                  state.leaseStartDate?.add(
+                                    const Duration(days: 180),
+                                  ) ??
+                                  DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                            );
+                            if (date != null && context.mounted) {
+                              context.read<ContractFormBloc>().add(
+                                ContractFormLeaseEndDateUpdated(date),
+                              );
+                            }
+                          },
+                    suffix: _buildDateIcon(),
+                  ),
+                  const SizedBox(height: 24),
+                  AppTextField(
+                    label: 'รวมระยะเวลาเช่า',
+                    readOnly: true,
+                    controller: TextEditingController(
+                      text: _formatDuration(state.leaseDuration),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  String _formatDuration(int days) {
+    if (days == 0) return '';
+    final months = days ~/ 30;
+    final remainingDays = days % 30;
+    if (remainingDays == 0) {
+      return '$months เดือน';
+    }
+    return '$months เดือน $remainingDays วัน';
+  }
+
+  Widget _buildDateIcon() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8),
+      child: SvgPicture.asset(
+        'assets/icons/calendar.svg',
+        width: 16,
+        height: 16,
+        colorFilter: const ColorFilter.mode(
+          AppColors.baseGrey,
+          BlendMode.srcIn,
+        ),
+      ),
     );
   }
 }

@@ -8,11 +8,16 @@ import 'package:youragent/features/contract/bloc/contract_form/contract_form_eve
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
-import 'steps/contract_step_placeholder.dart';
 import 'steps/basic_info_step.dart';
 import 'steps/property_owner_step.dart';
+import 'steps/buyer_info_step.dart';
+import 'steps/appliance_step.dart';
+import 'steps/furniture_step.dart';
+import 'steps/additional_conditions_step.dart';
 
 import 'package:youragent/core/di/dependency_injection.dart';
+
+import 'package:youragent/features/contract/pages/create/steps/payment_step.dart';
 
 class AddContractScreen extends StatelessWidget {
   const AddContractScreen({super.key});
@@ -22,6 +27,7 @@ class AddContractScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => ContractFormBloc(
         propertyApiService: DependencyInjection.propertyApiService,
+        contractApiService: DependencyInjection.contractApiService,
       ),
       child: const _AddContractView(),
     );
@@ -65,10 +71,11 @@ class _AddContractView extends StatelessWidget {
             );
           },
         ),
+        titleSpacing: 0,
         title: BlocBuilder<ContractFormBloc, ContractFormState>(
           builder: (context, state) {
             String title = 'สร้างสัญญา';
-            if (state.step == 7) title = 'ยืนยันข้อมูล';
+            if (state.step == 7) title = 'เงื่อนไขเพิ่มเติม';
 
             return Text(
               title,
@@ -80,6 +87,40 @@ class _AddContractView extends StatelessWidget {
             );
           },
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.supportBlueDeep,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/file.svg',
+                    height: 16,
+                    width: 16,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'บันทึกร่าง',
+                    style: GoogleFonts.anuphan(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
       body: Container(
         width: double.infinity,
@@ -98,30 +139,15 @@ class _AddContractView extends StatelessWidget {
               case 2:
                 return const PropertyOwnerStep();
               case 3:
-                return const ContractStepPlaceholder(
-                  step: 3,
-                  title: 'ข้อมูลคู่สัญญา',
-                );
+                return const BuyerInfoStep();
               case 4:
-                return const ContractStepPlaceholder(
-                  step: 4,
-                  title: 'เงื่อนไขและข้อตกลง',
-                );
+                return const ApplianceStep();
               case 5:
-                return const ContractStepPlaceholder(
-                  step: 5,
-                  title: 'รายละเอียดการชำระเงิน',
-                );
+                return const FurnitureStep();
               case 6:
-                return const ContractStepPlaceholder(
-                  step: 6,
-                  title: 'เอกสารแนบ',
-                );
+                return const PaymentStep();
               case 7:
-                return const ContractStepPlaceholder(
-                  step: 7,
-                  title: 'ตรวจสอบและยืนยัน',
-                );
+                return const AdditionalConditionsStep();
               default:
                 return const Center(child: Text('Unknown Step'));
             }
