@@ -8,6 +8,7 @@ import 'package:youragent/features/contract/widgets/contract_filter_bottom_sheet
 import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/features/contract/pages/create/add_contract_screen.dart';
+import 'package:youragent/features/contract/pages/contract_detail_screen.dart';
 
 /// Screen showing all contract documents in a list
 class ContractScreen extends StatefulWidget {
@@ -328,8 +329,16 @@ class _ContractScreenState extends State<ContractScreen> {
         final contract = _filteredContracts[index];
         return ContractListItem(
           contract: contract,
-          onTap: () {
-            // Navigate to contract detail
+          onTap: () async {
+            final result = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) =>
+                    ContractDetailScreen(contractId: contract.id),
+              ),
+            );
+            if (result == true) {
+              _loadContracts();
+            }
           },
           onEdit: () {
             // Navigate to edit contract

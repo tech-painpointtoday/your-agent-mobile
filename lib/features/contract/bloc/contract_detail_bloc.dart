@@ -1,0 +1,189 @@
+import 'dart:io';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:path_provider/path_provider.dart';
+import '../../../domain/entities/contract.dart';
+import '../../../services/contract_api_service.dart';
+
+// Events
+abstract class ContractDetailEvent extends Equatable {
+  const ContractDetailEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class FetchContractDetail extends ContractDetailEvent {
+  final String contractId;
+  const FetchContractDetail(this.contractId);
+
+  @override
+  List<Object?> get props => [contractId];
+}
+
+class DeleteContractDetail extends ContractDetailEvent {
+  final String contractId;
+  const DeleteContractDetail(this.contractId);
+
+  @override
+  List<Object?> get props => [contractId];
+}
+
+class SendContractToSeller extends ContractDetailEvent {
+  final String contractId;
+  const SendContractToSeller(this.contractId);
+
+  @override
+  List<Object?> get props => [contractId];
+}
+
+class SendContractToBuyer extends ContractDetailEvent {
+  final String contractId;
+  const SendContractToBuyer(this.contractId);
+
+  @override
+  List<Object?> get props => [contractId];
+}
+
+// States
+abstract class ContractDetailState extends Equatable {
+  const ContractDetailState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class ContractDetailInitial extends ContractDetailState {}
+
+class ContractDetailLoading extends ContractDetailState {}
+
+class ContractDetailLoaded extends ContractDetailState {
+  final Contract contract;
+  final String? pdfPath;
+
+  const ContractDetailLoaded({required this.contract, this.pdfPath});
+
+  @override
+  List<Object?> get props => [contract, pdfPath];
+}
+
+class ContractDeletedSuccess extends ContractDetailState {}
+
+class ContractActionSuccess extends ContractDetailState {
+  final String message;
+  const ContractActionSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class ContractDetailError extends ContractDetailState {
+  final String message;
+  const ContractDetailError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class ContractDetailBloc
+    extends Bloc<ContractDetailEvent, ContractDetailState> {
+  final ContractApiService _contractApiService;
+
+  ContractDetailBloc(this._contractApiService)
+    : super(ContractDetailInitial()) {
+    on<FetchContractDetail>(_onFetchContractDetail);
+    on<DeleteContractDetail>(_onDeleteContractDetail);
+    on<SendContractToSeller>(_onSendContractToSeller);
+    on<SendContractToBuyer>(_onSendContractToBuyer);
+  }
+
+  Future<void> _onFetchContractDetail(
+    FetchContractDetail event,
+    Emitter<ContractDetailState> emit,
+  ) async {
+    emit(ContractDetailLoading());
+    try {
+      // Fetch contract detail info
+      final contract = await _contractApiService.getContractDetail(
+        contractId: event.contractId,
+      );
+
+      // Fetch PDF and save to temp file
+      String? pdfPath;
+      try {
+        final pdfBytes = await _contractApiService.getContractPdf(
+          contractId: event.contractId,
+        );
+        final tempDir = await getTemporaryDirectory();
+        final file = File('${tempDir.path}/contract_${event.contractId}.pdf');
+        await file.writeAsBytes(pdfBytes);
+        pdfPath = file.path;
+      } catch (e) {
+        // PDF fetch failed, but we still have contract info
+        print('Error fetching PDF: $e');
+      }
+
+      emit(ContractDetailLoaded(contract: contract, pdfPath: pdfPath));
+    } catch (e) {
+      emit(ContractDetailError(e.toString()));
+    }
+  }
+
+  Future<void> _onDeleteContractDetail(
+    DeleteContractDetail event,
+    Emitter<ContractDetailState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is ContractDetailLoaded) {
+      emit(ContractDetailLoading());
+      try {
+        await _contractApiService.deleteContract(contractId: event.contractId);
+        emit(ContractDeletedSuccess());
+      } catch (e) {
+        emit(ContractDetailError(e.toString()));
+        // Re-emit loaded state so user can try again
+        emit(currentState);
+      }
+    }
+  }
+
+  Future<void> _onSendContractToSeller(
+    SendContractToSeller event,
+    Emitter<ContractDetailState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is ContractDetailLoaded) {
+      emit(ContractDetailLoading());
+      try {
+        await _contractApiService.sendToSeller(contractId: event.contractId);
+        emit(
+          const ContractActionSuccess(
+            'ส่งเอกสารไปยังเจ้าของทรัพย์เรียบร้อยแล้ว',
+          ),
+        );
+        emit(currentState);
+      } catch (e) {
+        emit(ContractDetailError(e.toString()));
+        emit(currentState);
+      }
+    }
+  }
+
+  Future<void> _onSendContractToBuyer(
+    SendContractToBuyer event,
+    Emitter<ContractDetailState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is ContractDetailLoaded) {
+      emit(ContractDetailLoading());
+      try {
+        await _contractApiService.sendToBuyer(contractId: event.contractId);
+        emit(const ContractActionSuccess('ส่งเอกสารไปยังผู้ซื้อเรียบร้อยแล้ว'));
+        emit(currentState);
+      } catch (e) {
+        emit(ContractDetailError(e.toString()));
+        emit(currentState);
+      }
+    }
+  }
+}

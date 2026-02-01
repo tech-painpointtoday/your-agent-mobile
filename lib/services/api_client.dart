@@ -79,8 +79,12 @@ class ApiClient {
     await _storage.delete(key: 'auth_token');
   }
 
-  Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) {
-    return dio.get(path, queryParameters: queryParameters);
+  Future<Response> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) {
+    return dio.get(path, queryParameters: queryParameters, options: options);
   }
 
   Future<Response> post(

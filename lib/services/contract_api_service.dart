@@ -100,4 +100,103 @@ class ContractApiService {
       throw Exception('Failed to get contract create data: $e');
     }
   }
+
+  /// Get Contract Detail
+  /// GET /agent/contracts/{id}
+  Future<Contract> getContractDetail({required String contractId}) async {
+    try {
+      final response = await _apiClient.get('/agent/contracts/$contractId');
+
+      final apiResponse =
+          ApiResponseService.parseResponse<Map<String, dynamic>>(
+            response,
+            (json) => json is Map<String, dynamic> ? json : <String, dynamic>{},
+          );
+
+      if (!apiResponse.success || apiResponse.data == null) {
+        throw Exception(apiResponse.message ?? 'Failed to get contract detail');
+      }
+
+      return Contract.fromJson(apiResponse.data!);
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to get contract detail: $e');
+    }
+  }
+
+  /// Get Contract PDF
+  /// GET /agent/contracts/{id}/pdf
+  Future<List<int>> getContractPdf({required String contractId}) async {
+    try {
+      final response = await _apiClient.get(
+        '/agent/contracts/$contractId/pdf',
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        return response.data as List<int>;
+      } else {
+        throw Exception('Failed to fetch PDF: ${response.statusMessage}');
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to fetch PDF: $e');
+    }
+  }
+
+  /// Send Contract to Seller
+  /// POST /agent/contracts/{id}/send-to-seller
+  Future<void> sendToSeller({required String contractId}) async {
+    try {
+      final response = await _apiClient.post(
+        '/agent/contracts/$contractId/send-to-seller',
+      );
+
+      final apiResponse = ApiResponseService.parseResponse<void>(
+        response,
+        null,
+      );
+
+      if (!apiResponse.success) {
+        throw Exception(apiResponse.message ?? 'Failed to send to seller');
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to send to seller: $e');
+    }
+  }
+
+  /// Send Contract to Buyer
+  /// POST /agent/contracts/{id}/send-to-buyer
+  Future<void> sendToBuyer({required String contractId}) async {
+    try {
+      final response = await _apiClient.post(
+        '/agent/contracts/$contractId/send-to-buyer',
+      );
+
+      final apiResponse = ApiResponseService.parseResponse<void>(
+        response,
+        null,
+      );
+
+      if (!apiResponse.success) {
+        throw Exception(apiResponse.message ?? 'Failed to send to buyer');
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to send to buyer: $e');
+    }
+  }
 }

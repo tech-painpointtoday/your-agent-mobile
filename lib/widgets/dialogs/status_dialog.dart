@@ -235,6 +235,8 @@ class StatusDialog {
     String confirmText = 'Confirm',
     String cancelText = 'Cancel',
     VoidCallback? onConfirmed,
+    String? actionLabel,
+    VoidCallback? onAction,
   }) async {
     return await _enqueue<bool>(
           context: context,
@@ -244,18 +246,37 @@ class StatusDialog {
               builder: (context) => BaseStatusDialog(
                 title: title,
                 message: message,
-                confirmText: confirmText,
+                confirmText: actionLabel ?? confirmText,
                 cancelText: cancelText,
                 confirmColor: AppColors.supportBlueDeep,
                 isDestructive: false,
                 type: DialogType.info,
-                onConfirm: onConfirmed,
+                onConfirm: onAction ?? onConfirmed,
               ),
             );
             return result ?? false;
           },
         ) ??
         false;
+  }
+
+  /// Alias for showConfirmation to match project rules
+  static Future<bool> confirm({
+    required BuildContext context,
+    required String title,
+    required String message,
+    String? actionLabel,
+    VoidCallback? onAction,
+    String cancelText = 'Cancel',
+  }) {
+    return showConfirmation(
+      context: context,
+      title: title,
+      message: message,
+      confirmText: actionLabel ?? 'Confirm',
+      cancelText: cancelText,
+      onAction: onAction,
+    );
   }
 
   /// Show a Destructive dialog
@@ -265,6 +286,8 @@ class StatusDialog {
     required String message,
     String confirmText = 'Delete',
     String cancelText = 'Cancel',
+    String? actionLabel,
+    VoidCallback? onAction,
   }) async {
     return await _enqueue<bool>(
           context: context,
@@ -274,17 +297,37 @@ class StatusDialog {
               builder: (context) => BaseStatusDialog(
                 title: title,
                 message: message,
-                confirmText: confirmText,
+                confirmText: actionLabel ?? confirmText,
                 cancelText: cancelText,
                 confirmColor: AppColors.supportRedDeep,
                 isDestructive: true,
                 type: DialogType.destructive,
+                onConfirm: onAction,
               ),
             );
             return result ?? false;
           },
         ) ??
         false;
+  }
+
+  /// Alias for showDestructive to match project rules
+  static Future<bool> destructive({
+    required BuildContext context,
+    required String title,
+    required String message,
+    String? actionLabel,
+    VoidCallback? onAction,
+    String cancelText = 'Cancel',
+  }) {
+    return showDestructive(
+      context: context,
+      title: title,
+      message: message,
+      confirmText: actionLabel ?? 'Delete',
+      cancelText: cancelText,
+      onAction: onAction,
+    );
   }
 
   static Future<void> showInfoDialog({

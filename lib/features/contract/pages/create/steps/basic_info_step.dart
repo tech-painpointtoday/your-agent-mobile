@@ -48,6 +48,9 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
   Widget build(BuildContext context) {
     return BlocBuilder<ContractFormBloc, ContractFormState>(
       builder: (context, state) {
+        final baseDate =
+            state.contractDate ?? state.leaseStartDate ?? DateTime.now();
+
         return SizedBox(
           height: double.infinity,
           child: SingleChildScrollView(
@@ -185,7 +188,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                 AppTextField(
                   label: 'วันที่ทำสัญญา',
                   isRequired: true,
-                  readOnly: true,
+                  readOnly: false,
                   controller: TextEditingController(
                     text: state.contractDate != null
                         ? '${state.contractDate!.day}/${state.contractDate!.month}/${state.contractDate!.year + 543}'
@@ -281,9 +284,9 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                     onTap: () async {
                       final date = await showDatePicker(
                         context: context,
-                        initialDate: state.leaseStartDate ?? DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2100),
+                        initialDate: baseDate,
+                        firstDate: baseDate,
+                        lastDate: DateTime(baseDate.year + 100),
                       );
                       if (date != null && context.mounted) {
                         context.read<ContractFormBloc>().add(

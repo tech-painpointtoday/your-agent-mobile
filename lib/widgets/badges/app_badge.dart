@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Badge color scheme
@@ -20,6 +21,7 @@ enum BadgeStyle {
   dot, // Leading dot indicator
   dismissibleLeading, // Leading 'x' icon
   dismissibleTrailing, // Trailing 'x' icon
+  done,
 }
 
 /// App Badge - A comprehensive badge widget matching the design system
@@ -63,7 +65,7 @@ class _AppBadgeState extends State<AppBadge> {
     final padding =
         widget.padding ??
         const EdgeInsets.symmetric(horizontal: 12, vertical: 4);
-    final fontSize = widget.fontSize ?? 14.0;
+    final fontSize = widget.fontSize ?? 12.0;
 
     Widget content = Text(
       widget.label,
@@ -97,12 +99,34 @@ class _AppBadgeState extends State<AppBadge> {
           ],
         );
         break;
+      case BadgeStyle.done:
+        // Add leading dot
+        content = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              'assets/icons/check.svg',
+              width: 14,
+              height: 14,
+              colorFilter: ColorFilter.mode(textColor, BlendMode.srcIn),
+            ),
+            const SizedBox(width: 4),
+            content,
+          ],
+        );
+        break;
+
       case BadgeStyle.dismissibleLeading:
         // Add leading 'x' icon
         content = Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.close, size: 14, color: textColor),
+            SvgPicture.asset(
+              'assets/icons/x.svg',
+              width: 14,
+              height: 14,
+              colorFilter: ColorFilter.mode(textColor, BlendMode.srcIn),
+            ),
             const SizedBox(width: 4),
             content,
           ],
@@ -115,7 +139,12 @@ class _AppBadgeState extends State<AppBadge> {
           children: [
             content,
             const SizedBox(width: 4),
-            Icon(Icons.close, size: 14, color: textColor),
+            SvgPicture.asset(
+              'assets/icons/x.svg',
+              width: 14,
+              height: 14,
+              colorFilter: ColorFilter.mode(textColor, BlendMode.srcIn),
+            ),
           ],
         );
         break;

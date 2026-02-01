@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youragent/core/theme/app_colors.dart';
 import '../../../domain/entities/contract_status.dart';
 
 class ContractStatusBadge extends StatelessWidget {
@@ -45,33 +46,33 @@ class ContractStatusBadge extends StatelessWidget {
   _StatusConfig _getStatusConfig(ContractStatus status) {
     switch (status) {
       case ContractStatus.draft:
-        return const _StatusConfig(
-          label: 'ฉบับร่าง',
-          backgroundColor: Color(0xFFF5F3FF),
-          dotColor: Color(0xFF8B5CF6),
-          textColor: Color(0xFF8B5CF6),
+        return _StatusConfig(
+          label: 'ยังไม่สมบูรณ์',
+          backgroundColor: AppColors.supportOrangeLight,
+          dotColor: AppColors.supportOrangeDark,
+          textColor: AppColors.supportOrangeDark,
         );
       case ContractStatus.pendingSignature:
-        return const _StatusConfig(
-          label: 'ยังไม่สมบูรณ์',
-          backgroundColor: Color(0xFFFFF7ED),
-          dotColor: Color(0xFFF97316),
-          textColor: Color(0xFFF97316),
+        return _StatusConfig(
+          label: 'รอการลงนาม',
+          backgroundColor: AppColors.supportOrangeLight,
+          dotColor: AppColors.supportOrangeDark,
+          textColor: AppColors.supportOrangeDark,
         );
       case ContractStatus.signed:
       case ContractStatus.completed:
-        return const _StatusConfig(
+        return _StatusConfig(
           label: 'สมบูรณ์',
-          backgroundColor: Color(0xFFF0FDF4),
-          dotColor: Color(0xFF22C55E),
-          textColor: Color(0xFF22C55E),
+          backgroundColor: AppColors.supportGreenLight,
+          dotColor: AppColors.supportGreenDark,
+          textColor: AppColors.supportGreenDark,
         );
       case ContractStatus.cancelled:
-        return const _StatusConfig(
+        return _StatusConfig(
           label: 'ยกเลิก',
-          backgroundColor: Color(0xFFFEF2F2),
-          dotColor: Color(0xFFEF4444),
-          textColor: Color(0xFFEF4444),
+          backgroundColor: AppColors.supportRedLight,
+          dotColor: AppColors.supportRedDark,
+          textColor: AppColors.supportRedDark,
         );
     }
   }
