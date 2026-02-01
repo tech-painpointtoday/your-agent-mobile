@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pdfx/pdfx.dart';
 import '../../../domain/entities/contract.dart';
 import '../../../services/contract_api_service.dart';
 
@@ -14,7 +15,7 @@ abstract class ContractDetailEvent extends Equatable {
 }
 
 class FetchContractDetail extends ContractDetailEvent {
-  final String contractId;
+  final int contractId;
   const FetchContractDetail(this.contractId);
 
   @override
@@ -22,7 +23,7 @@ class FetchContractDetail extends ContractDetailEvent {
 }
 
 class DeleteContractDetail extends ContractDetailEvent {
-  final String contractId;
+  final int contractId;
   const DeleteContractDetail(this.contractId);
 
   @override
@@ -30,7 +31,7 @@ class DeleteContractDetail extends ContractDetailEvent {
 }
 
 class SendContractToSeller extends ContractDetailEvent {
-  final String contractId;
+  final int contractId;
   const SendContractToSeller(this.contractId);
 
   @override
@@ -38,7 +39,7 @@ class SendContractToSeller extends ContractDetailEvent {
 }
 
 class SendContractToBuyer extends ContractDetailEvent {
-  final String contractId;
+  final int contractId;
   const SendContractToBuyer(this.contractId);
 
   @override
@@ -57,14 +58,35 @@ class ContractDetailInitial extends ContractDetailState {}
 
 class ContractDetailLoading extends ContractDetailState {}
 
+class ContractDetailLoadedWithoutPdf extends ContractDetailState {
+  final Contract contract;
+  const ContractDetailLoadedWithoutPdf({required this.contract});
+
+  @override
+  List<Object?> get props => [contract];
+}
+
+class ContractDetailPdfLoading extends ContractDetailState {
+  final Contract contract;
+  const ContractDetailPdfLoading({required this.contract});
+
+  @override
+  List<Object?> get props => [contract];
+}
+
 class ContractDetailLoaded extends ContractDetailState {
   final Contract contract;
   final String? pdfPath;
+  final Future<PdfDocument>? pdfDocument;
 
-  const ContractDetailLoaded({required this.contract, this.pdfPath});
+  const ContractDetailLoaded({
+    required this.contract,
+    this.pdfPath,
+    this.pdfDocument,
+  });
 
   @override
-  List<Object?> get props => [contract, pdfPath];
+  List<Object?> get props => [contract, pdfPath, pdfDocument];
 }
 
 class ContractDeletedSuccess extends ContractDetailState {}
@@ -103,13 +125,19 @@ class ContractDetailBloc
   ) async {
     emit(ContractDetailLoading());
     try {
-      // Fetch contract detail info
+      // Fetch contract detail info first
       final contract = await _contractApiService.getContractDetail(
         contractId: event.contractId,
       );
 
-      // Fetch PDF and save to temp file
+      // Emit contract data immediately so UI can show it
+      emit(ContractDetailLoadedWithoutPdf(contract: contract));
+
+      // Now load PDF in background
+      emit(ContractDetailPdfLoading(contract: contract));
+
       String? pdfPath;
+      Future<PdfDocument>? pdfDocument;
       try {
         final pdfBytes = await _contractApiService.getContractPdf(
           contractId: event.contractId,
@@ -118,12 +146,21 @@ class ContractDetailBloc
         final file = File('${tempDir.path}/contract_${event.contractId}.pdf');
         await file.writeAsBytes(pdfBytes);
         pdfPath = file.path;
+
+        // Open the document here so it starts processing in background
+        pdfDocument = PdfDocument.openFile(pdfPath);
       } catch (e) {
         // PDF fetch failed, but we still have contract info
         print('Error fetching PDF: $e');
       }
 
-      emit(ContractDetailLoaded(contract: contract, pdfPath: pdfPath));
+      emit(
+        ContractDetailLoaded(
+          contract: contract,
+          pdfPath: pdfPath,
+          pdfDocument: pdfDocument,
+        ),
+      );
     } catch (e) {
       emit(ContractDetailError(e.toString()));
     }

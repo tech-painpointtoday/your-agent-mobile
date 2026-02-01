@@ -16,7 +16,9 @@ import 'package:youragent/widgets/inputs/app_dropdown.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 
 class PaymentStep extends StatefulWidget {
-  const PaymentStep({super.key});
+  final bool hideHeader;
+
+  const PaymentStep({super.key, this.hideHeader = false});
 
   @override
   State<PaymentStep> createState() => _PaymentStepState();
@@ -54,22 +56,23 @@ class _PaymentStepState extends State<PaymentStep> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    AppBadge(
-                      label: 'การชำระเงิน',
-                      fontSize: 16,
-                      color: BadgeColor.blue,
-                    ),
-                    AppBadge(
-                      color: BadgeColor.default_,
-                      label: '${state.step}/7',
-                      fontSize: 16,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
+                if (!widget.hideHeader)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      AppBadge(
+                        label: 'การชำระเงิน',
+                        fontSize: 16,
+                        color: BadgeColor.blue,
+                      ),
+                      AppBadge(
+                        color: BadgeColor.default_,
+                        label: '${state.step}/7',
+                        fontSize: 16,
+                      ),
+                    ],
+                  ),
+                if (!widget.hideHeader) const SizedBox(height: 32),
 
                 if (isBuy) _buildBuyFields(context, state),
                 if (isRent) _buildRentFields(context, state),

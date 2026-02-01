@@ -115,10 +115,9 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
                       : widget.hint,
                   style: GoogleFonts.anuphan(
                     fontSize: 14,
-                    // Placeholder (no value) should use #A4A7AE
                     color: widget.value != null
-                        ? AppColors.baseDarkGrey
-                        : const Color(0xFFA4A7AE),
+                        ? AppColors.baseBlack
+                        : AppColors.baseGrey,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),

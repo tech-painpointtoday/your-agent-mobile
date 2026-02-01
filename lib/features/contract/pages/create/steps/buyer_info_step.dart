@@ -15,7 +15,9 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import '../../../widgets/user_registration_bottom_sheet.dart';
 
 class BuyerInfoStep extends StatefulWidget {
-  const BuyerInfoStep({super.key});
+  final bool hideHeader;
+
+  const BuyerInfoStep({super.key, this.hideHeader = false});
 
   @override
   State<BuyerInfoStep> createState() => _BuyerInfoStepState();
@@ -75,22 +77,23 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Header Badge & Step
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      AppBadge(
-                        label: 'ข้อมูลผู้ซื้อ',
-                        fontSize: 16,
-                        color: BadgeColor.blue,
-                      ),
-                      AppBadge(
-                        color: BadgeColor.default_,
-                        fontSize: 16,
-                        label: '${state.step}/7',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
+                  if (!widget.hideHeader)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AppBadge(
+                          label: 'ข้อมูลผู้ซื้อ',
+                          fontSize: 16,
+                          color: BadgeColor.blue,
+                        ),
+                        AppBadge(
+                          color: BadgeColor.default_,
+                          fontSize: 16,
+                          label: '${state.step}/7',
+                        ),
+                      ],
+                    ),
+                  if (!widget.hideHeader) const SizedBox(height: 32),
 
                   // Person Type Selection
                   AppChipSelection<PersonType>(

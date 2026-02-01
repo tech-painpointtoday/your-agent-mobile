@@ -2,6 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:youragent/domain/entities/contract.dart';
+import 'package:youragent/features/contract/pages/edit/edit_contract_form_screen.dart';
+import 'package:youragent/features/contract/pages/edit/edit_contract_menu_screen.dart';
+import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/property/pages/create/create_property_screen.dart';
 import 'package:youragent/features/property/pages/edit/edit_property_form_screen.dart';
 import 'package:youragent/features/property/pages/edit/edit_property_menu_screen.dart';
@@ -242,6 +246,25 @@ class AppRouter {
       GoRoute(
         path: '/contract',
         builder: (context, state) => const ContractScreen(),
+      ),
+      GoRoute(
+        path: '/contract/edit',
+        builder: (context, state) {
+          final contract = state.extra as Contract;
+          return EditContractMenuScreen(contract: contract);
+        },
+      ),
+      GoRoute(
+        path: '/contract/edit-form',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return EditContractFormScreen(
+            contract: extra['contract'] as Contract,
+            stepType: extra['stepType'] as EditContractStepType,
+            title: extra['title'] as String,
+            bloc: extra['bloc'] as ContractFormBloc?,
+          );
+        },
       ),
       GoRoute(
         path: '/bureau',

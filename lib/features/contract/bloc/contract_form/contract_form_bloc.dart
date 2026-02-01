@@ -10,6 +10,7 @@ import 'package:youragent/services/contract_api_service.dart';
 import 'contract_form_event.dart';
 import 'contract_form_state.dart';
 import 'package:youragent/domain/entities/contract_type.dart';
+import 'package:youragent/domain/entities/contract_edit_data.dart';
 
 class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   final PropertyApiService _propertyApiService;
@@ -90,6 +91,183 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormLeaseStartDateUpdated>(_onLeaseStartDateUpdated);
     on<ContractFormLeaseEndDateUpdated>(_onLeaseEndDateUpdated);
     on<ContractFormAdditionalConditionsUpdated>(_onAdditionalConditionsUpdated);
+    on<ContractFormInitialized>(_onInitialized);
+    on<ContractFormEditStarted>(_onEditStarted);
+  }
+
+  Future<void> _onEditStarted(
+    ContractFormEditStarted event,
+    Emitter<ContractFormState> emit,
+  ) async {
+    emit(state.copyWith(status: ContractFormStatus.loading));
+    try {
+      final ContractEditData data = await _contractApiService
+          .getContractEditData(event.contractId);
+
+      final contract = data.contract;
+      final createData = data.config;
+
+      // Re-use logic to populate state from contract
+      // We essentially do what _onInitialized does, plus setting createData
+
+      // Helper to parse double
+      double parseDouble(String? val) {
+        if (val == null) return 0.0;
+        return double.tryParse(val.replaceAll(',', '')) ?? 0.0;
+      }
+
+      emit(
+        state.copyWith(
+          // Basic Info
+          contractId: contract.id,
+          selectedProperty: contract.property,
+          propertyName: contract.propertyName,
+          contractDate: contract.contractDate,
+          contractType: contract.contractType,
+          leaseFormat: contract.commonTerms ?? '',
+
+          // Owner
+          ownerType: contract.owner?.type ?? PersonType.individual,
+          ownerName: contract.owner?.name ?? '',
+          ownerIdCard: contract.owner?.idCard ?? '',
+          ownerAddress: contract.owner?.address ?? '',
+          ownerPhone: contract.owner?.phone ?? '',
+          ownerEmail: contract.owner?.email ?? '',
+          ownerSignatory: contract.owner?.signatory ?? '',
+
+          // Buyer
+          buyerType: contract.buyer?.type ?? PersonType.individual,
+          buyerName: contract.buyer?.name ?? '',
+          buyerIdCard: contract.buyer?.idCard ?? '',
+          buyerAddress: contract.buyer?.address ?? '',
+          buyerPhone: contract.buyer?.phone ?? '',
+          buyerEmail: contract.buyer?.email ?? '',
+
+          // Items
+          applianceItems: contract.appliances,
+          furnitureItems: contract.furniture,
+
+          // Payment
+          price: parseDouble(contract.monthlyRentalCost),
+          commonFee: parseDouble(contract.commonFee),
+          advanceRent: parseDouble(contract.advanceRent),
+          securityDeposit: parseDouble(contract.securityDeposit),
+          dueDate: contract.rentalPaymentDate,
+          paymentMethod: contract.paymentMethod ?? 'Bank',
+
+          // Bank Details
+          bankBranch: contract.bankAccounts.isNotEmpty
+              ? contract.bankAccounts.first.branch ?? ''
+              : '',
+          accountName: contract.bankAccounts.isNotEmpty
+              ? contract.bankAccounts.first.accountHolderName
+              : '',
+          accountNumber: contract.bankAccounts.isNotEmpty
+              ? contract.bankAccounts.first.accountNumber
+              : '',
+          bankCode: contract.bankAccounts.isNotEmpty
+              ? contract.bankAccounts.first.bankCode
+              : '',
+
+          // Additional
+          additionalConditions: contract.flexibleTerms ?? '',
+
+          // Config Data
+          contractCreateData: createData,
+          status: ContractFormStatus.initial,
+        ),
+      );
+
+      _validateCurrentStep(emit);
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: ContractFormStatus.failure,
+          errorMessage: 'Failed to fetch contract edit data: $e',
+        ),
+      );
+    }
+  }
+
+  void _onInitialized(
+    ContractFormInitialized event,
+    Emitter<ContractFormState> emit,
+  ) {
+    final c = event.contract;
+
+    // Parse numeric values with defaults
+    double parseDouble(String? val) {
+      if (val == null) return 0.0;
+      return double.tryParse(val.replaceAll(',', '')) ?? 0.0;
+    }
+
+    // Parse date if string, though entity has DateTime?
+    // Entity fields are already DateTime? or String?
+
+    emit(
+      state.copyWith(
+        // Basic Info
+        contractId: c.id,
+        selectedProperty: c.property,
+        propertyName: c.propertyName,
+        contractDate: c.contractDate,
+        contractType: c.contractType,
+        leaseFormat:
+            c.commonTerms ??
+            '', // Assuming map to lease format if needed, or separate field
+        // Note: Lease Start/End dates might be in flexibleTerms or strictly not in current entity structure clearly.
+        // Assuming current display logic uses Entity fields.
+
+        // Owner
+        ownerType: c.owner?.type ?? PersonType.individual,
+        ownerName: c.owner?.name ?? '',
+        ownerIdCard: c.owner?.idCard ?? '',
+        ownerAddress: c.owner?.address ?? '',
+        ownerPhone: c.owner?.phone ?? '',
+        ownerEmail: c.owner?.email ?? '',
+        ownerSignatory: c.owner?.signatory ?? '', // Assuming mapped/available
+        // Buyer
+        buyerType: c.buyer?.type ?? PersonType.individual,
+        buyerName: c.buyer?.name ?? '',
+        buyerIdCard: c.buyer?.idCard ?? '',
+        buyerAddress: c.buyer?.address ?? '',
+        buyerPhone: c.buyer?.phone ?? '',
+        buyerEmail: c.buyer?.email ?? '',
+
+        // Items
+        applianceItems: c.appliances,
+        furnitureItems: c.furniture,
+
+        // Payment
+        price: parseDouble(c.monthlyRentalCost),
+        commonFee: parseDouble(c.commonFee),
+        // otherServiceFee: not directly in entity unless mapped
+        advanceRent: parseDouble(c.advanceRent),
+        securityDeposit: parseDouble(c.securityDeposit),
+        dueDate: c.rentalPaymentDate,
+        // lateFee: not directly in entity
+        paymentMethod: c.paymentMethod ?? 'Bank',
+        // Bank details would need to be extracted from c.bankAccounts if singular or picked
+        bankBranch: c.bankAccounts.isNotEmpty
+            ? c.bankAccounts.first.branch ?? ''
+            : '',
+        accountName: c.bankAccounts.isNotEmpty
+            ? c.bankAccounts.first.accountHolderName
+            : '',
+        accountNumber: c.bankAccounts.isNotEmpty
+            ? c.bankAccounts.first.accountNumber
+            : '',
+        bankCode: c.bankAccounts.isNotEmpty
+            ? c.bankAccounts.first.bankCode
+            : '',
+        // Additional
+        additionalConditions:
+            c.flexibleTerms ??
+            '', // Assuming this maps to additional conditions
+      ),
+    );
+
+    _validateCurrentStep(emit);
   }
 
   void _onStepChanged(
@@ -640,9 +818,21 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   ) async {
     emit(state.copyWith(status: ContractFormStatus.submmitting));
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-      emit(state.copyWith(status: ContractFormStatus.success));
+      final contractData = _collectContractData();
+
+      if (state.contractId != null) {
+        // Update existing contract
+        await _contractApiService.updateContract(
+          id: state.contractId!,
+          data: contractData,
+        );
+        emit(state.copyWith(status: ContractFormStatus.success));
+      } else {
+        // Create new contract logic placeholder
+        // Since we are focusing on edit refactor, we just emit success for now
+        // or implement create logic if known. Acknowledging existing placeholder behavior.
+        emit(state.copyWith(status: ContractFormStatus.success));
+      }
     } catch (e) {
       emit(
         state.copyWith(
@@ -651,6 +841,92 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         ),
       );
     }
+  }
+
+  Map<String, dynamic> _collectContractData() {
+    return {
+      if (state.contractId != null) 'id': state.contractId,
+      'property_id': state.selectedProperty?.id,
+      'contract_date': state.contractDate?.toIso8601String(),
+      'contract_type': state.contractType == ContractType.buy ? 'buy' : 'rent',
+
+      // Step 2: Owner
+      'owner': {
+        'type': state.ownerType == PersonType.individual
+            ? 'individual'
+            : 'juristic',
+        'name': state.ownerName,
+        'id_card': state.ownerIdCard,
+        'address': state.ownerAddress,
+        'phone': state.ownerPhone,
+        'email': state.ownerEmail,
+        if (state.ownerType == PersonType.juristic)
+          'signatory': state.ownerSignatory,
+      },
+
+      // Step 3: Buyer
+      'buyer': {
+        'type': state.buyerType == PersonType.individual
+            ? 'individual'
+            : 'juristic',
+        'name': state.buyerName,
+        'id_card': state.buyerIdCard,
+        'address': state.buyerAddress,
+        'phone': state.buyerPhone,
+        'email': state.buyerEmail,
+      },
+
+      // Step 4: Appliances
+      'appliances': state.applianceItems.map((item) {
+        return {
+          'id': item.id,
+          'name': item.name,
+          'description': item.description,
+          'property_image_id': item.propertyImageId,
+          'existing_photo_url': item.existingPhotoUrl,
+          // 'images': item.images,
+        };
+      }).toList(),
+
+      // Step 5: Furniture
+      'furniture': state.furnitureItems.map((item) {
+        return {
+          'id': item.id,
+          'name': item.name,
+          'description': item.description,
+          'property_image_id': item.propertyImageId,
+          'existing_photo_url': item.existingPhotoUrl,
+        };
+      }).toList(),
+
+      // Step 6: Payment
+      'monthly_rental_cost': state.price,
+      'common_fee': state.commonFee,
+      'other_service_fee': state.otherServiceFee,
+      'advance_rent': state.advanceRent,
+      'security_deposit': state.securityDeposit,
+      'rental_payment_date': state.dueDate,
+      'late_fee': state.lateFee,
+      'payment_method': state.paymentMethod,
+
+      'bank_accounts': [
+        if (state.paymentMethod == 'Bank')
+          {
+            'bank_code': state.bankCode,
+            'branch': state.bankBranch,
+            'account_holder_name': state.accountName,
+            'account_number': state.accountNumber,
+          },
+      ],
+
+      // Step 7/Refinement
+      'common_terms': state.leaseFormat,
+      'flexible_terms': state.additionalConditions,
+
+      // Dates
+      'lease_start_date': state.leaseStartDate?.toIso8601String(),
+      'lease_end_date': state.leaseEndDate?.toIso8601String(),
+    };
   }
 
   void _onAppliancePropertyImageSelected(

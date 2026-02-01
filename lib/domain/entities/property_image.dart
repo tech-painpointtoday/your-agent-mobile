@@ -27,8 +27,12 @@ class PropertyImage extends Equatable {
 
   factory PropertyImage.fromJson(Map<String, dynamic> json) {
     return PropertyImage(
-      id: json['id'] as int?,
-      propertyId: json['property_id'] as int?,
+      id: json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? ''),
+      propertyId: json['property_id'] is int
+          ? json['property_id']
+          : int.tryParse(json['property_id']?.toString() ?? ''),
       url: json['url'] as String?, // Assuming API returns 'url'
       path: json['path'] as String?,
       fileName: json['file_name'] as String?,

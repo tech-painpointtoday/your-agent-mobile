@@ -17,6 +17,7 @@ class ContractFormState extends Equatable {
   final bool isValid;
 
   // Step 1 Data
+  final int? contractId;
   final String propertyName;
   final DateTime? contractDate;
   final ContractType? contractType;
@@ -75,6 +76,7 @@ class ContractFormState extends Equatable {
 
   const ContractFormState({
     this.step = 1,
+    this.contractId,
     this.status = ContractFormStatus.initial,
     this.errorMessage,
     this.isValid = false,
@@ -126,6 +128,7 @@ class ContractFormState extends Equatable {
 
   ContractFormState copyWith({
     int? step,
+    int? contractId,
     ContractFormStatus? status,
     String? errorMessage,
     bool? isValid,
@@ -176,6 +179,7 @@ class ContractFormState extends Equatable {
   }) {
     return ContractFormState(
       step: step ?? this.step,
+      contractId: contractId ?? this.contractId,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
       isValid: isValid ?? this.isValid,
@@ -229,6 +233,7 @@ class ContractFormState extends Equatable {
   @override
   List<Object?> get props => [
     step,
+    contractId,
     status,
     errorMessage,
     isValid,

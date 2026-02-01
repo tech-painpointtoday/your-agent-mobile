@@ -15,7 +15,9 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import '../../../widgets/user_registration_bottom_sheet.dart';
 
 class PropertyOwnerStep extends StatefulWidget {
-  const PropertyOwnerStep({super.key});
+  final bool hideHeader;
+
+  const PropertyOwnerStep({super.key, this.hideHeader = false});
 
   @override
   State<PropertyOwnerStep> createState() => _PropertyOwnerStepState();
@@ -79,22 +81,23 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Header Badge & Step
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      AppBadge(
-                        label: 'ข้อมูลเจ้าของทรัพย์',
-                        fontSize: 16,
-                        color: BadgeColor.blue,
-                      ),
-                      AppBadge(
-                        color: BadgeColor.default_,
-                        label: '${state.step}/7',
-                        fontSize: 16,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
+                  if (!widget.hideHeader)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AppBadge(
+                          label: 'ข้อมูลเจ้าของทรัพย์',
+                          fontSize: 16,
+                          color: BadgeColor.blue,
+                        ),
+                        AppBadge(
+                          color: BadgeColor.default_,
+                          label: '${state.step}/7',
+                          fontSize: 16,
+                        ),
+                      ],
+                    ),
+                  if (!widget.hideHeader) const SizedBox(height: 32),
 
                   // Person Type Selection
                   AppChipSelection<PersonType>(

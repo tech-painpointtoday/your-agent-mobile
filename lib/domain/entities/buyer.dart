@@ -24,7 +24,9 @@ class Buyer extends Equatable {
 
   factory Buyer.fromJson(Map<String, dynamic> json) {
     return Buyer(
-      id: json['id'] as int?,
+      id: json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? ''),
       name: (json['name'] ?? '').toString(),
       idCard: json['id_card']?.toString(),
       address: json['address']?.toString(),
@@ -34,7 +36,7 @@ class Buyer extends Equatable {
           ? PersonType.juristic
           : PersonType.individual,
       createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+          ? DateTime.parse(json['created_at'].toString())
           : null,
     );
   }

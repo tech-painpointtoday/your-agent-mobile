@@ -7,7 +7,9 @@ import 'package:youragent/features/contract/bloc/contract_form/contract_form_eve
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
 
 class AdditionalConditionsStep extends StatefulWidget {
-  const AdditionalConditionsStep({super.key});
+  final bool hideHeader;
+
+  const AdditionalConditionsStep({super.key, this.hideHeader = false});
 
   @override
   State<AdditionalConditionsStep> createState() =>
@@ -36,22 +38,23 @@ class _AdditionalConditionsStepState extends State<AdditionalConditionsStep> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const AppBadge(
-                        label: 'เงื่อนไขสัญญาเพิ่มเติม',
-                        fontSize: 16,
-                        color: BadgeColor.blue,
-                      ),
-                      AppBadge(
-                        color: BadgeColor.default_,
-                        fontSize: 16,
-                        label: '${state.step}/7',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
+                  if (!widget.hideHeader)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const AppBadge(
+                          label: 'เงื่อนไขสัญญาเพิ่มเติม',
+                          fontSize: 16,
+                          color: BadgeColor.blue,
+                        ),
+                        AppBadge(
+                          color: BadgeColor.default_,
+                          fontSize: 16,
+                          label: '${state.step}/7',
+                        ),
+                      ],
+                    ),
+                  if (!widget.hideHeader) const SizedBox(height: 24),
                   AppTextField(
                     label: 'เงื่อนไขสัญญาเพิ่มเติม',
                     hintText: 'ระบุเงื่อนไข...',

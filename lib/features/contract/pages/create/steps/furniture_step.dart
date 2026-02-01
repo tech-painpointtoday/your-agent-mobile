@@ -16,7 +16,9 @@ import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 
 class FurnitureStep extends StatefulWidget {
-  const FurnitureStep({super.key});
+  final bool hideHeader;
+
+  const FurnitureStep({super.key, this.hideHeader = false});
 
   @override
   State<FurnitureStep> createState() => _FurnitureStepState();
@@ -256,22 +258,23 @@ class _FurnitureStepState extends State<FurnitureStep> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    AppBadge(
-                      color: BadgeColor.default_,
-                      label: 'รูปภาพเฟอร์นิเจอร์',
-                      fontSize: 16,
-                    ),
-                    AppBadge(
-                      color: BadgeColor.default_,
-                      label: '${state.step}/7',
-                      fontSize: 16,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
+                if (!widget.hideHeader)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      AppBadge(
+                        color: BadgeColor.default_,
+                        label: 'รูปภาพเฟอร์นิเจอร์',
+                        fontSize: 16,
+                      ),
+                      AppBadge(
+                        color: BadgeColor.default_,
+                        label: '${state.step}/7',
+                        fontSize: 16,
+                      ),
+                    ],
+                  ),
+                if (!widget.hideHeader) const SizedBox(height: 24),
 
                 if (state.furnitureItems.isEmpty)
                   _buildAddItemButton(context)

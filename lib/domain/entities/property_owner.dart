@@ -26,7 +26,9 @@ class PropertyOwner extends Equatable {
 
   factory PropertyOwner.fromJson(Map<String, dynamic> json) {
     return PropertyOwner(
-      id: json['id'] as int?,
+      id: json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? ''),
       name: (json['name'] ?? '').toString(),
       idCard: (json['id_card'] ?? json['national_id'])?.toString(),
       address: json['address']?.toString(),
@@ -37,7 +39,7 @@ class PropertyOwner extends Equatable {
           ? PersonType.juristic
           : PersonType.individual,
       createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+          ? DateTime.parse(json['created_at'].toString())
           : null,
     );
   }

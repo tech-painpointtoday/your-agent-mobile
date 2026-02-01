@@ -1,14 +1,12 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/contract.dart';
-import '../../../domain/entities/contract_status.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
 import '../../../widgets/badges/app_badge.dart';
@@ -16,7 +14,7 @@ import '../bloc/contract_detail_bloc.dart';
 import '../widgets/contract_status_badge.dart';
 
 class ContractDetailScreen extends StatefulWidget {
-  final String contractId;
+  final int contractId;
 
   const ContractDetailScreen({super.key, required this.contractId});
 
@@ -43,17 +41,31 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     super.dispose();
   }
 
-  void _initPdf(String path) async {
+  void _initPdf(Future<PdfDocument> documentFuture) async {
     if (_isPdfLoaded) return;
-    final documentFuture = PdfDocument.openFile(path);
-    _pdfController = PdfControllerPinch(document: documentFuture);
 
-    final document = await documentFuture;
-    if (mounted) {
-      setState(() {
-        _totalPages = document.pagesCount;
-        _isPdfLoaded = true;
-      });
+    try {
+      // Wait for the document to fully load first
+      final document = await documentFuture;
+
+      if (!mounted) return;
+
+      // Create the controller only after document is fully loaded
+      _pdfController = PdfControllerPinch(document: Future.value(document));
+
+      if (mounted) {
+        setState(() {
+          _totalPages = document.pagesCount;
+          _isPdfLoaded = true;
+        });
+      }
+    } catch (e) {
+      print('Error initializing PDF: $e');
+      if (mounted) {
+        setState(() {
+          _isPdfLoaded = false;
+        });
+      }
     }
   }
 
@@ -65,8 +77,8 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             ..add(FetchContractDetail(widget.contractId)),
       child: BlocConsumer<ContractDetailBloc, ContractDetailState>(
         listener: (context, state) {
-          if (state is ContractDetailLoaded && state.pdfPath != null) {
-            _initPdf(state.pdfPath!);
+          if (state is ContractDetailLoaded && state.pdfDocument != null) {
+            _initPdf(state.pdfDocument!);
           } else if (state is ContractDetailError) {
             StatusDialog.showError(
               context: context,
@@ -97,8 +109,10 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                   const SizedBox(height: 16),
                   _buildHeader(context, state),
                   const SizedBox(height: 12),
-                  if (state is ContractDetailLoaded) ...[
-                    _buildInfoSection(state.contract),
+                  if (state is ContractDetailLoadedWithoutPdf ||
+                      state is ContractDetailPdfLoading ||
+                      state is ContractDetailLoaded) ...[
+                    _buildInfoSection(_getContract(state)),
                     _buildDocumentActions(state),
                     const SizedBox(height: 24),
                     const Divider(color: AppColors.baseLightGrey),
@@ -119,13 +133,27 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     );
   }
 
+  Contract _getContract(ContractDetailState state) {
+    if (state is ContractDetailLoadedWithoutPdf) {
+      return state.contract;
+    } else if (state is ContractDetailPdfLoading) {
+      return state.contract;
+    } else if (state is ContractDetailLoaded) {
+      return state.contract;
+    }
+    throw StateError('Cannot get contract from state: $state');
+  }
+
   Widget _buildHeader(BuildContext context, ContractDetailState state) {
     String contractNumber = '-';
     String propertyName = 'กำลังโหลด...';
 
-    if (state is ContractDetailLoaded) {
-      contractNumber = state.contract.contractNumber;
-      propertyName = state.contract.propertyName;
+    if (state is ContractDetailLoadedWithoutPdf ||
+        state is ContractDetailPdfLoading ||
+        state is ContractDetailLoaded) {
+      final contract = _getContract(state);
+      contractNumber = contract.contractNumber;
+      propertyName = contract.propertyName;
     }
 
     return Padding(
@@ -278,7 +306,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                   isSigned: contract.sellerSignedAt != null,
                   onSend: () {
                     context.read<ContractDetailBloc>().add(
-                      SendContractToSeller(contract.id),
+                      SendContractToSeller(contract.id!),
                     );
                   },
                 ),
@@ -291,7 +319,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                   isSigned: contract.buyerSignedAt != null,
                   onSend: () {
                     context.read<ContractDetailBloc>().add(
-                      SendContractToBuyer(contract.id),
+                      SendContractToBuyer(contract.id!),
                     );
                   },
                 ),
@@ -484,8 +512,45 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
   }
 
   Widget _buildPdfViewer(ContractDetailState state) {
+    // Show loading indicator for states before PDF is ready
+    if (state is ContractDetailLoadedWithoutPdf ||
+        state is ContractDetailPdfLoading) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(
+              'กำลังโหลด PDF...',
+              style: GoogleFonts.anuphan(
+                fontSize: 14,
+                color: AppColors.baseGrey,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Show loading while PDF controller initializes
     if (!_isPdfLoaded) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(
+              'กำลังเตรียม PDF...',
+              style: GoogleFonts.anuphan(
+                fontSize: 14,
+                color: AppColors.baseGrey,
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return Stack(
@@ -524,10 +589,15 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
   }
 
   Widget _buildBottomActions(BuildContext context, ContractDetailState state) {
-    if (state is! ContractDetailLoaded) return const SizedBox.shrink();
+    if (state is! ContractDetailLoadedWithoutPdf &&
+        state is! ContractDetailPdfLoading &&
+        state is! ContractDetailLoaded) {
+      return const SizedBox.shrink();
+    }
 
-    final isDraft = state.contract.status == ContractStatus.draft;
-    final buttonText = isDraft ? 'เพิ่มข้อมูลต่อ' : 'แก้ไขสัญญา';
+    final contract = _getContract(state);
+
+    const buttonText = 'แก้ไขสัญญา';
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -574,9 +644,9 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             child: AppButton(
               text: buttonText,
               style: AppButtonStyle.primary,
-              height: 48,
+              height: 44,
               onPressed: () {
-                // TODO: Navigate to edit/create flow
+                context.push('/contract/edit', extra: contract);
               },
             ),
           ),

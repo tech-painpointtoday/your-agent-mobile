@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../domain/entities/contract.dart';
 import '../domain/entities/contract_create_data.dart';
+import '../domain/entities/contract_edit_data.dart';
 import 'api_client.dart';
 import 'api_response_service.dart';
 
@@ -48,7 +49,7 @@ class ContractApiService {
 
   /// Delete Contract
   /// DELETE /agent/contracts/{id}
-  Future<void> deleteContract({required String contractId}) async {
+  Future<void> deleteContract({required int contractId}) async {
     try {
       final response = await _apiClient.delete('/agent/contracts/$contractId');
 
@@ -103,7 +104,7 @@ class ContractApiService {
 
   /// Get Contract Detail
   /// GET /agent/contracts/{id}
-  Future<Contract> getContractDetail({required String contractId}) async {
+  Future<Contract> getContractDetail({required int contractId}) async {
     try {
       final response = await _apiClient.get('/agent/contracts/$contractId');
 
@@ -129,7 +130,7 @@ class ContractApiService {
 
   /// Get Contract PDF
   /// GET /agent/contracts/{id}/pdf
-  Future<List<int>> getContractPdf({required String contractId}) async {
+  Future<List<int>> getContractPdf({required int contractId}) async {
     try {
       final response = await _apiClient.get(
         '/agent/contracts/$contractId/pdf',
@@ -152,7 +153,7 @@ class ContractApiService {
 
   /// Send Contract to Seller
   /// POST /agent/contracts/{id}/send-to-seller
-  Future<void> sendToSeller({required String contractId}) async {
+  Future<void> sendToSeller({required int contractId}) async {
     try {
       final response = await _apiClient.post(
         '/agent/contracts/$contractId/send-to-seller',
@@ -177,7 +178,7 @@ class ContractApiService {
 
   /// Send Contract to Buyer
   /// POST /agent/contracts/{id}/send-to-buyer
-  Future<void> sendToBuyer({required String contractId}) async {
+  Future<void> sendToBuyer({required int contractId}) async {
     try {
       final response = await _apiClient.post(
         '/agent/contracts/$contractId/send-to-buyer',
@@ -197,6 +198,57 @@ class ContractApiService {
         throw Exception(errorMessage);
       }
       throw Exception('Failed to send to buyer: $e');
+    }
+  }
+
+  Future<void> updateContract({
+    required int id,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      final response = await _apiClient.put('/agent/contracts/$id', data: data);
+
+      final apiResponse = ApiResponseService.parseResponse<void>(
+        response,
+        null,
+      );
+
+      if (!apiResponse.success) {
+        throw Exception(apiResponse.message ?? 'Failed to update contract');
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to update contract: $e');
+    }
+  }
+
+  /// Get Contract Edit Data
+  /// GET /agent/contracts/{id}/edit
+  Future<ContractEditData> getContractEditData(dynamic id) async {
+    try {
+      final response = await _apiClient.get('/agent/contracts/$id/edit');
+      final apiResponse =
+          ApiResponseService.parseResponse<Map<String, dynamic>>(
+            response,
+            (json) => json as Map<String, dynamic>,
+          );
+
+      if (!apiResponse.success || apiResponse.data == null) {
+        throw Exception(
+          apiResponse.message ?? 'Failed to load contract edit data',
+        );
+      }
+
+      return ContractEditData.fromJson(apiResponse.data!);
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to load contract edit data: $e');
     }
   }
 }

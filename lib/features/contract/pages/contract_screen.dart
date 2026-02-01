@@ -333,7 +333,7 @@ class _ContractScreenState extends State<ContractScreen> {
             final result = await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) =>
-                    ContractDetailScreen(contractId: contract.id),
+                    ContractDetailScreen(contractId: contract.id!),
               ),
             );
             if (result == true) {

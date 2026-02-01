@@ -41,27 +41,31 @@ class PropertyLocation extends Equatable {
 
   factory PropertyLocation.fromJson(Map<String, dynamic> json) {
     return PropertyLocation(
-      id: json['id'] as int?,
-      propertyId: json['property_id'] as int?,
-      address: json['address'] as String?,
-      villageName: json['village_name'] as String?,
-      subDistrict: json['sub_district'] as String?,
-      subdistrict: json['subdistrict'] as String?,
-      district: json['district'] as String?,
-      province: json['province'] as String?,
-      zipcode: json['zipcode'] as String?,
-      postalCode: json['postal_code'] as String?,
-      country: json['country'] as String?,
+      id: json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? ''),
+      propertyId: json['property_id'] is int
+          ? json['property_id']
+          : int.tryParse(json['property_id']?.toString() ?? ''),
+      address: json['address']?.toString(),
+      villageName: json['village_name']?.toString(),
+      subDistrict: json['sub_district']?.toString(),
+      subdistrict: json['subdistrict']?.toString(),
+      district: json['district']?.toString(),
+      province: json['province']?.toString(),
+      zipcode: json['zipcode']?.toString(),
+      postalCode: json['postal_code']?.toString(),
+      country: json['country']?.toString(),
       latitude: json['latitude'] != null
           ? double.tryParse(json['latitude'].toString())
           : null,
       longitude: json['longitude'] != null
           ? double.tryParse(json['longitude'].toString())
           : null,
-      city: json['city'] as String? ?? json['district'] as String?,
-      state: json['state'] as String? ?? json['province'] as String?,
-      formattedAddressTh: json['formatted_address_th'] as String?,
-      formattedAddressEn: json['formatted_address_en'] as String?,
+      city: json['city']?.toString() ?? json['district']?.toString(),
+      state: json['state']?.toString() ?? json['province']?.toString(),
+      formattedAddressTh: json['formatted_address_th']?.toString(),
+      formattedAddressEn: json['formatted_address_en']?.toString(),
     );
   }
 

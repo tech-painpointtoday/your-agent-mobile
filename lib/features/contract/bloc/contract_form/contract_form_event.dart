@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:youragent/domain/entities/contract.dart';
 import 'package:youragent/domain/entities/contract_type.dart';
-import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/person_type.dart';
+import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/property_owner.dart';
 import 'package:youragent/domain/entities/buyer.dart';
 import 'package:youragent/domain/entities/appliance_item.dart';
@@ -12,6 +13,22 @@ abstract class ContractFormEvent extends Equatable {
 
   @override
   List<Object?> get props => [];
+}
+
+class ContractFormInitialized extends ContractFormEvent {
+  final Contract contract;
+  const ContractFormInitialized(this.contract);
+
+  @override
+  List<Object?> get props => [contract];
+}
+
+class ContractFormEditStarted extends ContractFormEvent {
+  final int contractId;
+  const ContractFormEditStarted(this.contractId);
+
+  @override
+  List<Object?> get props => [contractId];
 }
 
 class ContractFormStepChanged extends ContractFormEvent {

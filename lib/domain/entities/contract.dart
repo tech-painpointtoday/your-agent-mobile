@@ -9,7 +9,7 @@ import 'buyer.dart';
 import 'property_owner.dart';
 
 class Contract extends Equatable {
-  final String id;
+  final int? id;
   final String contractNumber;
   final String propertyName;
   final String lessor;
@@ -123,7 +123,9 @@ class Contract extends Equatable {
     }
 
     return Contract(
-      id: json['id']?.toString() ?? '',
+      id: json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? ''),
       contractNumber: formatContractNumber(json['id']),
       propertyName: pName,
       lessor: lessorName ?? 'N/A',
@@ -134,18 +136,18 @@ class Contract extends Equatable {
       ),
       propertyType: _mapPropertyType(specs['type']?.toString()),
       createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+          ? DateTime.parse(json['created_at'].toString())
           : null,
       updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
+          ? DateTime.parse(json['updated_at'].toString())
           : null,
       sellerSignedContractUrl: json['seller_signed_contract_url']?.toString(),
       sellerSignedAt: json['seller_signed_at'] != null
-          ? DateTime.parse(json['seller_signed_at'])
+          ? DateTime.parse(json['seller_signed_at'].toString())
           : null,
       buyerSignedContractUrl: json['buyer_signed_contract_url']?.toString(),
       buyerSignedAt: json['buyer_signed_at'] != null
-          ? DateTime.parse(json['buyer_signed_at'])
+          ? DateTime.parse(json['buyer_signed_at'].toString())
           : null,
       monthlyRentalCost: json['monthly_rental_cost']?.toString(),
       upfrontFee: json['upfront_fee']?.toString(),
@@ -154,7 +156,7 @@ class Contract extends Equatable {
           : int.tryParse(json['rental_payment_date']?.toString() ?? ''),
       signingPlace: json['signing_place']?.toString(),
       contractDate: json['contract_date'] != null
-          ? DateTime.parse(json['contract_date'])
+          ? DateTime.parse(json['contract_date'].toString())
           : null,
       propertyUnitNo: json['property_unit_no']?.toString(),
       propertyFloor: json['property_floor']?.toString(),

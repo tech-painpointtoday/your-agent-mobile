@@ -47,12 +47,16 @@ class PropertySpec extends Equatable {
 
   factory PropertySpec.fromJson(Map<String, dynamic> json) {
     return PropertySpec(
-      id: json['id'] as int?,
-      propertyId: json['property_id'] as int?,
-      type: json['type'] as String?,
-      name: json['name'] as String?,
-      description: json['description'] as String?,
-      address: json['address'] as String?,
+      id: json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id']?.toString() ?? ''),
+      propertyId: json['property_id'] is int
+          ? json['property_id']
+          : int.tryParse(json['property_id']?.toString() ?? ''),
+      type: json['type']?.toString(),
+      name: json['name']?.toString(),
+      description: json['description']?.toString(),
+      address: json['address']?.toString(),
       price: json['price']?.toString(),
       bedrooms: json['bedrooms'] is int
           ? json['bedrooms'] as int?
@@ -75,10 +79,14 @@ class PropertySpec extends Equatable {
       horaScore: json['hora_score'] != null
           ? double.tryParse(json['hora_score'].toString())
           : null,
-      fengshuiStars: json['fengshui_stars'] as int?,
-      horaStars: json['hora_stars'] as int?,
-      houseColor: json['house_color'] as String?,
-      availableFrom: json['available_from'] as String?,
+      fengshuiStars: json['fengshui_stars'] is int
+          ? json['fengshui_stars'] as int?
+          : int.tryParse(json['fengshui_stars']?.toString() ?? ''),
+      horaStars: json['hora_stars'] is int
+          ? json['hora_stars'] as int?
+          : int.tryParse(json['hora_stars']?.toString() ?? ''),
+      houseColor: json['house_color']?.toString(),
+      availableFrom: json['available_from']?.toString(),
       specifications: json['specifications'] is Map<String, dynamic>
           ? json['specifications'] as Map<String, dynamic>
           : null,
