@@ -32,7 +32,17 @@ import '../features/property/pages/property_detail_screen.dart';
 import '../features/property/pages/mock_property_test_screen.dart';
 import '../features/public/pages/policy_screen.dart';
 import '../features/splash/splash_screen.dart';
+import '../features/profile/bloc/profile_bloc.dart';
+import '../features/profile/models/agent_profile.dart';
+import '../features/profile/pages/profile_screen.dart';
+import '../features/profile/pages/personal_info_form_screen.dart';
+import '../features/profile/pages/service_area_form_screen.dart';
+import '../features/profile/pages/work_info_form_screen.dart';
 import '../widgets/main_navigation_screen.dart';
+
+/// Route observer used so ProfileScreen can refetch when user navigates back to it.
+final RouteObserver<ModalRoute<dynamic>> profileRouteObserver =
+    RouteObserver<ModalRoute<dynamic>>();
 
 class AppRouter {
   final Function(Locale) changeLocale;
@@ -42,6 +52,7 @@ class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: '/splash',
     refreshListenable: DependencyInjection.authRepository as ChangeNotifier,
+    observers: [profileRouteObserver],
     redirect: (context, state) {
       final authRepo = DependencyInjection.authRepository;
       final isLoggedIn = authRepo.isAuthenticated;
@@ -75,6 +86,8 @@ class AppRouter {
         '/bureau',
         '/activities',
         '/notifications',
+        '/profile',
+        '/agent',
       ];
 
       final isProtectedRoute = protectedRoutes.any(
@@ -170,6 +183,47 @@ class AppRouter {
       GoRoute(
         path: '/notifications',
         builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: '/profile/edit',
+        builder: (context, state) {
+          final agent = state.extra as AgentDetails?;
+          return BlocProvider(
+            create: (context) =>
+                ProfileBloc(DependencyInjection.authApiService),
+            child: PersonalInfoFormScreen(agent: agent),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/agent/profile',
+        builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: '/profile/work-info',
+        builder: (context, state) {
+          final agent = state.extra as AgentDetails?;
+          return BlocProvider(
+            create: (context) =>
+                ProfileBloc(DependencyInjection.authApiService),
+            child: WorkInfoFormScreen(agent: agent),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/profile/service-area',
+        builder: (context, state) {
+          final agent = state.extra as AgentDetails?;
+          return BlocProvider(
+            create: (context) =>
+                ProfileBloc(DependencyInjection.authApiService),
+            child: ServiceAreaFormScreen(agent: agent),
+          );
+        },
       ),
       GoRoute(
         path: '/notifications/:id',

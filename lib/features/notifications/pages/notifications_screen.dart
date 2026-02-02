@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../widgets/dialogs/status_dialog.dart';
+import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/notification_bloc.dart';
 import '../bloc/notification_event.dart';
 import '../bloc/notification_state.dart';
@@ -27,17 +27,19 @@ class NotificationsScreen extends StatelessWidget {
 class _NotificationsScreenContent extends StatelessWidget {
   const _NotificationsScreenContent();
 
-  void _markAllAsRead(BuildContext context) async {
-    final confirmed = await StatusDialog.showConfirmation(
+  void _markAllAsRead(BuildContext context) {
+    AppConfirmationBottomSheet.show(
       context: context,
       title: 'Mark All as Read',
-      message: 'Are you sure you want to mark all notifications as read?',
-      confirmText: 'Mark as Read',
-      cancelText: 'Cancel',
+      description:
+          'Are you sure you want to mark all notifications as read?',
+      confirmLabel: 'Mark as Read',
+      cancelLabel: 'Cancel',
+      style: ConfirmationStyle.normal,
+      onConfirm: () {
+        context.read<NotificationBloc>().add(const MarkAllAsRead());
+      },
     );
-    if (confirmed) {
-      context.read<NotificationBloc>().add(const MarkAllAsRead());
-    }
   }
 
   @override

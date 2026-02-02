@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youragent/widgets/buttons/app_button.dart';
 
 import '../theme/app_colors.dart';
 import '../di/dependency_injection.dart';
@@ -22,10 +24,13 @@ class AppErrorHandler {
 
       final context = navigatorKey.currentContext;
       if (context != null) {
+        final message = error.toString();
         StatusDialog.showErrorDialog(
           context: context,
-          title: 'Unexpected Error',
-          message: 'An unexpected error occurred. Please try again.',
+          title: 'เกิดข้อผิดพลาด',
+          message: message.isNotEmpty
+              ? message
+              : 'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองอีกครั้ง',
         );
       }
 
@@ -112,6 +117,18 @@ class _FriendlyErrorWidget extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+
+                  const Spacer(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: AppButton(
+                      text: 'Back',
+                      style: AppButtonStyle.outline,
+                      onPressed: () {
+                        context.pop();
+                      },
+                    ),
                   ),
                 ],
               ),

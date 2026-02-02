@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
 import '../../../widgets/form_fields/labeled_password_field.dart';
+import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -40,21 +41,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   void _onConfirmPressed() {
     if (!_formKey.currentState!.validate()) return;
 
-    StatusDialog.showConfirmation(
+    AppConfirmationBottomSheet.show(
       context: context,
       title: 'ยืนยันการเปลี่ยนรหัสผ่าน',
-      message: 'คุณแน่ใจหรือไม่ที่จะใช้รหัสผ่านนี้?',
-      confirmText: 'ยืนยัน',
-      cancelText: 'ยกเลิก',
-      onConfirmed: () {
+      description: 'คุณแน่ใจหรือไม่ที่จะใช้รหัสผ่านนี้?',
+      confirmLabel: 'ยืนยัน',
+      cancelLabel: 'ยกเลิก',
+      style: ConfirmationStyle.normal,
+      onConfirm: () {
         context.read<AuthBloc>().add(
-          AuthResetPasswordRequested(
-            token: widget.token,
-            email: widget.email,
-            password: _passwordController.text,
-            passwordConfirmation: _passwordConfirmationController.text,
-          ),
-        );
+              AuthResetPasswordRequested(
+                token: widget.token,
+                email: widget.email,
+                password: _passwordController.text,
+                passwordConfirmation: _passwordConfirmationController.text,
+              ),
+            );
       },
     );
   }

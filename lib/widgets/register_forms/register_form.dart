@@ -6,8 +6,8 @@ import '../../core/theme/app_colors.dart';
 import '../../domain/entities/user.dart';
 import '../../l10n/app_localizations.dart';
 import '../buttons/app_button.dart';
-import '../dialogs/status_dialog.dart';
 import '../form_fields/labeled_dropdown_field.dart';
+import '../modals/app_confirmation_bottom_sheet.dart';
 import '../form_fields/labeled_password_field.dart';
 import '../form_fields/labeled_text_form_field.dart';
 import '../form_fields/social_login_section.dart';
@@ -178,16 +178,17 @@ class _RegisterFormState extends State<RegisterForm> {
             style: AppButtonStyle.primary,
             height: 52,
             onPressed: (canSubmit && !widget.isLoading)
-                ? () async {
-                    final confirmed = await StatusDialog.showConfirmation(
+                ? () {
+                    AppConfirmationBottomSheet.show(
                       context: context,
                       title: l10n.confirm,
-                      message: 'Do you want to register?',
-                      confirmText: l10n.confirm,
-                      cancelText: l10n.cancel_button,
+                      description: 'Do you want to register?',
+                      confirmLabel: l10n.confirm,
+                      cancelLabel: l10n.cancel_button,
+                      style: ConfirmationStyle.normal,
+                      onConfirm: () =>
+                          widget.onRegister(_selectedBusinessType!),
                     );
-                    if (!confirmed) return;
-                    widget.onRegister(_selectedBusinessType!);
                   }
                 : null,
           ),

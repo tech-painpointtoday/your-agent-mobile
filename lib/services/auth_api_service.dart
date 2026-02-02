@@ -343,4 +343,44 @@ class AuthApiService {
       throw Exception('Failed to resend verification email: $e');
     }
   }
+
+  Future<Map<String, dynamic>> getAgentProfile() async {
+    final response = await _apiClient.get('/agent/profile');
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> updateAgentProfile(
+    Map<String, dynamic> data,
+  ) async {
+    final response = await _apiClient.patch('/agent/profile', data: data);
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    final response = await _apiClient.post(
+      '/agent/change-password',
+      data: {
+        'current_password': currentPassword,
+        'new_password': newPassword,
+        'new_password_confirmation': confirmPassword,
+      },
+    );
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> updateProfilePhoto(String filePath) async {
+    final formData = FormData.fromMap({
+      'profile_photo': await MultipartFile.fromFile(filePath),
+    });
+
+    final response = await _apiClient.post(
+      '/agent/profile/update-photo',
+      data: formData,
+    );
+    return response.data as Map<String, dynamic>;
+  }
 }

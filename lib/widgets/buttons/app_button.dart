@@ -16,12 +16,14 @@ class AppButton extends StatelessWidget {
   final bool enabled;
   final VoidCallback? onPressed;
   final double? height;
+  final double? iconSize;
   final Color? backgroundColor;
   final Color? textColor;
   final IconData? icon;
   final String? iconPath;
   final TextStyle? textStyle;
   final EdgeInsets? padding;
+  final bool isLoading;
 
   const AppButton({
     super.key,
@@ -30,12 +32,14 @@ class AppButton extends StatelessWidget {
     this.enabled = true,
     this.onPressed,
     this.height,
+    this.iconSize,
     this.backgroundColor,
     this.textColor,
     this.icon,
     this.iconPath,
     this.textStyle,
     this.padding,
+    this.isLoading = false,
   });
 
   @override
@@ -60,6 +64,29 @@ class AppButton extends StatelessWidget {
         ? (isEnabled ? AppColors.baseDarkGrey : AppColors.buttonDisabledText)
         : Colors.white;
 
+    Color disabledBgCol = switch (style) {
+      AppButtonStyle.primary => AppColors.primary.withValues(alpha: 0.5),
+      AppButtonStyle.destructive => AppColors.supportRedDeep.withValues(
+        alpha: 0.5,
+      ),
+      AppButtonStyle.outline => AppColors.buttonDisabledBg,
+      AppButtonStyle.ghost => AppColors.buttonDisabledBg,
+    };
+
+    Color disabledTxtCol = switch (style) {
+      AppButtonStyle.primary => AppColors.baseWhite,
+      AppButtonStyle.destructive => AppColors.baseWhite,
+      AppButtonStyle.outline => AppColors.buttonDisabledText,
+      AppButtonStyle.ghost => AppColors.buttonDisabledText,
+    };
+
+    Color enabledTxtCol = switch (style) {
+      AppButtonStyle.primary => AppColors.baseWhite,
+      AppButtonStyle.destructive => AppColors.baseWhite,
+      AppButtonStyle.outline => AppColors.baseDarkGrey,
+      AppButtonStyle.ghost => AppColors.baseDarkGrey,
+    };
+
     if (textColor != null && isEnabled) {
       textCol = textColor!;
     }
@@ -72,12 +99,8 @@ class AppButton extends StatelessWidget {
           padding: padding,
           backgroundColor: background,
           foregroundColor: textCol,
-          disabledBackgroundColor: AppButtonStyle.outline == style
-              ? AppColors.buttonDisabledBg
-              : AppColors.primary.withValues(alpha: 0.5),
-          disabledForegroundColor: AppButtonStyle.outline == style
-              ? AppColors.buttonDisabledText
-              : AppColors.white,
+          disabledBackgroundColor: disabledBgCol,
+          disabledForegroundColor: disabledTxtCol,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: style == AppButtonStyle.outline
@@ -95,32 +118,48 @@ class AppButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null || iconPath != null) ...[
-              if (iconPath != null)
-                SvgPicture.asset(
-                  iconPath!,
-                  width: 20,
-                  height: 20,
-                  colorFilter: ColorFilter.mode(
-                    textColor ?? AppColors.baseBlack,
-                    BlendMode.srcIn,
-                  ),
-                )
-              else
-                Icon(icon, size: 20),
-              const SizedBox(width: 8),
-            ],
-            Flexible(
-              child: Text(
-                text,
-                style:
-                    textStyle ??
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+            if (isLoading)
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: textCol,
+                ),
+              )
+            else ...[
+              if (icon != null || iconPath != null) ...[
+                if (iconPath != null)
+                  SvgPicture.asset(
+                    iconPath!,
+                    width: iconSize ?? 20,
+                    height: iconSize ?? 20,
+                    fit: BoxFit.scaleDown,
+                    colorFilter: ColorFilter.mode(
+                      textColor ?? AppColors.baseBlack,
+                      BlendMode.srcIn,
+                    ),
+                  )
+                else
+                  Icon(icon, size: 20),
+                const SizedBox(width: 8),
+              ],
+              Flexible(
+                child: Text(
+                  text,
+                  style:
+                      textStyle ??
+                      TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: enabledTxtCol,
+                      ),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

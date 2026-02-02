@@ -1,7 +1,8 @@
-import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
-import '../widgets/dialogs/status_dialog.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 class LocationPermissionHelper {
   static Future<bool> ensureLocationReady(BuildContext context) async {
@@ -33,16 +34,15 @@ class LocationPermissionHelper {
 
     if (permission == LocationPermission.deniedForever) {
       if (!context.mounted) return false;
-      final open = await StatusDialog.showConfirmation(
+      await AppConfirmationBottomSheet.show(
         context: context,
         title: 'ต้องอนุญาตตำแหน่ง',
-        message: 'คุณปิดสิทธิ์ตำแหน่งถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์',
-        confirmText: 'ไปที่ตั้งค่า',
-        cancelText: 'ยกเลิก',
+        description: 'คุณปิดสิทธิ์ตำแหน่งถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์',
+        confirmLabel: 'ไปที่ตั้งค่า',
+        cancelLabel: 'ยกเลิก',
+        style: ConfirmationStyle.normal,
+        onConfirm: () => Geolocator.openAppSettings(),
       );
-      if (open) {
-        await Geolocator.openAppSettings();
-      }
       return false;
     }
 
@@ -50,8 +50,19 @@ class LocationPermissionHelper {
   }
 
   static Future<Position?> getCurrentPosition(BuildContext context) async {
-    final ok = await ensureLocationReady(context);
-    if (!ok) return null;
-    return Geolocator.getCurrentPosition();
+    try {
+      final ok = await ensureLocationReady(context);
+      if (!ok) return null;
+      return await Geolocator.getCurrentPosition();
+    } catch (e) {
+      if (!context.mounted) return null;
+      final message = e.toString();
+      StatusDialog.showErrorDialog(
+        context: context,
+        title: 'เกิดข้อผิดพลาด',
+        message: message.isNotEmpty ? message : 'ไม่สามารถรับตำแหน่งปัจจุบันได้',
+      );
+      return null;
+    }
   }
 }

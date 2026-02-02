@@ -7,9 +7,10 @@ import 'package:pdfx/pdfx.dart';
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/contract.dart';
+import '../../../widgets/badges/app_badge.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
-import '../../../widgets/badges/app_badge.dart';
+import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/contract_detail_bloc.dart';
 import '../widgets/contract_status_badge.dart';
 
@@ -209,30 +210,21 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         style: BadgeStyle.dot,
       );
     }
-
-    if (!hasSellerSigned && !hasBuyerSigned) {
-      return AppBadge(label: 'ยังไม่มีผู้ลงนาม', color: BadgeColor.default_);
+    if (hasSellerSigned) {
+      return AppBadge(
+        label: 'ผู้ให้เช่าลงนามแล้ว',
+        color: BadgeColor.default_,
+        style: BadgeStyle.done,
+      );
+    } else if (hasBuyerSigned) {
+      return AppBadge(
+        label: 'ผู้เช่าลงนามแล้ว',
+        color: BadgeColor.default_,
+        style: BadgeStyle.done,
+      );
     }
 
-    // Individual tags if only one has signed
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (hasSellerSigned)
-          AppBadge(
-            label: 'ผู้ให้เช่าลงนามแล้ว',
-            color: BadgeColor.blue,
-            style: BadgeStyle.done,
-          ),
-        if (hasSellerSigned && hasBuyerSigned) const SizedBox(width: 4),
-        if (hasBuyerSigned)
-          AppBadge(
-            label: 'ผู้เช่าลงนามแล้ว',
-            color: BadgeColor.blue,
-            style: BadgeStyle.done,
-          ),
-      ],
-    );
+    return AppBadge(label: 'ยังไม่มีผู้ลงนาม', color: BadgeColor.default_);
   }
 
   Widget _buildDocumentActions(ContractDetailState state) {
@@ -419,13 +411,15 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                   ? null
                   : () {
                       Navigator.pop(bottomSheetContext);
-                      StatusDialog.confirm(
+                      AppConfirmationBottomSheet.show(
                         context: context,
                         title: 'ส่งเอกสารอีกครั้ง?',
-                        message:
+                        description:
                             'คุณต้องการส่งเอกสารไปยัง$label ($email) อีกครั้งใช่หรือไม่?',
-                        actionLabel: 'ส่ง',
-                        onAction: onSend,
+                        confirmLabel: 'ส่ง',
+                        cancelLabel: 'ยกเลิก',
+                        style: ConfirmationStyle.normal,
+                        onConfirm: onSend,
                       );
                     },
             ),
@@ -441,12 +435,15 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           ? null
           : () {
               Navigator.pop(bottomSheetContext);
-              StatusDialog.confirm(
+              AppConfirmationBottomSheet.show(
                 context: context,
                 title: 'ส่งเอกสาร?',
-                message: 'คุณต้องการส่งเอกสารไปยัง$label ($email) ใช่หรือไม่?',
-                actionLabel: 'ส่ง',
-                onAction: onSend,
+                description:
+                    'คุณต้องการส่งเอกสารไปยัง$label ($email) ใช่หรือไม่?',
+                confirmLabel: 'ส่ง',
+                cancelLabel: 'ยกเลิก',
+                style: ConfirmationStyle.normal,
+                onConfirm: onSend,
               );
             },
     );
@@ -654,13 +651,15 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           // Delete Button
           InkWell(
             onTap: () {
-              StatusDialog.destructive(
+              AppConfirmationBottomSheet.show(
                 context: context,
                 title: 'ลบสัญญา?',
-                message:
+                description:
                     'คุณต้องการลบสัญญานี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
-                actionLabel: 'ลบ',
-                onAction: () {
+                confirmLabel: 'ลบ',
+                cancelLabel: 'ยกเลิก',
+                style: ConfirmationStyle.destructive,
+                onConfirm: () {
                   context.read<ContractDetailBloc>().add(
                     DeleteContractDetail(widget.contractId),
                   );

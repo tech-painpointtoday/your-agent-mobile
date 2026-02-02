@@ -142,12 +142,14 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
           );
           context.pop(true);
         } else if (state.status == ContractFormStatus.failure) {
-          StatusDialog.showDestructive(
+          AppConfirmationBottomSheet.show(
             context: context,
             title: 'ผิดพลาด',
-            message: state.errorMessage ?? 'บันทึกข้อมูลไม่สำเร็จ',
-            actionLabel: 'ตกลง',
-            onAction: () {}, // Close dialog
+            description: state.errorMessage ?? 'บันทึกข้อมูลไม่สำเร็จ',
+            confirmLabel: 'ตกลง',
+            cancelLabel: '',
+            style: ConfirmationStyle.destructive,
+            onConfirm: () {},
           );
         }
       },
@@ -189,7 +191,7 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 8),
             Expanded(
               child: BlocBuilder<ContractFormBloc, ContractFormState>(
                 builder: (context, state) {

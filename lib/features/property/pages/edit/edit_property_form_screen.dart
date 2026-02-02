@@ -161,7 +161,7 @@ class EditPropertyFormScreen extends StatelessWidget {
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 8),
             Expanded(
               child: BlocBuilder<PropertyFormBloc, PropertyFormState>(
                 builder: (context, state) {

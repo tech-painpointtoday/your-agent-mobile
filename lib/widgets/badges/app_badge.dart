@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youragent/core/theme/app_colors.dart';
 
 /// Badge color scheme
 enum BadgeColor {
@@ -45,7 +46,7 @@ class AppBadge extends StatefulWidget {
     this.customBackgroundColor,
     this.customTextColor,
     this.customDotColor,
-    this.fontSize,
+    this.fontSize = 14,
     this.padding,
   });
 
@@ -176,42 +177,42 @@ class _AppBadgeState extends State<AppBadge> {
   Color _getBackgroundColor() {
     switch (widget.color) {
       case BadgeColor.default_:
-        return const Color(0xFFF5F5F5); // Light gray
+        return AppColors.basePaleGrey; // Light gray
       case BadgeColor.red:
-        return const Color(0xFFFFE5E5); // Light red
+        return AppColors.supportRedLight; // Light red
       case BadgeColor.orange:
-        return const Color(0xFFFFF4E5); // Light orange-yellow
+        return AppColors.supportOrangeLight; // Light orange-yellow
       case BadgeColor.green:
-        return const Color(0xFFE5F5ED); // Light green
+        return AppColors.supportGreenLight; // Light green
       case BadgeColor.blue:
-        return const Color(0xFFE5F0FF); // Light blue
+        return AppColors.supportBlueLight; // Light blue
       case BadgeColor.purple:
-        return const Color(0xFFF3E5FF); // Light purple
+        return AppColors.supportPurpleLight; // Light purple
       case BadgeColor.pink:
-        return const Color(0xFFFFE5F0); // Light pink
+        return AppColors.supportPinkLight; // Light pink
       case BadgeColor.brown:
-        return const Color(0xFFFFF0E5); // Light orange/brown
+        return AppColors.supportOrangeLight; // Light orange/brown
     }
   }
 
   Color _getTextColor() {
     switch (widget.color) {
       case BadgeColor.default_:
-        return const Color(0xFF525252); // Dark gray
+        return AppColors.baseDarkGrey; // Dark gray
       case BadgeColor.red:
-        return const Color(0xFFDC2626); // Darker red
+        return AppColors.supportRedDark; // Darker red
       case BadgeColor.orange:
-        return const Color(0xFFEA580C); // Darker orange
+        return AppColors.supportOrangeDark; // Darker orange
       case BadgeColor.green:
-        return const Color(0xFF16A34A); // Darker green
+        return AppColors.supportGreenDark; // Darker green
       case BadgeColor.blue:
-        return const Color(0xFF2563EB); // Medium blue
+        return AppColors.supportBlueDeep; // Medium blue
       case BadgeColor.purple:
-        return const Color(0xFF9333EA); // Darker purple
+        return AppColors.supportPurpleDark; // Darker purple
       case BadgeColor.pink:
-        return const Color(0xFFDB2777); // Darker pink
+        return AppColors.supportPinkDark; // Darker pink
       case BadgeColor.brown:
-        return const Color(0xFFD97706); // Darker orange/brown
+        return AppColors.supportOrangeDark; // Darker orange/brown
     }
   }
 

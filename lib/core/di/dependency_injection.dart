@@ -18,6 +18,7 @@ import 'package:youragent/services/chat_api_service.dart';
 import 'package:youragent/services/auth_api_service.dart';
 import 'package:youragent/services/contract_api_service.dart';
 import 'package:youragent/services/address_lookup_service.dart';
+import 'package:youragent/services/google_places_service.dart';
 import 'package:youragent/core/config/app_config.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -71,6 +72,10 @@ class DependencyInjection {
   static final AddressLookupService _addressLookupService =
       AddressLookupService();
 
+  static final GooglePlacesService _googlePlacesService = GooglePlacesService(
+    apiKey: AppConfig.googleMapsApiKey,
+  );
+
   static void init(BuildContext context) {
     // This function can be called during app startup to register dependencies
     _addressLookupService.loadData();
@@ -88,6 +93,8 @@ class DependencyInjection {
   static AuthApiService get authApiService => _authApiService;
 
   static AddressLookupService get addressLookupService => _addressLookupService;
+
+  static GooglePlacesService get googlePlacesService => _googlePlacesService;
 
   // Auth dependencies - singleton
   static AuthRepository get authRepository => _authRepository;

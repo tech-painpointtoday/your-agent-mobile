@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:youragent/core/config/app_config.dart';
+import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/services/google_places_service.dart';
 import 'package:youragent/utils/location_permission_helper.dart';
@@ -65,7 +65,7 @@ class _PropertyMapSelectionState extends State<PropertyMapSelection> {
   MapType _currentMapType = MapType.normal;
   late final Key _mapKey;
 
-  late final GooglePlacesService _places;
+  GooglePlacesService get _places => DependencyInjection.googlePlacesService;
 
   @override
   void initState() {
@@ -73,9 +73,6 @@ class _PropertyMapSelectionState extends State<PropertyMapSelection> {
     _mapKey = UniqueKey();
     _selected = widget.initialLocation ?? _bangkok;
     _lastTrackedPosition = _selected;
-
-    final apiKey = AppConfig.googleMapsApiKey;
-    _places = GooglePlacesService(apiKey: apiKey);
 
     _searchFocus.addListener(() {
       if (!_searchFocus.hasFocus && mounted) {

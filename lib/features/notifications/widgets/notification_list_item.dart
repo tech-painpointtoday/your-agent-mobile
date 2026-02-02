@@ -4,7 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../widgets/dialogs/status_dialog.dart';
+import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/notification_bloc.dart';
 import '../bloc/notification_event.dart';
 import '../models/notification_model.dart';
@@ -80,20 +80,23 @@ class NotificationListItem extends StatelessWidget {
           ),
           // Delete action
           SlidableAction(
-            onPressed: (context) async {
-              final confirmed = await StatusDialog.showDestructive(
+            onPressed: (context) {
+              AppConfirmationBottomSheet.show(
                 context: context,
                 title: 'ลบการแจ้งเตือน?',
-                message:
+                description:
                     'คุณต้องการลบการแจ้งเตือนนี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
-                confirmText: 'ลบ',
-                cancelText: 'ยกเลิก',
+                confirmLabel: 'ลบ',
+                cancelLabel: 'ยกเลิก',
+                style: ConfirmationStyle.destructive,
+                onConfirm: () {
+                  if (context.mounted) {
+                    context.read<NotificationBloc>().add(
+                          DeleteNotification(notification.id),
+                        );
+                  }
+                },
               );
-              if (confirmed && context.mounted) {
-                context.read<NotificationBloc>().add(
-                  DeleteNotification(notification.id),
-                );
-              }
             },
             backgroundColor: AppColors.supportRedDeep,
             foregroundColor: AppColors.white,

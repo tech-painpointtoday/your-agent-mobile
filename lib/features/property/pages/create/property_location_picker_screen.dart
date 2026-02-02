@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../widgets/buttons/app_button.dart';
 import '../../../../widgets/dialogs/status_dialog.dart';
+import '../../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../../widgets/property_map_selection.dart';
 
 class PropertyLocationPickerResult {
@@ -72,16 +73,17 @@ class _PropertyLocationPickerScreenState
       components: _currentResult!.components,
     );
 
-    final confirmed = await StatusDialog.showConfirmation(
+    await AppConfirmationBottomSheet.show(
       context: context,
       title: 'บันทึกตำแหน่งนี้?',
-      message: 'ยืนยันการเลือกตำแหน่งนี้สำหรับประกาศทรัพย์',
-      confirmText: 'บันทึก',
-      cancelText: 'ยกเลิก',
+      description: 'ยืนยันการเลือกตำแหน่งนี้สำหรับประกาศทรัพย์',
+      confirmLabel: 'บันทึก',
+      cancelLabel: 'ยกเลิก',
+      style: ConfirmationStyle.normal,
+      onConfirm: () {
+        if (mounted) Navigator.of(context).pop(pickerResult);
+      },
     );
-    if (!confirmed || !mounted) return;
-
-    Navigator.of(context).pop(pickerResult);
   }
 
   @override

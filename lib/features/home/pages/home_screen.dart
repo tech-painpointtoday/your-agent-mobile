@@ -9,9 +9,9 @@ import '../../../core/theme/app_colors.dart';
 import '../../../data/models/user_profile_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/image_url_helper.dart';
-import '../../../widgets/app_search_bar.dart';
 import '../../../widgets/app_bars/silver_app_bar.dart';
-import '../../../widgets/dialogs/status_dialog.dart';
+import '../../../widgets/app_search_bar.dart';
+import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_event.dart';
 import '../../auth/bloc/auth_state.dart';
@@ -157,20 +157,24 @@ class _HomeHeaderState extends State<HomeHeader> {
 
     return Row(
       children: [
-        ClipOval(
-          child: SizedBox(
-            width: 40,
-            height: 40,
-            child: profilePhotoUrl != null
-                ? CachedNetworkImage(
-                    imageUrl: profilePhotoUrl,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        _buildGradientAvatar(initial),
-                    errorWidget: (context, url, error) =>
-                        _buildGradientAvatar(initial),
-                  )
-                : _buildGradientAvatar(initial),
+        InkWell(
+          onTap: () => context.push('/profile'),
+          borderRadius: BorderRadius.circular(20),
+          child: ClipOval(
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: profilePhotoUrl != null
+                  ? CachedNetworkImage(
+                      imageUrl: profilePhotoUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          _buildGradientAvatar(initial),
+                      errorWidget: (context, url, error) =>
+                          _buildGradientAvatar(initial),
+                    )
+                  : _buildGradientAvatar(initial),
+            ),
           ),
         ),
         const SizedBox(width: 12),
@@ -240,8 +244,7 @@ class _LogoutButton extends StatelessWidget {
     );
   }
 
-  Future<void> _handleLogout(BuildContext context) async {
-    // Store references before async operations to avoid context issues
+  void _handleLogout(BuildContext context) {
     if (!context.mounted) return;
 
     final l10n = AppLocalizations.of(context);
@@ -250,71 +253,61 @@ class _LogoutButton extends StatelessWidget {
       return;
     }
 
-    // Get AuthBloc reference before async operations
     final authBloc = context.read<AuthBloc>();
     final router = GoRouter.of(context);
 
-    // Use StatusDialog for consistent UI
-    final confirmed = await StatusDialog.showDestructive(
+    AppConfirmationBottomSheet.show(
       context: context,
       title: l10n.logout_title,
-      message: l10n.logout_message,
-      confirmText: l10n.logout_button,
-      cancelText: l10n.cancel_button,
+      description: l10n.logout_message,
+      confirmLabel: l10n.logout_button,
+      cancelLabel: l10n.cancel_button,
+      style: ConfirmationStyle.destructive,
+      onConfirm: () {
+        final role = DependencyInjection.authRepository.currentRole;
+        final loginRoute = role != null
+            ? '/login/${role.name}'
+            : '/login/agent';
+        authBloc.add(const SignOutEvent());
+        _waitAndNavigateAfterLogout(authBloc, router, loginRoute, context);
+      },
     );
+  }
 
-    if (confirmed != true) {
-      return; // User cancelled
-    }
-
-    // Get current role before logout (to determine login route)
-    final role = DependencyInjection.authRepository.currentRole;
-    final loginRoute = role != null ? '/login/${role.name}' : '/login/agent';
-
-    // Dispatch logout event using stored reference
-    authBloc.add(const SignOutEvent());
-
-    // Wait for logout to complete by polling auth state
-    // Check both AuthBloc state and authRepository.isAuthenticated
+  Future<void> _waitAndNavigateAfterLogout(
+    AuthBloc authBloc,
+    GoRouter router,
+    String loginRoute,
+    BuildContext context,
+  ) async {
     bool logoutCompleted = false;
     int attempts = 0;
-    const maxAttempts = 30; // 3 seconds max wait (30 * 100ms)
+    const maxAttempts = 30;
 
     while (!logoutCompleted && attempts < maxAttempts) {
       await Future.delayed(const Duration(milliseconds: 100));
-
-      // Check AuthBloc state using stored reference
       final authState = authBloc.state;
       final isUnauthenticated =
           authState is Unauthenticated || authState is AuthError;
-
-      // Also check authRepository directly
       final isLoggedOut = !DependencyInjection.authRepository.isAuthenticated;
-
       if (isUnauthenticated || isLoggedOut) {
         logoutCompleted = true;
         break;
       }
-
       attempts++;
     }
 
-    // Navigate to login page using router reference
-    // The router redirect should also handle this, but we navigate explicitly as well
     try {
-      // Use router directly instead of context.go to avoid context issues
       router.go(loginRoute);
       debugPrint('✅ Logout completed, navigated to $loginRoute');
     } catch (e) {
       debugPrint('❌ Error navigating to login after logout: $e');
-      // Try again after a short delay
       await Future.delayed(const Duration(milliseconds: 200));
       try {
         router.go(loginRoute);
         debugPrint('✅ Retry navigation successful');
       } catch (e2) {
         debugPrint('❌ Second attempt to navigate failed: $e2');
-        // Last resort: use context if still mounted
         if (context.mounted) {
           try {
             context.go(loginRoute);

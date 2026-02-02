@@ -60,10 +60,10 @@ class AppImageUploadWidget extends StatelessWidget {
             width: double.infinity,
             height: 160,
             decoration: BoxDecoration(
-              color: const Color(0xFFF0F7FF), // Light blue bg
+              color: AppColors.supportBlueLight,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFF1743C7).withValues(alpha: 0.2),
+                color: AppColors.primary.withValues(alpha: 0.2),
                 style: BorderStyle.solid,
               ),
             ),
@@ -80,14 +80,14 @@ class AppImageUploadWidget extends StatelessWidget {
                         width: 20,
                         height: 20,
                         colorFilter: const ColorFilter.mode(
-                          Colors.white,
+                          AppColors.baseWhite,
                           BlendMode.srcIn,
                         ),
                       ),
                       label: Text(l10n.select_file),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1743C7),
-                        foregroundColor: Colors.white,
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.baseWhite,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,
                           vertical: 12,
@@ -104,14 +104,14 @@ class AppImageUploadWidget extends StatelessWidget {
                         icon: const Icon(Icons.camera_alt_outlined),
                         label: Text(l10n.take_photo),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF1743C7),
+                          backgroundColor: AppColors.baseWhite,
+                          foregroundColor: AppColors.primary,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 24,
                             vertical: 12,
                           ),
                           elevation: 0,
-                          side: const BorderSide(color: Color(0xFF1743C7)),
+                          side: BorderSide(color: AppColors.primary),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),

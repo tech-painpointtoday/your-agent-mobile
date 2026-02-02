@@ -1,19 +1,19 @@
 import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/appliance_item.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
-import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:youragent/widgets/painters/dashed_border_painter.dart';
+import 'package:youragent/widgets/inputs/app_text_field.dart';
+import 'package:youragent/widgets/modals/app_image_picker_bottom_sheet.dart';
 
 class ApplianceStep extends StatefulWidget {
   final bool hideHeader;
@@ -25,114 +25,14 @@ class ApplianceStep extends StatefulWidget {
 }
 
 class _ApplianceStepState extends State<ApplianceStep> {
-  final ImagePicker _picker = ImagePicker();
-
   Future<void> _pickImage(String applianceId) async {
     final bloc = context.read<ContractFormBloc>();
-    showModalBottomSheet(
+    AppImagePickerBottomSheet.show(
       context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 12),
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-              title: Text(
-                'ถ่ายรูปภาพ',
-                style: GoogleFonts.anuphan(fontSize: 16),
-              ),
-              trailing: SvgPicture.asset(
-                'assets/icons/camera.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.baseDarkGrey,
-                  BlendMode.srcIn,
-                ),
-              ),
-              onTap: () async {
-                Navigator.pop(sheetContext);
-                final XFile? image = await _picker.pickImage(
-                  source: ImageSource.camera,
-                );
-                if (image != null) {
-                  debugPrint('Picked image (Camera): ${image.path}');
-                  bloc.add(
-                    ContractFormApplianceImagesAdded(applianceId, [image.path]),
-                  );
-                }
-              },
-            ),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-              title: Text(
-                'เลือกจากอัลบั้ม',
-                style: GoogleFonts.anuphan(fontSize: 16),
-              ),
-              trailing: SvgPicture.asset(
-                'assets/icons/image.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.baseDarkGrey,
-                  BlendMode.srcIn,
-                ),
-              ),
-              onTap: () async {
-                Navigator.pop(sheetContext);
-                final List<XFile> images = await _picker.pickMultiImage();
-                if (images.isNotEmpty) {
-                  debugPrint('Picked ${images.length} images from gallery');
-                  bloc.add(
-                    ContractFormApplianceImagesAdded(
-                      applianceId,
-                      images.map((img) => img.path).toList(),
-                    ),
-                  );
-                }
-              },
-            ),
-            if (bloc.state.contractCreateData != null &&
-                bloc.state.contractCreateData!.propertyImages.isNotEmpty)
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                title: Text(
-                  'เลือกจากรูปอสังหาฯ',
-                  style: GoogleFonts.anuphan(fontSize: 16),
-                ),
-                trailing: SvgPicture.asset(
-                  'assets/icons/home.svg',
-                  width: 24,
-                  height: 24,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.baseDarkGrey,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _showPropertyPhotosSelection(applianceId);
-                },
-              ),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
+      isMultiImage: true,
+      onImagesPicked: (paths) {
+        bloc.add(ContractFormApplianceImagesAdded(applianceId, paths));
+      },
     );
   }
 
@@ -732,57 +632,5 @@ class _ApplianceItemCard extends StatelessWidget {
         ],
       ],
     );
-  }
-}
-
-class DashedBorderPainter extends CustomPainter {
-  final Color color;
-  final double strokeWidth;
-  final double dashWidth;
-  final double dashSpace;
-  final double radius;
-
-  DashedBorderPainter({
-    required this.color,
-    this.strokeWidth = 1,
-    this.dashWidth = 5,
-    this.dashSpace = 3,
-    this.radius = 12,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
-
-    final RRect rrect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Radius.circular(radius),
-    );
-
-    final Path path = Path()..addRRect(rrect);
-    final Path dashedPath = Path();
-    for (final ui.PathMetric metric in path.computeMetrics()) {
-      double distance = 0.0;
-      while (distance < metric.length) {
-        dashedPath.addPath(
-          metric.extractPath(distance, distance + dashWidth),
-          Offset.zero,
-        );
-        distance += dashWidth + dashSpace;
-      }
-    }
-    canvas.drawPath(dashedPath, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant DashedBorderPainter oldDelegate) {
-    return color != oldDelegate.color ||
-        strokeWidth != oldDelegate.strokeWidth ||
-        dashWidth != oldDelegate.dashWidth ||
-        dashSpace != oldDelegate.dashSpace ||
-        radius != oldDelegate.radius;
   }
 }

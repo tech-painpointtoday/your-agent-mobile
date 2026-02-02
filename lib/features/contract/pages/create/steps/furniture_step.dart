@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,10 +9,11 @@ import 'package:youragent/domain/entities/furniture_item.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
-import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:youragent/widgets/painters/dashed_border_painter.dart';
+import 'package:youragent/widgets/inputs/app_text_field.dart';
 
 class FurnitureStep extends StatefulWidget {
   final bool hideHeader;
@@ -735,54 +735,3 @@ class _FurnitureItemCard extends StatelessWidget {
   }
 }
 
-class DashedBorderPainter extends CustomPainter {
-  final Color color;
-  final double strokeWidth;
-  final double dashWidth;
-  final double dashSpace;
-  final double radius;
-
-  DashedBorderPainter({
-    required this.color,
-    this.strokeWidth = 1,
-    this.dashWidth = 5,
-    this.dashSpace = 3,
-    this.radius = 12,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
-
-    final RRect rrect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Radius.circular(radius),
-    );
-
-    final Path path = Path()..addRRect(rrect);
-    final Path dashedPath = Path();
-    for (final ui.PathMetric metric in path.computeMetrics()) {
-      double distance = 0.0;
-      while (distance < metric.length) {
-        dashedPath.addPath(
-          metric.extractPath(distance, distance + dashWidth),
-          Offset.zero,
-        );
-        distance += dashWidth + dashSpace;
-      }
-    }
-    canvas.drawPath(dashedPath, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant DashedBorderPainter oldDelegate) {
-    return color != oldDelegate.color ||
-        strokeWidth != oldDelegate.strokeWidth ||
-        dashWidth != oldDelegate.dashWidth ||
-        dashSpace != oldDelegate.dashSpace ||
-        radius != oldDelegate.radius;
-  }
-}

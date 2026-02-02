@@ -7,12 +7,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:youragent/data/models/developer_model.dart';
 import 'package:youragent/data/models/condo_project_model.dart';
-import 'package:youragent/core/config/app_config.dart';
+import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 import 'package:youragent/features/property/pages/create/property_location_picker_screen.dart';
 import 'package:youragent/features/property/widgets/property_map_view.dart';
-import 'package:youragent/services/google_places_service.dart';
 import 'package:youragent/utils/location_permission_helper.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
@@ -36,8 +35,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   late final TextEditingController _buildingController;
   late final TextEditingController _floorController;
   late final TextEditingController _roomNoController;
-  late final TextEditingController _locationController;
-  late final GooglePlacesService _places;
   bool _inlineMapUpdating = false;
 
   @override
@@ -68,12 +65,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     _roomNoController = TextEditingController(
       text: state.data['unitNo'] as String?,
     );
-    _locationController = TextEditingController(
-      text: state.data['formatted_address_th'] as String?,
-    );
-
-    final apiKey = AppConfig.googleMapsApiKey;
-    _places = GooglePlacesService(apiKey: apiKey);
 
     // Add listeners to update Bloc
     _nameController.addListener(
@@ -169,13 +160,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       initialLocation: LatLng(pos.latitude, pos.longitude),
     );
     if (result == null || !mounted) return;
-    _locationController.text = result.formattedAddressTh;
-
-    // Sync house number if found
-    if (result.components['number']?.isNotEmpty == true) {
-      _addressController.text = result.components['number']!;
-      _updateData('address', result.components['number']!);
-    }
+    _addressController.text = result.formattedAddressTh;
 
     context.read<PropertyFormBloc>().add(
       PropertyFormLocationUpdated({
@@ -202,13 +187,25 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   void _clearLocation() {
     context.read<PropertyFormBloc>().add(
       const PropertyFormLocationUpdated({
+        'address': null,
         'latitude': null,
         'longitude': null,
         'location_set': false,
         'formatted_address_th': null,
+        'formatted_address_en': null,
+        'number': null,
+        'road': null,
+        'soi': null,
+        'subdistrict': null,
+        'district': null,
+        'province': null,
+        'postal_code': null,
+        'city': null,
+        'state': null,
+        'country': null,
       }),
     );
-    _locationController.clear();
+    _addressController.clear();
   }
 
   Future<void> _updateLocationFromLatLng(LatLng latLng) async {
@@ -234,8 +231,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       // English + components (Google reverse geocode if configured)
       String formattedEn = fullTh;
       Map<String, String> components = const {};
-      if (_places.isConfigured) {
-        final r = await _places.reverseGeocode(
+      if (DependencyInjection.googlePlacesService.isConfigured) {
+        final r = await DependencyInjection.googlePlacesService.reverseGeocode(
           lat: latLng.latitude,
           lng: latLng.longitude,
           language: 'en',
@@ -248,7 +245,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
       if (!mounted) return;
       if (fullTh.isNotEmpty) {
-        _locationController.text = fullTh;
+        _addressController.text = fullTh;
       }
       context.read<PropertyFormBloc>().add(
         PropertyFormLocationUpdated({
@@ -283,7 +280,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     _buildingController.dispose();
     _floorController.dispose();
     _roomNoController.dispose();
-    _locationController.dispose();
     super.dispose();
   }
 
