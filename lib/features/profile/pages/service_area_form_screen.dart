@@ -85,9 +85,9 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
     }
 
     final data = {
-      'service_area_center_lat': _selectedLocation!.latitude.toString(),
-      'service_area_center_lng': _selectedLocation!.longitude.toString(),
-      'reachable_radius': _radiusController.text.trim(),
+      'service_area_center_lat': _selectedLocation!.latitude,
+      'service_area_center_lng': _selectedLocation!.longitude,
+      'reachable_radius': double.tryParse(_radiusController.text.trim()) ?? 0,
     };
 
     StatusDialog.confirm(

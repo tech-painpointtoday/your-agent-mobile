@@ -42,6 +42,8 @@ class AgentDetails {
   final String? mobileNumberVerifiedAt;
   final String? createdAt;
   final String? updatedAt;
+  final String? nationalId;
+  final String? address;
   final String? reachableRadius;
   final String? serviceAreaCenterLat;
   final String? serviceAreaCenterLng;
@@ -65,6 +67,8 @@ class AgentDetails {
     this.mobileNumberVerifiedAt,
     this.createdAt,
     this.updatedAt,
+    this.nationalId,
+    this.address,
     this.reachableRadius,
     this.serviceAreaCenterLat,
     this.serviceAreaCenterLng,
@@ -94,9 +98,11 @@ class AgentDetails {
       mobileNumberVerifiedAt: json['mobile_number_verified_at'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
-      reachableRadius: json['reachable_radius'],
-      serviceAreaCenterLat: json['service_area_center_lat'],
-      serviceAreaCenterLng: json['service_area_center_lng'],
+      nationalId: json['national_id'],
+      address: json['address'],
+      reachableRadius: json['reachable_radius']?.toString(),
+      serviceAreaCenterLat: json['service_area_center_lat']?.toString(),
+      serviceAreaCenterLng: json['service_area_center_lng']?.toString(),
     );
   }
 }

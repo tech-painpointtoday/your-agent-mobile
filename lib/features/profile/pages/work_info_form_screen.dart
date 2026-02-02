@@ -42,7 +42,11 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
       text: widget.agent?.languages?.join(', ') ?? '',
     );
     _socialLinksController = TextEditingController(
-      text: widget.agent?.socialLinks?.values.join(', ') ?? '',
+      text:
+          widget.agent?.socialLinks?.entries
+              .map((e) => '${e.key}: ${e.value}')
+              .join(', ') ??
+          '',
     );
   }
 
@@ -57,17 +61,41 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
   }
 
   void _onSave() {
+    // Map languages: e.g. "Thai, English" -> {"Thai": "Fluent", "English": "Fluent"}
+    final Map<String, String> languagesMap = {};
+    _languagesController.text.split(',').forEach((lang) {
+      final name = lang.trim();
+      if (name.isNotEmpty) {
+        languagesMap[name] =
+            'Beginner'; // Default to Beginner as per API structure example
+      }
+    });
+
+    // Map social links: e.g. "facebook: url, line: id" -> {"facebook": "url", "line": "id"}
+    final Map<String, String> socialLinksMap = {};
+    _socialLinksController.text.split(',').forEach((link) {
+      final parts = link.split(':');
+      if (parts.length >= 2) {
+        final key = parts[0].trim().toLowerCase();
+        final value = parts.sublist(1).join(':').trim();
+        if (key.isNotEmpty && value.isNotEmpty) {
+          socialLinksMap[key] = value;
+        }
+      } else {
+        final value = link.trim();
+        if (value.isNotEmpty) {
+          socialLinksMap['other'] = value;
+        }
+      }
+    });
+
     final data = {
       'company_name': _companyController.text.trim(),
       'license_number': _licenseController.text.trim(),
       'years_of_experience':
           int.tryParse(_experienceController.text.trim()) ?? 0,
-      'languages': _languagesController.text
-          .split(',')
-          .map((e) => e.trim())
-          .where((e) => e.isNotEmpty)
-          .toList(),
-      'social_links': {'links': _socialLinksController.text.trim()},
+      'languages': languagesMap,
+      'social_links': socialLinksMap,
     };
 
     StatusDialog.confirm(

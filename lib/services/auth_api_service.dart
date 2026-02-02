@@ -352,7 +352,7 @@ class AuthApiService {
   Future<Map<String, dynamic>> updateAgentProfile(
     Map<String, dynamic> data,
   ) async {
-    final response = await _apiClient.patch('/agent/profile', data: data);
+    final response = await _apiClient.post('/agent/profile', data: data);
     return response.data as Map<String, dynamic>;
   }
 
@@ -362,11 +362,11 @@ class AuthApiService {
     required String confirmPassword,
   }) async {
     final response = await _apiClient.post(
-      '/agent/change-password',
+      '/api/agent/password',
       data: {
         'current_password': currentPassword,
-        'new_password': newPassword,
-        'new_password_confirmation': confirmPassword,
+        'password': newPassword,
+        'password_confirmation': confirmPassword,
       },
     );
     return response.data as Map<String, dynamic>;

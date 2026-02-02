@@ -27,6 +27,8 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
   late final TextEditingController _bioController;
+  late final TextEditingController _nationalIdController;
+  late final TextEditingController _addressController;
 
   @override
   void initState() {
@@ -35,6 +37,10 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
     _emailController = TextEditingController(text: widget.agent?.email);
     _phoneController = TextEditingController(text: widget.agent?.mobileNumber);
     _bioController = TextEditingController(text: widget.agent?.bio);
+    _nationalIdController = TextEditingController(
+      text: widget.agent?.nationalId,
+    );
+    _addressController = TextEditingController(text: widget.agent?.address);
   }
 
   @override
@@ -43,6 +49,8 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
     _emailController.dispose();
     _phoneController.dispose();
     _bioController.dispose();
+    _nationalIdController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
@@ -54,6 +62,8 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
       'email': _emailController.text.trim(),
       'mobile_number': _phoneController.text.trim(),
       'bio': _bioController.text.trim(),
+      'national_id': _nationalIdController.text.trim(),
+      'address': _addressController.text.trim(),
     };
 
     StatusDialog.confirm(
@@ -135,6 +145,20 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
                           controller: _bioController,
                           hintText: 'เล่ารายละเอียดเกี่ยวกับตัวคุณ...',
                           maxLines: 5,
+                        ),
+                        const SizedBox(height: 16),
+                        AppTextField(
+                          label: 'เลขบัตรประชาชน',
+                          controller: _nationalIdController,
+                          hintText: 'กรอกเลขบัตรประชาชน',
+                          keyboardType: TextInputType.number,
+                        ),
+                        const SizedBox(height: 16),
+                        AppTextField(
+                          label: 'ที่อยู่',
+                          controller: _addressController,
+                          hintText: 'กรอกที่อยู่',
+                          maxLines: 3,
                         ),
                         const SizedBox(height: 40),
                       ],
