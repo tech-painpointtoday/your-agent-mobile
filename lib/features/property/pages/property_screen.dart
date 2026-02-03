@@ -8,8 +8,8 @@ import 'package:youragent/features/home/pages/home_screen.dart';
 import 'package:youragent/features/property/pages/all_properties_screen.dart';
 import 'package:youragent/features/property/pages/fullscreen_map_screen.dart';
 import 'package:youragent/features/property/widgets/property_list_item.dart';
-import 'package:youragent/features/property/widgets/property_map_view.dart';
 import 'package:youragent/widgets/app_bars/silver_app_bar.dart';
+import 'package:youragent/widgets/map/map_view.dart';
 
 /// Main Property screen used in navigation tabs
 class PropertyScreen extends StatefulWidget {
@@ -125,7 +125,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: PropertyMapView(
+                  child: MapView(
                     properties: _filteredProperties,
                     onMaximizeTapped: () {
                       Navigator.push(
@@ -245,12 +245,13 @@ class _PropertyScreenState extends State<PropertyScreen> {
                       property: property,
                       onTap: () {
                         context
-                            .push('/property/${property.id}', extra: property)
+                            .push('/property/${property.id}')
                             .then((_) => _loadProperties());
                       },
                       onEdit: () {
-                        // Navigate to edit screen and reload on return
-                        // Navigator.push(...).then((_) => _loadProperties());
+                        context
+                            .push('/property/edit', extra: property)
+                            .then((_) => _loadProperties());
                       },
                     );
                   },

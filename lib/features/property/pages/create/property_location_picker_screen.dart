@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:youragent/widgets/map/map_selection.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../widgets/buttons/app_button.dart';
 import '../../../../widgets/dialogs/status_dialog.dart';
 import '../../../../widgets/modals/app_confirmation_bottom_sheet.dart';
-import '../../widgets/property_map_selection.dart';
 
 class PropertyLocationPickerResult {
   final LatLng latLng;
@@ -46,9 +46,9 @@ class PropertyLocationPickerScreen extends StatefulWidget {
 
 class _PropertyLocationPickerScreenState
     extends State<PropertyLocationPickerScreen> {
-  PropertyLocationResult? _currentResult;
+  LocationResult? _currentResult;
 
-  void _onLocationChanged(PropertyLocationResult result) {
+  void _onLocationChanged(LocationResult result) {
     setState(() {
       _currentResult = result;
     });
@@ -94,7 +94,7 @@ class _PropertyLocationPickerScreenState
         children: [
           // Map Selection Widget
           Positioned.fill(
-            child: PropertyMapSelection(
+            child: MapSelection(
               initialLocation: widget.initialLocation,
               onLocationChanged: _onLocationChanged,
               onBackTapped: () => Navigator.of(context).pop(),

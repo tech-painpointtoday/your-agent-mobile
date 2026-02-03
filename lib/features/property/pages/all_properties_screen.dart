@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/features/property/pages/property_detail_screen.dart';
 import 'package:youragent/features/property/widgets/property_list_item.dart';
 import 'package:youragent/features/property/widgets/property_filter_bottom_sheet.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
@@ -299,15 +298,14 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
         return PropertyListItem(
           property: property,
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PropertyDetailScreen(
-                  propertyId: property.id,
-                  property: property,
-                ),
-              ),
-            ).then((_) => _loadProperties());
+            context
+                .push('/property/${property.id}')
+                .then((_) => _loadProperties());
+          },
+          onEdit: () {
+            context
+                .push('/property/edit', extra: property)
+                .then((_) => _loadProperties());
           },
         );
       },

@@ -16,7 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_bloc.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_event.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_state.dart';
-import '../widgets/property_map_view.dart';
+import 'package:youragent/widgets/map/map_view.dart';
 
 const double carouselHeight = 280;
 const double overlap = 40;
@@ -175,7 +175,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                       ),
                     ],
                     const SizedBox(height: 16),
-                    PropertyMapView(
+                    MapView(
                       properties: [property],
                       height: 160,
                       initialLocation: LatLng(

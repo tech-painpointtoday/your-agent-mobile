@@ -11,11 +11,11 @@ import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 import 'package:youragent/features/property/pages/create/property_location_picker_screen.dart';
-import 'package:youragent/features/property/widgets/property_map_view.dart';
 import 'package:youragent/utils/location_permission_helper.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/widgets/map/map_view.dart';
 
 class GeneralInfoStep extends StatefulWidget {
   final int? step;
@@ -608,7 +608,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: PropertyMapView(
+                  child: MapView(
                     key: const ValueKey('general_info_map'),
                     properties: const [],
                     height: 200,

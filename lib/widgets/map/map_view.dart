@@ -6,7 +6,7 @@ import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/utils/map_marker_utils.dart';
 
 /// Google Maps view widget for displaying properties on a map
-class PropertyMapView extends StatefulWidget {
+class MapView extends StatefulWidget {
   final List<Property> properties;
   final double height;
   final VoidCallback? onMaximizeTapped;
@@ -17,7 +17,7 @@ class PropertyMapView extends StatefulWidget {
   final LatLng? cameraTarget;
   final bool animateToTarget;
 
-  const PropertyMapView({
+  const MapView({
     super.key,
     required this.properties,
     this.height = 248,
@@ -31,10 +31,10 @@ class PropertyMapView extends StatefulWidget {
   });
 
   @override
-  State<PropertyMapView> createState() => _PropertyMapViewState();
+  State<MapView> createState() => _MapViewState();
 }
 
-class _PropertyMapViewState extends State<PropertyMapView> {
+class _MapViewState extends State<MapView> {
   GoogleMapController? _mapController;
   final Set<Marker> _markers = {};
   BitmapDescriptor? _customMarkerIcon;
@@ -108,7 +108,7 @@ class _PropertyMapViewState extends State<PropertyMapView> {
   }
 
   @override
-  void didUpdateWidget(PropertyMapView oldWidget) {
+  void didUpdateWidget(MapView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.properties != widget.properties && _isMapReady) {
       _createMarkers();

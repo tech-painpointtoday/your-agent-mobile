@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/features/property/widgets/property_map_view.dart';
+import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
 
 class LocationSearchBottomSheet extends StatefulWidget {
@@ -146,7 +146,7 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: PropertyMapView(
+              child: MapView(
                 properties: const [], // No properties needed for picker
                 height: double.infinity,
                 initialLocation: _currentLocation,

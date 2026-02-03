@@ -6,9 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:youragent/features/property/pages/create/property_location_picker_screen.dart';
-import 'package:youragent/features/property/widgets/property_map_view.dart';
 import 'package:youragent/utils/location_permission_helper.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
+import 'package:youragent/widgets/map/map_view.dart';
 
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
@@ -182,7 +182,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: PropertyMapView(
+                            child: MapView(
                               key: const ValueKey('service_area_map'),
                               properties: const [],
                               height: 200,

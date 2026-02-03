@@ -10,13 +10,13 @@ import 'package:youragent/services/google_places_service.dart';
 import 'package:youragent/utils/location_permission_helper.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
 
-class PropertyLocationResult {
+class LocationResult {
   final LatLng latLng;
   final String formattedAddressTh;
   final String formattedAddressEn;
   final Map<String, String> components;
 
-  const PropertyLocationResult({
+  const LocationResult({
     required this.latLng,
     required this.formattedAddressTh,
     required this.formattedAddressEn,
@@ -24,15 +24,15 @@ class PropertyLocationResult {
   });
 }
 
-class PropertyMapSelection extends StatefulWidget {
+class MapSelection extends StatefulWidget {
   final LatLng? initialLocation;
-  final ValueChanged<PropertyLocationResult>? onLocationChanged;
+  final ValueChanged<LocationResult>? onLocationChanged;
   final double height;
   final bool showSearch;
   final bool showControls;
   final VoidCallback? onBackTapped;
 
-  const PropertyMapSelection({
+  const MapSelection({
     super.key,
     this.initialLocation,
     this.onLocationChanged,
@@ -43,10 +43,10 @@ class PropertyMapSelection extends StatefulWidget {
   });
 
   @override
-  State<PropertyMapSelection> createState() => _PropertyMapSelectionState();
+  State<MapSelection> createState() => _MapSelectionState();
 }
 
-class _PropertyMapSelectionState extends State<PropertyMapSelection> {
+class _MapSelectionState extends State<MapSelection> {
   static const LatLng _bangkok = LatLng(13.7563, 100.5018);
 
   final TextEditingController _searchController = TextEditingController();
@@ -93,7 +93,7 @@ class _PropertyMapSelectionState extends State<PropertyMapSelection> {
   }
 
   @override
-  void didUpdateWidget(PropertyMapSelection oldWidget) {
+  void didUpdateWidget(MapSelection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.initialLocation != null &&
         widget.initialLocation != oldWidget.initialLocation) {
@@ -163,7 +163,7 @@ class _PropertyMapSelectionState extends State<PropertyMapSelection> {
 
       if (!mounted) return;
 
-      final result = PropertyLocationResult(
+      final result = LocationResult(
         latLng: latLng,
         formattedAddressTh: formattedTh,
         formattedAddressEn: formattedEn.isNotEmpty ? formattedEn : formattedTh,
