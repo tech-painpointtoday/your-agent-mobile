@@ -208,6 +208,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         label: 'ทั้งสองฝ่ายลงนามแล้ว',
         color: BadgeColor.blue,
         style: BadgeStyle.dot,
+        fontSize: 12,
       );
     }
     if (hasSellerSigned) {
@@ -215,16 +216,22 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         label: 'ผู้ให้เช่าลงนามแล้ว',
         color: BadgeColor.default_,
         style: BadgeStyle.done,
+        fontSize: 12,
       );
     } else if (hasBuyerSigned) {
       return AppBadge(
         label: 'ผู้เช่าลงนามแล้ว',
         color: BadgeColor.default_,
         style: BadgeStyle.done,
+        fontSize: 12,
       );
     }
 
-    return AppBadge(label: 'ยังไม่มีผู้ลงนาม', color: BadgeColor.default_);
+    return AppBadge(
+      label: 'ยังไม่มีผู้ลงนาม',
+      color: BadgeColor.default_,
+      fontSize: 12,
+    );
   }
 
   Widget _buildDocumentActions(ContractDetailState state) {
@@ -372,10 +379,15 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                 children: [
                   Row(
                     children: [
-                      const Icon(
-                        Icons.check_circle,
-                        color: AppColors.supportGreenDark,
-                        size: 16,
+                      SvgPicture.asset(
+                        'assets/icons/plus.svg',
+                        width: 16,
+                        height: 16,
+                        fit: BoxFit.scaleDown,
+                        colorFilter: ColorFilter.mode(
+                          AppColors.supportGreenDark,
+                          BlendMode.srcIn,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Text(

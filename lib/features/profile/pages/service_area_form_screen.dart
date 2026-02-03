@@ -16,6 +16,7 @@ import '../../../widgets/badges/app_badge.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
 import '../../../widgets/inputs/app_text_field.dart';
+import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/profile_bloc.dart';
 import '../models/agent_profile.dart';
 import 'profile_screen.dart';
@@ -90,12 +91,12 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
       'reachable_radius': double.tryParse(_radiusController.text.trim()) ?? 0,
     };
 
-    StatusDialog.confirm(
+    AppConfirmationBottomSheet.show(
       context: context,
       title: 'บันทึกพื้นที่ให้บริการ?',
-      message: 'คุณต้องการบันทึกข้อมูลพื้นที่ให้บริการนี้ใช่หรือไม่?',
-      actionLabel: 'บันทึก',
-      onAction: () {
+      description: 'คุณต้องการบันทึกข้อมูลพื้นที่ให้บริการนี้ใช่หรือไม่?',
+      confirmLabel: 'บันทึก',
+      onConfirm: () {
         context.read<ProfileBloc>().add(UpdateServiceArea(data));
       },
     );
@@ -355,23 +356,8 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
 
   Future<void> _updateLocationFromLatLng(LatLng latLng) async {
     try {
-      // Thai formatted string (geocoding)
-      final placemarks = await placemarkFromCoordinates(
-        latLng.latitude,
-        latLng.longitude,
-      );
-      final p = placemarks.isNotEmpty ? placemarks.first : null;
-      final fullTh = p != null
-          ? [
-              p.street,
-              p.subLocality,
-              p.subAdministrativeArea,
-              p.administrativeArea,
-              p.postalCode,
-            ].where((e) => e != null && e.isNotEmpty).join(' ')
-          : '';
-
-      // English + components (Google reverse geocode if configured)
+      // Base address: prefer Thai from Google when configured, else placemarks
+      String fullTh = '';
       final places = DependencyInjection.googlePlacesService;
       if (places.isConfigured) {
         final r = await places.reverseGeocode(
@@ -379,11 +365,23 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
           lng: latLng.longitude,
           language: 'th',
         );
-        if (r != null && fullTh.isEmpty) {
-          if (!mounted) return;
-          _addressController.text = r.formattedAddressEn;
-          return;
-        }
+        if (r != null) fullTh = r.formattedAddressEn;
+      }
+      if (fullTh.isEmpty) {
+        final placemarks = await placemarkFromCoordinates(
+          latLng.latitude,
+          latLng.longitude,
+        );
+        final p = placemarks.isNotEmpty ? placemarks.first : null;
+        fullTh = p != null
+            ? [
+                p.street,
+                p.subLocality,
+                p.subAdministrativeArea,
+                p.administrativeArea,
+                p.postalCode,
+              ].where((e) => e != null && e.isNotEmpty).join(' ')
+            : '';
       }
 
       if (!mounted) return;

@@ -146,11 +146,15 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
               // Dynamic Filters or Fallback
               if (state.specificationFilters.singleSelect.isNotEmpty)
                 ...state.specificationFilters.singleSelect.map((filter) {
+                  if (filter.key == 'style') {
+                    return SizedBox.shrink();
+                  }
+
                   return Column(
                     children: [
                       AppSelectionPills<String>(
                         label: filter.label,
-                        value: state.dynamicValues[filter.key]?.toString(),
+                        value: state.specifications[filter.key],
                         isRequired: true,
                         options: filter.options
                             .map(
@@ -241,7 +245,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                 label: 'วันที่สร้าง',
                 controller: _builtController,
                 isRequired: true,
-                readOnly: true,
+                readOnly: false,
                 showCursor: false,
                 hintText: 'เลือกวันที่สร้าง',
                 suffix: Padding(
@@ -264,7 +268,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                     lastDate: DateTime.now(),
                   );
                   if (picked != null) {
-                    if (!mounted) return;
+                    if (!context.mounted) return;
                     context.read<PropertyFormBloc>().add(
                       PropertyFormAdditionalInfoUpdated(
                         built: picked.toIso8601String(),

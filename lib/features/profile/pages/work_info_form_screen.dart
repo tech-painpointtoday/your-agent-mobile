@@ -8,6 +8,7 @@ import '../../../widgets/badges/app_badge.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../../../widgets/inputs/app_text_field.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
+import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/profile_bloc.dart';
 import '../models/agent_profile.dart';
 import 'profile_screen.dart';
@@ -98,12 +99,12 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
       'social_links': socialLinksMap,
     };
 
-    StatusDialog.confirm(
+    AppConfirmationBottomSheet.show(
       context: context,
       title: 'บันทึกข้อมูลการทำงาน?',
-      message: 'คุณต้องการบันทึกข้อมูลการทำงานนี้ใช่หรือไม่?',
-      actionLabel: 'บันทึก',
-      onAction: () {
+      description: 'คุณต้องการบันทึกข้อมูลการทำงานนี้ใช่หรือไม่?',
+      confirmLabel: 'บันทึก',
+      onConfirm: () {
         context.read<ProfileBloc>().add(UpdateWorkInfo(data));
       },
     );

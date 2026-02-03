@@ -31,7 +31,7 @@ class LocationSearchBottomSheet extends StatefulWidget {
 }
 
 class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
-  late LatLng _currentLocation;
+  LatLng? _currentLocation;
   Placemark? _selectedPlacemark;
   final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
@@ -39,10 +39,9 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
   @override
   void initState() {
     super.initState();
-    _currentLocation =
-        widget.initialLocation ?? const LatLng(13.7563, 100.5018);
+    _currentLocation = widget.initialLocation;
     if (widget.initialLocation != null) {
-      _fetchPlacemark(_currentLocation);
+      _fetchPlacemark(widget.initialLocation!);
     }
   }
 
@@ -150,7 +149,7 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
                 properties: const [], // No properties needed for picker
                 height: double.infinity,
                 initialLocation: _currentLocation,
-                showCenterMarker: true,
+                showCenterMarker: _currentLocation != null,
                 onCameraIdle: _onLocationChanged,
                 onCameraMove: (pos) {
                   setState(() {

@@ -8,6 +8,7 @@ import '../../../widgets/badges/app_badge.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../../../widgets/inputs/app_text_field.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
+import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/profile_bloc.dart';
 import '../models/agent_profile.dart';
 import 'profile_screen.dart';
@@ -66,12 +67,12 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
       'address': _addressController.text.trim(),
     };
 
-    StatusDialog.confirm(
+    AppConfirmationBottomSheet.show(
       context: context,
       title: 'บันทึกข้อมูลส่วนตัว?',
-      message: 'คุณต้องการบันทึกการแก้ไขข้อมูลส่วนตัวใช่หรือไม่?',
-      actionLabel: 'บันทึก',
-      onAction: () {
+      description: 'คุณต้องการบันทึกการแก้ไขข้อมูลส่วนตัวใช่หรือไม่?',
+      confirmLabel: 'บันทึก',
+      onConfirm: () {
         context.read<ProfileBloc>().add(UpdateWorkInfo(data));
       },
     );

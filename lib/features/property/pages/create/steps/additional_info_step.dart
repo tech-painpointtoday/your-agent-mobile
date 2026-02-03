@@ -151,10 +151,7 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                     children: [
                       AppMultiSelectChips<String>(
                         label: filter.label,
-                        values:
-                            (state.dynamicValues[filter.key] as List<dynamic>?)
-                                ?.cast<String>() ??
-                            [],
+                        values: state.specificationValues[filter.key] ?? [],
                         options: filter.options,
                         onSelected: (val) =>
                             context.read<PropertyFormBloc>().add(

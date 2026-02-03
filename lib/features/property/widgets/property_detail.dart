@@ -7,7 +7,7 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:intl/intl.dart';
 import 'package:youragent/features/property/pages/expandable_description.dart';
-import 'package:youragent/features/property/pages/fullscreen_map_screen.dart';
+import 'package:youragent/widgets/map/fullscreen_map_screen.dart';
 import 'package:youragent/utils/app_utils.dart';
 import '../widgets/property_image_carousel.dart';
 import '../widgets/property_detail_section.dart';
@@ -183,7 +183,6 @@ class _PropertyDetailState extends State<PropertyDetail> {
                         property.longitude,
                       ),
                       onMaximizeTapped: () {
-                        // Open fullscreen map with current property
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -323,24 +322,24 @@ class _PropertyDetailState extends State<PropertyDetail> {
                         ],
                       ),
                     ),
-                    // Property Style
-                    if (property.propertyStyle != null) ...[
-                      const SizedBox(height: 24),
-                      Text(
-                        'สไตล์ทรัพย์',
-                        style: GoogleFonts.anuphan(
-                          color: AppColors.baseDarkGrey,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [_buildTag(property.propertyStyle!.label)],
-                      ),
-                    ],
+                    // // Property Style
+                    // if (property.propertyStyle != null) ...[
+                    //   const SizedBox(height: 24),
+                    //   Text(
+                    //     'สไตล์ทรัพย์',
+                    //     style: GoogleFonts.anuphan(
+                    //       color: AppColors.baseDarkGrey,
+                    //       fontSize: 16,
+                    //       fontWeight: FontWeight.w400,
+                    //     ),
+                    //   ),
+                    //   const SizedBox(height: 12),
+                    //   Wrap(
+                    //     spacing: 8,
+                    //     runSpacing: 8,
+                    //     children: [_buildTag(property.propertyStyle!.label)],
+                    //   ),
+                    // ],
 
                     // Dynamic Specification Values (Highlights, Facilities, Furniture, AirCon, etc.)
                     BlocBuilder<PropertyMetadataBloc, PropertyMetadataState>(

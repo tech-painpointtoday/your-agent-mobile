@@ -5,11 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 
 import '../../../app/router.dart';
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/config/app_config.dart';
 import '../../../utils/image_url_helper.dart';
 import '../../../widgets/backgrounds/blue_wave_background.dart';
 import '../../../widgets/badges/app_badge.dart';
@@ -220,7 +223,7 @@ class ProfileView extends StatelessWidget {
                 _buildWorkInfoCard(context, agent),
                 const SizedBox(height: 16),
                 _buildServiceAreaCard(context, agent),
-                const SizedBox(height: 32),
+                const SizedBox(height: 64),
               ],
             ),
           ),
@@ -570,14 +573,19 @@ class ProfileView extends StatelessWidget {
 
   Widget _buildWorkInfoRow(String iconPath, String text) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SvgPicture.asset(
-          iconPath,
-          width: 20,
-          height: 20,
-          colorFilter: const ColorFilter.mode(
-            AppColors.primary,
-            BlendMode.srcIn,
+        Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: SvgPicture.asset(
+            iconPath,
+            width: 16,
+            height: 16,
+            fit: BoxFit.scaleDown,
+            colorFilter: const ColorFilter.mode(
+              AppColors.primary,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         const SizedBox(width: 12),
@@ -588,6 +596,7 @@ class ProfileView extends StatelessWidget {
               fontSize: 16,
               fontWeight: FontWeight.w400,
               color: AppColors.baseBlack,
+              height: 1.4,
             ),
           ),
         ),
@@ -611,20 +620,31 @@ class ProfileView extends StatelessWidget {
       );
     }
 
+    final lat = double.tryParse(agent.serviceAreaCenterLat!);
+    final lng = double.tryParse(agent.serviceAreaCenterLng!);
+
     return _ProfileCard(
       title: 'ข้อมูลพื้นที่ให้บริการ',
       onEdit: () => context.push('/profile/service-area', extra: agent),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          MapView(
+            properties: [],
+            height: 120,
+            initialLocation: LatLng(lat ?? 0, lng ?? 0),
+            showCenterMarker: true,
+            radius: (double.tryParse(agent.reachableRadius ?? '0') ?? 0) * 1000,
+          ),
+          const SizedBox(height: 16),
           _buildWorkInfoRow(
-            'assets/icons/profile/navigation.svg',
-            'รัศมีการให้บริการ ${agent.reachableRadius} กม.',
+            'assets/icons/map-pin.svg',
+            agent.address ?? 'ไม่ได้ระบุที่อยู่',
           ),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
-            'assets/icons/profile/map-pin.svg',
-            'ตำแหน่งศูนย์กลาง: ${double.parse(agent.serviceAreaCenterLat!).toStringAsFixed(4)}, ${double.parse(agent.serviceAreaCenterLng!).toStringAsFixed(4)}',
+            'assets/icons/chart-15.svg',
+            'รัศมีการทำงาน ${double.tryParse(agent.reachableRadius ?? '')?.toStringAsFixed(2) ?? agent.reachableRadius} ก.ม.',
           ),
         ],
       ),
@@ -633,15 +653,19 @@ class ProfileView extends StatelessWidget {
 
   Widget _buildInfoRow(String icon, String value) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SvgPicture.asset(
-          icon,
-          width: 16,
-          height: 16,
-          fit: BoxFit.scaleDown,
-          colorFilter: const ColorFilter.mode(
-            AppColors.baseGrey,
-            BlendMode.srcIn,
+        Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: SvgPicture.asset(
+            icon,
+            width: 16,
+            height: 16,
+            fit: BoxFit.scaleDown,
+            colorFilter: const ColorFilter.mode(
+              AppColors.primary,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         const SizedBox(width: 12),
@@ -652,6 +676,7 @@ class ProfileView extends StatelessWidget {
               fontSize: 16,
               fontWeight: FontWeight.w400,
               color: AppColors.baseBlack,
+              height: 1.4,
             ),
           ),
         ),

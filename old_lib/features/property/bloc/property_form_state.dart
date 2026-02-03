@@ -40,6 +40,8 @@ class PropertyFormData extends PropertyFormState {
 
   // Location
   final LatLng? selectedLocation;
+  final String? number;
+  final String? city;
   final String? address;
   final String? district;
   final String? subdistrict;
@@ -84,7 +86,8 @@ class PropertyFormData extends PropertyFormState {
   // Condo-specific fields
   final Developer? selectedDeveloper;
   final CondoProject? selectedCondoProject; // Source of truth for project_id
-  final int? pendingCondoProjectId; // Temporary: ID to match after master data loads
+  final int?
+  pendingCondoProjectId; // Temporary: ID to match after master data loads
   final String? tower;
   final String? condoFloor;
   final String? unitNo;
@@ -112,6 +115,8 @@ class PropertyFormData extends PropertyFormState {
     this.selectedFurniture = const [],
     this.selectedAirConditioning = const [],
     this.selectedLocation,
+    this.number,
+    this.city,
     this.address,
     this.district,
     this.subdistrict,
@@ -219,8 +224,10 @@ class PropertyFormData extends PropertyFormState {
       selectedType: selectedType ?? this.selectedType,
       selectedStatus: selectedStatus ?? this.selectedStatus,
       selectedSaleType: selectedSaleType ?? this.selectedSaleType,
-      selectedPropertyStyle: selectedPropertyStyle ?? this.selectedPropertyStyle,
-      selectedPropertyColor: selectedPropertyColor ?? this.selectedPropertyColor,
+      selectedPropertyStyle:
+          selectedPropertyStyle ?? this.selectedPropertyStyle,
+      selectedPropertyColor:
+          selectedPropertyColor ?? this.selectedPropertyColor,
       selectedDirection: selectedDirection ?? this.selectedDirection,
       selectedCountry: selectedCountry ?? this.selectedCountry,
       builtDate: builtDate ?? this.builtDate,
@@ -228,7 +235,8 @@ class PropertyFormData extends PropertyFormState {
       selectedHighlights: selectedHighlights ?? this.selectedHighlights,
       selectedCommonAreas: selectedCommonAreas ?? this.selectedCommonAreas,
       selectedFurniture: selectedFurniture ?? this.selectedFurniture,
-      selectedAirConditioning: selectedAirConditioning ?? this.selectedAirConditioning,
+      selectedAirConditioning:
+          selectedAirConditioning ?? this.selectedAirConditioning,
       selectedLocation: selectedLocation ?? this.selectedLocation,
       address: address ?? this.address,
       district: district ?? this.district,
@@ -239,7 +247,8 @@ class PropertyFormData extends PropertyFormState {
       newPhotos: newPhotos ?? this.newPhotos,
       existingPhotos: existingPhotos ?? this.existingPhotos,
       filterOptions: filterOptions ?? this.filterOptions,
-      isLoadingFilterOptions: isLoadingFilterOptions ?? this.isLoadingFilterOptions,
+      isLoadingFilterOptions:
+          isLoadingFilterOptions ?? this.isLoadingFilterOptions,
       thaiAddresses: thaiAddresses ?? this.thaiAddresses,
       isLoadingAddress: isLoadingAddress ?? this.isLoadingAddress,
       propertyName: propertyName ?? this.propertyName,
@@ -264,7 +273,8 @@ class PropertyFormData extends PropertyFormState {
       selectedCondoProject: clearSelectedCondoProject
           ? null
           : (selectedCondoProject ?? this.selectedCondoProject),
-      pendingCondoProjectId: pendingCondoProjectId ?? this.pendingCondoProjectId,
+      pendingCondoProjectId:
+          pendingCondoProjectId ?? this.pendingCondoProjectId,
       tower: tower ?? this.tower,
       condoFloor: condoFloor ?? this.condoFloor,
       unitNo: unitNo ?? this.unitNo,
@@ -279,61 +289,63 @@ class PropertyFormData extends PropertyFormState {
 
   @override
   List<Object?> get props => [
-        selectedType,
-        selectedStatus,
-        selectedSaleType,
-        selectedPropertyStyle,
-        selectedPropertyColor,
-        selectedDirection,
-        selectedCountry,
-        builtDate,
-        availableFromDate,
-        selectedHighlights,
-        selectedCommonAreas,
-        selectedFurniture,
-        selectedAirConditioning,
-        selectedLocation,
-        address,
-        district,
-        subdistrict,
-        state,
-        country,
-        postalCode,
-        newPhotos,
-        existingPhotos,
-        filterOptions,
-        isLoadingFilterOptions,
-        thaiAddresses,
-        isLoadingAddress,
-        propertyName,
-        propertyCode,
-        floors,
-        bedrooms,
-        bathrooms,
-        garage,
-        price,
-        landSize,
-        buildingSize,
-        description,
-        additionalDetails,
-        houseNumber,
-        soi,
-        road,
-        availableFrom,
-        developers,
-        condoProjects,
-        isLoadingMasterData,
-        selectedDeveloper,
-        selectedCondoProject,
-        pendingCondoProjectId,
-        tower,
-        condoFloor,
-        unitNo,
-        villageName,
-        moo,
-        houseSubtype,
-        parkingType,
-        isCornerPlot,
-        houseNotes,
-      ];
+    selectedType,
+    selectedStatus,
+    selectedSaleType,
+    selectedPropertyStyle,
+    selectedPropertyColor,
+    selectedDirection,
+    selectedCountry,
+    builtDate,
+    availableFromDate,
+    selectedHighlights,
+    selectedCommonAreas,
+    selectedFurniture,
+    selectedAirConditioning,
+    selectedLocation,
+    number,
+    city,
+    address,
+    district,
+    subdistrict,
+    state,
+    country,
+    postalCode,
+    newPhotos,
+    existingPhotos,
+    filterOptions,
+    isLoadingFilterOptions,
+    thaiAddresses,
+    isLoadingAddress,
+    propertyName,
+    propertyCode,
+    floors,
+    bedrooms,
+    bathrooms,
+    garage,
+    price,
+    landSize,
+    buildingSize,
+    description,
+    additionalDetails,
+    houseNumber,
+    soi,
+    road,
+    availableFrom,
+    developers,
+    condoProjects,
+    isLoadingMasterData,
+    selectedDeveloper,
+    selectedCondoProject,
+    pendingCondoProjectId,
+    tower,
+    condoFloor,
+    unitNo,
+    villageName,
+    moo,
+    houseSubtype,
+    parkingType,
+    isCornerPlot,
+    houseNotes,
+  ];
 }

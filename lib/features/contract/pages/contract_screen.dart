@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/contract.dart';
@@ -341,7 +342,10 @@ class _ContractScreenState extends State<ContractScreen> {
             }
           },
           onEdit: () {
-            // Navigate to edit contract
+            context.push('/contract/edit', extra: contract);
+          },
+          onShare: () {
+            // Placeholder for share action
           },
         );
       },

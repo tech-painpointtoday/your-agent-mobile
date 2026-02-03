@@ -24,6 +24,10 @@ class AppButton extends StatelessWidget {
   final TextStyle? textStyle;
   final EdgeInsets? padding;
   final bool isLoading;
+  final Color? borderColor;
+  final double? width;
+  final double? textSize;
+  final double elevation;
 
   const AppButton({
     super.key,
@@ -40,6 +44,10 @@ class AppButton extends StatelessWidget {
     this.textStyle,
     this.padding,
     this.isLoading = false,
+    this.borderColor,
+    this.width,
+    this.textSize,
+    this.elevation = 0,
   });
 
   @override
@@ -81,10 +89,10 @@ class AppButton extends StatelessWidget {
     };
 
     Color enabledTxtCol = switch (style) {
-      AppButtonStyle.primary => AppColors.baseWhite,
-      AppButtonStyle.destructive => AppColors.baseWhite,
-      AppButtonStyle.outline => AppColors.baseDarkGrey,
-      AppButtonStyle.ghost => AppColors.baseDarkGrey,
+      AppButtonStyle.primary => textColor ?? AppColors.baseWhite,
+      AppButtonStyle.destructive => textColor ?? AppColors.baseWhite,
+      AppButtonStyle.outline => textColor ?? AppColors.baseDarkGrey,
+      AppButtonStyle.ghost => textColor ?? AppColors.baseDarkGrey,
     };
 
     if (textColor != null && isEnabled) {
@@ -93,10 +101,11 @@ class AppButton extends StatelessWidget {
 
     return SizedBox(
       height: height,
+      width: width,
       child: ElevatedButton(
         onPressed: isEnabled ? onPressed : null,
         style: ElevatedButton.styleFrom(
-          padding: padding,
+          padding: height != null ? EdgeInsets.zero : padding,
           backgroundColor: background,
           foregroundColor: textCol,
           disabledBackgroundColor: disabledBgCol,
@@ -106,13 +115,13 @@ class AppButton extends StatelessWidget {
             side: style == AppButtonStyle.outline
                 ? BorderSide(
                     color: isEnabled
-                        ? AppColors.baseLightGrey
+                        ? (borderColor ?? AppColors.baseLightGrey)
                         : AppColors.baseLightGrey,
                     width: 1,
                   )
                 : BorderSide.none,
           ),
-          elevation: 0,
+          elevation: elevation,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -150,7 +159,7 @@ class AppButton extends StatelessWidget {
                   style:
                       textStyle ??
                       TextStyle(
-                        fontSize: 16,
+                        fontSize: textSize ?? 16,
                         fontWeight: FontWeight.w500,
                         color: enabledTxtCol,
                       ),

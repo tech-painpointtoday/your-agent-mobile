@@ -19,12 +19,12 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   Placemark? _selectedPlacemark;
   bool _isLoadingPlacemark = false;
 
+  static const LatLng _center = LatLng(13.7563, 100.5018);
+
   @override
   void initState() {
     super.initState();
-    _selectedLocation =
-        widget.initialLocation ??
-        const LatLng(13.7563, 100.5018); // Default to Bangkok
+    _selectedLocation = widget.initialLocation ?? _center;
     if (widget.initialLocation != null) {
       _fetchPlacemark(_selectedLocation);
     }
@@ -76,16 +76,17 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
           ),
-          const Center(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 35),
-              child: Icon(
-                Icons.location_on,
-                color: AppColors.primary,
-                size: 40,
+          if (widget.initialLocation != null)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 35),
+                child: Icon(
+                  Icons.location_on,
+                  color: AppColors.primary,
+                  size: 40,
+                ),
               ),
             ),
-          ),
           Positioned(
             bottom: 30,
             left: 20,

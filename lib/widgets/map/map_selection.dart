@@ -300,7 +300,7 @@ class _MapSelectionState extends State<MapSelection> {
             width: 24,
             height: 24,
             colorFilter: const ColorFilter.mode(
-              AppColors.primary,
+              AppColors.baseBlack,
               BlendMode.srcIn,
             ),
           ),
@@ -351,17 +351,18 @@ class _MapSelectionState extends State<MapSelection> {
             compassEnabled: false,
           ),
 
-          // Center Marker
-          const Center(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 35),
-              child: Icon(
-                Icons.location_on,
-                color: AppColors.supportRedDeep,
-                size: 40,
+          // แสดง marker เมื่อมีตำแหน่งเริ่มต้น หรือเมื่อผู้ใช้เปลี่ยนหมุด/ค้นหาแล้วเลือก
+          if (_selected != _bangkok || widget.initialLocation != null)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 35),
+                child: Icon(
+                  Icons.location_on,
+                  color: AppColors.supportRedDeep,
+                  size: 40,
+                ),
               ),
             ),
-          ),
 
           // Map Controls
           if (widget.showControls) ...[

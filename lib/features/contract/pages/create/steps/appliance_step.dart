@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -45,7 +46,8 @@ class _ApplianceStepState extends State<ApplianceStep> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.7,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        height: MediaQuery.of(context).size.height * 0.6,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -54,14 +56,17 @@ class _ApplianceStepState extends State<ApplianceStep> {
           ),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 12),
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
+            Center(
+              child: Container(
+                width: 48,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -69,13 +74,12 @@ class _ApplianceStepState extends State<ApplianceStep> {
               'เลือกจากรูปอสังหาฯ',
               style: GoogleFonts.anuphan(
                 fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(height: 16),
             Expanded(
               child: GridView.builder(
-                padding: const EdgeInsets.all(16),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   crossAxisSpacing: 8,
@@ -99,12 +103,23 @@ class _ApplianceStepState extends State<ApplianceStep> {
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        photo.url ?? '',
+                      child: CachedNetworkImage(
+                        imageUrl: photo.url ?? '',
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
+                        progressIndicatorBuilder: (context, url, progress) =>
+                            Container(
+                              color: Colors.grey[200],
+                              padding: const EdgeInsets.all(32),
+                              child: CircularProgressIndicator(
+                                value: progress.progress,
+                                strokeWidth: 2,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                        errorWidget: (context, url, error) => Container(
                           color: Colors.grey[200],
-                          child: const Icon(Icons.broken_image),
+                          padding: const EdgeInsets.all(32),
+                          child: const Icon(Icons.error),
                         ),
                       ),
                     ),
@@ -376,7 +391,7 @@ class _ApplianceItemCard extends StatelessWidget {
             onTap: onPickPropertyImage,
             child: CustomPaint(
               painter: DashedBorderPainter(
-                color: AppColors.primary,
+                color: AppColors.baseLightGrey,
                 strokeWidth: 1,
                 dashWidth: 6,
                 dashSpace: 4,
@@ -394,7 +409,7 @@ class _ApplianceItemCard extends StatelessWidget {
                       width: 24,
                       height: 24,
                       colorFilter: const ColorFilter.mode(
-                        AppColors.primary,
+                        AppColors.baseGrey,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -402,7 +417,7 @@ class _ApplianceItemCard extends StatelessWidget {
                     Text(
                       'เลือกจากรูปอสังหาฯ',
                       style: GoogleFonts.anuphan(
-                        color: AppColors.primary,
+                        color: AppColors.baseDarkGrey,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -467,7 +482,7 @@ class _ApplianceItemCard extends StatelessWidget {
           ),
         ),
 
-        if (item.images.isNotEmpty) ...[
+        if (item.images.isNotEmpty || item.existingPhotoUrl != null) ...[
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -231,7 +231,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         unitNo = condo.unitNo;
         pendingCondoProjectId = condo.condoProjectId;
         // Also try to load developer from nested condo_project if available
-        if (property.condoDetails != null && 
+        if (property.condoDetails != null &&
             property.condoDetails!.condoProjectId != null) {
           // Developer will be loaded from condo project after master data loads
         }
@@ -328,24 +328,6 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         houseNumber = location.number;
         // soi and road are already loaded from location above
         // Only use specifications map as fallback if location values are null
-      }
-
-      // Load from specifications map (only as fallback for fields not in location)
-      if (specs?.specifications != null) {
-        final specMap = specs!.specifications!;
-        // Only use specifications map if location values are null
-        if (soi == null && specMap['soi'] != null) {
-          soi = specMap['soi'].toString();
-        }
-        if (road == null && specMap['road'] != null) {
-          road = specMap['road'].toString();
-        }
-        if (specMap['additional_details'] != null) {
-          additionalDetails = specMap['additional_details'].toString();
-        }
-        if (specMap['name'] != null) {
-          propertyName = specMap['name'].toString();
-        }
       }
 
       initialState = initialState.copyWith(
@@ -457,7 +439,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         case 'floors':
           emit(currentState.copyWith(floors: event.value as String?));
           break;
-        case 'house_number':
+        case 'number':
           emit(currentState.copyWith(houseNumber: event.value as String?));
           break;
         case 'soi':
@@ -653,6 +635,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
           country: event.country,
           postalCode: event.postalCode,
           houseNumber: event.houseNumber,
+          number: event.number,
           soi: event.soi,
           road: event.road,
         ),
@@ -764,7 +747,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         final condoProjects = await _propertyApiService.getCondoProjects();
 
         final currentState = state as PropertyFormData;
-        
+
         // Match pending condo project if we have one
         CondoProject? matchedCondoProject;
         Developer? matchedDeveloper;
@@ -780,11 +763,15 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
                   (dev) => dev.id == matchedCondoProject!.developerId,
                 );
               } catch (e) {
-                debugPrint('Developer not found for condo project: ${matchedCondoProject.developerId}');
+                debugPrint(
+                  'Developer not found for condo project: ${matchedCondoProject.developerId}',
+                );
               }
             }
           } catch (e) {
-            debugPrint('Condo project not found: ${currentState.pendingCondoProjectId}');
+            debugPrint(
+              'Condo project not found: ${currentState.pendingCondoProjectId}',
+            );
           }
         }
 
@@ -793,8 +780,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
             developers: developers,
             condoProjects: condoProjects,
             isLoadingMasterData: false,
-            selectedCondoProject: matchedCondoProject ?? currentState.selectedCondoProject,
-            selectedDeveloper: matchedDeveloper ?? currentState.selectedDeveloper,
+            selectedCondoProject:
+                matchedCondoProject ?? currentState.selectedCondoProject,
+            selectedDeveloper:
+                matchedDeveloper ?? currentState.selectedDeveloper,
             pendingCondoProjectId: null, // Clear after matching
           ),
         );

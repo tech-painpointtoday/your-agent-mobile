@@ -125,10 +125,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         emit(state.copyWith(address: event.value as String?));
         break;
       case 'project':
-        // Handle project if needed (missed in current state fields)
+        // emit(state.copyWith(condoProjectId: event.value as int?));
         break;
       case 'developer':
-        // Handle developer if needed
+        // emit(state.copyWith(selectedDeveloperId: event.value as int?));
         break;
       case 'building':
         emit(state.copyWith(tower: event.value as String?));
@@ -138,6 +138,9 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         break;
       case 'room_number':
         emit(state.copyWith(unitNo: event.value as String?));
+        break;
+      case 'number':
+        emit(state.copyWith(number: event.value as String?));
         break;
     }
   }
@@ -151,7 +154,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       state.copyWith(
         latitude: data['latitude'] as double?,
         longitude: data['longitude'] as double?,
-        number: data['number'] as String?,
+        //number: data['number'] as String?,
         city: data['city'] as String?,
         state: data['state'] as String?,
         province: data['province'] as String?,
@@ -172,9 +175,9 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     Emitter<PropertyFormState> emit,
   ) {
     switch (event.key) {
-      case 'number':
-        emit(state.copyWith(number: event.value));
-        break;
+      // case 'number':
+      //   emit(state.copyWith(number: event.value));
+      //   break;
       case 'road':
         emit(state.copyWith(road: event.value));
         break;
@@ -318,19 +321,23 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
 
       Property responseProperty;
 
-      if (state.propertyId != null) {
-        responseProperty = await _propertyApiService.updateProperty(
-          role: roleName,
-          propertyId: state.propertyId!,
-          data: payload,
-        );
-      } else {
-        // CREATE
-        responseProperty = await _propertyApiService.saveProperty(
-          role: roleName,
-          data: payload,
-        );
-      }
+      // if (state.propertyId != null) {
+      //   responseProperty = await _propertyApiService.updateProperty(
+      //     role: roleName,
+      //     propertyId: state.propertyId!,
+      //     data: payload,
+      //   );
+      // } else {
+      //   // CREATE
+      //   responseProperty = await _propertyApiService.saveProperty(
+      //     role: roleName,
+      //     data: payload,
+      //   );
+      // }
+      responseProperty = await _propertyApiService.saveProperty(
+        role: roleName,
+        data: payload,
+      );
 
       final propertyId = responseProperty.id;
 
@@ -494,11 +501,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     PropertyFormDynamicSingleSelectChanged event,
     Emitter<PropertyFormState> emit,
   ) {
-    final newValues = Map<String, dynamic>.from(state.dynamicValues);
-    newValues[event.key] = event.value;
+    final newSpecs = Map<String, String>.from(state.specifications);
+    newSpecs[event.key] = event.value;
 
-    // Also sync with legacy fields if they match known keys for backward compatibility
-    PropertyFormState newState = state.copyWith(dynamicValues: newValues);
+    PropertyFormState newState = state.copyWith(specifications: newSpecs);
 
     switch (event.key) {
       case 'floors':
@@ -543,9 +549,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     PropertyFormDynamicMultiSelectToggled event,
     Emitter<PropertyFormState> emit,
   ) {
-    final newValues = Map<String, dynamic>.from(state.dynamicValues);
-    final currentList =
-        (newValues[event.key] as List<dynamic>?)?.cast<String>() ?? [];
+    final newSpecValues = Map<String, List<String>>.from(
+      state.specificationValues,
+    );
+    final currentList = newSpecValues[event.key] ?? [];
     final newList = List<String>.from(currentList);
 
     if (newList.contains(event.value)) {
@@ -553,7 +560,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     } else {
       newList.add(event.value);
     }
-    newValues[event.key] = newList;
-    emit(state.copyWith(dynamicValues: newValues));
+    newSpecValues[event.key] = newList;
+    emit(state.copyWith(specificationValues: newSpecValues));
   }
 }

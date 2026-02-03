@@ -283,7 +283,7 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
             width: 24,
             height: 24,
             colorFilter: const ColorFilter.mode(
-              AppColors.primary,
+              AppColors.baseBlack,
               BlendMode.srcIn,
             ),
           ),

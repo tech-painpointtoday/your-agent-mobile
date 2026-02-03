@@ -47,8 +47,11 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     _houseNoController = TextEditingController(
       text: state.data['number'] as String?,
     );
+    // ตำแหน่งที่ตั้ง: แสดงค่าก็ต่อเมื่อมี lat/lng แล้ว (เช่น เลือกจากแผนที่แล้ว)
     _addressController = TextEditingController(
-      text: state.data['address'] as String?,
+      text: (state.data['latitude'] != null && state.data['longitude'] != null)
+          ? (state.data['address'] as String? ?? '')
+          : '',
     );
     _projectController = TextEditingController(
       text: state.data['project'] as String?,
@@ -106,6 +109,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   }
 
   void _updateData(String key, String value) {
+    print('updateData: $key, $value');
     context.read<PropertyFormBloc>().add(
       PropertyFormDataUpdated(key: key, value: value),
     );
@@ -169,7 +173,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         'location_set': true,
         'formatted_address_th': result.formattedAddressTh,
         'formatted_address_en': result.formattedAddressEn,
-        'number': result.components['number'] ?? '',
+        //number': result.components['number'] ?? '',
         'road': result.components['road'] ?? '',
         'soi': result.components['soi'] ?? '',
         'subdistrict': result.components['subdistrict'] ?? '',
@@ -212,36 +216,51 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     if (_inlineMapUpdating) return;
     _inlineMapUpdating = true;
     try {
-      // Thai formatted string (geocoding)
-      final placemarks = await placemarkFromCoordinates(
-        latLng.latitude,
-        latLng.longitude,
-      );
-      final p = placemarks.isNotEmpty ? placemarks.first : null;
-      final fullTh = p != null
-          ? [
-              p.street,
-              p.subLocality,
-              p.subAdministrativeArea,
-              p.administrativeArea,
-              p.postalCode,
-            ].where((e) => e != null && e.isNotEmpty).join(' ')
-          : '';
-
-      // English + components (Google reverse geocode if configured)
-      String formattedEn = fullTh;
+      // Base address: prefer Thai from Google when configured, else placemarks
+      String fullTh = '';
       Map<String, String> components = const {};
+      String formattedEn = '';
+
       if (DependencyInjection.googlePlacesService.isConfigured) {
         final r = await DependencyInjection.googlePlacesService.reverseGeocode(
           lat: latLng.latitude,
           lng: latLng.longitude,
-          language: 'en',
+          language: 'th',
         );
         if (r != null) {
-          formattedEn = r.formattedAddressEn;
+          fullTh = r.formattedAddressEn;
           components = r.components;
         }
       }
+
+      if (fullTh.isEmpty) {
+        final placemarks = await placemarkFromCoordinates(
+          latLng.latitude,
+          latLng.longitude,
+        );
+        final p = placemarks.isNotEmpty ? placemarks.first : null;
+        fullTh = p != null
+            ? [
+                p.street,
+                p.subLocality,
+                p.subAdministrativeArea,
+                p.administrativeArea,
+                p.postalCode,
+              ].where((e) => e != null && e.isNotEmpty).join(' ')
+            : '';
+      }
+
+      if (DependencyInjection.googlePlacesService.isConfigured &&
+          formattedEn.isEmpty) {
+        final rEn = await DependencyInjection.googlePlacesService
+            .reverseGeocode(
+              lat: latLng.latitude,
+              lng: latLng.longitude,
+              language: 'en',
+            );
+        if (rEn != null) formattedEn = rEn.formattedAddressEn;
+      }
+      if (formattedEn.isEmpty) formattedEn = fullTh;
 
       if (!mounted) return;
       if (fullTh.isNotEmpty) {
@@ -254,7 +273,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
           'location_set': true,
           'formatted_address_th': fullTh,
           'formatted_address_en': formattedEn,
-          'number': components['number'] ?? '',
+          //'number': components['number'] ?? '',
           'road': components['road'] ?? '',
           'soi': components['soi'] ?? '',
           'subdistrict': components['subdistrict'] ?? '',
@@ -387,6 +406,17 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                   controller: _developerController,
                   hintText: 'ผู้พัฒนาโครงการ',
                 ),
+                const SizedBox(height: 8),
+                AppButton(
+                  width: double.infinity,
+                  text: 'เพิ่มผู้พัฒนาโครงการ',
+                  style: AppButtonStyle.outline,
+                  backgroundColor: AppColors.brandLightGreen,
+                  textColor: AppColors.brandGreen,
+                  borderColor: AppColors.brandLightGreen,
+                  iconPath: 'assets/icons/plus.svg',
+                  onPressed: () {},
+                ),
                 const SizedBox(height: 16),
 
                 // Project Name
@@ -394,6 +424,17 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                   label: 'ชื่อโครงการ',
                   controller: _projectController,
                   hintText: 'ชื่อโครงการ',
+                ),
+                const SizedBox(height: 8),
+                AppButton(
+                  width: double.infinity,
+                  text: 'เพิ่มชื่อโครงการ',
+                  style: AppButtonStyle.outline,
+                  backgroundColor: AppColors.brandLightGreen,
+                  textColor: AppColors.brandGreen,
+                  borderColor: AppColors.brandLightGreen,
+                  iconPath: 'assets/icons/plus.svg',
+                  onPressed: () {},
                 ),
                 const SizedBox(height: 16),
               ],
@@ -453,6 +494,16 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       ),
                     );
                   },
+                ),
+                const SizedBox(height: 8),
+                AppButton(
+                  text: 'เพิ่มผู้พัฒนาโครงการ',
+                  style: AppButtonStyle.outline,
+                  backgroundColor: AppColors.brandLightGreen,
+                  textColor: AppColors.brandGreen,
+                  borderColor: AppColors.brandGreen,
+                  iconPath: 'assets/icons/plus.svg',
+                  onPressed: () {},
                 ),
                 const SizedBox(height: 16),
 
@@ -532,6 +583,16 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                     );
                   },
                 ),
+                const SizedBox(height: 8),
+                AppButton(
+                  text: 'เพิ่มชื่อโครงการ',
+                  style: AppButtonStyle.outline,
+                  backgroundColor: AppColors.brandLightGreen,
+                  textColor: AppColors.brandGreen,
+                  borderColor: AppColors.brandGreen,
+                  iconPath: 'assets/icons/plus.svg',
+                  onPressed: () {},
+                ),
                 const SizedBox(height: 16),
 
                 // Building Info
@@ -573,7 +634,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 controller: _addressController,
                 hintText: 'ตำแหน่งที่ตั้ง',
                 isRequired: true,
-                readOnly: true,
+                readOnly: false,
                 showCursor: false,
                 onTap: _openLocationSearch,
                 suffix: Padding(
@@ -614,8 +675,11 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                     height: 200,
                     initialLocation: currentLatLng,
                     cameraTarget: currentLatLng,
-                    showCenterMarker: true,
-                    onCameraIdle: _updateLocationFromLatLng,
+                    showCenterMarker: currentLatLng != null,
+                    // เมื่อยังไม่มีตำแหน่ง อย่าส่ง onCameraIdle เพื่อไม่ให้การแสดง center ของแผนที่ไปตั้งที่อยู่/หมุด
+                    onCameraIdle: currentLatLng != null
+                        ? _updateLocationFromLatLng
+                        : null,
                     onMaximizeTapped: _openLocationSearch,
                   ),
                 ),

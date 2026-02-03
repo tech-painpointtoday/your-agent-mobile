@@ -16,6 +16,7 @@ class MapView extends StatefulWidget {
   final LatLng? initialLocation;
   final LatLng? cameraTarget;
   final bool animateToTarget;
+  final double? radius;
 
   const MapView({
     super.key,
@@ -28,6 +29,7 @@ class MapView extends StatefulWidget {
     this.initialLocation,
     this.cameraTarget,
     this.animateToTarget = true,
+    this.radius,
   });
 
   @override
@@ -92,10 +94,13 @@ class _MapViewState extends State<MapView> {
 
   void _createMarkers() {
     _markers.clear();
-    for (final property in widget.properties) {
+    for (var i = 0; i < widget.properties.length; i++) {
+      final property = widget.properties[i];
+      final markerId =
+          property.id?.toString() ?? property.code ?? 'property-$i';
       _markers.add(
         Marker(
-          markerId: MarkerId(property.id?.toString() ?? property.code!),
+          markerId: MarkerId(markerId),
           position: LatLng(property.latitude, property.longitude),
           icon: _customMarkerIcon ?? BitmapDescriptor.defaultMarker,
           infoWindow: InfoWindow(
@@ -227,8 +232,21 @@ class _MapViewState extends State<MapView> {
                     myLocationButtonEnabled: false,
                     zoomControlsEnabled: true,
                     mapToolbarEnabled: false,
+                    circles:
+                        widget.radius != null && widget.initialLocation != null
+                        ? {
+                            Circle(
+                              circleId: const CircleId('service_area'),
+                              center: widget.initialLocation!,
+                              radius: widget.radius!,
+                              fillColor: AppColors.primary.withOpacity(0.12),
+                              strokeColor: AppColors.primary,
+                              strokeWidth: 2,
+                            ),
+                          }
+                        : {},
                   ),
-                  if (widget.showCenterMarker)
+                  if (widget.showCenterMarker && widget.initialLocation != null)
                     const Center(
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 35),
@@ -264,7 +282,7 @@ class _MapViewState extends State<MapView> {
                   child: SvgPicture.asset(
                     'assets/icons/maximize.svg',
                     colorFilter: const ColorFilter.mode(
-                      AppColors.primary,
+                      AppColors.baseBlack,
                       BlendMode.srcIn,
                     ),
                   ),

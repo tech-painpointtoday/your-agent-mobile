@@ -6,7 +6,7 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/features/home/pages/home_screen.dart';
 import 'package:youragent/features/property/pages/all_properties_screen.dart';
-import 'package:youragent/features/property/pages/fullscreen_map_screen.dart';
+import 'package:youragent/widgets/map/fullscreen_map_screen.dart';
 import 'package:youragent/features/property/widgets/property_list_item.dart';
 import 'package:youragent/widgets/app_bars/silver_app_bar.dart';
 import 'package:youragent/widgets/map/map_view.dart';

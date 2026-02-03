@@ -308,41 +308,23 @@ class _CreatePropertyView extends StatelessWidget {
 
   void _onNextPressed(BuildContext context, PropertyFormState state) {
     if (state.step == 6) {
-      // Show Confirm Dialog
-      showDialog(
+      AppConfirmationBottomSheet.show(
         context: context,
-        builder: (ctx) => AlertDialog(
-          // Using standard or custom dialog
-          title: Text(
-            'ยืนยันข้อมูล',
-            style: GoogleFonts.anuphan(fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            'คุณต้องการสร้างประกาศทรัพย์นี้ใช่หรือไม่?',
-            style: GoogleFonts.anuphan(),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(
-                'ยกเลิก',
-                style: GoogleFonts.anuphan(color: AppColors.baseGrey),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop(); // Close dialog
-                context.read<PropertyFormBloc>().add(
-                  const PropertyFormSubmitted(),
-                );
-              },
-              child: Text(
-                'ยืนยัน',
-                style: GoogleFonts.anuphan(color: AppColors.primary),
-              ),
-            ),
-          ],
-        ),
+        title: 'ยืนยันข้อมูล',
+        description: 'คุณต้องการสร้างประกาศทรัพย์นี้ใช่หรือไม่?',
+        confirmLabel: 'ยืนยัน',
+        cancelLabel: 'ยกเลิก',
+        style: ConfirmationStyle.normal,
+        onConfirm: () {
+          print('onConfirm');
+          print(state.toProperty.toString());
+          // Navigator.of(context).pop();
+          // context.read<PropertyFormBloc>().add(const PropertyFormSubmitted());
+        },
+      );
+    } else {
+      context.read<PropertyFormBloc>().add(
+        PropertyFormStepChanged(state.step + 1),
       );
     }
   }

@@ -101,8 +101,12 @@ class PropertyFormState extends Equatable {
 
   // Dynamic Filters
   final PropertySpecificationFilters specificationFilters;
-  final Map<String, dynamic>
-  dynamicValues; // key -> value (String or List<String>)
+
+  /// Single-select spec values (floors, bedrooms, bathrooms, parking_spaces; style added only for API).
+  final Map<String, String> specifications;
+
+  /// Multi-select spec values (common_facilities, furniture, air_conditioning, etc.).
+  final Map<String, List<String>> specificationValues;
 
   const PropertyFormState({
     this.step = 1,
@@ -157,7 +161,8 @@ class PropertyFormState extends Equatable {
     this.totalFloors,
     this.propertyStyle,
     this.specificationFilters = const PropertySpecificationFilters(),
-    this.dynamicValues = const {},
+    this.specifications = const {},
+    this.specificationValues = const {},
   });
 
   factory PropertyFormState.fromProperty(
@@ -172,18 +177,25 @@ class PropertyFormState extends Equatable {
       return null;
     }
 
-    // Map specs
+    // Map specs: single-select -> specifications, multi-select (lists) -> specificationValues
     final specs = property.specifications;
     final specValues = property.specificationValues;
 
-    // Extract dynamic values (flattening specValues)
-    final dynamicMap = <String, dynamic>{};
-    specValues.forEach((key, value) {
-      dynamicMap[key] = value;
-    });
+    final specsMap = <String, String>{};
+    final specValuesMap = <String, List<String>>{};
+
     specs.forEach((key, value) {
-      if (!dynamicMap.containsKey(key)) {
-        dynamicMap[key] = value;
+      if (value is List) {
+        specValuesMap[key] = value.cast<String>();
+      } else {
+        specsMap[key] = value?.toString() ?? '';
+      }
+    });
+    specValues.forEach((key, value) {
+      if (value is List) {
+        specValuesMap[key] = value.cast<String>();
+      } else {
+        specValuesMap[key] = [value?.toString() ?? ''];
       }
     });
 
@@ -230,7 +242,8 @@ class PropertyFormState extends Equatable {
       propertyStyle: property.propertyStyle,
 
       specificationFilters: filters ?? const PropertySpecificationFilters(),
-      dynamicValues: dynamicMap,
+      specifications: specsMap,
+      specificationValues: specValuesMap,
 
       // Attempt to map specific fields from specs if available
       condoProjectId: safeInt(specs['condo_project_id']),
@@ -291,6 +304,11 @@ class PropertyFormState extends Equatable {
     'parking_type': parkingType,
     'is_corner_plot': isCornerPlot,
     'house_notes': houseNotes,
+    'specifications': {
+      ...specifications,
+      if (propertyStyle != null) 'style': propertyStyle!.value,
+    },
+    'specification_values': specificationValues,
   };
 
   bool get isValid {
@@ -328,7 +346,7 @@ class PropertyFormState extends Equatable {
           direction != null;
     }
     if (step == 4) {
-      return propertyStyle != null;
+      return propertyStyle != null && description?.isNotEmpty == true;
     }
     if (step == 5) {
       return images.isNotEmpty;
@@ -389,7 +407,8 @@ class PropertyFormState extends Equatable {
     int? totalFloors,
     PropertyStyle? propertyStyle,
     PropertySpecificationFilters? specificationFilters,
-    Map<String, dynamic>? dynamicValues,
+    Map<String, String>? specifications,
+    Map<String, List<String>>? specificationValues,
   }) {
     return PropertyFormState(
       step: step ?? this.step,
@@ -445,26 +464,20 @@ class PropertyFormState extends Equatable {
       totalFloors: totalFloors ?? this.totalFloors,
       propertyStyle: propertyStyle ?? this.propertyStyle,
       specificationFilters: specificationFilters ?? this.specificationFilters,
-      dynamicValues: dynamicValues ?? this.dynamicValues,
+      specifications: specifications ?? this.specifications,
+      specificationValues: specificationValues ?? this.specificationValues,
     );
   }
 
   Property get toProperty {
-    // 1. Separate Dynamic Values into Specs (Scalar) and Values (Lists)
-    final specsMap = <String, dynamic>{};
-    final specValuesMap = <String, dynamic>{};
-
-    dynamicValues.forEach((key, value) {
-      if (value is List) {
-        specValuesMap[key] = value;
-      } else {
-        specsMap[key] = value;
-      }
-    });
-
-    // Explicitly set key fields into specs map if API expects them there
+    // specifications (single-select) + style for API
+    final specsMap = <String, dynamic>{
+      ...specifications,
+      if (propertyStyle != null) 'style': propertyStyle!.value,
+    };
     specsMap['floors'] = totalFloors?.toString();
     specsMap['bedrooms'] = bedrooms?.toString();
+    final specValuesMap = Map<String, dynamic>.from(specificationValues);
 
     // 3. Create Entity
     return Property(
@@ -584,7 +597,8 @@ class PropertyFormState extends Equatable {
     totalFloors,
     propertyStyle,
     specificationFilters,
-    dynamicValues,
+    specifications,
+    specificationValues,
   ];
 
   bool get isCondoOrApt =>

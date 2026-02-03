@@ -5,12 +5,22 @@ import '../../../domain/entities/contract_status.dart';
 
 class ContractStatusBadge extends StatelessWidget {
   final ContractStatus status;
+  final int? signedCount;
+  final int? totalCount;
 
-  const ContractStatusBadge({super.key, required this.status});
+  const ContractStatusBadge({
+    super.key,
+    required this.status,
+    this.signedCount,
+    this.totalCount,
+  });
 
   @override
   Widget build(BuildContext context) {
     final config = _getStatusConfig(status);
+    final countSuffix = (signedCount != null && totalCount != null)
+        ? ' ($signedCount/$totalCount)'
+        : '';
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -31,7 +41,7 @@ class ContractStatusBadge extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            config.label,
+            '${config.label}$countSuffix',
             style: GoogleFonts.anuphan(
               color: config.textColor,
               fontSize: 12,
