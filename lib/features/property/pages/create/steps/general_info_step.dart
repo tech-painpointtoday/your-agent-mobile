@@ -16,6 +16,7 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/map/map_view.dart';
+import 'package:youragent/features/property/widgets/add_property_info_bottom_sheets.dart';
 
 class GeneralInfoStep extends StatefulWidget {
   final int? step;
@@ -290,6 +291,24 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     }
   }
 
+  Future<void> _addDeveloper() async {
+    final result = await AddDeveloperBottomSheet.show(context);
+    if (result != null && mounted) {
+      final name = result['name_th'] ?? '';
+      _developerController.text = name;
+      _updateData('developer', name);
+    }
+  }
+
+  Future<void> _addProject() async {
+    final result = await AddProjectBottomSheet.show(context);
+    if (result != null && mounted) {
+      final name = result['name_th'] ?? '';
+      _projectController.text = name;
+      _updateData('project', name);
+    }
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -361,7 +380,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
@@ -413,9 +432,9 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
-                  borderColor: AppColors.brandLightGreen,
+                  borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
                   iconPath: 'assets/icons/plus.svg',
-                  onPressed: () {},
+                  onPressed: _addDeveloper,
                 ),
                 const SizedBox(height: 16),
 
@@ -432,9 +451,9 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
-                  borderColor: AppColors.brandLightGreen,
+                  borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
                   iconPath: 'assets/icons/plus.svg',
-                  onPressed: () {},
+                  onPressed: _addProject,
                 ),
                 const SizedBox(height: 16),
               ],
@@ -496,14 +515,23 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                   },
                 ),
                 const SizedBox(height: 8),
+                Text(
+                  'ค้นหาผู้พัฒนาโครงการของทรัพย์นี้',
+                  style: GoogleFonts.anuphan(
+                    color: AppColors.baseGrey,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 24),
                 AppButton(
+                  width: double.infinity,
                   text: 'เพิ่มผู้พัฒนาโครงการ',
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
-                  borderColor: AppColors.brandGreen,
+                  borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
                   iconPath: 'assets/icons/plus.svg',
-                  onPressed: () {},
+                  onPressed: _addDeveloper,
                 ),
                 const SizedBox(height: 16),
 
@@ -584,14 +612,23 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                   },
                 ),
                 const SizedBox(height: 8),
+                Text(
+                  'ค้นหาชื่อโครงการของทรัพย์นี้',
+                  style: GoogleFonts.anuphan(
+                    color: AppColors.baseGrey,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 24),
                 AppButton(
+                  width: double.infinity,
                   text: 'เพิ่มชื่อโครงการ',
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
-                  borderColor: AppColors.brandGreen,
+                  borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
                   iconPath: 'assets/icons/plus.svg',
-                  onPressed: () {},
+                  onPressed: _addProject,
                 ),
                 const SizedBox(height: 16),
 

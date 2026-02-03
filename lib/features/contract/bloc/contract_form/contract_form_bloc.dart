@@ -11,6 +11,7 @@ import 'contract_form_event.dart';
 import 'contract_form_state.dart';
 import 'package:youragent/domain/entities/contract_type.dart';
 import 'package:youragent/domain/entities/contract_edit_data.dart';
+import 'package:youragent/domain/entities/contract_attachment.dart';
 
 class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   final PropertyApiService _propertyApiService;
@@ -93,6 +94,13 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormAdditionalConditionsUpdated>(_onAdditionalConditionsUpdated);
     on<ContractFormInitialized>(_onInitialized);
     on<ContractFormEditStarted>(_onEditStarted);
+
+    // Step 8: Attachments
+    on<ContractFormAttachmentAdded>(_onAttachmentAdded);
+    on<ContractFormAttachmentRemoved>(_onAttachmentRemoved);
+    on<ContractFormAttachmentNameUpdated>(_onAttachmentNameUpdated);
+    on<ContractFormAttachmentFileUpdated>(_onAttachmentFileUpdated);
+    on<ContractFormRemoteAttachmentDeleted>(_onRemoteAttachmentDeleted);
   }
 
   Future<void> _onEditStarted(
@@ -174,11 +182,21 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
 
           // Config Data
           contractCreateData: createData,
-          status: ContractFormStatus.initial,
         ),
       );
 
       _validateCurrentStep(emit);
+
+      // Fetch documents if editing
+      try {
+        final documents = await _contractApiService.getContractDocuments(
+          event.contractId,
+        );
+        emit(state.copyWith(attachments: documents));
+      } catch (e) {
+        // Log error but don't fail the whole edit start
+        print('Error fetching documents: $e');
+      }
     } catch (e) {
       emit(
         state.copyWith(
@@ -537,6 +555,15 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
       // Step 7 Validation: Additional Conditions
       // Usually optional, but we can set it to true or check if it's not too long
       isValid = true;
+    } else if (state.step == 8) {
+      // Step 8 Validation: Attachments
+      if (state.attachments.isEmpty) {
+        isValid = true; // Optional step
+      } else {
+        isValid = state.attachments.every(
+          (a) => a.name.isNotEmpty && a.filePath != null,
+        );
+      }
     } else {
       // Logic for other steps
       isValid = true;
@@ -826,11 +853,20 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
           id: state.contractId!,
           data: contractData,
         );
+
+        // Upload attachments
+        await _uploadAttachments(state.contractId!);
+
         emit(state.copyWith(status: ContractFormStatus.success));
       } else {
-        // Create new contract logic placeholder
-        // Since we are focusing on edit refactor, we just emit success for now
-        // or implement create logic if known. Acknowledging existing placeholder behavior.
+        // Create new contract
+        final newContractId = await _contractApiService.createContract(
+          data: contractData,
+        );
+
+        // Upload attachments
+        await _uploadAttachments(newContractId);
+
         emit(state.copyWith(status: ContractFormStatus.success));
       }
     } catch (e) {
@@ -1247,5 +1283,93 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   ) {
     emit(state.copyWith(additionalConditions: event.conditions));
     _validateCurrentStep(emit);
+  }
+
+  // Step 8 Handlers
+  void _onAttachmentAdded(
+    ContractFormAttachmentAdded event,
+    Emitter<ContractFormState> emit,
+  ) {
+    final newItem = ContractAttachment(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+    );
+    final newList = List<ContractAttachment>.from(state.attachments)
+      ..add(newItem);
+    emit(state.copyWith(attachments: newList));
+    _validateCurrentStep(emit);
+  }
+
+  void _onAttachmentRemoved(
+    ContractFormAttachmentRemoved event,
+    Emitter<ContractFormState> emit,
+  ) {
+    final newList = state.attachments.where((a) => a.id != event.id).toList();
+    emit(state.copyWith(attachments: newList));
+    _validateCurrentStep(emit);
+  }
+
+  void _onAttachmentNameUpdated(
+    ContractFormAttachmentNameUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    final newList = state.attachments.map((a) {
+      return a.id == event.id ? a.copyWith(name: event.name) : a;
+    }).toList();
+    emit(state.copyWith(attachments: newList));
+    _validateCurrentStep(emit);
+  }
+
+  void _onAttachmentFileUpdated(
+    ContractFormAttachmentFileUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    final newList = state.attachments.map((a) {
+      return a.id == event.id
+          ? a.copyWith(
+              filePath: event.filePath,
+              fileSize: event.fileSize,
+              clearFilePath: event.filePath == null,
+              clearFileSize: event.fileSize == null,
+            )
+          : a;
+    }).toList();
+    emit(state.copyWith(attachments: newList));
+    _validateCurrentStep(emit);
+  }
+
+  Future<void> _onRemoteAttachmentDeleted(
+    ContractFormRemoteAttachmentDeleted event,
+    Emitter<ContractFormState> emit,
+  ) async {
+    try {
+      await _contractApiService.deleteContractDocument(
+        event.contractId,
+        event.documentId,
+      );
+      final newList = state.attachments
+          .where((a) => a.id != event.attachmentId)
+          .toList();
+      emit(state.copyWith(attachments: newList));
+      _validateCurrentStep(emit);
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: ContractFormStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _uploadAttachments(int contractId) async {
+    for (final attachment in state.attachments) {
+      if (attachment.filePath != null && !attachment.isRemote) {
+        await _contractApiService.uploadContractDocument(
+          contractId: contractId,
+          name: attachment.name,
+          filePath: attachment.filePath!,
+        );
+      }
+    }
   }
 }

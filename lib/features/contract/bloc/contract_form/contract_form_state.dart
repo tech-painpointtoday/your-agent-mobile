@@ -7,6 +7,7 @@ import 'package:youragent/domain/entities/buyer.dart';
 import 'package:youragent/domain/entities/appliance_item.dart';
 import 'package:youragent/domain/entities/furniture_item.dart';
 import 'package:youragent/domain/entities/contract_create_data.dart';
+import 'package:youragent/domain/entities/contract_attachment.dart';
 
 enum ContractFormStatus { initial, loading, success, failure, submmitting }
 
@@ -74,6 +75,9 @@ class ContractFormState extends Equatable {
   final String accountName;
   final String accountNumber;
 
+  // Step 8: Attachments
+  final List<ContractAttachment> attachments;
+
   const ContractFormState({
     this.step = 1,
     this.contractId,
@@ -124,6 +128,7 @@ class ContractFormState extends Equatable {
     this.bankBranch = '',
     this.accountName = '',
     this.accountNumber = '',
+    this.attachments = const [],
   });
 
   ContractFormState copyWith({
@@ -176,6 +181,7 @@ class ContractFormState extends Equatable {
     String? bankBranch,
     String? accountName,
     String? accountNumber,
+    List<ContractAttachment>? attachments,
   }) {
     return ContractFormState(
       step: step ?? this.step,
@@ -227,6 +233,7 @@ class ContractFormState extends Equatable {
       bankBranch: bankBranch ?? this.bankBranch,
       accountName: accountName ?? this.accountName,
       accountNumber: accountNumber ?? this.accountNumber,
+      attachments: attachments ?? this.attachments,
     );
   }
 
@@ -281,5 +288,6 @@ class ContractFormState extends Equatable {
     bankBranch,
     accountName,
     accountNumber,
+    attachments,
   ];
 }

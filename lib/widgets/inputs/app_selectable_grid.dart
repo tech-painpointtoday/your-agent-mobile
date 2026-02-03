@@ -83,13 +83,13 @@ class AppSelectableGrid<T> extends StatelessWidget {
                     border: Border.all(
                       color: isSelected
                           ? AppColors.primary
-                          : AppColors.baseGrey.withOpacity(0.3),
+                          : AppColors.baseGrey.withValues(alpha: 0.3),
                       width: isSelected ? 2 : 1,
                     ),
                     boxShadow: [
                       if (isSelected)
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),

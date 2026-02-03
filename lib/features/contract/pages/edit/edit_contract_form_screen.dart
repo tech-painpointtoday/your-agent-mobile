@@ -19,6 +19,7 @@ import '../create/steps/appliance_step.dart';
 import '../create/steps/furniture_step.dart';
 import '../create/steps/payment_step.dart';
 import '../create/steps/additional_conditions_step.dart';
+import '../create/steps/attachment_step.dart';
 
 enum EditContractStepType {
   ownerInfo,
@@ -27,6 +28,7 @@ enum EditContractStepType {
   furniture,
   payment,
   additionalConditions,
+  attachments,
 }
 
 class EditContractFormScreen extends StatefulWidget {
@@ -83,6 +85,8 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
         return 6;
       case EditContractStepType.additionalConditions:
         return 7;
+      case EditContractStepType.attachments:
+        return 8;
     }
   }
 
@@ -169,6 +173,8 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
             return const PaymentStep(hideHeader: true);
           case EditContractStepType.additionalConditions:
             return const AdditionalConditionsStep(hideHeader: true);
+          case EditContractStepType.attachments:
+            return const AttachmentStep(hideHeader: true);
         }
       },
     );

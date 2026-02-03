@@ -14,6 +14,7 @@ import 'steps/buyer_info_step.dart';
 import 'steps/appliance_step.dart';
 import 'steps/furniture_step.dart';
 import 'steps/additional_conditions_step.dart';
+import 'steps/attachment_step.dart';
 
 import 'package:youragent/core/di/dependency_injection.dart';
 
@@ -75,8 +76,6 @@ class _AddContractView extends StatelessWidget {
         title: BlocBuilder<ContractFormBloc, ContractFormState>(
           builder: (context, state) {
             String title = 'สร้างสัญญา';
-            if (state.step == 7) title = 'เงื่อนไขเพิ่มเติม';
-
             return Text(
               title,
               style: GoogleFonts.anuphan(
@@ -148,6 +147,8 @@ class _AddContractView extends StatelessWidget {
                 return const PaymentStep();
               case 7:
                 return const AdditionalConditionsStep();
+              case 8:
+                return const AttachmentStep();
               default:
                 return const Center(child: Text('Unknown Step'));
             }
@@ -165,7 +166,7 @@ class _AddContractView extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             offset: const Offset(0, -4),
             blurRadius: 16,
           ),
@@ -198,7 +199,7 @@ class _AddContractView extends StatelessWidget {
                     prev.step != curr.step ||
                     prev.status != curr.status,
                 builder: (context, state) {
-                  final isLastStep = state.step == 7;
+                  final isLastStep = state.step == 8;
                   final isLoading =
                       state.status == ContractFormStatus.submmitting;
 

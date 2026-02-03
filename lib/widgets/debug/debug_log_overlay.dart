@@ -81,7 +81,7 @@ class _DebugLogOverlayWidgetState extends State<_DebugLogOverlayWidget> {
     final monoStyle = TextStyle(fontFamily: 'monospace', color: _hackerGreen);
 
     return Material(
-      color: Colors.black.withOpacity(0.6),
+      color: Colors.black.withValues(alpha: 0.6),
       child: SafeArea(
         child: Container(
           margin: const EdgeInsets.all(16),
@@ -91,7 +91,7 @@ class _DebugLogOverlayWidgetState extends State<_DebugLogOverlayWidget> {
             border: Border.all(color: _hackerGreen, width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: _hackerGreen.withOpacity(0.3),
+                color: _hackerGreen.withValues(alpha: 0.3),
                 blurRadius: 15,
                 spreadRadius: 2,
               ),

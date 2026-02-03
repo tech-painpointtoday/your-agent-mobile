@@ -69,8 +69,8 @@ class ColorsWaveBackground extends StatelessWidget {
                       center: Alignment.center,
                       radius: 0.64,
                       colors: [
-                        Color(0xFF7EFF81).withOpacity(0.8),
-                        Color(0xFF7EFF81).withOpacity(0.0),
+                        Color(0xFF7EFF81).withValues(alpha: 0.8),
+                        Color(0xFF7EFF81).withValues(alpha: 0.0),
                       ],
                       stops: const [0.4, 0.8],
                     ),
@@ -110,7 +110,7 @@ class _BlueWavePainter extends CustomPainter {
 
     // 2) Single smooth wave band (lighter overlay)
     final Paint wavePaint = Paint()
-      ..color = AppColors.white.withOpacity(0.12)
+      ..color = AppColors.white.withValues(alpha: 0.12)
       ..style = PaintingStyle.fill;
 
     // Start the wave a bit above the vertical center and create

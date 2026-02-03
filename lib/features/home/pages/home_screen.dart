@@ -185,7 +185,7 @@ class _HomeHeaderState extends State<HomeHeader> {
               Text(
                 'ยินดีต้อนรับ',
                 style: TextStyle(
-                  color: AppColors.white.withOpacity(0.90),
+                  color: AppColors.white.withValues(alpha: 0.90),
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
@@ -234,7 +234,7 @@ class _LogoutButton extends StatelessWidget {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: AppColors.white.withOpacity(0.18),
+          color: AppColors.white.withValues(alpha: 0.18),
           borderRadius: BorderRadius.circular(12),
         ),
         child: const Center(
@@ -343,7 +343,7 @@ class _HeaderActionIcon extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.white.withOpacity(0.18),
+              color: AppColors.white.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(

@@ -130,7 +130,7 @@ class _PropertyImageCarouselState extends State<PropertyImageCarousel> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.4),
+                color: Colors.black.withValues(alpha: 0.4),
                 borderRadius: BorderRadius.all(Radius.circular(24)),
               ),
               child: Text(
@@ -162,7 +162,7 @@ class _PropertyImageCarouselState extends State<PropertyImageCarousel> {
                   decoration: BoxDecoration(
                     color: _currentPage == index
                         ? Colors.white
-                        : Colors.white.withOpacity(0.5),
+                        : Colors.white.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
                 ),

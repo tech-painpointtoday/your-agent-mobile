@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import '../domain/entities/contract.dart';
 import '../domain/entities/contract_create_data.dart';
 import '../domain/entities/contract_edit_data.dart';
+import '../domain/entities/contract_attachment.dart';
 import 'api_client.dart';
 import 'api_response_service.dart';
 
@@ -225,6 +226,35 @@ class ContractApiService {
     }
   }
 
+  Future<int> createContract({required Map<String, dynamic> data}) async {
+    try {
+      final response = await _apiClient.post('/agent/contracts', data: data);
+
+      final apiResponse =
+          ApiResponseService.parseResponse<Map<String, dynamic>>(
+            response,
+            (json) => json as Map<String, dynamic>,
+          );
+
+      if (!apiResponse.success || apiResponse.data == null) {
+        throw Exception(apiResponse.message ?? 'Failed to create contract');
+      }
+
+      final id = apiResponse.data!['id'] ?? apiResponse.data!['data']?['id'];
+      if (id == null) {
+        throw Exception('Contract ID not found in response');
+      }
+
+      return id is int ? id : int.parse(id.toString());
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to create contract: $e');
+    }
+  }
+
   /// Get Contract Edit Data
   /// GET /agent/contracts/{id}/edit
   Future<ContractEditData> getContractEditData(dynamic id) async {
@@ -249,6 +279,102 @@ class ContractApiService {
         throw Exception(errorMessage);
       }
       throw Exception('Failed to load contract edit data: $e');
+    }
+  }
+
+  /// Upload Contract Document
+  /// POST /agent/contracts/{id}/documents
+  Future<void> uploadContractDocument({
+    required int contractId,
+    required String name,
+    required String filePath,
+  }) async {
+    try {
+      final fileName = filePath.split('/').last;
+      final formData = FormData.fromMap({
+        'name': name,
+        'document': await MultipartFile.fromFile(filePath, filename: fileName),
+      });
+
+      final response = await _apiClient.post(
+        '/agent/contracts/$contractId/documents',
+        data: formData,
+      );
+
+      final apiResponse = ApiResponseService.parseResponse<void>(
+        response,
+        null,
+      );
+
+      if (!apiResponse.success) {
+        throw Exception(
+          apiResponse.message ?? 'Failed to upload contract document',
+        );
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to upload contract document: $e');
+    }
+  }
+
+  /// Get Contract Documents
+  /// GET /agent/contracts/{id}/documents
+  Future<List<ContractAttachment>> getContractDocuments(int contractId) async {
+    try {
+      final response = await _apiClient.get(
+        '/agent/contracts/$contractId/documents',
+      );
+      final apiResponse = ApiResponseService.parseResponse<List<dynamic>>(
+        response,
+        (json) => json as List<dynamic>,
+      );
+
+      if (!apiResponse.success || apiResponse.data == null) {
+        throw Exception(
+          apiResponse.message ?? 'Failed to get contract documents',
+        );
+      }
+
+      return apiResponse.data!
+          .map(
+            (json) => ContractAttachment.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to get contract documents: $e');
+    }
+  }
+
+  /// Delete Contract Document
+  /// DELETE /agent/contracts/{id}/documents/{document_id}
+  Future<void> deleteContractDocument(int contractId, int documentId) async {
+    try {
+      final response = await _apiClient.delete(
+        '/agent/contracts/$contractId/documents/$documentId',
+      );
+      final apiResponse = ApiResponseService.parseResponse<void>(
+        response,
+        null,
+      );
+
+      if (!apiResponse.success) {
+        throw Exception(
+          apiResponse.message ?? 'Failed to delete contract document',
+        );
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to delete contract document: $e');
     }
   }
 }

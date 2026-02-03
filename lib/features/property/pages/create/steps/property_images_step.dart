@@ -426,4 +426,3 @@ class PropertyImagesStep extends StatelessWidget {
     );
   }
 }
-

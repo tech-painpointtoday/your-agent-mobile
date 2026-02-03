@@ -4,9 +4,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pdfx/pdfx.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/contract.dart';
+import '../../../domain/entities/contract_status.dart';
 import '../../../widgets/badges/app_badge.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
@@ -101,30 +103,49 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           }
         },
         builder: (context, state) {
+          final isLoaded =
+              state is ContractDetailLoadedWithoutPdf ||
+              state is ContractDetailPdfLoading ||
+              state is ContractDetailLoaded;
+          final isCompleted =
+              isLoaded &&
+              (_getContract(state).status == ContractStatus.signed ||
+                  _getContract(state).status == ContractStatus.completed);
+
           return Scaffold(
             backgroundColor: Colors.white,
             body: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  const SizedBox(height: 16),
-                  _buildHeader(context, state),
-                  const SizedBox(height: 12),
-                  if (state is ContractDetailLoadedWithoutPdf ||
-                      state is ContractDetailPdfLoading ||
-                      state is ContractDetailLoaded) ...[
-                    _buildInfoSection(_getContract(state)),
-                    _buildDocumentActions(state),
-                    const SizedBox(height: 24),
-                    const Divider(color: AppColors.baseLightGrey),
-                    Expanded(child: _buildPdfViewer(state)),
-                    _buildBottomActions(context, state),
-                  ] else if (state is ContractDetailLoading)
-                    const Expanded(
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-                  else
-                    const Expanded(child: SizedBox.shrink()),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      _buildHeader(context, state),
+                      const SizedBox(height: 12),
+                      if (state is ContractDetailLoadedWithoutPdf ||
+                          state is ContractDetailPdfLoading ||
+                          state is ContractDetailLoaded) ...[
+                        _buildInfoSection(_getContract(state)),
+                        _buildDocumentActions(state),
+                        const SizedBox(height: 24),
+                        const Divider(color: AppColors.baseLightGrey),
+                        Expanded(child: _buildPdfViewer(state)),
+                        _buildBottomActions(context, state),
+                      ] else if (state is ContractDetailLoading)
+                        const Expanded(
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else
+                        const Expanded(child: SizedBox.shrink()),
+                    ],
+                  ),
+                  if (isCompleted)
+                    Positioned(
+                      left: 16,
+                      bottom: 16,
+                      child: _backButton(context),
+                    ),
                 ],
               ),
             ),
@@ -243,9 +264,15 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           Flexible(
             child: _buildDocumentActionButton(
               label: 'ดาวน์โหลด PDF',
-              onTap: () {
-                // TODO: Implement download
-              },
+              onTap: state is ContractDetailLoaded && state.pdfPath != null
+                  ? () => _downloadPdf(context, state)
+                  : () {
+                      StatusDialog.showWarning(
+                        context: context,
+                        title: 'กรุณารอสักครู่',
+                        message: 'กำลังโหลดเอกสาร PDF...',
+                      );
+                    },
             ),
           ),
           const SizedBox(width: 12),
@@ -322,19 +349,17 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                     );
                   },
                 ),
-                // if (pdfPath != null) ...[
-                //   const SizedBox(height: 12),
-                //   AppButton(
-                //     text: 'แชร์ไฟล์ PDF',
-                //     style: AppButtonStyle.outline,
-                //     onPressed: () {
-                //       Navigator.pop(bottomSheetContext);
-                //       SharePlus.instance.share(
-                //         ShareParams(files: [XFile(pdfPath)]),
-                //       );
-                //     },
-                //   ),
-                // ],
+                if (pdfPath != null) ...[
+                  const SizedBox(height: 12),
+                  AppButton(
+                    text: 'แชร์ไฟล์ PDF',
+                    style: AppButtonStyle.outline,
+                    onPressed: () {
+                      Navigator.pop(bottomSheetContext);
+                      _downloadPdf(context, state);
+                    },
+                  ),
+                ],
                 const SizedBox(height: 12),
                 AppButton(
                   text: 'ยกเลิก',
@@ -368,7 +393,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           color: AppColors.supportGreenLight,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: AppColors.supportGreenDark.withOpacity(0.1),
+            color: AppColors.supportGreenDark.withValues(alpha: 0.1),
           ),
         ),
         child: Row(
@@ -580,7 +605,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.4),
+                color: Colors.black.withValues(alpha: 0.4),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
@@ -608,13 +633,21 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
     const buttonText = 'แก้ไขสัญญา';
 
+    final isCompleted =
+        contract.status == ContractStatus.signed ||
+        contract.status == ContractStatus.completed;
+
+    if (isCompleted) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, -4),
           ),
@@ -622,31 +655,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
       ),
       child: Row(
         children: [
-          // Back Button
-          InkWell(
-            onTap: () => Navigator.pop(context),
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFFEAECF0)),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/icons/chevron-left.svg',
-                  width: 16,
-                  height: 16,
-                  fit: BoxFit.scaleDown,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.baseDarkGrey,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          _backButton(context),
           const SizedBox(width: 12),
           // Main Action
           Expanded(
@@ -704,5 +713,58 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         ],
       ),
     );
+  }
+
+  Widget _backButton(BuildContext context) {
+    return InkWell(
+      onTap: () => context.pop(),
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          border: Border.all(color: AppColors.baseLightGrey),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            'assets/icons/chevron-left.svg',
+            width: 16,
+            height: 16,
+            fit: BoxFit.scaleDown,
+            colorFilter: const ColorFilter.mode(
+              AppColors.baseDarkGrey,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _downloadPdf(BuildContext context, ContractDetailLoaded state) {
+    if (state.pdfPath != null) {
+      SharePlus.instance.share(
+        ShareParams(
+          files: [
+            XFile(
+              state.pdfPath!,
+              name:
+                  'สัญญา_${state.contract.contractNumber}_${state.contract.contractDate!.toIso8601String()}.pdf',
+              mimeType: 'application/pdf',
+            ),
+          ],
+          subject: 'สัญญาเลขที่ ${state.contract.contractNumber}',
+        ),
+      );
+    }
   }
 }

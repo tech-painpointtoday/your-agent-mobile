@@ -429,3 +429,51 @@ class ContractFormAdditionalConditionsUpdated extends ContractFormEvent {
   @override
   List<Object?> get props => [conditions];
 }
+
+// Step 8: Attachment Events
+class ContractFormAttachmentAdded extends ContractFormEvent {
+  const ContractFormAttachmentAdded();
+}
+
+class ContractFormAttachmentRemoved extends ContractFormEvent {
+  final String id;
+  const ContractFormAttachmentRemoved(this.id);
+  @override
+  List<Object?> get props => [id];
+}
+
+class ContractFormAttachmentNameUpdated extends ContractFormEvent {
+  final String id;
+  final String name;
+  const ContractFormAttachmentNameUpdated(this.id, this.name);
+  @override
+  List<Object?> get props => [id, name];
+}
+
+class ContractFormAttachmentFileUpdated extends ContractFormEvent {
+  final String id;
+  final String? filePath;
+  final int? fileSize;
+  const ContractFormAttachmentFileUpdated({
+    required this.id,
+    this.filePath,
+    this.fileSize,
+  });
+  @override
+  List<Object?> get props => [id, filePath, fileSize];
+}
+
+class ContractFormRemoteAttachmentDeleted extends ContractFormEvent {
+  final int contractId;
+  final int documentId;
+  final String attachmentId;
+
+  const ContractFormRemoteAttachmentDeleted({
+    required this.contractId,
+    required this.documentId,
+    required this.attachmentId,
+  });
+
+  @override
+  List<Object?> get props => [contractId, documentId, attachmentId];
+}

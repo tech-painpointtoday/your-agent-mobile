@@ -182,6 +182,26 @@ class EditContractMenuScreen extends StatelessWidget {
                     );
                   },
                 ),
+                const SizedBox(height: 16),
+                _buildMenuItem(
+                  context,
+                  title: 'ไฟล์แนบสัญญา',
+                  subtitle: 'เพิ่ม และแก้ไขไฟล์แนบสัญญา',
+                  iconPath: 'assets/icons/file.svg',
+                  iconColor: AppColors.primary,
+                  bgColor: AppColors.primary.withValues(alpha: 0.1),
+                  onTap: (bloc) {
+                    context.push(
+                      '/contract/edit-form',
+                      extra: {
+                        'contract': contract,
+                        'stepType': EditContractStepType.attachments,
+                        'title': 'ไฟล์แนบสัญญา',
+                        'bloc': bloc,
+                      },
+                    );
+                  },
+                ),
               ],
             ),
           ),

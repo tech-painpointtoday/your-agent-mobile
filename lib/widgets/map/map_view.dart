@@ -239,7 +239,9 @@ class _MapViewState extends State<MapView> {
                               circleId: const CircleId('service_area'),
                               center: widget.initialLocation!,
                               radius: widget.radius!,
-                              fillColor: AppColors.primary.withOpacity(0.12),
+                              fillColor: AppColors.primary.withValues(
+                                alpha: 0.12,
+                              ),
                               strokeColor: AppColors.primary,
                               strokeWidth: 2,
                             ),

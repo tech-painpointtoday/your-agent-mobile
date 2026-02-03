@@ -74,13 +74,13 @@ class AppMultiSelectChips<T> extends StatelessWidget {
                   border: Border.all(
                     color: isSelected
                         ? AppColors.primary
-                        : AppColors.baseGrey.withOpacity(0.3),
+                        : AppColors.baseGrey.withValues(alpha: 0.3),
                     width: isSelected ? 1.5 : 1,
                   ),
                   boxShadow: isSelected
                       ? [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),

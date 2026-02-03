@@ -734,4 +734,3 @@ class _FurnitureItemCard extends StatelessWidget {
     );
   }
 }
-
