@@ -4136,11 +4136,95 @@ abstract class AppLocalizations {
   /// **'Notification Settings'**
   String get notificationSettingsLabel;
 
+  /// No description provided for @notificationSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get notificationSettingsTitle;
+
+  /// No description provided for @connectLineAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Line Account'**
+  String get connectLineAccount;
+
+  /// No description provided for @lineNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Connected'**
+  String get lineNotConnected;
+
+  /// No description provided for @lineNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Line Notifications'**
+  String get lineNotifications;
+
+  /// No description provided for @lineNotificationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive notifications conveniently and easily'**
+  String get lineNotificationsSubtitle;
+
+  /// No description provided for @emailNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Notifications'**
+  String get emailNotifications;
+
+  /// No description provided for @emailNotificationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive security alerts and important news'**
+  String get emailNotificationsSubtitle;
+
+  /// No description provided for @pushNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Push Notifications'**
+  String get pushNotifications;
+
+  /// No description provided for @pushNotificationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to settings on your device to enable/disable notifications'**
+  String get pushNotificationsSubtitle;
+
+  /// No description provided for @connectButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get connectButton;
+
   /// No description provided for @matchingSettingsLabel.
   ///
   /// In en, this message translates to:
   /// **'Matching System Settings'**
   String get matchingSettingsLabel;
+
+  /// No description provided for @matchingSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching System Settings'**
+  String get matchingSettingsTitle;
+
+  /// No description provided for @matchingSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum compatibility required for your property to appear in results'**
+  String get matchingSettingsSubtitle;
+
+  /// No description provided for @minimumScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Score'**
+  String get minimumScoreLabel;
+
+  /// No description provided for @scorePercentSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'% or more'**
+  String get scorePercentSuffix;
 
   /// No description provided for @termsLabel.
   ///
@@ -4160,6 +4244,30 @@ abstract class AppLocalizations {
   /// **'Contact Us'**
   String get contactUsLabel;
 
+  /// No description provided for @contactInfoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Information'**
+  String get contactInfoLabel;
+
+  /// No description provided for @companyAddressValue.
+  ///
+  /// In en, this message translates to:
+  /// **'No. 51 Punnawithi 33, Bang Chak, Phra Khanong, Bangkok 10260'**
+  String get companyAddressValue;
+
+  /// No description provided for @companyEmailValue.
+  ///
+  /// In en, this message translates to:
+  /// **'yourhome@example.com'**
+  String get companyEmailValue;
+
+  /// No description provided for @companyPhoneValue.
+  ///
+  /// In en, this message translates to:
+  /// **'02-123-4567'**
+  String get companyPhoneValue;
+
   /// No description provided for @logoutConfirmTitle.
   ///
   /// In en, this message translates to:
@@ -4169,8 +4277,14 @@ abstract class AppLocalizations {
   /// No description provided for @logoutConfirmMessage.
   ///
   /// In en, this message translates to:
-  /// **'Do you want to log out?'**
+  /// **'Are you sure you want to log out?'**
   String get logoutConfirmMessage;
+
+  /// No description provided for @logoutConfirmButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Logout'**
+  String get logoutConfirmButton;
 
   /// No description provided for @versionLabel.
   ///

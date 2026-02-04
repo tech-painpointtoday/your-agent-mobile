@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +11,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:youragent/features/profile/widgets/language_selection_bottom_sheet.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/features/profile/bloc/profile_bloc.dart';
+import 'package:youragent/features/profile/widgets/matching_settings_bottom_sheet.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 class SettingsScreen extends StatelessWidget {
   final Function(Locale) changeLocale;
@@ -24,7 +28,7 @@ class SettingsScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: false,
         title: Text(
-          AppLocalizations.of(context)!.settingsTitle,
+          AppLocalizations.of(context).settingsTitle,
           style: GoogleFonts.anuphan(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -53,82 +57,103 @@ class SettingsScreen extends StatelessWidget {
             topLeft: Radius.circular(24),
             topRight: Radius.circular(24),
           ),
-          child: ListView(
-            physics: const ClampingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(vertical: 24),
-            children: [
-              _SettingsItem(
-                icon: 'assets/icons/user.svg',
-                label: AppLocalizations.of(context)!.accountManagementTitle,
-                onTap: () => context.push('/profile/settings/account'),
-              ),
-              _SettingsItem(
-                icon: 'assets/icons/globe.svg',
-                label: AppLocalizations.of(context)!.change_language,
-                onTap: () {
-                  LanguageSelectionBottomSheet.show(
-                    context: context,
-                    currentLocale: Localizations.localeOf(context),
-                    onLanguageSelected: changeLocale,
-                  );
-                },
-              ),
-              _SettingsItem(
-                icon: 'assets/icons/bell.svg',
-                label: AppLocalizations.of(context)!.notificationSettingsLabel,
-                onTap: () {},
-              ),
-              _SettingsItem(
-                icon: 'assets/icons/settings.svg',
-                label: AppLocalizations.of(context)!.matchingSettingsLabel,
-                onTap: () {},
-              ),
-              _SettingsItem(
-                icon: 'assets/icons/clipboard-2.svg',
-                label: AppLocalizations.of(context)!.termsLabel,
-                onTap: () {},
-              ),
-              _SettingsItem(
-                icon: 'assets/icons/security-shield.svg',
-                label: AppLocalizations.of(context)!.privacyLabel,
-                onTap: () {},
-              ),
-              _SettingsItem(
-                icon: 'assets/icons/message-information.svg',
-                label: AppLocalizations.of(context)!.contactUsLabel,
-                onTap: () {},
-              ),
-              const SizedBox(height: 8),
-              _SettingsItem(
-                icon: 'assets/icons/logout.svg',
-                label: AppLocalizations.of(context)!.logout_button,
-                labelColor: AppColors.supportRedDark,
-                iconColor: AppColors.supportRedDark,
-                backgroundColor: AppColors.supportRedLight.withValues(
-                  alpha: 0.5,
-                ),
-                showChevron: false,
-                onTap: () => _handleLogout(context),
-              ),
-              const SizedBox(height: 48),
-              FutureBuilder<PackageInfo>(
-                future: PackageInfo.fromPlatform(),
-                builder: (context, snapshot) {
-                  final version = snapshot.data?.version ?? '1.0.0';
-                  return Center(
-                    child: Text(
-                      'Version $version',
-                      style: GoogleFonts.anuphan(
-                        fontSize: 14,
-                        color: AppColors.baseGrey,
-                        fontWeight: FontWeight.w400,
-                      ),
+          child: BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              final profile = (state is ProfileLoaded) ? state.profile : null;
+              final level = profile?.agent.profileLevel ?? 0;
+
+              return ListView(
+                physics: const ClampingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                children: [
+                  _SettingsItem(
+                    icon: 'assets/icons/user.svg',
+                    label: AppLocalizations.of(context).accountManagementTitle,
+                    onTap: () => context.push('/profile/settings/account'),
+                  ),
+                  _SettingsItem(
+                    icon: 'assets/icons/globe.svg',
+                    label: AppLocalizations.of(context).change_language,
+                    onTap: () {
+                      LanguageSelectionBottomSheet.show(
+                        context: context,
+                        currentLocale: Localizations.localeOf(context),
+                        onLanguageSelected: changeLocale,
+                      );
+                    },
+                  ),
+                  _SettingsItem(
+                    icon: 'assets/icons/bell.svg',
+                    label: AppLocalizations.of(
+                      context,
+                    ).notificationSettingsLabel,
+                    onTap: () =>
+                        context.push('/profile/settings/notifications'),
+                  ),
+                  if (level >= 3)
+                    _SettingsItem(
+                      icon: 'assets/icons/settings.svg',
+                      label: AppLocalizations.of(context).matchingSettingsLabel,
+                      onTap: () {
+                        MatchingSettingsBottomSheet.show(
+                          context: context,
+                          initialScore: 0, // Should probably come from profile
+                          onSave: (score) {
+                            // TODO: Add UpdateMatchingSettings event to ProfileBloc if needed
+                          },
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-              const SizedBox(height: 24),
-            ],
+                  _SettingsItem(
+                    icon: 'assets/icons/clipboard-2.svg',
+                    label: AppLocalizations.of(context).termsLabel,
+                    onTap: () =>
+                        context.push('/policy?type=terms&showBottom=false'),
+                  ),
+                  _SettingsItem(
+                    icon: 'assets/icons/security-shield.svg',
+                    label: AppLocalizations.of(context).privacyLabel,
+                    onTap: () =>
+                        context.push('/policy?type=privacy&showBottom=false'),
+                  ),
+                  _SettingsItem(
+                    icon: 'assets/icons/message-information.svg',
+                    label: AppLocalizations.of(context).contactUsLabel,
+                    onTap: () => context.push('/profile/settings/contact'),
+                  ),
+                  const SizedBox(height: 8),
+                  _SettingsItem(
+                    icon: 'assets/icons/logout.svg',
+                    label: AppLocalizations.of(context).logout_button,
+                    labelColor: AppColors.supportRedDark,
+                    iconColor: AppColors.supportRedDark,
+                    backgroundColor: AppColors.supportRedLight.withValues(
+                      alpha: 0.5,
+                    ),
+                    showChevron: false,
+                    onTap: () => _handleLogout(context),
+                  ),
+                  const SizedBox(height: 48),
+                  FutureBuilder<PackageInfo>(
+                    future: PackageInfo.fromPlatform(),
+                    builder: (context, snapshot) {
+                      final version = snapshot.data?.version ?? '1.0.0';
+                      return Center(
+                        child: Text(
+                          'Version $version',
+                          style: GoogleFonts.anuphan(
+                            fontSize: 14,
+                            color: AppColors.baseGrey,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -136,12 +161,15 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _handleLogout(BuildContext context) {
-    StatusDialog.showDestructive(
+    final l10n = AppLocalizations.of(context);
+    AppConfirmationBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context)!.logoutConfirmTitle,
-      message: AppLocalizations.of(context)!.logoutConfirmMessage,
-      actionLabel: AppLocalizations.of(context)!.logout_button,
-      onAction: () {
+      title: l10n.logoutConfirmTitle,
+      description: l10n.logoutConfirmMessage,
+      confirmLabel: l10n.logoutConfirmButton,
+      cancelLabel: l10n.cancel_button,
+      style: ConfirmationStyle.destructive,
+      onConfirm: () {
         context.read<AuthBloc>().add(const SignOutEvent());
       },
     );

@@ -10,11 +10,17 @@ import 'package:youragent/utils/map_marker_utils.dart';
 class FullscreenMapScreen extends StatefulWidget {
   final List<Property> properties;
   final bool showSearch;
+  final LatLng? initialLocation;
+  final String? title;
+  final String? snippet;
 
   const FullscreenMapScreen({
     super.key,
-    required this.properties,
+    this.properties = const [],
     this.showSearch = true,
+    this.initialLocation,
+    this.title,
+    this.snippet,
   });
 
   @override
@@ -70,6 +76,20 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
 
   void _createMarkers() {
     _markers.clear();
+    if (widget.initialLocation != null) {
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('initialLocation'),
+          position: widget.initialLocation!,
+          icon: _customMarkerIcon ?? BitmapDescriptor.defaultMarker,
+          infoWindow: InfoWindow(
+            title: widget.title ?? 'Unknown Location',
+            snippet: widget.snippet ?? 'Unknown Location address',
+          ),
+        ),
+      );
+    }
+
     for (final property in widget.properties) {
       _markers.add(
         Marker(
@@ -165,8 +185,8 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
               // Only create GoogleMap when _isMapReady is true
               return GoogleMap(
                 key: const ValueKey('fullscreen_map'),
-                initialCameraPosition: const CameraPosition(
-                  target: _center,
+                initialCameraPosition: CameraPosition(
+                  target: widget.initialLocation ?? _center,
                   zoom: 12,
                 ),
                 markers: _markers,

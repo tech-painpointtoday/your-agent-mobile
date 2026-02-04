@@ -2061,7 +2061,53 @@ class AppLocalizationsTh extends AppLocalizations {
   String get notificationSettingsLabel => 'ตั้งค่าการแจ้งเตือน';
 
   @override
+  String get notificationSettingsTitle => 'ตั้งค่าการแจ้งเตือน';
+
+  @override
+  String get connectLineAccount => 'เชื่อมต่อกับบัญชี Line';
+
+  @override
+  String get lineNotConnected => 'ยังไม่ได้เชื่อมต่อ';
+
+  @override
+  String get lineNotifications => 'การแจ้งเตือนผ่าน Line';
+
+  @override
+  String get lineNotificationsSubtitle =>
+      'รับการแจ้งเตือนได้อย่างสะดวกและเข้าถึงง่าย';
+
+  @override
+  String get emailNotifications => 'การแจ้งเตือนผ่าน Email';
+
+  @override
+  String get emailNotificationsSubtitle =>
+      'รับการแจ้งเตือนความปลอดภัยและข่าวสารสำคัญ';
+
+  @override
+  String get pushNotifications => 'การแจ้งเตือนแบบ Push notification';
+
+  @override
+  String get pushNotificationsSubtitle =>
+      'ไปที่การตั้งค่าบนอุปกรณ์ของคุณ เพื่อเปิด/ปิดการแจ้งเตือน';
+
+  @override
+  String get connectButton => 'เชื่อมต่อ';
+
+  @override
   String get matchingSettingsLabel => 'ตั้งค่าการค้นหาความเข้ากัน';
+
+  @override
+  String get matchingSettingsTitle => 'ตั้งค่าการค้นหาความเข้ากัน';
+
+  @override
+  String get matchingSettingsSubtitle =>
+      'ความเข้ากันขั้นต่ำที่ต้องการให้สื่ออสังหาริมทรัพย์ของคุณปรากฏในผลการค้นหาความเข้ากันได้';
+
+  @override
+  String get minimumScoreLabel => 'คะแนนขั้นต่ำ';
+
+  @override
+  String get scorePercentSuffix => '% ขึ้นไป';
 
   @override
   String get termsLabel => 'ข้อตกลงและเงื่อนไขการใช้งาน';
@@ -2073,10 +2119,26 @@ class AppLocalizationsTh extends AppLocalizations {
   String get contactUsLabel => 'ติดต่อเรา';
 
   @override
+  String get contactInfoLabel => 'ข้อมูลการติดต่อ';
+
+  @override
+  String get companyAddressValue =>
+      'เลขที่ 51 ปุณณวิถี 33 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260';
+
+  @override
+  String get companyEmailValue => 'yourhome@example.com';
+
+  @override
+  String get companyPhoneValue => '02-123-4567';
+
+  @override
   String get logoutConfirmTitle => 'ออกจากระบบ?';
 
   @override
-  String get logoutConfirmMessage => 'คุณต้องการออกจากระบบหรือไม่?';
+  String get logoutConfirmMessage => 'ต้องการออกจากระบบใช่หรือไม่';
+
+  @override
+  String get logoutConfirmButton => 'ใช่, ออกจากระบบ';
 
   @override
   String get versionLabel => 'เวอร์ชั่น';

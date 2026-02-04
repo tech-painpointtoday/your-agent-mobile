@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/furniture_item.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
@@ -14,6 +14,7 @@ import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
+import 'package:youragent/widgets/modals/app_image_picker_bottom_sheet.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
 class FurnitureStep extends StatefulWidget {
@@ -26,114 +27,14 @@ class FurnitureStep extends StatefulWidget {
 }
 
 class _FurnitureStepState extends State<FurnitureStep> {
-  final ImagePicker _picker = ImagePicker();
-
   Future<void> _pickImage(String furnitureId) async {
     final bloc = context.read<ContractFormBloc>();
-    showModalBottomSheet(
+    AppImagePickerBottomSheet.show(
       context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 12),
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-              title: Text(
-                AppLocalizations.of(context)!.takePhotoButton,
-                style: GoogleFonts.anuphan(fontSize: 16),
-              ),
-              trailing: SvgPicture.asset(
-                'assets/icons/camera.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.baseDarkGrey,
-                  BlendMode.srcIn,
-                ),
-              ),
-              onTap: () async {
-                Navigator.pop(sheetContext);
-                final XFile? image = await _picker.pickImage(
-                  source: ImageSource.camera,
-                );
-                if (image != null) {
-                  debugPrint('Picked image (Camera): ${image.path}');
-                  bloc.add(
-                    ContractFormFurnitureImagesAdded(furnitureId, [image.path]),
-                  );
-                }
-              },
-            ),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-              title: Text(
-                AppLocalizations.of(context)!.selectFromAlbumButton,
-                style: GoogleFonts.anuphan(fontSize: 16),
-              ),
-              trailing: SvgPicture.asset(
-                'assets/icons/image.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.baseDarkGrey,
-                  BlendMode.srcIn,
-                ),
-              ),
-              onTap: () async {
-                Navigator.pop(sheetContext);
-                final List<XFile> images = await _picker.pickMultiImage();
-                if (images.isNotEmpty) {
-                  debugPrint('Picked ${images.length} images from gallery');
-                  bloc.add(
-                    ContractFormFurnitureImagesAdded(
-                      furnitureId,
-                      images.map((img) => img.path).toList(),
-                    ),
-                  );
-                }
-              },
-            ),
-            if (bloc.state.contractCreateData != null &&
-                bloc.state.contractCreateData!.propertyImages.isNotEmpty)
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                title: Text(
-                  AppLocalizations.of(context)!.select,
-                  style: GoogleFonts.anuphan(fontSize: 16),
-                ),
-                trailing: SvgPicture.asset(
-                  'assets/icons/home.svg',
-                  width: 24,
-                  height: 24,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.baseDarkGrey,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _showPropertyPhotosSelection(furnitureId);
-                },
-              ),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
+      isMultiImage: true,
+      onImagesPicked: (paths) {
+        bloc.add(ContractFormFurnitureImagesAdded(furnitureId, paths));
+      },
     );
   }
 
@@ -292,11 +193,18 @@ class _FurnitureStepState extends State<FurnitureStep> {
                             if (item.hasData) {
                               AppConfirmationBottomSheet.show(
                                 context: context,
-                                title: AppLocalizations.of(context)!.deleteItemQuestion,
-                                description:
-                                    AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
-                                confirmLabel: AppLocalizations.of(context)!.delete,
-                                cancelLabel: AppLocalizations.of(context)!.statusCancelled,
+                                title: AppLocalizations.of(
+                                  context,
+                                )!.deleteItemQuestion,
+                                description: AppLocalizations.of(
+                                  context,
+                                )!.deleteAllImagesConfirmMessage,
+                                confirmLabel: AppLocalizations.of(
+                                  context,
+                                )!.delete,
+                                cancelLabel: AppLocalizations.of(
+                                  context,
+                                )!.statusCancelled,
                                 style: ConfirmationStyle.destructive,
                                 onConfirm: () {
                                   context.read<ContractFormBloc>().add(
@@ -477,7 +385,7 @@ class _FurnitureItemCard extends StatelessWidget {
             onTap: onPickPropertyImage,
             child: CustomPaint(
               painter: DashedBorderPainter(
-                color: AppColors.primary,
+                color: AppColors.baseLightGrey,
                 strokeWidth: 1,
                 dashWidth: 6,
                 dashSpace: 4,
@@ -495,7 +403,7 @@ class _FurnitureItemCard extends StatelessWidget {
                       width: 24,
                       height: 24,
                       colorFilter: const ColorFilter.mode(
-                        AppColors.primary,
+                        AppColors.baseGrey,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -503,7 +411,7 @@ class _FurnitureItemCard extends StatelessWidget {
                     Text(
                       AppLocalizations.of(context)!.select,
                       style: GoogleFonts.anuphan(
-                        color: AppColors.primary,
+                        color: AppColors.baseDarkGrey,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -568,7 +476,7 @@ class _FurnitureItemCard extends StatelessWidget {
           ),
         ),
 
-        if (item.images.isNotEmpty) ...[
+        if (item.images.isNotEmpty || item.existingPhotoUrl != null) ...[
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -629,7 +537,9 @@ class _FurnitureItemCard extends StatelessWidget {
 
               final isNetwork =
                   path.startsWith('http') || path.startsWith('https');
-              final fileName = isExisting ? AppLocalizations.of(context)!.propertyPhotos : path.split('/').last;
+              final fileName = isExisting
+                  ? AppLocalizations.of(context)!.propertyPhotos
+                  : path.split('/').last;
 
               return Stack(
                 children: [

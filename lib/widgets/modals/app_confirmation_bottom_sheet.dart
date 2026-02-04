@@ -64,8 +64,8 @@ class AppConfirmationBottomSheet extends StatelessWidget {
     final imageAsset =
         icon ??
         (style == ConfirmationStyle.destructive
-            ? 'assets/images/dialog/confirmation_red.png'
-            : 'assets/images/dialog/confirmation_blue.png');
+            ? 'assets/images/dialog/YA_Illustration_ConfirmDelete.png'
+            : 'assets/images/dialog/YA_Illustration_ConfirmSave.png');
 
     // The primary button style for "Destructive" is red, for "Normal" is blue (typically primary).
     // AppButtonStyle.destructive usually maps to red. AppButtonStyle.primary usually maps to blue/brand.
@@ -88,17 +88,13 @@ class AppConfirmationBottomSheet extends StatelessWidget {
             24,
             32,
             24,
-            MediaQuery.of(context).padding.bottom,
+            MediaQuery.of(context).padding.bottom + 32,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // Image
-              Image.asset(
-                imageAsset,
-                height: 120, // Adjust based on actual asset size/ratio
-                fit: BoxFit.contain,
-              ),
+              Image.asset(imageAsset, height: 160, fit: BoxFit.fitHeight),
 
               const SizedBox(height: 24),
 
@@ -107,7 +103,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
                 title,
                 style: GoogleFonts.anuphan(
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   color: AppColors.baseBlack,
                 ),
                 textAlign: TextAlign.center,
@@ -120,6 +116,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
                 description,
                 style: GoogleFonts.anuphan(
                   fontSize: 14,
+                  fontWeight: FontWeight.w400,
                   color: AppColors.baseGrey,
                 ),
                 textAlign: TextAlign.center,
@@ -133,26 +130,39 @@ class AppConfirmationBottomSheet extends StatelessWidget {
                 child: AppButton(
                   text: confirmLabel,
                   style: buttonStyle,
+                  textStyle: GoogleFonts.anuphan(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                   onPressed: () {
-                    Navigator.pop(context); // Close sheet
+                    Navigator.pop(context);
                     onConfirm();
                   },
                 ),
               ),
 
               if (cancelLabel.isNotEmpty) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
                     if (onCancel != null) onCancel!();
                     Navigator.pop(context);
                   },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: Colors.transparent,
+                  ),
                   child: Text(
                     cancelLabel,
                     style: GoogleFonts.anuphan(
-                      color: AppColors.baseGrey,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                      color: AppColors.baseDarkGrey,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ),

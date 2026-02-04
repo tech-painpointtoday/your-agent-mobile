@@ -39,7 +39,9 @@ import '../features/profile/pages/personal_info_form_screen.dart';
 import '../features/profile/pages/service_area_form_screen.dart';
 import '../features/profile/pages/work_info_form_screen.dart';
 import '../features/profile/pages/settings_screen.dart';
+import '../features/profile/pages/notification_settings_screen.dart';
 import '../features/profile/pages/account_management_screen.dart';
+import '../features/profile/pages/contact_us_screen.dart';
 import '../widgets/main_navigation_screen.dart';
 
 /// Route observer used so ProfileScreen can refetch when user navigates back to it.
@@ -229,11 +231,24 @@ class AppRouter {
       ),
       GoRoute(
         path: '/profile/settings',
-        builder: (context, state) => SettingsScreen(changeLocale: changeLocale),
+        builder: (context, state) => BlocProvider(
+          create: (context) =>
+              ProfileBloc(DependencyInjection.authApiService)
+                ..add(FetchProfile()),
+          child: SettingsScreen(changeLocale: changeLocale),
+        ),
       ),
       GoRoute(
         path: '/profile/settings/account',
         builder: (context, state) => const AccountManagementScreen(),
+      ),
+      GoRoute(
+        path: '/profile/settings/notifications',
+        builder: (context, state) => const NotificationSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/profile/settings/contact',
+        builder: (context, state) => const ContactUsScreen(),
       ),
       GoRoute(
         path: '/notifications/:id',
@@ -258,6 +273,7 @@ class AppRouter {
         path: '/policy',
         builder: (context, state) {
           final typeParam = state.uri.queryParameters['type'];
+          final showBottom = state.uri.queryParameters['showBottom'] != 'false';
           PolicyType? type;
           switch (typeParam) {
             case 'terms':
@@ -273,6 +289,7 @@ class AppRouter {
           return PolicyScreen(
             changeLocale: changeLocale,
             initialPolicyType: type,
+            showBottomButtons: showBottom,
           );
         },
       ),

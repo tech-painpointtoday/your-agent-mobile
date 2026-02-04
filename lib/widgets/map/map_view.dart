@@ -17,10 +17,12 @@ class MapView extends StatefulWidget {
   final LatLng? cameraTarget;
   final bool animateToTarget;
   final double? radius;
+  final String? title;
+  final String? snippet;
 
   const MapView({
     super.key,
-    required this.properties,
+    this.properties = const [],
     this.height = 248,
     this.onMaximizeTapped,
     this.onCameraIdle,
@@ -30,6 +32,8 @@ class MapView extends StatefulWidget {
     this.cameraTarget,
     this.animateToTarget = true,
     this.radius,
+    this.title,
+    this.snippet,
   });
 
   @override
@@ -94,6 +98,20 @@ class _MapViewState extends State<MapView> {
 
   void _createMarkers() {
     _markers.clear();
+    if (widget.initialLocation != null) {
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('initialLocation'),
+          position: widget.initialLocation!,
+          icon: _customMarkerIcon ?? BitmapDescriptor.defaultMarker,
+          infoWindow: InfoWindow(
+            title: widget.title ?? 'Unknown Location',
+            snippet: widget.snippet ?? 'Unknown Location address',
+          ),
+        ),
+      );
+    }
+
     for (var i = 0; i < widget.properties.length; i++) {
       final property = widget.properties[i];
       final markerId =

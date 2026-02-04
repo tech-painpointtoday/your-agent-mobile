@@ -11,11 +11,13 @@ enum PolicyType { terms, privacy, disclaimer }
 class PolicyScreen extends StatefulWidget {
   final Function(Locale) changeLocale;
   final PolicyType? initialPolicyType;
+  final bool showBottomButtons;
 
   const PolicyScreen({
     super.key,
     required this.changeLocale,
     this.initialPolicyType,
+    this.showBottomButtons = true,
   });
 
   @override
@@ -171,52 +173,59 @@ class _PolicyScreenState extends State<PolicyScreen> {
                 ),
               ),
             ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                border: Border(top: BorderSide(color: AppColors.baseLightGrey)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0x0A000000),
-                    blurRadius: 10,
-                    offset: Offset(0, -4),
+            if (widget.showBottomButtons)
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  border: Border(
+                    top: BorderSide(color: AppColors.baseLightGrey),
                   ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => context.pop(false),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.baseDarkGrey,
-                        side: const BorderSide(color: AppColors.baseLightGrey),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x0A000000),
+                      blurRadius: 10,
+                      offset: Offset(0, -4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => context.pop(false),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.baseDarkGrey,
+                          side: const BorderSide(
+                            color: AppColors.baseLightGrey,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          minimumSize: const Size.fromHeight(52),
                         ),
-                        minimumSize: const Size.fromHeight(52),
-                      ),
-                      child: Text(
-                        'ไม่ยอมรับ',
-                        style: GoogleFonts.anuphan(fontWeight: FontWeight.w500),
+                        child: Text(
+                          'ไม่ยอมรับ',
+                          style: GoogleFonts.anuphan(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: AppButton(
-                      text: 'ยอมรับ',
-                      style: AppButtonStyle.primary,
-                      height: 52,
-                      onPressed: _hasScrolledToBottom
-                          ? () => context.pop(true)
-                          : null,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: AppButton(
+                        text: 'ยอมรับ',
+                        style: AppButtonStyle.primary,
+                        height: 52,
+                        onPressed: _hasScrolledToBottom
+                            ? () => context.pop(true)
+                            : null,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),

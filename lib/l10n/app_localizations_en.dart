@@ -2061,7 +2061,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationSettingsLabel => 'Notification Settings';
 
   @override
+  String get notificationSettingsTitle => 'Notification Settings';
+
+  @override
+  String get connectLineAccount => 'Connect Line Account';
+
+  @override
+  String get lineNotConnected => 'Not Connected';
+
+  @override
+  String get lineNotifications => 'Line Notifications';
+
+  @override
+  String get lineNotificationsSubtitle =>
+      'Receive notifications conveniently and easily';
+
+  @override
+  String get emailNotifications => 'Email Notifications';
+
+  @override
+  String get emailNotificationsSubtitle =>
+      'Receive security alerts and important news';
+
+  @override
+  String get pushNotifications => 'Push Notifications';
+
+  @override
+  String get pushNotificationsSubtitle =>
+      'Go to settings on your device to enable/disable notifications';
+
+  @override
+  String get connectButton => 'Connect';
+
+  @override
   String get matchingSettingsLabel => 'Matching System Settings';
+
+  @override
+  String get matchingSettingsTitle => 'Matching System Settings';
+
+  @override
+  String get matchingSettingsSubtitle =>
+      'Minimum compatibility required for your property to appear in results';
+
+  @override
+  String get minimumScoreLabel => 'Minimum Score';
+
+  @override
+  String get scorePercentSuffix => '% or more';
 
   @override
   String get termsLabel => 'Terms and Conditions';
@@ -2073,10 +2119,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactUsLabel => 'Contact Us';
 
   @override
+  String get contactInfoLabel => 'Contact Information';
+
+  @override
+  String get companyAddressValue =>
+      'No. 51 Punnawithi 33, Bang Chak, Phra Khanong, Bangkok 10260';
+
+  @override
+  String get companyEmailValue => 'yourhome@example.com';
+
+  @override
+  String get companyPhoneValue => '02-123-4567';
+
+  @override
   String get logoutConfirmTitle => 'Logout?';
 
   @override
-  String get logoutConfirmMessage => 'Do you want to log out?';
+  String get logoutConfirmMessage => 'Are you sure you want to log out?';
+
+  @override
+  String get logoutConfirmButton => 'Yes, Logout';
 
   @override
   String get versionLabel => 'Version';
@@ -2517,7 +2579,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome => 'Welcome';
 
   @override
-  String get agencyDuangDen => 'Agency Duang Den';
+  String get agencyUnknown => 'Agency Unknown';
 
   @override
   String get searchProperty => 'Search property';

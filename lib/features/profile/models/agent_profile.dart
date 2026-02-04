@@ -105,6 +105,15 @@ class AgentDetails {
       serviceAreaCenterLng: json['service_area_center_lng']?.toString(),
     );
   }
+  int get profileLevel {
+    final hasWorkInfo = companyName?.isNotEmpty == true;
+    final hasServiceArea = reachableRadius?.isNotEmpty == true;
+
+    int currentLevel = 1;
+    if (hasWorkInfo) currentLevel = 2;
+    if (hasWorkInfo && hasServiceArea) currentLevel = 3;
+    return currentLevel;
+  }
 }
 
 class ProfileVerificationStatus {

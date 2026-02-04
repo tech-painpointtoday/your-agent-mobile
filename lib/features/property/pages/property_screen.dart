@@ -91,6 +91,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
   @override
   Widget build(BuildContext context) {
     return SilverAppBarScreen(
+      onRefresh: _loadProperties,
       hasFilter: true,
       title: AppLocalizations.of(context)!.propertiesTitle,
       actionWidget: InkWell(

@@ -168,96 +168,103 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
 
             // Content Area
             Expanded(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
+              child: RefreshIndicator(
+                onRefresh: _loadProperties,
+                color: Colors.white,
+                backgroundColor: AppColors.primary,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
+                    ),
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Property Count or Empty State Title
-                    if (_allProperties.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                        child: AppBadges.plain(
-                          label: '${_allProperties.length} รายการ',
-                          color: BadgeColor.blue,
-                        ),
-                      )
-                    else if (!_isLoading && _error == null)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                        child: AppBadges.plain(
-                          label: AppLocalizations.of(context)!.propertyNotFound,
-                          color: BadgeColor.default_,
-                        ),
-                      ),
-
-                    // Property List or Empty State
-                    Expanded(child: _buildContent()),
-
-                    // Search Bar at Bottom
-                    Container(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPadding),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 8,
-                            offset: const Offset(0, -2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Property Count or Empty State Title
+                      if (_allProperties.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                          child: AppBadges.plain(
+                            label: '${_allProperties.length} รายการ',
+                            color: BadgeColor.blue,
                           ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: AppSearchBar(
-                              controller: _searchController,
-                              hintText: AppLocalizations.of(
-                                context,
-                              )!.searchHint,
+                        )
+                      else if (!_isLoading && _error == null)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                          child: AppBadges.plain(
+                            label: AppLocalizations.of(
+                              context,
+                            )!.propertyNotFound,
+                            color: BadgeColor.default_,
+                          ),
+                        ),
+
+                      // Property List or Empty State
+                      Expanded(child: _buildContent()),
+
+                      // Search Bar at Bottom
+                      Container(
+                        padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPadding),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 8,
+                              offset: const Offset(0, -2),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          // Filter Button
-                          InkWell(
-                            onTap: _showFilterBottomSheet,
-                            borderRadius: BorderRadius.circular(14),
-                            child: Container(
-                              width: 44,
-                              height: 44,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(14),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x14000000),
-                                    blurRadius: 12,
-                                    offset: Offset(0, 6),
-                                  ),
-                                ],
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: AppSearchBar(
+                                controller: _searchController,
+                                hintText: AppLocalizations.of(
+                                  context,
+                                )!.searchHint,
                               ),
-                              child: SvgPicture.asset(
-                                'assets/icons/filter.svg',
-                                width: 16,
-                                height: 16,
-                                fit: BoxFit.scaleDown,
-                                colorFilter: const ColorFilter.mode(
-                                  AppColors.baseDarkGrey,
-                                  BlendMode.srcIn,
+                            ),
+                            const SizedBox(width: 12),
+                            // Filter Button
+                            InkWell(
+                              onTap: _showFilterBottomSheet,
+                              borderRadius: BorderRadius.circular(14),
+                              child: Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(14),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x14000000),
+                                      blurRadius: 12,
+                                      offset: Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: SvgPicture.asset(
+                                  'assets/icons/filter.svg',
+                                  width: 16,
+                                  height: 16,
+                                  fit: BoxFit.scaleDown,
+                                  colorFilter: const ColorFilter.mode(
+                                    AppColors.baseDarkGrey,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -273,19 +280,34 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
     }
 
     if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Error: $_error'),
-            TextButton(onPressed: _loadProperties, child: const Text('Retry')),
-          ],
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Error: $_error'),
+                TextButton(
+                  onPressed: _loadProperties,
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
         ),
       );
     }
 
     if (_filteredProperties.isEmpty) {
-      return _buildEmptyState();
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: _buildEmptyState(),
+        ),
+      );
     }
 
     return _buildPropertyList();
@@ -293,6 +315,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
 
   Widget _buildPropertyList() {
     return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: _filteredProperties.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),

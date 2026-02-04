@@ -144,6 +144,7 @@ class SilverAppBarScreen extends StatefulWidget {
   final double fadeThreshold;
   final double backgroundHeight;
   final bool hasFilter;
+  final RefreshCallback? onRefresh;
 
   const SilverAppBarScreen({
     super.key,
@@ -156,6 +157,7 @@ class SilverAppBarScreen extends StatefulWidget {
     this.backgroundHeight = 280.0,
     this.preferredHeight = 160.0,
     this.hasFilter = false,
+    this.onRefresh,
   });
 
   final double preferredHeight;
@@ -224,28 +226,43 @@ class _SilverAppBarScreenState extends State<SilverAppBarScreen> {
 
             // Layer 2 (Top): Scrollable Content
             Positioned.fill(
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  // Sticky App Bar with fade effect
-                  SilverAppBarWidget(
-                    key: _appBarKey,
-                    title: widget.title,
-                    titleWidget: widget.titleWidget,
-                    actionWidget: widget.actionWidget,
-                    searchBar: widget.searchBar,
-                    preferredHeight: widget.preferredHeight,
-                    hasFilter: widget.hasFilter,
-                  ),
-
-                  // Content
-                  SliverToBoxAdapter(child: widget.child),
-                ],
-              ),
+              child: widget.onRefresh != null
+                  ? RefreshIndicator(
+                      onRefresh: widget.onRefresh!,
+                      color: Colors.white,
+                      backgroundColor: const Color(0xFF1743C7),
+                      edgeOffset: widget.preferredHeight,
+                      child: _buildScrollView(),
+                    )
+                  : _buildScrollView(),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildScrollView() {
+    return CustomScrollView(
+      controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(
+        parent: BouncingScrollPhysics(),
+      ),
+      slivers: [
+        // Sticky App Bar with fade effect
+        SilverAppBarWidget(
+          key: _appBarKey,
+          title: widget.title,
+          titleWidget: widget.titleWidget,
+          actionWidget: widget.actionWidget,
+          searchBar: widget.searchBar,
+          preferredHeight: widget.preferredHeight,
+          hasFilter: widget.hasFilter,
+        ),
+
+        // Content
+        SliverToBoxAdapter(child: widget.child),
+      ],
     );
   }
 }

@@ -100,7 +100,7 @@ class AppStatusBottomSheet extends StatelessWidget {
     required BuildContext context,
     required String title,
     String? message,
-    String buttonText = 'ตกลง',
+    String buttonText = 'OK',
     VoidCallback? onOk,
   }) {
     return show(
@@ -186,9 +186,7 @@ class AppStatusBottomSheet extends StatelessWidget {
               SizedBox(
                 height: 80,
                 width: 80,
-                child: Center(
-                  child: _StatusIconLarge(type: type),
-                ),
+                child: Center(child: _StatusIconLarge(type: type)),
               ),
               const SizedBox(height: 24),
               // Title

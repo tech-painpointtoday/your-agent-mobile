@@ -18,7 +18,6 @@ import '../../auth/bloc/auth_state.dart';
 import '../../notifications/bloc/notification_bloc.dart';
 import '../../notifications/bloc/notification_event.dart';
 import '../../notifications/bloc/notification_state.dart';
-import 'package:youragent/l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -195,7 +194,7 @@ class _HomeHeaderState extends State<HomeHeader> {
               Text(
                 userName.isNotEmpty
                     ? userName
-                    : AppLocalizations.of(context)!.agencyDuangDen,
+                    : AppLocalizations.of(context)!.agencyUnknown,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -218,108 +217,8 @@ class _HomeHeaderState extends State<HomeHeader> {
           svgPath: 'assets/icons/message-round.svg',
           onTap: null,
         ),
-        SizedBox(width: 10),
-        _LogoutButton(),
       ],
     );
-  }
-}
-
-class _LogoutButton extends StatelessWidget {
-  const _LogoutButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => _handleLogout(context),
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: AppColors.white.withValues(alpha: 0.18),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const Center(
-          child: Icon(Icons.logout, size: 20, color: AppColors.white),
-        ),
-      ),
-    );
-  }
-
-  void _handleLogout(BuildContext context) {
-    if (!context.mounted) return;
-
-    final l10n = AppLocalizations.of(context);
-    if (l10n == null) {
-      debugPrint('❌ Cannot get localizations, aborting logout');
-      return;
-    }
-
-    final authBloc = context.read<AuthBloc>();
-    final router = GoRouter.of(context);
-
-    AppConfirmationBottomSheet.show(
-      context: context,
-      title: l10n.logout_title,
-      description: l10n.logout_message,
-      confirmLabel: l10n.logout_button,
-      cancelLabel: l10n.cancel_button,
-      style: ConfirmationStyle.destructive,
-      onConfirm: () {
-        final role = DependencyInjection.authRepository.currentRole;
-        final loginRoute = role != null
-            ? '/login/${role.name}'
-            : '/login/agent';
-        authBloc.add(const SignOutEvent());
-        _waitAndNavigateAfterLogout(authBloc, router, loginRoute, context);
-      },
-    );
-  }
-
-  Future<void> _waitAndNavigateAfterLogout(
-    AuthBloc authBloc,
-    GoRouter router,
-    String loginRoute,
-    BuildContext context,
-  ) async {
-    bool logoutCompleted = false;
-    int attempts = 0;
-    const maxAttempts = 30;
-
-    while (!logoutCompleted && attempts < maxAttempts) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      final authState = authBloc.state;
-      final isUnauthenticated =
-          authState is Unauthenticated || authState is AuthError;
-      final isLoggedOut = !DependencyInjection.authRepository.isAuthenticated;
-      if (isUnauthenticated || isLoggedOut) {
-        logoutCompleted = true;
-        break;
-      }
-      attempts++;
-    }
-
-    try {
-      router.go(loginRoute);
-      debugPrint('✅ Logout completed, navigated to $loginRoute');
-    } catch (e) {
-      debugPrint('❌ Error navigating to login after logout: $e');
-      await Future.delayed(const Duration(milliseconds: 200));
-      try {
-        router.go(loginRoute);
-        debugPrint('✅ Retry navigation successful');
-      } catch (e2) {
-        debugPrint('❌ Second attempt to navigate failed: $e2');
-        if (context.mounted) {
-          try {
-            context.go(loginRoute);
-          } catch (e3) {
-            debugPrint('❌ Final navigation attempt failed: $e3');
-          }
-        }
-      }
-    }
   }
 }
 
