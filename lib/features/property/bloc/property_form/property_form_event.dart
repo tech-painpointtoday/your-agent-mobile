@@ -246,3 +246,11 @@ class PropertyFormResetStatus extends PropertyFormEvent {
   @override
   List<Object?> get props => [];
 }
+
+/// Event to save current form data as draft
+class PropertyFormDraftSaved extends PropertyFormEvent {
+  const PropertyFormDraftSaved();
+
+  @override
+  List<Object?> get props => [];
+}

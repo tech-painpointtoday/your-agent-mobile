@@ -1062,5 +1062,10 @@
   "demoActivity2": "Sample Activity 2",
   "demoProperty5": "Property 5",
   "cannotConnectToServer": "Cannot connect to server. Please check internet.",
-  "noProfileAccess": "You do not have permission to access this data."
+  "noProfileAccess": "You do not have permission to access this data.",
+  "draftSavedMessage": "Draft saved successfully",
+  "draftSaveErrorMessage": "Failed to save draft. Please try again.",
+  "propertyPublishedSuccess": "Property published successfully",
+  "publishButton": "Publish",
+  "publishPropertyConfirmation": "Are you sure you want to publish this property?"
 }

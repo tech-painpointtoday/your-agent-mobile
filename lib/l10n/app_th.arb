@@ -1062,5 +1062,10 @@
   "call": "โทร",
   "showresults": "แสดงผลลัพธ์",
   "searchSuccess": "ค้นหาสำเร็จ",
-  "showresults1": "แสดงผลลัพธ์"
+  "showresults1": "แสดงผลลัพธ์",
+  "draftSavedMessage": "บันทึกฉบับร่างเรียบร้อยแล้ว",
+  "draftSaveErrorMessage": "ไม่สามารถบันทึกฉบับร่างได้ กรุณาลองอีกครั้ง",
+  "propertyPublishedSuccess": "เผยแพร่ทรัพย์สินเรียบร้อยแล้ว",
+  "publishButton": "เผยแพร่",
+  "publishPropertyConfirmation": "คุณต้องการเผยแพร่ทรัพย์สินนี้หรือไม่?"
 }

@@ -294,6 +294,47 @@ class PropertyApiService {
     }
   }
 
+  /// Save property as draft (partial data allowed)
+  /// POST /agent/properties/draft
+  Future<Map<String, dynamic>> saveDraft({
+    String? role,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      final actualRole = role ?? _currentRole;
+      final response = await _apiClient.post(
+        '/$actualRole/properties/draft',
+        data: data,
+      );
+      return response.data as Map<String, dynamic>;
+    } catch (e) {
+      if (e is DioException) {
+        throw Exception(ApiResponseService.getErrorMessage(e));
+      }
+      throw Exception('Failed to save draft: $e');
+    }
+  }
+
+  /// Publish a draft property
+  /// POST /agent/properties/{id}/publish
+  Future<Map<String, dynamic>> publishProperty({
+    String? role,
+    required int propertyId,
+  }) async {
+    try {
+      final actualRole = role ?? _currentRole;
+      final response = await _apiClient.post(
+        '/$actualRole/properties/$propertyId/publish',
+      );
+      return response.data as Map<String, dynamic>;
+    } catch (e) {
+      if (e is DioException) {
+        throw Exception(ApiResponseService.getErrorMessage(e));
+      }
+      throw Exception('Failed to publish property: $e');
+    }
+  }
+
   /// @deprecated Use createProperty with unified payload instead
   /// Create a new property (with optional photos)
   /// POST /agent/properties/create

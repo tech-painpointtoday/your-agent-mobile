@@ -10,6 +10,9 @@ enum PropertyFormStatus {
   submissionInProgress,
   submissionSuccess,
   submissionFailure,
+  draftSaveInProgress,
+  draftSaveSuccess,
+  draftSaveFailure,
 }
 
 class PropertyFormImage extends Equatable {
@@ -37,6 +40,7 @@ class PropertyFormState extends Equatable {
   final PropertyFormStatus propertyFormStatus;
   final String? errorMessage;
   final int? propertyId; // Resulting property ID after success
+  final bool isDraft; // Indicates if editing a draft property
 
   // Data fields
   final PropertyType? selectedPropertyType;
@@ -113,6 +117,7 @@ class PropertyFormState extends Equatable {
     this.propertyFormStatus = PropertyFormStatus.initial,
     this.errorMessage,
     this.propertyId,
+    this.isDraft = false,
     this.selectedPropertyType,
     this.name,
     this.price,
@@ -165,6 +170,41 @@ class PropertyFormState extends Equatable {
     this.specificationValues = const {},
   });
 
+  /// Smart step calculation based on data completeness
+  static int _calculateResumeStep(Property property) {
+    // Step 1: Property Type
+    if (property.propertyType == null) return 1;
+
+    // Step 2: General Info (name, location, developer/project for condos)
+    if (property.name == null ||
+        property.name!.isEmpty ||
+        property.formattedAddressTh == null ||
+        property.formattedAddressTh!.isEmpty) {
+      return 2;
+    }
+
+    // Step 3: Property Details (price, bedrooms, bathrooms, etc.)
+    if (property.price == 0 ||
+        property.listingType == null ||
+        property.status == null ||
+        property.totalFloors == null ||
+        property.bedrooms == 0 ||
+        property.bathrooms == 0) {
+      return 3;
+    }
+
+    // Step 4: Additional Info (style, description)
+    if (property.propertyStyle == null || property.description.isEmpty) {
+      return 4;
+    }
+
+    // Step 5: Images
+    if (property.imageUrls.isEmpty) return 5;
+
+    // Step 6: Confirmation (all data present)
+    return 6;
+  }
+
   factory PropertyFormState.fromProperty(
     Property property, {
     PropertySpecificationFilters? filters,
@@ -199,7 +239,15 @@ class PropertyFormState extends Equatable {
       }
     });
 
+    // Detect if this is a draft
+    final isDraft = property.isDraft;
+
+    // Calculate initial step for draft resume
+    final initialStep = isDraft ? _calculateResumeStep(property) : 1;
+
     return PropertyFormState(
+      step: initialStep,
+      isDraft: isDraft,
       propertyId: property.id,
       selectedPropertyType: property.propertyType,
       name: property.name,
@@ -359,6 +407,7 @@ class PropertyFormState extends Equatable {
     PropertyFormStatus? propertyFormStatus,
     String? errorMessage,
     int? propertyId,
+    bool? isDraft,
     PropertyType? selectedPropertyType,
     String? name,
     double? price,
@@ -415,6 +464,7 @@ class PropertyFormState extends Equatable {
       propertyFormStatus: propertyFormStatus ?? this.propertyFormStatus,
       errorMessage: errorMessage ?? this.errorMessage,
       propertyId: propertyId ?? this.propertyId,
+      isDraft: isDraft ?? this.isDraft,
       selectedPropertyType: selectedPropertyType ?? this.selectedPropertyType,
       name: name ?? this.name,
       price: price ?? this.price,
@@ -549,6 +599,7 @@ class PropertyFormState extends Equatable {
     propertyFormStatus,
     errorMessage,
     propertyId,
+    isDraft,
     selectedPropertyType,
     name,
     price,

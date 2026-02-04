@@ -3274,4 +3274,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noProfileAccess =>
       'You do not have permission to access this data.';
+
+  @override
+  String get draftSavedMessage => 'Draft saved successfully';
+
+  @override
+  String get draftSaveErrorMessage => 'Failed to save draft. Please try again.';
+
+  @override
+  String get propertyPublishedSuccess => 'Property published successfully';
+
+  @override
+  String get publishButton => 'Publish';
+
+  @override
+  String get publishPropertyConfirmation =>
+      'Are you sure you want to publish this property?';
 }

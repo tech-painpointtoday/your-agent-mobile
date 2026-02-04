@@ -6475,6 +6475,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You do not have permission to access this data.'**
   String get noProfileAccess;
+
+  /// No description provided for @draftSavedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft saved successfully'**
+  String get draftSavedMessage;
+
+  /// No description provided for @draftSaveErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save draft. Please try again.'**
+  String get draftSaveErrorMessage;
+
+  /// No description provided for @propertyPublishedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Property published successfully'**
+  String get propertyPublishedSuccess;
+
+  /// No description provided for @publishButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get publishButton;
+
+  /// No description provided for @publishPropertyConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to publish this property?'**
+  String get publishPropertyConfirmation;
 }
 
 class _AppLocalizationsDelegate

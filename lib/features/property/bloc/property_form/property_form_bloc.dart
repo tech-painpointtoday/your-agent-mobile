@@ -72,6 +72,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     on<PropertyFormDynamicSingleSelectChanged>(_onDynamicSingleSelectChanged);
     on<PropertyFormDynamicMultiSelectToggled>(_onDynamicMultiSelectToggled);
     on<PropertyFormResetStatus>(_onResetStatus);
+    on<PropertyFormDraftSaved>(_onDraftSaved);
   }
 
   void _onResetStatus(
@@ -267,6 +268,22 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     );
 
     try {
+      // Check if publishing a draft
+      if (state.isDraft && state.propertyId != null) {
+        // Publishing a draft property
+        await _propertyApiService.publishProperty(
+          propertyId: state.propertyId!,
+        );
+
+        emit(
+          state.copyWith(
+            propertyFormStatus: PropertyFormStatus.submissionSuccess,
+          ),
+        );
+        return;
+      }
+
+      // Creating a new property (original logic)
       final roleName = state.selectedDeveloperId != null ? 'agency' : 'agent';
 
       // 2. Auto-fill Address Lookup
@@ -316,25 +333,9 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       }
 
       // 3. Build Payload (Unified)
-      // Use state.data which constructs the map for API
       final payload = currentState.data;
 
-      Property responseProperty;
-
-      // if (state.propertyId != null) {
-      //   responseProperty = await _propertyApiService.updateProperty(
-      //     role: roleName,
-      //     propertyId: state.propertyId!,
-      //     data: payload,
-      //   );
-      // } else {
-      //   // CREATE
-      //   responseProperty = await _propertyApiService.saveProperty(
-      //     role: roleName,
-      //     data: payload,
-      //   );
-      // }
-      responseProperty = await _propertyApiService.saveProperty(
+      final responseProperty = await _propertyApiService.saveProperty(
         role: roleName,
         data: payload,
       );
@@ -365,6 +366,42 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       emit(
         state.copyWith(
           propertyFormStatus: PropertyFormStatus.submissionFailure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onDraftSaved(
+    PropertyFormDraftSaved event,
+    Emitter<PropertyFormState> emit,
+  ) async {
+    try {
+      emit(
+        state.copyWith(
+          propertyFormStatus: PropertyFormStatus.draftSaveInProgress,
+        ),
+      );
+
+      // No validation required - save partial data as-is
+      final draftData = state.data;
+
+      // Call API to save draft
+      final response = await _propertyApiService.saveDraft(data: draftData);
+      final propertyId = response['data']?['id'] as int?;
+
+      emit(
+        state.copyWith(
+          propertyFormStatus: PropertyFormStatus.draftSaveSuccess,
+          propertyId: propertyId,
+          isDraft: true,
+        ),
+      );
+    } catch (e) {
+      debugPrint('Draft save error: $e');
+      emit(
+        state.copyWith(
+          propertyFormStatus: PropertyFormStatus.draftSaveFailure,
           errorMessage: e.toString(),
         ),
       );

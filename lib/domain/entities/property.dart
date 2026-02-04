@@ -225,9 +225,7 @@ class Property extends Equatable {
   // Metadata
   final DateTime createdAt;
   final int viewCount;
-
-  // Helper: Check if this is a draft/preview
-  bool get isDraft => id == null;
+  final bool isDraft; // Draft status from API
 
   const Property({
     this.id,
@@ -275,6 +273,7 @@ class Property extends Equatable {
     this.imageFiles = const [],
     required this.createdAt,
     this.viewCount = 0,
+    this.isDraft = false,
   });
 
   /// Factory: Parses Nested API Response (Smart Parser)
@@ -424,6 +423,7 @@ class Property extends Equatable {
           DateTime.tryParse(data['created_at']?.toString() ?? '') ??
           DateTime.now(),
       viewCount: parseInt(data['view_count']),
+      isDraft: data['is_draft'] == true,
     );
   }
 

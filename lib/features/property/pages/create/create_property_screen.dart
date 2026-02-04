@@ -8,6 +8,7 @@ import 'package:youragent/features/property/bloc/property_metadata/property_meta
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_event.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'steps/additional_info_step.dart';
 import 'steps/confirmation_step.dart';
 import 'steps/general_info_step.dart';
@@ -67,7 +68,9 @@ class _CreatePropertyView extends StatelessWidget {
             AppConfirmationBottomSheet.show(
               context: context,
               title: AppLocalizations.of(context)!.confirmInfo,
-              description: AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
+              description: AppLocalizations.of(
+                context,
+              )!.deleteAllImagesConfirmMessage,
               confirmLabel: AppLocalizations.of(context)!.deleteAllConfirmLabel,
               cancelLabel: AppLocalizations.of(context)!.statusCancelled,
               icon: 'assets/images/dialog/confirmation_clear.png',
@@ -82,7 +85,9 @@ class _CreatePropertyView extends StatelessWidget {
         title: BlocBuilder<PropertyFormBloc, PropertyFormState>(
           builder: (context, state) {
             return Text(
-              state.step == 6 ? AppLocalizations.of(context)!.confirmInfo : AppLocalizations.of(context)!.createPropertyLabel,
+              state.step == 6
+                  ? AppLocalizations.of(context)!.confirmInfo
+                  : AppLocalizations.of(context)!.createPropertyLabel,
               style: GoogleFonts.anuphan(
                 color: Colors.white,
                 fontSize: 18,
@@ -94,33 +99,44 @@ class _CreatePropertyView extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.supportBlueDeep,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/file.svg',
-                    height: 16,
-                    width: 16,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
+            child: InkWell(
+              onTap: () {
+                // Trigger draft save
+                context.read<PropertyFormBloc>().add(
+                  const PropertyFormDraftSaved(),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.supportBlueDeep,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/file.svg',
+                      height: 16,
+                      width: 16,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    AppLocalizations.of(context)!.saveDraftButton,
-                    style: GoogleFonts.anuphan(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    const SizedBox(width: 4),
+                    Text(
+                      AppLocalizations.of(context)!.saveDraftButton,
+                      style: GoogleFonts.anuphan(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -130,7 +146,33 @@ class _CreatePropertyView extends StatelessWidget {
         listenWhen: (prev, curr) =>
             prev.propertyFormStatus != curr.propertyFormStatus,
         listener: (context, state) {
-          if (state.propertyFormStatus ==
+          // Draft save success
+          if (state.propertyFormStatus == PropertyFormStatus.draftSaveSuccess) {
+            StatusDialog.showSuccess(
+              context: context,
+              title: AppLocalizations.of(context)!.successTitle,
+              message: AppLocalizations.of(context)!.draftSavedMessage,
+            );
+            // Wait a moment then pop
+            Future.delayed(const Duration(seconds: 1), () {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            });
+          }
+          // Draft save failure
+          else if (state.propertyFormStatus ==
+              PropertyFormStatus.draftSaveFailure) {
+            StatusDialog.showError(
+              context: context,
+              title: AppLocalizations.of(context)!.errorLabel,
+              message:
+                  state.errorMessage ??
+                  AppLocalizations.of(context)!.draftSaveErrorMessage,
+            );
+          }
+          // Property submission success
+          else if (state.propertyFormStatus ==
               PropertyFormStatus.submissionSuccess) {
             // Show Success Dialog then pop
             showDialog(
@@ -142,7 +184,9 @@ class _CreatePropertyView extends StatelessWidget {
                   size: 48,
                 ),
                 content: Text(
-                  AppLocalizations.of(context)!.propertyCreatedSuccess,
+                  state.isDraft
+                      ? AppLocalizations.of(context)!.propertyPublishedSuccess
+                      : AppLocalizations.of(context)!.propertyCreatedSuccess,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.anuphan(
                     fontSize: 18,
@@ -276,7 +320,11 @@ class _CreatePropertyView extends StatelessWidget {
                 builder: (context, state) {
                   final isLastStep = state.step == 6; // Confirmation step
                   return AppButton(
-                    text: isLastStep ? AppLocalizations.of(context)!.createLabel : AppLocalizations.of(context)!.nextButton,
+                    text: isLastStep
+                        ? (state.isDraft
+                              ? AppLocalizations.of(context)!.publishButton
+                              : AppLocalizations.of(context)!.createLabel)
+                        : AppLocalizations.of(context)!.nextButton,
                     style: AppButtonStyle.primary,
                     // If creating, check validation AND not currently submitting
                     onPressed:
@@ -312,15 +360,14 @@ class _CreatePropertyView extends StatelessWidget {
       AppConfirmationBottomSheet.show(
         context: context,
         title: AppLocalizations.of(context)!.confirmInfo,
-        description: AppLocalizations.of(context)!.createPropertyConfirmation,
+        description: state.isDraft
+            ? AppLocalizations.of(context)!.publishPropertyConfirmation
+            : AppLocalizations.of(context)!.createPropertyConfirmation,
         confirmLabel: AppLocalizations.of(context)!.confirm,
         cancelLabel: AppLocalizations.of(context)!.statusCancelled,
         style: ConfirmationStyle.normal,
         onConfirm: () {
-          print('onConfirm');
-          print(state.toProperty.toString());
-          // Navigator.of(context).pop();
-          // context.read<PropertyFormBloc>().add(const PropertyFormSubmitted());
+          context.read<PropertyFormBloc>().add(const PropertyFormSubmitted());
         },
       );
     } else {

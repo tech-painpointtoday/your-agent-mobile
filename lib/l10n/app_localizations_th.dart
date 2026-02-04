@@ -3289,4 +3289,21 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get noProfileAccess => 'คุณไม่มีสิทธิ์เข้าถึงข้อมูลนี้';
+
+  @override
+  String get draftSavedMessage => 'บันทึกฉบับร่างเรียบร้อยแล้ว';
+
+  @override
+  String get draftSaveErrorMessage =>
+      'ไม่สามารถบันทึกฉบับร่างได้ กรุณาลองอีกครั้ง';
+
+  @override
+  String get propertyPublishedSuccess => 'เผยแพร่ทรัพย์สินเรียบร้อยแล้ว';
+
+  @override
+  String get publishButton => 'เผยแพร่';
+
+  @override
+  String get publishPropertyConfirmation =>
+      'คุณต้องการเผยแพร่ทรัพย์สินนี้หรือไม่?';
 }
