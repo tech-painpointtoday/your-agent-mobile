@@ -15,6 +15,7 @@ import '../../../widgets/dialogs/status_dialog.dart';
 import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/contract_detail_bloc.dart';
 import '../widgets/contract_status_badge.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class ContractDetailScreen extends StatefulWidget {
   final int contractId;
@@ -85,19 +86,19 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           } else if (state is ContractDetailError) {
             StatusDialog.showError(
               context: context,
-              title: 'เกิดข้อผิดพลาด',
+              title: AppLocalizations.of(context)!.errorOccurredTitle,
               message: state.message,
             );
           } else if (state is ContractDeletedSuccess) {
             StatusDialog.showSuccessDialog(
               context: context,
-              title: 'ลบสัญญาสำเร็จ',
+              title: AppLocalizations.of(context)!.contract_deleted_success,
               onOk: () => Navigator.pop(context, true),
             );
           } else if (state is ContractActionSuccess) {
             StatusDialog.showSuccess(
               context: context,
-              title: 'สำเร็จ',
+              title: AppLocalizations.of(context)!.successTitle,
               message: state.message,
             );
           }
@@ -168,7 +169,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
   Widget _buildHeader(BuildContext context, ContractDetailState state) {
     String contractNumber = '-';
-    String propertyName = 'กำลังโหลด...';
+    String propertyName = AppLocalizations.of(context)!.loading;
 
     if (state is ContractDetailLoadedWithoutPdf ||
         state is ContractDetailPdfLoading ||
@@ -226,7 +227,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
     if (hasSellerSigned && hasBuyerSigned) {
       return AppBadge(
-        label: 'ทั้งสองฝ่ายลงนามแล้ว',
+        label: AppLocalizations.of(context)!.signedByBoth,
         color: BadgeColor.blue,
         style: BadgeStyle.dot,
         fontSize: 12,
@@ -234,14 +235,14 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     }
     if (hasSellerSigned) {
       return AppBadge(
-        label: 'ผู้ให้เช่าลงนามแล้ว',
+        label: AppLocalizations.of(context)!.signedByLessor,
         color: BadgeColor.default_,
         style: BadgeStyle.done,
         fontSize: 12,
       );
     } else if (hasBuyerSigned) {
       return AppBadge(
-        label: 'ผู้เช่าลงนามแล้ว',
+        label: AppLocalizations.of(context)!.signedByLessee,
         color: BadgeColor.default_,
         style: BadgeStyle.done,
         fontSize: 12,
@@ -249,7 +250,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     }
 
     return AppBadge(
-      label: 'ยังไม่มีผู้ลงนาม',
+      label: AppLocalizations.of(context)!.notSignedYet,
       color: BadgeColor.default_,
       fontSize: 12,
     );
@@ -263,14 +264,14 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         children: [
           Flexible(
             child: _buildDocumentActionButton(
-              label: 'ดาวน์โหลด PDF',
+              label: AppLocalizations.of(context)!.downloadPdf,
               onTap: state is ContractDetailLoaded && state.pdfPath != null
                   ? () => _downloadPdf(context, state)
                   : () {
                       StatusDialog.showWarning(
                         context: context,
-                        title: 'กรุณารอสักครู่',
-                        message: 'กำลังโหลดเอกสาร PDF...',
+                        title: AppLocalizations.of(context)!.pleaseWait,
+                        message: AppLocalizations.of(context)!.document,
                       );
                     },
             ),
@@ -278,7 +279,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           const SizedBox(width: 12),
           Flexible(
             child: _buildDocumentActionButton(
-              label: 'แชร์เอกสาร',
+              label: AppLocalizations.of(context)!.shareDocument,
               iconPath: 'assets/icons/arrow-up-right.svg',
               onTap: () {
                 if (state is ContractDetailLoaded) {
@@ -327,7 +328,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                 _buildResendOrSendAction(
                   context: context,
                   bottomSheetContext: bottomSheetContext,
-                  label: 'เจ้าของทรัพย์',
+                  label: AppLocalizations.of(context)!.property,
                   email: sellerEmail,
                   isSigned: contract.sellerSignedAt != null,
                   onSend: () {
@@ -340,7 +341,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                 _buildResendOrSendAction(
                   context: context,
                   bottomSheetContext: bottomSheetContext,
-                  label: 'ผู้เช่า',
+                  label: AppLocalizations.of(context)!.lessee,
                   email: buyerEmail,
                   isSigned: contract.buyerSignedAt != null,
                   onSend: () {
@@ -352,7 +353,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                 if (pdfPath != null) ...[
                   const SizedBox(height: 12),
                   AppButton(
-                    text: 'แชร์ไฟล์ PDF',
+                    text: AppLocalizations.of(context)!.file,
                     style: AppButtonStyle.outline,
                     onPressed: () {
                       Navigator.pop(bottomSheetContext);
@@ -362,7 +363,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                 ],
                 const SizedBox(height: 12),
                 AppButton(
-                  text: 'ยกเลิก',
+                  text: AppLocalizations.of(context)!.statusCancelled,
                   style: AppButtonStyle.ghost,
                   textColor: AppColors.supportRedDeep,
                   onPressed: () => Navigator.pop(bottomSheetContext),
@@ -440,7 +441,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
               ),
             ),
             AppButton(
-              text: 'ส่งอีกครั้ง',
+              text: AppLocalizations.of(context)!.submit,
               style: AppButtonStyle.outline,
               height: 36,
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -450,11 +451,13 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                       Navigator.pop(bottomSheetContext);
                       AppConfirmationBottomSheet.show(
                         context: context,
-                        title: 'ส่งเอกสารอีกครั้ง?',
+                        title: AppLocalizations.of(context)!.submitDocument,
                         description:
                             'คุณต้องการส่งเอกสารไปยัง$label ($email) อีกครั้งใช่หรือไม่?',
-                        confirmLabel: 'ส่ง',
-                        cancelLabel: 'ยกเลิก',
+                        confirmLabel: AppLocalizations.of(context)!.submit,
+                        cancelLabel: AppLocalizations.of(
+                          context,
+                        )!.statusCancelled,
                         style: ConfirmationStyle.normal,
                         onConfirm: onSend,
                       );
@@ -474,11 +477,11 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
               Navigator.pop(bottomSheetContext);
               AppConfirmationBottomSheet.show(
                 context: context,
-                title: 'ส่งเอกสาร?',
+                title: AppLocalizations.of(context)!.submitDocumentQuestion,
                 description:
                     'คุณต้องการส่งเอกสารไปยัง$label ($email) ใช่หรือไม่?',
-                confirmLabel: 'ส่ง',
-                cancelLabel: 'ยกเลิก',
+                confirmLabel: AppLocalizations.of(context)!.submit,
+                cancelLabel: AppLocalizations.of(context)!.statusCancelled,
                 style: ConfirmationStyle.normal,
                 onConfirm: onSend,
               );
@@ -556,7 +559,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              'กำลังโหลด PDF...',
+              AppLocalizations.of(context)!.loadingPdf,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
                 color: AppColors.baseGrey,
@@ -576,7 +579,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              'กำลังเตรียม PDF...',
+              AppLocalizations.of(context)!.preparingPdf,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
                 color: AppColors.baseGrey,
@@ -631,7 +634,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
     final contract = _getContract(state);
 
-    const buttonText = 'แก้ไขสัญญา';
+    final buttonText = AppLocalizations.of(context)!.editContract;
 
     final isCompleted =
         contract.status == ContractStatus.signed ||
@@ -674,11 +677,10 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             onTap: () {
               AppConfirmationBottomSheet.show(
                 context: context,
-                title: 'ลบสัญญา?',
-                description:
-                    'คุณต้องการลบสัญญานี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
-                confirmLabel: 'ลบ',
-                cancelLabel: 'ยกเลิก',
+                title: AppLocalizations.of(context)!.deleteContract,
+                description: AppLocalizations.of(context)!.deleteBackContract,
+                confirmLabel: AppLocalizations.of(context)!.delete,
+                cancelLabel: AppLocalizations.of(context)!.statusCancelled,
                 style: ConfirmationStyle.destructive,
                 onConfirm: () {
                   context.read<ContractDetailBloc>().add(

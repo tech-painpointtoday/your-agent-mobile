@@ -12,6 +12,7 @@ import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/profile_bloc.dart';
 import '../models/agent_profile.dart';
 import 'profile_screen.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class WorkInfoFormScreen extends StatefulWidget {
   final AgentDetails? agent;
@@ -135,9 +136,9 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
 
     AppConfirmationBottomSheet.show(
       context: context,
-      title: 'บันทึกข้อมูลการทำงาน?',
-      description: 'คุณต้องการบันทึกข้อมูลการทำงานนี้ใช่หรือไม่?',
-      confirmLabel: 'บันทึก',
+      title: AppLocalizations.of(context)!.saveWorkInfoTitle,
+      description: AppLocalizations.of(context)!.saveWorkInfoMessage,
+      confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
       onConfirm: () {
         context.read<ProfileBloc>().add(UpdateWorkInfo(data));
       },
@@ -156,7 +157,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
           } else if (state is ProfileError) {
             StatusDialog.showError(
               context: context,
-              title: 'เกิดข้อผิดพลาด',
+              title: AppLocalizations.of(context)!.errorOccurredTitle,
               message: state.message,
             );
           }
@@ -178,33 +179,33 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const AppBadge(
-                          label: 'ข้อมูลการทำงาน',
+                        AppBadge(
+                          label: AppLocalizations.of(context)!.workInfoLabel,
                           color: BadgeColor.blue,
                           style: BadgeStyle.plain,
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24),
                         AppTextField(
-                          label: 'ชื่อบริษัท',
-                          hintText: 'ชื่อบริษัท',
+                          label: AppLocalizations.of(context)!.companyNameHint,
+                          hintText: AppLocalizations.of(context)!.companyNameHint,
                           controller: _companyController,
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         AppTextField(
-                          label: 'หมายเลขใบอนุญาต',
-                          hintText: 'หมายเลขใบอนุญาต',
+                          label: AppLocalizations.of(context)!.licenseNumberHint,
+                          hintText: AppLocalizations.of(context)!.licenseNumberHint,
                           controller: _licenseController,
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         AppTextField(
                           label: 'ประสบการณ์ทำงาน (ปี)',
                           hintText: '0',
                           controller: _experienceController,
                           keyboardType: TextInputType.number,
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24),
                         _buildDynamicSection(
-                          title: 'ความถนัดด้านภาษา',
+                          title: AppLocalizations.of(context)!.languageProficiencyLabel,
                           items: _languages,
                           keyHint: 'ภาษา (เช่น ไทย)',
                           valueHint: 'ระดับ (เช่น Beginner)',
@@ -227,12 +228,12 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                             });
                           },
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24),
                         _buildDynamicSection(
-                          title: 'ลิงก์โซเชียล',
+                          title: AppLocalizations.of(context)!.socialLinks,
                           items: _socialLinks,
                           keyHint: 'แพลตฟอร์ม (เช่น Facebook)',
-                          valueHint: 'ลิงก์ หรือ ไอดี',
+                          valueHint: AppLocalizations.of(context)!.linkOrIdHint,
                           onAdd: () {
                             setState(() {
                               _socialLinks.add(
@@ -252,7 +253,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                             });
                           },
                         ),
-                        const SizedBox(height: 40),
+                        SizedBox(height: 40),
                       ],
                     ),
                   ),
@@ -279,7 +280,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
         onPressed: () => context.pop(),
       ),
       title: Text(
-        'เพิ่มข้อมูลการทำงาน',
+        AppLocalizations.of(context)!.addWorkInfoTitle,
         style: GoogleFonts.anuphan(
           color: Colors.white,
           fontSize: 18,
@@ -312,17 +313,17 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
         children: [
           Expanded(
             child: AppButton(
-              text: 'ยกเลิก',
+              text: AppLocalizations.of(context)!.statusCancelled,
               style: AppButtonStyle.outline,
               onPressed: () => context.pop(),
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Expanded(
             child: BlocBuilder<ProfileBloc, ProfileState>(
               builder: (context, state) {
                 return AppButton(
-                  text: 'บันทึก',
+                  text: AppLocalizations.of(context)!.confirmSaveLabel,
                   style: AppButtonStyle.primary,
                   isLoading: state is ProfileUpdateLoading,
                   onPressed: _onSave,
@@ -366,9 +367,9 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                     size: 18,
                     color: AppColors.primary,
                   ),
-                  const SizedBox(width: 4),
+                  SizedBox(width: 4),
                   Text(
-                    'เพิ่ม',
+                    AppLocalizations.of(context)!.addLabel,
                     style: GoogleFonts.anuphan(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -380,7 +381,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         ...items.asMap().entries.map((entry) {
           final index = entry.key;
           final item = entry.value;
@@ -397,7 +398,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                     controller: item.keyController,
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Expanded(
                   flex: 3,
                   child: AppTextField(
@@ -407,7 +408,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                   ),
                 ),
                 if (items.length > 1) ...[
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   GestureDetector(
                     onTap: () => onRemove(index),
                     child: const Icon(

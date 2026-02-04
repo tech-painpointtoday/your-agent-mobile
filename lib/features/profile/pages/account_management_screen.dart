@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/profile/widgets/account_action_sheets.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class AccountManagementScreen extends StatelessWidget {
   const AccountManagementScreen({super.key});
@@ -17,7 +18,7 @@ class AccountManagementScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: false,
         title: Text(
-          'จัดการบัญชี',
+          AppLocalizations.of(context)!.accountManagementTitle,
           style: GoogleFonts.anuphan(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -52,18 +53,18 @@ class AccountManagementScreen extends StatelessWidget {
             children: [
               _AccountItem(
                 icon: 'assets/icons/email.svg',
-                label: 'แจ้งเปลี่ยนอีเมล',
+                label: AppLocalizations.of(context)!.requestChangeEmailLabel,
                 onTap: () => AccountActionSheets.showChangeEmail(context),
               ),
               _AccountItem(
                 icon: 'assets/icons/phone.svg',
-                label: 'แจ้งเปลี่ยนหมายเลขโทรศัพท์',
+                label: AppLocalizations.of(context)!.requestChangePhoneLabel,
                 onTap: () => AccountActionSheets.showChangePhone(context),
               ),
               const SizedBox(height: 8),
               _AccountItem(
                 icon: 'assets/icons/user.svg',
-                label: 'ลบบัญชีผู้ใช้งาน',
+                label: AppLocalizations.of(context)!.deleteAccountLabel,
                 labelColor: AppColors.supportRedDark,
                 iconColor: AppColors.supportRedDark,
                 backgroundColor: AppColors.supportRedLight.withValues(

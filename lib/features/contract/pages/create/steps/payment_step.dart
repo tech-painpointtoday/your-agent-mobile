@@ -14,6 +14,7 @@ import 'package:youragent/utils/currency_input_formatter.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_dropdown.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class PaymentStep extends StatefulWidget {
   final bool hideHeader;
@@ -61,7 +62,7 @@ class _PaymentStepState extends State<PaymentStep> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppBadge(
-                        label: 'การชำระเงิน',
+                        label: AppLocalizations.of(context)!.payment,
                         fontSize: 16,
                         color: BadgeColor.blue,
                       ),
@@ -94,10 +95,10 @@ class _PaymentStepState extends State<PaymentStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppTextField(
-          label: 'ราคาขาย',
+          label: AppLocalizations.of(context)!.sellingPrice,
           isRequired: true,
           hintText: '0',
-          suffix: _buildSuffix('บาท'),
+          suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
           keyboardType: TextInputType.number,
           inputFormatters: [_currencyFormatter],
           controller:
@@ -127,10 +128,10 @@ class _PaymentStepState extends State<PaymentStep> {
           children: [
             Expanded(
               child: AppTextField(
-                label: 'ราคาเช่า',
+                label: AppLocalizations.of(context)!.rentalPrice,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix('บาท'),
+                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -155,10 +156,10 @@ class _PaymentStepState extends State<PaymentStep> {
             const SizedBox(width: 16),
             Expanded(
               child: AppTextField(
-                label: 'ค่าส่วนกลาง',
+                label: AppLocalizations.of(context)!.common_fee,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix('บาท'),
+                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -188,10 +189,10 @@ class _PaymentStepState extends State<PaymentStep> {
           children: [
             Expanded(
               child: AppTextField(
-                label: 'ค่าบริการอื่น',
+                label: AppLocalizations.of(context)!.other_service_fee,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix('บาท'),
+                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -216,10 +217,10 @@ class _PaymentStepState extends State<PaymentStep> {
             const SizedBox(width: 16),
             Expanded(
               child: AppTextField(
-                label: 'รวมยอดชำระรายเดือน',
+                label: AppLocalizations.of(context)!.total_monthly_payment,
                 readOnly: true,
                 hintText: '0',
-                suffix: _buildSuffix('บาท'),
+                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
                 controller: TextEditingController(
                   text: state.totalMonthlyPayment > 0
                       ? _formatCurrency(state.totalMonthlyPayment)
@@ -235,10 +236,10 @@ class _PaymentStepState extends State<PaymentStep> {
           children: [
             Expanded(
               child: AppTextField(
-                label: 'ค่าเช่าล่วงหน้า',
+                label: AppLocalizations.of(context)!.advance_rental,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix('บาท'),
+                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -263,10 +264,10 @@ class _PaymentStepState extends State<PaymentStep> {
             const SizedBox(width: 16),
             Expanded(
               child: AppTextField(
-                label: 'เงินประกันความเสียหาย',
+                label: AppLocalizations.of(context)!.damage_deposit,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix('บาท'),
+                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -292,10 +293,10 @@ class _PaymentStepState extends State<PaymentStep> {
         ),
         const SizedBox(height: 20),
         AppTextField(
-          label: 'รวมยอดชำระก่อนเข้าอยู่',
+          label: AppLocalizations.of(context)!.total_payment_before_move_in,
           readOnly: true,
           hintText: '0',
-          suffix: _buildSuffix('บาท'),
+          suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
           controller: TextEditingController(
             text: state.totalUpfrontPayment > 0
                 ? _formatCurrency(state.totalUpfrontPayment)
@@ -308,10 +309,10 @@ class _PaymentStepState extends State<PaymentStep> {
           children: [
             Expanded(
               child: AppTextField(
-                label: 'วันที่ครบกำหนดชำระ',
+                label: AppLocalizations.of(context)!.paymentDueDateLabel,
                 isRequired: true,
-                hintText: 'ระบุวันที่ 1-31',
-                suffix: _buildSuffix('ของทุกเดือน'),
+                hintText: AppLocalizations.of(context)!.enterDateRangeHint,
+                suffix: _buildSuffix(AppLocalizations.of(context)!.of_every_month),
                 keyboardType: TextInputType.number,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
@@ -342,10 +343,10 @@ class _PaymentStepState extends State<PaymentStep> {
             const SizedBox(width: 16),
             Expanded(
               child: AppTextField(
-                label: 'ค่าปรับล่าช้า',
+                label: AppLocalizations.of(context)!.latePaymentPenalty,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix('บาท/วัน'),
+                suffix: _buildSuffix(AppLocalizations.of(context)!.bahtPerDay),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -383,11 +384,11 @@ class _PaymentStepState extends State<PaymentStep> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLabel('ช่องทางการชำระเงิน', isRequired: true),
+        _buildLabel(AppLocalizations.of(context)!.payment_channel, isRequired: true),
         const SizedBox(height: 8),
         AppDropdown<String>(
           value: state.paymentMethod.isEmpty ? null : state.paymentMethod,
-          hint: 'เลือกช่องทางการชำระเงิน',
+          hint: AppLocalizations.of(context)!.select_payment_channel,
           items: paymentMethods,
           onChanged: (val) {
             context.read<ContractFormBloc>().add(
@@ -402,11 +403,11 @@ class _PaymentStepState extends State<PaymentStep> {
           controller: _bankBranchController,
           hideOnEmpty: true,
           builder: (context, controller, focusNode) => AppTextField(
-            label: 'สาขา',
+            label: AppLocalizations.of(context)!.branch,
             controller: controller,
             focusNode: focusNode,
             isRequired: true,
-            hintText: 'ระบุสาขา',
+            hintText: AppLocalizations.of(context)!.enterBranchHint,
             onChanged: (value) {
               context.read<ContractFormBloc>().add(
                 ContractFormBankBranchUpdated(value),
@@ -436,9 +437,9 @@ class _PaymentStepState extends State<PaymentStep> {
         ),
         const SizedBox(height: 20),
         AppTextField(
-          label: 'ชื่อบัญชี',
+          label: AppLocalizations.of(context)!.account_name,
           isRequired: true,
-          hintText: 'ระบุชื่อบัญชี',
+          hintText: AppLocalizations.of(context)!.enterAccountNameHint,
           controller: TextEditingController(text: state.accountName)
             ..selection = TextSelection.fromPosition(
               TextPosition(offset: state.accountName.length),
@@ -449,9 +450,9 @@ class _PaymentStepState extends State<PaymentStep> {
         ),
         const SizedBox(height: 20),
         AppTextField(
-          label: 'เลขบัญชี',
+          label: AppLocalizations.of(context)!.account_number,
           isRequired: true,
-          hintText: 'ระบุเลขบัญชี',
+          hintText: AppLocalizations.of(context)!.enterAccountNumberHint,
           controller: TextEditingController(text: state.accountNumber)
             ..selection = TextSelection.fromPosition(
               TextPosition(offset: state.accountNumber.length),

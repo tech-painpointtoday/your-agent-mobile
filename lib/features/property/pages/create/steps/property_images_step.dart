@@ -11,6 +11,7 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class PropertyImagesStep extends StatelessWidget {
   final int? step;
@@ -38,7 +39,7 @@ class PropertyImagesStep extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      'รูปภาพทรัพย์',
+                      AppLocalizations.of(context)!.propertyImagesLabel,
                       style: GoogleFonts.anuphan(
                         color: AppColors.primary,
                         fontSize: 14,
@@ -84,7 +85,7 @@ class PropertyImagesStep extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'อัปโหลดรูปภาพ',
+                              AppLocalizations.of(context)!.uploadImagesButton,
                               style: GoogleFonts.anuphan(
                                 color: AppColors.baseDarkGrey,
                                 fontSize: 16,
@@ -116,7 +117,7 @@ class PropertyImagesStep extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'ตัวอย่างรูปภาพ',
+                      AppLocalizations.of(context)!.imageSampleLabel,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseBlack,
                         fontSize: 16,
@@ -138,7 +139,7 @@ class PropertyImagesStep extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'ลบรูปภาพทั้งหมด',
+                            AppLocalizations.of(context)!.deleteAllImagesButton,
                             style: GoogleFonts.anuphan(
                               color: AppColors.error,
                               fontSize: 14,
@@ -337,7 +338,7 @@ class PropertyImagesStep extends StatelessWidget {
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 24),
                 title: Text(
-                  'ถ่ายรูปภาพ',
+                  AppLocalizations.of(context)!.takePhotoButton,
                   style: GoogleFonts.anuphan(fontSize: 16),
                 ),
                 trailing: SvgPicture.asset(
@@ -368,7 +369,7 @@ class PropertyImagesStep extends StatelessWidget {
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 24),
                 title: Text(
-                  'เลือกจากอัลบั้ม',
+                  AppLocalizations.of(context)!.selectFromAlbumButton,
                   style: GoogleFonts.anuphan(fontSize: 16),
                 ),
                 trailing: SvgPicture.asset(
@@ -407,10 +408,10 @@ class PropertyImagesStep extends StatelessWidget {
   void _showDeleteConfirmation(BuildContext context) {
     AppConfirmationBottomSheet.show(
       context: context,
-      title: 'ลบรูปภาพทั้งหมด?',
-      description: 'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้',
-      confirmLabel: 'ลบทั้งหมด',
-      cancelLabel: 'ยกเลิก',
+      title: AppLocalizations.of(context)!.deleteAllImagesConfirmTitle,
+      description: AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
+      confirmLabel: AppLocalizations.of(context)!.deleteAllConfirmLabel,
+      cancelLabel: AppLocalizations.of(context)!.statusCancelled,
       icon: 'assets/icons/trash.svg',
       style: ConfirmationStyle.destructive,
       onConfirm: () {
@@ -419,8 +420,8 @@ class PropertyImagesStep extends StatelessWidget {
         );
         StatusDialog.showSuccess(
           context: context,
-          title: 'สำเร็จ',
-          message: 'ลบรูปภาพทั้งหมดเรียบร้อยแล้ว',
+          title: AppLocalizations.of(context)!.successTitle,
+          message: AppLocalizations.of(context)!.imagesDeletedMessage,
         );
       },
     );

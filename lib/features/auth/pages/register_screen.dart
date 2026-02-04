@@ -10,6 +10,7 @@ import '../../../widgets/register_forms/register_form.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   final Function(Locale) changeLocale;
@@ -105,8 +106,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'ลงทะเบียน',
+                Text(
+                  AppLocalizations.of(context)!.register_button,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
@@ -115,8 +116,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
-                  'ลงทะเบียนเพื่อเริ่มต้นใช้งานระบบ',
+                Text(
+                  AppLocalizations.of(context)!.registerToStart,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: AppColors.baseGrey),
                 ),
@@ -156,7 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               const SizedBox(width: 8),
                               Text(
-                                'สำหรับเอเจนต์',
+                                AppLocalizations.of(context)!.forAgent,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -202,7 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'สำหรับบริษัท',
+                                AppLocalizations.of(context)!.forAgency,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -247,7 +248,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     Text(
                       l10n.already_have_account,
-                      style: const TextStyle(color: AppColors.baseGrey),
+                      style: TextStyle(color: AppColors.baseGrey),
                     ),
                     TextButton(
                       onPressed: () => context.go('/login'),
@@ -258,7 +259,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       child: Text(
                         l10n.login_now,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w700,
                         ),

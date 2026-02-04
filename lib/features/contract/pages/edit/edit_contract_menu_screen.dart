@@ -10,6 +10,7 @@ import 'package:youragent/features/contract/bloc/contract_form/contract_form_blo
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
 import 'edit_contract_form_screen.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class EditContractMenuScreen extends StatelessWidget {
   final Contract contract;
@@ -27,7 +28,7 @@ class EditContractMenuScreen extends StatelessWidget {
         backgroundColor: AppColors.primary,
         appBar: AppBar(
           title: Text(
-            'แก้ไขสัญญา',
+            AppLocalizations.of(context)!.editContract,
             style: GoogleFonts.anuphan(
               color: Colors.white,
               fontSize: 18,
@@ -64,8 +65,8 @@ class EditContractMenuScreen extends StatelessWidget {
               children: [
                 _buildMenuItem(
                   context,
-                  title: 'ข้อมูลเจ้าของทรัพย์',
-                  subtitle: 'ข้อมูลส่วนตัว ที่อยู่ และช่องทางการติดต่อ',
+                  title: AppLocalizations.of(context)!.dataProperty,
+                  subtitle: AppLocalizations.of(context)!.dataAddress,
                   iconPath:
                       'assets/icons/home.svg', // Using home icon as placeholder for property owner
                   iconColor: AppColors.brandGreen,
@@ -76,7 +77,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.ownerInfo,
-                        'title': 'ข้อมูลเจ้าของทรัพย์',
+                        'title': AppLocalizations.of(context)!.dataProperty,
                         'bloc': bloc,
                       },
                     );
@@ -85,8 +86,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: 'ข้อมูลผู้ซื้อ',
-                  subtitle: 'ข้อมูลส่วนตัว ที่อยู่ และช่องทางการติดต่อ',
+                  title: AppLocalizations.of(context)!.buyerInfo,
+                  subtitle: AppLocalizations.of(context)!.dataAddress,
                   iconPath: 'assets/icons/user.svg', // Using user icon
                   iconColor: const Color(0xFF7F56D9), // Purple
                   bgColor: const Color(0xFFF9F5FF), // Light Purple
@@ -96,7 +97,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.buyerInfo,
-                        'title': 'ข้อมูลผู้ซื้อ',
+                        'title': AppLocalizations.of(context)!.buyerInfo,
                         'bloc': bloc,
                       },
                     );
@@ -105,8 +106,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: 'รูปภาพเครื่องใช้ไฟฟ้า',
-                  subtitle: 'เพิ่มรายการเครื่องใช้ไฟฟ้า และรายละเอียด',
+                  title: AppLocalizations.of(context)!.electrical_appliances_photos,
+                  subtitle: AppLocalizations.of(context)!.addDetails,
                   iconPath: 'assets/icons/television.svg',
                   iconColor: AppColors.supportOrangeDark,
                   bgColor: AppColors.supportOrangeLight,
@@ -116,7 +117,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.appliances,
-                        'title': 'รูปภาพเครื่องใช้ไฟฟ้า',
+                        'title': AppLocalizations.of(context)!.electrical_appliances_photos,
                         'bloc': bloc,
                       },
                     );
@@ -125,8 +126,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: 'รูปภาพเฟอร์นิเจอร์',
-                  subtitle: 'เพิ่มรายการเฟอร์นิเจอร์ และรายละเอียด',
+                  title: AppLocalizations.of(context)!.furniture_photos,
+                  subtitle: AppLocalizations.of(context)!.addFurnitureDetails,
                   iconPath: 'assets/icons/sofa.svg',
                   iconColor: AppColors.supportRedDark,
                   bgColor: AppColors.supportRedLight,
@@ -136,7 +137,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.furniture,
-                        'title': 'รูปภาพเฟอร์นิเจอร์',
+                        'title': AppLocalizations.of(context)!.furniture_photos,
                         'bloc': bloc,
                       },
                     );
@@ -145,8 +146,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: 'การชำระเงิน',
-                  subtitle: 'ค่าใช้จ่าย และช่องทางการชำระเงิน',
+                  title: AppLocalizations.of(context)!.payment,
+                  subtitle: AppLocalizations.of(context)!.paymentMethods,
                   iconPath: 'assets/icons/dollar.svg',
                   iconColor: AppColors.supportGreenDark,
                   bgColor: AppColors.supportGreenLight,
@@ -156,7 +157,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.payment,
-                        'title': 'การชำระเงิน',
+                        'title': AppLocalizations.of(context)!.payment,
                         'bloc': bloc,
                       },
                     );
@@ -165,8 +166,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: 'เงื่อนไขเพิ่มเติม',
-                  subtitle: 'ระบุเงื่อนไขสัญญาเพิ่มเติม',
+                  title: AppLocalizations.of(context)!.additional_conditions,
+                  subtitle: AppLocalizations.of(context)!.addContractConditionsAdditional,
                   iconPath: 'assets/icons/star-moving.svg',
                   iconColor: AppColors.supportPinkDark,
                   bgColor: AppColors.supportPinkLight,
@@ -176,7 +177,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.additionalConditions,
-                        'title': 'เงื่อนไขเพิ่มเติม',
+                        'title': AppLocalizations.of(context)!.additional_conditions,
                         'bloc': bloc,
                       },
                     );
@@ -185,8 +186,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: 'ไฟล์แนบสัญญา',
-                  subtitle: 'เพิ่ม และแก้ไขไฟล์แนบสัญญา',
+                  title: AppLocalizations.of(context)!.contractFile,
+                  subtitle: AppLocalizations.of(context)!.editAddContractFile,
                   iconPath: 'assets/icons/file.svg',
                   iconColor: AppColors.primary,
                   bgColor: AppColors.primary.withValues(alpha: 0.1),
@@ -196,7 +197,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.attachments,
-                        'title': 'ไฟล์แนบสัญญา',
+                        'title': AppLocalizations.of(context)!.contractFile,
                         'bloc': bloc,
                       },
                     );

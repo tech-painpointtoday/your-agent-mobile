@@ -8,6 +8,7 @@ import 'package:youragent/widgets/buttons/app_button.dart';
 import '../theme/app_colors.dart';
 import '../di/dependency_injection.dart';
 import '../../widgets/dialogs/status_dialog.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class AppErrorHandler {
   static void initialize() {
@@ -27,10 +28,10 @@ class AppErrorHandler {
         final message = error.toString();
         StatusDialog.showErrorDialog(
           context: context,
-          title: 'เกิดข้อผิดพลาด',
+          title: AppLocalizations.of(context)!.errorOccurredTitle,
           message: message.isNotEmpty
               ? message
-              : 'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองอีกครั้ง',
+              : AppLocalizations.of(context)!.unexpectedErrorTryAgain,
         );
       }
 

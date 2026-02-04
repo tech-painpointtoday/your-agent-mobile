@@ -10,6 +10,7 @@ import 'package:youragent/widgets/map/fullscreen_map_screen.dart';
 import 'package:youragent/features/property/widgets/property_list_item.dart';
 import 'package:youragent/widgets/app_bars/silver_app_bar.dart';
 import 'package:youragent/widgets/map/map_view.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 /// Main Property screen used in navigation tabs
 class PropertyScreen extends StatefulWidget {
@@ -91,7 +92,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
   Widget build(BuildContext context) {
     return SilverAppBarScreen(
       hasFilter: true,
-      title: 'อสังหาริมทรัพย์',
+      title: AppLocalizations.of(context)!.propertiesTitle,
       actionWidget: InkWell(
         onTap: () async {
           context.push('/property/create').then((_) => _loadProperties());
@@ -177,7 +178,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'ทรัพย์ของคุณ',
+            AppLocalizations.of(context)!.myProperties,
             style: GoogleFonts.anuphan(
               color: AppColors.primary,
               fontSize: 16,
@@ -206,7 +207,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                   );
                 },
                 child: Text(
-                  'ดูทั้งหมด',
+                  AppLocalizations.of(context)!.viewAll,
                   style: GoogleFonts.anuphan(
                     color: AppColors.baseGrey,
                     fontSize: 12,
@@ -223,7 +224,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(32),
                     child: Text(
-                      'ไม่พบทรัพย์ที่ค้นหา',
+                      AppLocalizations.of(context)!.noPropertiesFoundSearch,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseGrey,
                         fontSize: 14,

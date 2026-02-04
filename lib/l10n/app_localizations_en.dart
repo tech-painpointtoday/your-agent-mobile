@@ -15,13 +15,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get family_members => 'Family Members';
 
   @override
-  String get family_members_subtitle => 'Fill in member details to find homes that fit everyone in the family';
+  String get family_members_subtitle =>
+      'Fill in member details to find homes that fit everyone in the family';
 
   @override
   String get real_estate => 'Real Estate';
 
   @override
-  String get real_estate_subtitle => 'Fill in details to find the most suitable home';
+  String get real_estate_subtitle =>
+      'Fill in details to find the most suitable home';
 
   @override
   String get add_member => 'Add Member';
@@ -120,13 +122,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allergy_hint => 'Dust, Pollen, ...';
 
   @override
-  String get bedrooms => 'Bedrooms';
-
-  @override
   String get bathrooms => 'Bathrooms';
-
-  @override
-  String get area => 'Area';
 
   @override
   String get search_filter => 'Search Filter';
@@ -136,15 +132,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fireplace => 'Fireplace';
-
-  @override
-  String get swimming_pool => 'Swimming Pool';
-
-  @override
-  String get garage => 'Garage';
-
-  @override
-  String get garden => 'Garden';
 
   @override
   String get playground => 'Playground';
@@ -168,31 +155,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unit_sqm => 'sqm';
 
   @override
-  String bath_count(Object count) {
-    return '$count bath(s)';
-  }
-
-  @override
-  String bed_count(Object count) {
-    return '$count bed(s)';
-  }
-
-  @override
-  String area_sqm(Object area) {
-    return '$area sqm';
-  }
-
-  @override
-  String floor_count(Object count) {
-    return '$count floor(s)';
-  }
-
-  @override
-  String price_per_sqm(Object price) {
-    return '$price THB/sqm';
-  }
-
-  @override
   String get yourHomeAgent => 'YourHome Agent';
 
   @override
@@ -200,11 +162,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get schedule_viewing => 'Schedule viewing';
-
-  @override
-  String people_interested(Object count) {
-    return '$count people interested!';
-  }
 
   @override
   String get inquire => 'Inquire';
@@ -309,52 +266,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm_password => 'Confirm Password';
 
   @override
-  String get agent_license_number => 'License Number';
-
-  @override
-  String get agent_license_hint => 'License number';
-
-  @override
-  String get business_type => 'Business Type';
-
-  @override
-  String get business_type_hint => 'Please select';
-
-  @override
-  String get company_name => 'Company Name';
-
-  @override
-  String get company_name_hint => 'Company name';
-
-  @override
-  String get register_button => 'REGISTER';
-
-  @override
-  String get register_agent_title => 'Register as Agent';
-
-  @override
-  String get register_admin_title => 'Register as Admin';
-
-  @override
-  String get register_agency_title => 'Register as Agency';
-
-  @override
-  String get thb => 'THB';
-
-  @override
-  String get hero_slogan_part1 => 'A Good Life';
-
-  @override
-  String get hero_slogan_part2 => 'A Good House For You';
-
-  @override
-  String get hero_subtitle => 'Because we believe that a happy future starts with the right home';
-
-  @override
   String get select_role_title => 'Select Your Role';
 
   @override
-  String get select_role_subtitle => 'Choose how you want to access the platform';
+  String get select_role_subtitle =>
+      'Choose how you want to access the platform';
 
   @override
   String get enter_email => 'Please enter your email';
@@ -405,19 +321,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get business_type_brokerage => 'Brokerage Firm';
 
   @override
-  String get role_agent => 'For Agent';
+  String get role_agent => 'Agent';
 
   @override
-  String get role_agency => 'For Agency';
+  String get role_agency => 'Agency';
 
   @override
   String get role_admin => 'For Admin';
 
   @override
-  String get create_property => 'Create Property';
+  String get register_agent_title => 'Register as Agent';
 
   @override
-  String get create_property_subtitle => 'Fill in the details below to create a new property listing';
+  String get register_admin_title => 'Register as Admin';
+
+  @override
+  String get register_agency_title => 'Register as Agency';
+
+  @override
+  String get agent_license_number => 'License Number';
+
+  @override
+  String get agent_license_hint => 'License Number';
+
+  @override
+  String get business_type => 'Business Type';
+
+  @override
+  String get business_type_hint => 'Please select';
+
+  @override
+  String get company_name => 'Company Name';
+
+  @override
+  String get company_name_hint => 'Company Name';
+
+  @override
+  String get register_button => 'Register';
+
+  @override
+  String get hero_subtitle => 'The right home for a better life';
+
+  @override
+  String get create_property_title => 'Create New Property';
+
+  @override
+  String get create_property_subtitle =>
+      'Fill in the details below to create a new property listing';
 
   @override
   String get basic_information => 'Basic Information';
@@ -432,12 +382,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photos => 'Photos';
 
   @override
-  String get built_date => 'Built (YYYY-MM-DD)';
-
-  @override
-  String get type => 'Type';
-
-  @override
   String get status => 'Status';
 
   @override
@@ -448,15 +392,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get garage_spaces => 'Garage Spaces';
-
-  @override
-  String get price_thb => 'Price (THB)';
-
-  @override
-  String get land_size => 'Land Size (sq.wa)';
-
-  @override
-  String get building_size => 'Building Size (sq.m)';
 
   @override
   String get house_color => 'House Color';
@@ -472,9 +407,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get direction => 'Direction';
-
-  @override
-  String get select_direction => 'Select Direction (Optional)';
 
   @override
   String get city => 'City';
@@ -501,13 +433,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get property_location_title => 'Property Location';
 
   @override
-  String get property_location_subtitle => 'Click on the map or use your current location to set the property location.';
-
-  @override
-  String get use_current_location => 'Use Current Location';
-
-  @override
-  String get clear_location => 'Clear Location';
+  String get property_location_subtitle =>
+      'Click on the map or use your current location to set the property location.';
 
   @override
   String get set_by_map => 'Set by clicking on the map';
@@ -522,18 +449,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get image_format_note => 'JPEG/PNG/WebP up to 5MB each';
 
   @override
-  String get take_photo => 'Take Photo';
-
-  @override
   String get use_camera => 'Use your device camera to capture photos';
 
   @override
   String get selected_photos => 'Selected Photos';
-
-  @override
-  String photo_count(Object count) {
-    return '$count photo(s) selected';
-  }
 
   @override
   String get clear_all => 'Clear All';
@@ -662,7 +581,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_property => 'Edit Property';
 
   @override
-  String get edit_property_subtitle => 'Update the details below to modify your property listing';
+  String get edit_property_subtitle =>
+      'Update the details below to modify your property listing';
 
   @override
   String get current_photos => 'Current Photos';
@@ -695,10 +615,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
-  String get end_time_must_be_after_start_time => 'End time must be after start time';
+  String get end_time_must_be_after_start_time =>
+      'End time must be after start time';
 
   @override
-  String get availability_created_success => 'Available time created successfully!';
+  String get availability_created_success =>
+      'Available time created successfully!';
 
   @override
   String get error_creating_availability => 'Error creating available time';
@@ -722,7 +644,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sale_ready => 'Ready to transfer';
 
   @override
-  String get sale_ready_subtitle => 'Complete documents, ready to transfer immediately';
+  String get sale_ready_subtitle =>
+      'Complete documents, ready to transfer immediately';
 
   @override
   String get area_label => 'Area';
@@ -740,9 +663,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get house_age_label => 'House age';
 
   @override
-  String get not_specified => 'Not specified';
-
-  @override
   String get feature_floors_label => 'Floors';
 
   @override
@@ -755,15 +675,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feature_parking_label => 'Parking';
 
   @override
-  String parking_count(Object count) {
-    return '$count parking spot(s)';
-  }
-
-  @override
   String get more_details_title => 'Additional Details';
 
   @override
-  String get more_details_description => 'Beautiful single house in a prime location, close to BTS, shopping malls, hospitals, and schools. Suitable for both living and investment.';
+  String get more_details_description =>
+      'Beautiful single house in a prime location, close to BTS, shopping malls, hospitals, and schools. Suitable for both living and investment.';
 
   @override
   String get show_more => 'See more';
@@ -844,34 +760,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get five_or_more => '≥5';
 
   @override
-  String get voice_location_prompt => 'Please say the location name you want to search, for example, Bangna';
+  String get voice_location_prompt =>
+      'Please say the location name you want to search, for example, Bangna';
 
   @override
-  String get voice_budget_min_prompt => 'Please say the minimum budget, for example, 3 million or 3000000';
+  String get voice_budget_min_prompt =>
+      'Please say the minimum budget, for example, 3 million or 3000000';
 
   @override
-  String get voice_budget_max_prompt => 'Please say the maximum budget, for example, 5 million or 5000000';
+  String get voice_budget_max_prompt =>
+      'Please say the maximum budget, for example, 5 million or 5000000';
 
   @override
-  String get voice_property_type_prompt => 'Please say the property type, for example, house or condo';
+  String get voice_property_type_prompt =>
+      'Please say the property type, for example, house or condo';
 
   @override
   String get voice_member_name_prompt => 'What is your name?';
 
   @override
-  String get voice_member_dob_prompt => 'When is your birthdate? Please say as day month year, for example, 01 01 1990';
+  String get voice_member_dob_prompt =>
+      'When is your birthdate? Please say as day month year, for example, 01 01 1990';
 
   @override
-  String get voice_member_gender_prompt => 'What is your gender? For example, male or female';
+  String get voice_member_gender_prompt =>
+      'What is your gender? For example, male or female';
 
   @override
-  String get voice_member_phone_prompt => 'What is your phone number? Please say as numbers';
+  String get voice_member_phone_prompt =>
+      'What is your phone number? Please say as numbers';
 
   @override
-  String get voice_member_car_plate_prompt => 'What is your license plate number? You can say as numbers';
+  String get voice_member_car_plate_prompt =>
+      'What is your license plate number? You can say as numbers';
 
   @override
-  String get voice_member_weight_prompt => 'How important is this member? What percentage? For example, 50';
+  String get voice_member_weight_prompt =>
+      'How important is this member? What percentage? For example, 50';
 
   @override
   String get voice_input_title => 'Voice Input';
@@ -925,21 +850,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get now => 'Now';
 
   @override
-  String minutes_ago(Object count) {
-    return '$count minutes ago';
-  }
-
-  @override
-  String hours_ago(Object count) {
-    return '$count hours ago';
-  }
-
-  @override
-  String days_ago(Object count) {
-    return '$count days ago';
-  }
-
-  @override
   String get unread => 'Unread';
 
   @override
@@ -950,11 +860,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get availability_calendar_view => 'Calendar View';
-
-  @override
-  String availability_count_available(Object count) {
-    return '$count available times';
-  }
 
   @override
   String get profile_bio => 'Bio';
@@ -969,10 +874,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_company => 'Company Name';
 
   @override
+  String get workInfo => 'Work Information';
+
+  @override
   String get profile_license => 'License Number';
 
   @override
   String get profile_radius => 'Service Radius';
+
+  @override
+  String get kmUnit => 'km';
 
   @override
   String get profile_service_area => 'Service Area Center';
@@ -984,7 +895,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_agent_code => 'Agent Connection Code';
 
   @override
-  String get profile_share_code_desc => 'Share this code with an agency so they can add you to their portfolio. This code can only be used once.';
+  String get profile_share_code_desc =>
+      'Share this code with an agency so they can add you to their portfolio. This code can only be used once.';
 
   @override
   String get profile_copy => 'Copy';
@@ -1014,9 +926,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filter => 'Filter';
 
   @override
-  String get all => 'All';
-
-  @override
   String get no_available_times => 'No available times';
 
   @override
@@ -1032,7 +941,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get availability_tips_title => 'Tips for setting availability';
 
   @override
-  String get tip_no_overlap => 'You cannot create overlapping time slots on the same day';
+  String get tip_no_overlap =>
+      'You cannot create overlapping time slots on the same day';
 
   @override
   String get tip_no_past_dates => 'Cannot set time slots for past dates';
@@ -1041,7 +951,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tip_end_after_start => 'End time must be after start time';
 
   @override
-  String get tip_consider_schedule => 'Consider your schedule when setting availability';
+  String get tip_consider_schedule =>
+      'Consider your schedule when setting availability';
 
   @override
   String get create_time_slot => 'Create Time Slot';
@@ -1050,7 +961,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_time_slot => 'Delete Time Slot';
 
   @override
-  String get delete_time_slot_confirm => 'Are you sure you want to delete this time slot?';
+  String get delete_time_slot_confirm =>
+      'Are you sure you want to delete this time slot?';
 
   @override
   String get delete => 'Delete';
@@ -1074,16 +986,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm => 'Confirm';
 
   @override
-  String get confirm_delete_property => 'Are you sure you want to delete this property?';
+  String get confirm_delete_property =>
+      'Are you sure you want to delete this property?';
 
   @override
-  String get confirm_create_property => 'Are you sure you want to create this property?';
+  String get confirm_create_property =>
+      'Are you sure you want to create this property?';
 
   @override
-  String get confirm_update_property => 'Are you sure you want to update this property?';
+  String get confirm_update_property =>
+      'Are you sure you want to update this property?';
 
   @override
-  String get confirm_delete_contract => 'Are you sure you want to delete this contract?';
+  String get confirm_delete_contract =>
+      'Are you sure you want to delete this contract?';
 
   @override
   String get property_deleted_success => 'Property deleted successfully';
@@ -1140,22 +1056,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_rental_contract => 'Create Rental Contract';
 
   @override
-  String get electrical_appliances_photos => 'Electrical Appliances Photos (Please specify)';
-
-  @override
-  String get furniture_photos => 'Furniture Photos (Please specify)';
-
-  @override
-  String get properties => 'Properties';
-
-  @override
   String get appointments => 'Appointments';
 
   @override
-  String get confirm_cancel => 'Are you sure you want to cancel? All unsaved changes will be lost.';
+  String get confirm_cancel =>
+      'Are you sure you want to cancel? All unsaved changes will be lost.';
 
   @override
-  String get confirm_cancel_create => 'Are you sure you want to cancel? All entered data will be lost.';
+  String get confirm_cancel_create =>
+      'Are you sure you want to cancel? All entered data will be lost.';
 
   @override
   String get yes => 'Yes';
@@ -1185,9 +1094,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contract_date => 'Contract Date';
 
   @override
-  String get create_new_account => 'Create New Account';
-
-  @override
   String get individual => 'Individual';
 
   @override
@@ -1212,28 +1118,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get property_type_label => 'Property Type';
 
   @override
-  String get select_property_type => 'Select property type';
-
-  @override
-  String get condominium => 'Condominium';
-
-  @override
-  String get single_house => 'Single House';
-
-  @override
-  String get project_name => 'Project Name';
-
-  @override
   String get house_or_room_number => 'House/Room Number';
 
   @override
   String get floor_label => 'Floor';
-
-  @override
-  String get soi_alley_village => 'Soi/Alley/Village (if any)';
-
-  @override
-  String get road_if_any => 'Road (if any)';
 
   @override
   String get select_country => 'Select country';
@@ -1329,9 +1217,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get account_number => 'Account Number';
 
   @override
-  String get additional_conditions_optional => 'Additional Conditions (Optional)';
-
-  @override
   String get additional_conditions => 'Additional conditions';
 
   @override
@@ -1356,9 +1241,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get baht_per_month => 'THB/month';
 
   @override
-  String get baht => 'THB';
-
-  @override
   String get months => 'months';
 
   @override
@@ -1368,6 +1250,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboard_overview => 'Dashboard Overview';
 
   @override
+  String get properties => 'Properties';
+
+  @override
   String get contracts => 'Contracts';
 
   @override
@@ -1375,6 +1260,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get edit_profile => 'Edit Profile';
+
+  @override
+  String get create_new_account => 'Create New Account';
 
   @override
   String get legal_entity => 'Legal Entity';
@@ -1392,21 +1280,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_color => 'Select Color';
 
   @override
+  String get use_current_location => 'Use Current Location';
+
+  @override
+  String get clear_location => 'Clear Location';
+
+  @override
   String get select_type => 'Select Type';
 
   @override
   String get upload_at_least_one_image => 'Please upload at least 1 image';
 
   @override
-  String images_added(Object count) {
-    return 'Added $count images';
-  }
-
-  @override
   String get select_file => 'Select Your File';
 
   @override
-  String get retry => 'Retry';
+  String get take_photo => 'Take Photo';
 
   @override
   String get property_not_found => 'Property not found';
@@ -1428,6 +1317,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get back_to_login => 'Back to Login';
+
+  @override
+  String get create_property => 'Create Property';
 
   @override
   String get bookings => 'Bookings';
@@ -1506,6 +1398,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get month_december => 'December';
+
+  @override
+  String get not_specified => 'Not specified';
 
   @override
   String get email_not_verified => 'Not verified';
@@ -1623,4 +1518,1698 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get help_center => 'Help Center';
+
+  @override
+  String get profilePhotoUpdated => 'Profile photo updated successfully';
+
+  @override
+  String get emailVerified => 'Email Verified';
+
+  @override
+  String get profileCompleteness => 'Profile Completeness';
+
+  @override
+  String get connectionCodeCopied => 'Connection code copied to clipboard';
+
+  @override
+  String get notConnectedAgency => 'Not connected to any agency';
+
+  @override
+  String get addInfo => 'Add Information';
+
+  @override
+  String get socialLinks => 'Social Links';
+
+  @override
+  String get editInfo => 'Edit Information';
+
+  @override
+  String get generalInfoSubtitle => 'Property name and address';
+
+  @override
+  String get propertyDetailSubtitle => 'Room details, size, and price';
+
+  @override
+  String get additionalInfoSubtitle => 'Decor style, highlights, and amenities';
+
+  @override
+  String get propertyImagesSubtitle => 'Upload at least 5 images';
+
+  @override
+  String get propertyIdPrefix => 'Code: ';
+
+  @override
+  String get confirmInfo => 'Confirm Information';
+
+  @override
+  String get deleteConfirmationWarning => 'Once deleted, it cannot be undone.';
+
+  @override
+  String get deleteAll => 'Delete All';
+
+  @override
+  String get propertyCreatedSuccess => 'Property Created Successfully';
+
+  @override
+  String get errorWithPrefix => 'Error: ';
+
+  @override
+  String get comingSoon => 'Coming Soon';
+
+  @override
+  String get createPropertyConfirmation =>
+      'Do you want to create this property listing?';
+
+  @override
+  String get draftSaved => 'Draft Saved';
+
+  @override
+  String get styleColonial => 'Colonial';
+
+  @override
+  String get styleContemporary => 'Contemporary';
+
+  @override
+  String get styleLoft => 'Loft';
+
+  @override
+  String get styleMinimal => 'Minimal';
+
+  @override
+  String get styleNatural => 'Natural';
+
+  @override
+  String get styleNordic => 'Nordic';
+
+  @override
+  String get styleThaiContemporary => 'Thai Contemporary';
+
+  @override
+  String get styleVintage => 'Vintage';
+
+  @override
+  String get styleOther => 'Other';
+
+  @override
+  String get petFriendly => 'Pet Friendly';
+
+  @override
+  String get elderlyFriendly => 'Elderly Friendly';
+
+  @override
+  String get fitness => 'Fitness';
+
+  @override
+  String get swimmingPool => 'Swimming Pool';
+
+  @override
+  String get garden => 'Garden';
+
+  @override
+  String get coWorkingSpace => 'Co-Working Space';
+
+  @override
+  String get sportsField => 'Sports Field';
+
+  @override
+  String get cctv => 'CCTV';
+
+  @override
+  String get evCharger => 'EV Charger';
+
+  @override
+  String get smartHome => 'Smart Home';
+
+  @override
+  String get park => 'Park';
+
+  @override
+  String get houseType => 'House';
+
+  @override
+  String get condoType => 'Condo';
+
+  @override
+  String get townhomeType => 'Townhome';
+
+  @override
+  String get apartmentType => 'Apartment';
+
+  @override
+  String get homeOfficeType => 'Home Office';
+
+  @override
+  String get poolVillaType => 'Pool Villa';
+
+  @override
+  String get statusDraft => 'Draft';
+
+  @override
+  String get statusPending => 'Pending Approval';
+
+  @override
+  String get statusApproved => 'Approved';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get colorWhite => 'White';
+
+  @override
+  String get colorCream => 'Cream';
+
+  @override
+  String get colorGrey => 'Grey';
+
+  @override
+  String get colorBlack => 'Black';
+
+  @override
+  String get colorBrown => 'Brown';
+
+  @override
+  String get colorRed => 'Red';
+
+  @override
+  String get colorYellow => 'Yellow';
+
+  @override
+  String get colorGreen => 'Green';
+
+  @override
+  String get colorBlue => 'Blue';
+
+  @override
+  String get colorPink => 'Pink';
+
+  @override
+  String get colorPurple => 'Purple';
+
+  @override
+  String get colorOrange => 'Orange';
+
+  @override
+  String get dirNorth => 'North';
+
+  @override
+  String get dirSouth => 'South';
+
+  @override
+  String get dirEast => 'East';
+
+  @override
+  String get dirWest => 'West';
+
+  @override
+  String get dirNorthEast => 'North East';
+
+  @override
+  String get dirSouthEast => 'South East';
+
+  @override
+  String get dirNorthWest => 'North West';
+
+  @override
+  String get dirSouthWest => 'South West';
+
+  @override
+  String get additional_info_section => 'Additional Info';
+
+  @override
+  String get propertyNameLabel => 'Property Name';
+
+  @override
+  String get propertyNameHint => 'Property Name';
+
+  @override
+  String get propertyNameDescription =>
+      'This name will appear as the title of your listing.';
+
+  @override
+  String get developerLabel => 'Developer';
+
+  @override
+  String get developerHint => 'Developer';
+
+  @override
+  String get addDeveloper => 'Add Developer';
+
+  @override
+  String get projectNameLabel => 'Project Name';
+
+  @override
+  String get addProject => 'Add Project';
+
+  @override
+  String get searchDeveloper => 'Search Developer';
+
+  @override
+  String get searchDeveloperDescription => 'Search for the property developer';
+
+  @override
+  String get searchProjectDescription => 'Search for the property project name';
+
+  @override
+  String get buildingLabel => 'Building';
+
+  @override
+  String get buildingHint => 'Building';
+
+  @override
+  String get floorLabel => 'Floor';
+
+  @override
+  String get floorHint => 'Floor';
+
+  @override
+  String get roomNoLabel => 'Room Number';
+
+  @override
+  String get roomNoHint => 'Room Number';
+
+  @override
+  String get houseNoLabel => 'House Number';
+
+  @override
+  String get houseNoHint => 'House Number';
+
+  @override
+  String get locationLabel => 'Location';
+
+  @override
+  String get locationHint => 'Location';
+
+  @override
+  String get locationDescription =>
+      'Select a location on the map or use your current location to set the property location';
+
+  @override
+  String get useCurrentLocation => 'Use Current Location';
+
+  @override
+  String get clearLocation => 'Clear Location';
+
+  @override
+  String get listingTypeLabel => 'Listing Type';
+
+  @override
+  String get listingSale => 'Sale';
+
+  @override
+  String get listingRent => 'Rent';
+
+  @override
+  String get listingSaleRent => 'Sale & Rent';
+
+  @override
+  String get occupancyStatusLabel => 'Status';
+
+  @override
+  String get occupancyAvailable => 'Available';
+
+  @override
+  String get propertyDirectionHint => 'Select property direction';
+
+  @override
+  String get floorUnit => 'Floors';
+
+  @override
+  String get roomUnit => 'Rooms';
+
+  @override
+  String get parkingUnit => 'Spaces';
+
+  @override
+  String get descriptionLabel => 'Description';
+
+  @override
+  String get propertiesTitle => 'Properties';
+
+  @override
+  String get myProperties => 'My Properties';
+
+  @override
+  String get viewAll => 'View All';
+
+  @override
+  String get noPropertiesFoundSearch => 'No properties found for your search';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get noPropertiesInSystem =>
+      'Currently there are no properties in the system';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get save_draft => 'Save Draft';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get searchHint => 'Search...';
+
+  @override
+  String get labelCode => 'Code';
+
+  @override
+  String get searchFilter => 'Search Filter';
+
+  @override
+  String get approvalStatus => 'Approval Status';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get pendingAt => 'Pending';
+
+  @override
+  String get approvedAt => 'Approved';
+
+  @override
+  String get disapprovedAt => 'Disapproved';
+
+  @override
+  String get minPrice => 'Min Price';
+
+  @override
+  String get maxPrice => 'Max Price';
+
+  @override
+  String get propertyHighlights => 'Property Highlights';
+
+  @override
+  String get commonFacilities => 'Common Facilities';
+
+  @override
+  String get nearExpressway => 'Near Expressway';
+
+  @override
+  String get nearStation => 'Near Station';
+
+  @override
+  String get nearHospital => 'Near Hospital';
+
+  @override
+  String get newProject => 'New Project';
+
+  @override
+  String get securityGuard => 'Security Guard';
+
+  @override
+  String get baht => 'Baht';
+
+  @override
+  String get clearFilters => 'Clear Filters';
+
+  @override
+  String get luxury => 'Luxury';
+
+  @override
+  String get classic => 'Classic';
+
+  @override
+  String get modern => 'Modern';
+
+  @override
+  String get natural => 'Natural';
+
+  @override
+  String get loft => 'Loft';
+
+  @override
+  String get occupancyStatusVacancy => 'Vacant';
+
+  @override
+  String get occupancyStatusOccupied => 'Occupied';
+
+  @override
+  String get propertyColor => 'Property Color';
+
+  @override
+  String get colorCyan => 'Cyan';
+
+  @override
+  String get totalFloorsLabel => 'Total Floors';
+
+  @override
+  String get bedroomsLabel => 'Bedrooms';
+
+  @override
+  String get bathroomsLabel => 'Bathrooms';
+
+  @override
+  String get parkingLabel => 'Parking Spaces';
+
+  @override
+  String get landSizeLabel => 'Land Size';
+
+  @override
+  String get usableAreaLabel => 'Usable Area';
+
+  @override
+  String get propertyStyleLabel => 'Property Style';
+
+  @override
+  String get minimal => 'Minimal';
+
+  @override
+  String get vintage => 'Vintage';
+
+  @override
+  String get contemporary => 'Contemporary';
+
+  @override
+  String get colonialStyle => 'Colonial';
+
+  @override
+  String get nordicStyle => 'Nordic';
+
+  @override
+  String get thaiContemporary => 'Thai Contemporary';
+
+  @override
+  String get builtLabel => 'Built Date';
+
+  @override
+  String get builtHint => 'Select built date';
+
+  @override
+  String get propertyColorLabel => 'Property Color';
+
+  @override
+  String get propertyColorHint => 'Select property color';
+
+  @override
+  String get priceLabel => 'Price';
+
+  @override
+  String get currencyUnit => 'THB';
+
+  @override
+  String get sqWahUnit => 'sq.wa';
+
+  @override
+  String get sqmUnit => 'sq.m';
+
+  @override
+  String get propertyDirectionLabel => 'Property Direction';
+
+  @override
+  String get propertyTypeTitle => 'Property Type';
+
+  @override
+  String get studio => 'Studio';
+
+  @override
+  String get project_name => 'Project Name';
+
+  @override
+  String get projectNameHint => 'Project Name';
+
+  @override
+  String get occupancyOccupied => 'Occupied';
+
+  @override
+  String get type => 'Type';
+
+  @override
+  String get garage => 'Garage';
+
+  @override
+  String get swimming_pool => 'Swimming Pool';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get accountManagementTitle => 'Account Management';
+
+  @override
+  String get changeLanguageLabel => 'Change Language';
+
+  @override
+  String get notificationSettingsLabel => 'Notification Settings';
+
+  @override
+  String get matchingSettingsLabel => 'Matching System Settings';
+
+  @override
+  String get termsLabel => 'Terms and Conditions';
+
+  @override
+  String get privacyLabel => 'Privacy Policy';
+
+  @override
+  String get contactUsLabel => 'Contact Us';
+
+  @override
+  String get logoutConfirmTitle => 'Logout?';
+
+  @override
+  String get logoutConfirmMessage => 'Do you want to log out?';
+
+  @override
+  String get versionLabel => 'Version';
+
+  @override
+  String get requestChangeEmailLabel => 'Request Change Email';
+
+  @override
+  String get requestChangePhoneLabel => 'Request Change Phone Number';
+
+  @override
+  String get deleteAccountLabel => 'Delete Account';
+
+  @override
+  String get personalInfoLabel => 'Personal Information';
+
+  @override
+  String get editPersonalInfoTitle => 'Edit Personal Information';
+
+  @override
+  String get savePersonalInfoTitle => 'Save Personal Information?';
+
+  @override
+  String get savePersonalInfoMessage =>
+      'Do you want to save changes to personal information?';
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get nameHintText => 'Enter name';
+
+  @override
+  String get mobileHintText => '0xx-xxx-xxxx';
+
+  @override
+  String get bioLabel => 'Bio';
+
+  @override
+  String get bioHintText => 'Tell us about yourself...';
+
+  @override
+  String get nationalIdLabel => 'National ID';
+
+  @override
+  String get nationalIdHintText => 'Enter National ID';
+
+  @override
+  String get addressHintText => 'Enter address';
+
+  @override
+  String get workInfoLabel => 'Work Information';
+
+  @override
+  String get addWorkInfoTitle => 'Add Work Information';
+
+  @override
+  String get saveWorkInfoTitle => 'Save Work Information?';
+
+  @override
+  String get saveWorkInfoMessage =>
+      'Do you want to save this work information?';
+
+  @override
+  String get companyNameHint => 'Company Name';
+
+  @override
+  String get licenseNumberHint => 'License Number';
+
+  @override
+  String get yearsOfExperienceLabel => 'Years of Experience';
+
+  @override
+  String get yearsOfExperienceHint => '0';
+
+  @override
+  String get languageProficiencyLabel => 'Language Proficiency';
+
+  @override
+  String get addLabel => 'Add';
+
+  @override
+  String get linkOrIdHint => 'Link or ID';
+
+  @override
+  String get currentPasswordLabel => 'Current Password';
+
+  @override
+  String get currentPasswordHint => 'Enter current password';
+
+  @override
+  String get newPasswordLabel => 'New Password';
+
+  @override
+  String get newPasswordHint => 'Enter new password';
+
+  @override
+  String get confirmNewPasswordLabel => 'Confirm New Password';
+
+  @override
+  String get confirmNewPasswordHint => 'Please confirm new password';
+
+  @override
+  String get passwordMismatchTitle => 'Passwords Do Not Match';
+
+  @override
+  String get passwordMismatchMessage =>
+      'Please check your new password and confirmation';
+
+  @override
+  String get passwordChangeSuccessTitle => 'Password Changed Successfully';
+
+  @override
+  String get passwordChangeSuccessMessage =>
+      'Your password has been changed successfully';
+
+  @override
+  String get thaiLanguage => 'Thai';
+
+  @override
+  String get englishLanguage => 'English';
+
+  @override
+  String get searching => 'Searching...';
+
+  @override
+  String get serviceAreaLabel => 'Service Area';
+
+  @override
+  String get serviceAreaHint => 'Service Area';
+
+  @override
+  String get serviceAreaDescription =>
+      'Choose a location on the map or use your current location to define your service area';
+
+  @override
+  String get useCurrentLocationLabel => 'Use Current Location';
+
+  @override
+  String get clearLocationLabel => 'Clear Location';
+
+  @override
+  String get serviceRadiusLabel => 'Service Radius';
+
+  @override
+  String get serviceRadiusHint => 'Service Radius';
+
+  @override
+  String get serviceRadiusUnit => 'km';
+
+  @override
+  String get saveServiceAreaTitle => 'Save Service Area?';
+
+  @override
+  String get saveServiceAreaMessage =>
+      'Do you want to save this service area information?';
+
+  @override
+  String get addServiceAreaTitle => 'Add Service Area Information';
+
+  @override
+  String get specifyLocationTitle => 'Specify Location';
+
+  @override
+  String get specifyLocationMessage =>
+      'Please select a service area center location on the map';
+
+  @override
+  String get changePasswordTitle => 'Change Password';
+
+  @override
+  String get changePasswordDescription =>
+      'Your password must be at least 8 characters and contain both letters and numbers';
+
+  @override
+  String get changePasswordButton => 'Change Password';
+
+  @override
+  String get change_language => 'Change Language';
+
+  @override
+  String get select_language => 'Select System Language';
+
+  @override
+  String get addDeveloperTitle => 'Add Project Developer';
+
+  @override
+  String get developerNameLabel => 'Developer Name';
+
+  @override
+  String get developerNameHint => 'Developer Name';
+
+  @override
+  String get addProjectNameTitle => 'Add Project Name';
+
+  @override
+  String get locationTitle => 'Location';
+
+  @override
+  String get searchLocationHint => 'Search Location';
+
+  @override
+  String get confirmLocationButton => 'Confirm This Location';
+
+  @override
+  String get propertyTypeLabel => 'Property Type';
+
+  @override
+  String get propertyImagesLabel => 'Property Images';
+
+  @override
+  String get uploadImagesButton => 'Upload Images';
+
+  @override
+  String get imageSampleLabel => 'Image Samples';
+
+  @override
+  String get deleteAllImagesButton => 'Delete All Images';
+
+  @override
+  String get takePhotoButton => 'Take Photo';
+
+  @override
+  String get selectFromAlbumButton => 'Select from Album';
+
+  @override
+  String get deleteAllConfirmLabel => 'Delete All';
+
+  @override
+  String get showLessButton => 'Show Less';
+
+  @override
+  String get showMoreButton => 'Show More';
+
+  @override
+  String get retryButton => 'Retry';
+
+  @override
+  String get editDataButton => 'Edit Data';
+
+  @override
+  String get selectLocationTitle => 'Select Location';
+
+  @override
+  String get selectLocationMessage =>
+      'Please select a location on the map or search for a place';
+
+  @override
+  String get mapAddressLabel => 'Address from Map';
+
+  @override
+  String get saveButton => 'Save';
+
+  @override
+  String get editDataTitle => 'Edit Data';
+
+  @override
+  String get successTitle => 'Success';
+
+  @override
+  String get changesSavedMessage => 'Changes saved successfully';
+
+  @override
+  String get saveChangesConfirmation => 'Do you want to save these changes?';
+
+  @override
+  String get confirmSaveLabel => 'Save';
+
+  @override
+  String get cancelSaveLabel => 'Cancel';
+
+  @override
+  String get pleaseFillAllFieldsError => 'Please fill in all required fields';
+
+  @override
+  String get listingTypeValueSale => 'Sale';
+
+  @override
+  String get listingTypeValueRent => 'Rent';
+
+  @override
+  String get listingTypeValueSaleAndRent => 'Sale and Rent';
+
+  @override
+  String get statusValueAvailable => 'Available';
+
+  @override
+  String get statusValueNotAvailable => 'Not Available';
+
+  @override
+  String get propertyDetailFallback => 'Property Details';
+
+  @override
+  String get addDeveloperDescription =>
+      'If you add a new project developer, the system will save the information and you can easily search for it next time.';
+
+  @override
+  String get addProjectNameDescription =>
+      'If you add a new project name, the system will save the information and you can easily search for it next time.';
+
+  @override
+  String get addNowButton => 'Add Now!!!';
+
+  @override
+  String get deleteAllImagesConfirmTitle => 'Delete All Images?';
+
+  @override
+  String get deleteAllImagesConfirmMessage =>
+      'Once you delete, it cannot be undone';
+
+  @override
+  String get imagesDeletedMessage => 'All images deleted successfully';
+
+  @override
+  String get searchFilterLabel => 'Search Filter';
+
+  @override
+  String get approvalStatusTitle => 'Approval Status';
+
+  @override
+  String get statusIncomplete => 'Incomplete';
+
+  @override
+  String get statusComplete => 'Complete';
+
+  @override
+  String get contractTypeTitle => 'Contract Type';
+
+  @override
+  String get saleContractType => 'Sale Contract';
+
+  @override
+  String get rentContractType => 'Rent Contract';
+
+  @override
+  String get clearFiltersButton => 'Clear';
+
+  @override
+  String get showResultsButton => 'Show Results';
+
+  @override
+  String get confirmCancelTitle => 'Confirm Cancel';
+
+  @override
+  String get confirmCancelMessage =>
+      'Your entered data will be lost. Do you want to cancel?';
+
+  @override
+  String get confirmCancelLabel => 'Confirm Cancel';
+
+  @override
+  String get continueEditingLabel => 'Continue Editing';
+
+  @override
+  String get createContractTitle => 'Create Contract';
+
+  @override
+  String get saveDraftButton => 'Save Draft';
+
+  @override
+  String get backButton => 'Back';
+
+  @override
+  String get createContractButton => 'Create Contract';
+
+  @override
+  String get nextButton => 'Next';
+
+  @override
+  String get statusPendingSignature => 'Pending Signature';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String get registrationSuccessTitle => 'Registration Successful';
+
+  @override
+  String get accountCreatedMessage => 'Account created successfully';
+
+  @override
+  String get errorOccurredTitle => 'An Error Occurred';
+
+  @override
+  String get createNewAccountTitle => 'Create New Account';
+
+  @override
+  String get sentToOwnerMessage =>
+      'Document sent to property owner successfully';
+
+  @override
+  String get sentToBuyerMessage => 'Document sent to buyer successfully';
+
+  @override
+  String get changeEmailTitle => 'Request Change Email';
+
+  @override
+  String get changeEmailSubtitle =>
+      'Enter the new email you want to change to. Once you confirm, we will check and inform you immediately.';
+
+  @override
+  String get requestChangeButton => 'Request Change';
+
+  @override
+  String get newEmailLabel => 'New Email';
+
+  @override
+  String get changePhoneTitle => 'Request Change Phone Number';
+
+  @override
+  String get changePhoneSubtitle =>
+      'Enter the new phone number you want to change to. Once you confirm, we will check and inform you immediately.';
+
+  @override
+  String get newPhoneLabel => 'New Phone Number';
+
+  @override
+  String get deleteAccountTitle => 'Delete Account?';
+
+  @override
+  String get deleteAccountConfirmPrompt =>
+      'If you want to delete your account, please type ';
+
+  @override
+  String get deleteAccountConfirmSuffix => ' to confirm account deletion';
+
+  @override
+  String get typeToDeleteHint => 'Type message here...';
+
+  @override
+  String get yesDeleteImmediately => 'Yes, delete immediately';
+
+  @override
+  String get unexpectedErrorTryAgain =>
+      'Unexpected error occurred. Please try again.';
+
+  @override
+  String get welcome => 'Welcome';
+
+  @override
+  String get agencyDuangDen => 'Agency Duang Den';
+
+  @override
+  String get searchProperty => 'Search property';
+
+  @override
+  String get finance => 'Finance';
+
+  @override
+  String get contactListLabel => 'Contact List';
+
+  @override
+  String get coAgent => 'Co-Agent';
+
+  @override
+  String get data => 'Data';
+
+  @override
+  String get recommendedForYou => 'Recommended for you';
+
+  @override
+  String get curatedForYou => 'Specially curated just for you';
+
+  @override
+  String get sample => 'Sample';
+
+  @override
+  String get activityDemoUser12Min => 'Kongkiat Labusinesslert • 12 mins';
+
+  @override
+  String get dateDemoDec24 => 'Dec 24, 2025, 12:00 PM';
+
+  @override
+  String get activities => 'Activities';
+
+  @override
+  String get activitiesSubtitle =>
+      'Aggregation of interesting activities, news, and PR';
+
+  @override
+  String get contract => 'Contract';
+
+  @override
+  String get signedByBoth => 'Signed by both parties';
+
+  @override
+  String get signedByLessor => 'Signed by lessor';
+
+  @override
+  String get signedByLessee => 'Signed by lessee';
+
+  @override
+  String get notSignedYet => 'No signers yet';
+
+  @override
+  String get downloadPdf => 'Download PDF';
+
+  @override
+  String get pleaseWait => 'Please wait';
+
+  @override
+  String get document => 'Document';
+
+  @override
+  String get property => 'Property';
+
+  @override
+  String get file => 'File';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get submitDocument => 'Submit document';
+
+  @override
+  String get loadingPdf => 'Loading PDF...';
+
+  @override
+  String get preparingPdf => 'Preparing PDF...';
+
+  @override
+  String get editContract => 'Edit contract';
+
+  @override
+  String get deleteContract => 'Delete contract';
+
+  @override
+  String get deleteBackContract => 'Delete back contract';
+
+  @override
+  String get contractDocument => 'Contract document';
+
+  @override
+  String get dataContract => 'Data contract';
+
+  @override
+  String get errorLabel => 'Error';
+
+  @override
+  String get saveDataSuccess => 'Save data success';
+
+  @override
+  String get saveChangesQuestion => 'Save changes?';
+
+  @override
+  String get dataProperty => 'Data property';
+
+  @override
+  String get dataAddress => 'Data address';
+
+  @override
+  String get addDetails => 'Add details';
+
+  @override
+  String get payment => 'Payment';
+
+  @override
+  String get addContractConditionsAdditional => 'Add contract conditions';
+
+  @override
+  String get contractFile => 'Contract file';
+
+  @override
+  String get editAddContractFile => 'Edit add contract file';
+
+  @override
+  String get conditions => 'Conditions';
+
+  @override
+  String get personTypeLabel => 'Person Type';
+
+  @override
+  String get searchDataNameProperty => 'Search data name property';
+
+  @override
+  String get currentAddressLabel => 'Current Address';
+
+  @override
+  String get deleteItemQuestion => 'Delete this item?';
+
+  @override
+  String get nameFile => 'Name file';
+
+  @override
+  String get uploadFile => 'Upload file';
+
+  @override
+  String get sellingPrice => 'Selling Price';
+
+  @override
+  String get rentalPrice => 'Rental Price';
+
+  @override
+  String get paymentDueDateLabel => 'Payment Due Date';
+
+  @override
+  String get enterDateRangeHint => 'Enter date 1-31';
+
+  @override
+  String get latePaymentPenalty => 'Late Payment Penalty';
+
+  @override
+  String get bahtPerDay => 'Baht/Day';
+
+  @override
+  String get enterBranchHint => 'Specify branch';
+
+  @override
+  String get enterAccountNumberHint => 'Specify account number';
+
+  @override
+  String get select => 'Select';
+
+  @override
+  String get furnitureExampleHint => 'Example: bed, sofa';
+
+  @override
+  String get furnitureDescExampleHint => 'Example: 6ft pine wood bed';
+
+  @override
+  String get propertyPhotos => 'Property Photos';
+
+  @override
+  String get searchDataName => 'Search data name';
+
+  @override
+  String get contractSelect => 'Contract select';
+
+  @override
+  String get totalLeasePeriod => 'Total Lease Period';
+
+  @override
+  String get applianceExampleHint => 'Example: refrigerator, fan';
+
+  @override
+  String get applianceDescExampleHint =>
+      'Example: new black three-door refrigerator';
+
+  @override
+  String get signed => 'Signed';
+
+  @override
+  String get notSigned => 'Not signed';
+
+  @override
+  String get buyer => 'Buyer';
+
+  @override
+  String get callProperty => 'Call property';
+
+  @override
+  String get call => 'Call';
+
+  @override
+  String get dataPhoneCall => 'Data phone';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get townhouse => 'Townhouse';
+
+  @override
+  String get showresults => 'Showresults';
+
+  @override
+  String get dataPropertyContract => 'Data property contract';
+
+  @override
+  String get registering => 'Registering...';
+
+  @override
+  String get registerMember => 'Register Member';
+
+  @override
+  String get demoNameSomchai => 'Somchai Jaidee';
+
+  @override
+  String get demoAddress1 => '123/456 Bangkok';
+
+  @override
+  String get demoNameJaidee => 'Jaidee Meesuk';
+
+  @override
+  String get demoAddress2 => '456/789 Bangkok';
+
+  @override
+  String get registerToStart => 'Register to start using the system';
+
+  @override
+  String get forAgent => 'For Agent';
+
+  @override
+  String get forAgency => 'For Agency';
+
+  @override
+  String get submitEmailSuccess => 'Submit email success';
+
+  @override
+  String get emailPassword => 'Email password';
+
+  @override
+  String get submitEmail => 'Submit email';
+
+  @override
+  String get welcomeAgentManual => 'Welcome to the new agent manual';
+
+  @override
+  String get submitPassword => 'Submit password';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get confirmPasswordUseQuestion =>
+      'Are you sure you want to use this password?';
+
+  @override
+  String get passwordSuccess => 'Password success';
+
+  @override
+  String get confirmEmail => 'Confirm email';
+
+  @override
+  String get confirmSubmitEmail => 'Confirm submit email';
+
+  @override
+  String get locationProperty => 'Location property';
+
+  @override
+  String get saveLocation => 'Save location';
+
+  @override
+  String get confirmLocationPropertySelect =>
+      'Confirm location property select';
+
+  @override
+  String get searchAddress => 'Search address';
+
+  @override
+  String get confirmThisLocation => 'Confirm this location';
+
+  @override
+  String get noDataFound => 'Data';
+
+  @override
+  String get dateFormat => 'dd Jan yyyy';
+
+  @override
+  String get demoCompanyName => 'YourHome Platform Co., Ltd.';
+
+  @override
+  String get lastUpdateDemo => 'Last updated Dec 24, 2025, 12:00 PM';
+
+  @override
+  String get decline => 'Decline';
+
+  @override
+  String get accept => 'Accept';
+
+  @override
+  String get userAllDocumentConditions => 'User all document conditions';
+
+  @override
+  String get cancelDeleteEditUserConditions =>
+      'Cancel delete edit user conditions';
+
+  @override
+  String get dataUser => 'Data user';
+
+  @override
+  String get submitDataUser => 'Submit data user';
+
+  @override
+  String get cancelUserConditions => 'Cancel user conditions';
+
+  @override
+  String get closeDataUser => 'Close data user';
+
+  @override
+  String get dataNameEmailCallAddressUser =>
+      'Data name email call address user';
+
+  @override
+  String get submitData => 'Submit data';
+
+  @override
+  String get closeDataImageUser => 'Close data image user';
+
+  @override
+  String get deleteEditDataUser => 'Delete edit data user';
+
+  @override
+  String get dataAll => 'Data all';
+
+  @override
+  String get disclaimerExcerpt =>
+      'The company is not responsible for any damages...';
+
+  @override
+  String get cancelEdit => 'Cancel edit';
+
+  @override
+  String get activityDemoUser15Min => 'Kongkiat Labusinesslert • 15 mins';
+
+  @override
+  String get dateDemoDec25 => 'Dec 25, 2025, 2:00 PM';
+
+  @override
+  String get newBooking => 'New Booking';
+
+  @override
+  String get alert => 'Alert';
+
+  @override
+  String get archive => 'Archive';
+
+  @override
+  String get deleteAlert => 'Delete alert';
+
+  @override
+  String get deleteBackAlert => 'Delete back alert';
+
+  @override
+  String get closeLocation => 'Close location';
+
+  @override
+  String get notAuthorized => 'Not authorized';
+
+  @override
+  String get locationPermissionPrompt =>
+      'Please allow location access to use this feature';
+
+  @override
+  String get goToSettings => 'Go to Settings';
+
+  @override
+  String get propertyHouse => 'Property house';
+
+  @override
+  String get demoPropertyPunnawithi1_Title =>
+      'Cheap rental house Punnawithi near BTS';
+
+  @override
+  String get demoLocationPunnawithi => 'Punnawithi, Bangkok';
+
+  @override
+  String get condoNearBts => 'Condo near BTS';
+
+  @override
+  String get demoLocationSukhumvit => 'Sukhumvit, Bangkok';
+
+  @override
+  String get townhome3Floors => '3-Story Townhome';
+
+  @override
+  String get demoLocationLadprao => 'Ladprao, Bangkok';
+
+  @override
+  String get demoLocationRamkhamhaeng => 'Ramkhamhaeng, Bangkok';
+
+  @override
+  String get demoLocationSathon => 'Sathon, Bangkok';
+
+  @override
+  String get demoLocationBangna => 'Bangna, Bangkok';
+
+  @override
+  String get townhouseTownhome => 'Townhouse/Townhome';
+
+  @override
+  String get pleaseLoginAgain => 'Please log in again';
+
+  @override
+  String get systemErrorTryAgain => 'System error. Please try again.';
+
+  @override
+  String get errorTryAgain => 'An error occurred. Please try again.';
+
+  @override
+  String get subdistrictLabel => 'Sub-district';
+
+  @override
+  String get districtLabel => 'District';
+
+  @override
+  String get subdistrictThaiLabel => 'Tambon';
+
+  @override
+  String get districtThaiLabel => 'Amphoe';
+
+  @override
+  String get soiLabel => 'Soi';
+
+  @override
+  String get noAttachedPhotos => 'No attached photos';
+
+  @override
+  String get searchSuccess => 'Search success';
+
+  @override
+  String get noResultsFound => 'No results found';
+
+  @override
+  String get demoNews1 => 'Sample News';
+
+  @override
+  String get shareDocument => 'Share Document';
+
+  @override
+  String get submitDocumentQuestion => 'Submit document?';
+
+  @override
+  String get buyerInfo => 'Buyer Information';
+
+  @override
+  String get addFurnitureDetails => 'Add furniture items and details';
+
+  @override
+  String get paymentMethods => 'Cost and payment methods';
+
+  @override
+  String get additionalContractConditions => 'Additional contract conditions';
+
+  @override
+  String get fileNameHint => 'File name e.g. ID card copy';
+
+  @override
+  String get propertyOwnerNotFound => 'Property owner data not found';
+
+  @override
+  String get enterAccountNameHint => 'Specify account name';
+
+  @override
+  String get contractFormat => 'Contract format';
+
+  @override
+  String get selectContractStartDate => 'Select contract start date';
+
+  @override
+  String get registerBuyerToContract => 'Register buyer info to make contract';
+
+  @override
+  String get enterRegisteredEmailHint =>
+      'Enter registered email for reset link';
+
+  @override
+  String get sendResetPasswordLink => 'Send reset password link';
+
+  @override
+  String get resetPasswordFailed => 'Unable to set new password';
+
+  @override
+  String get emailSentSuccessfully => 'Email sent successfully';
+
+  @override
+  String get propertyNotFound => 'Property not found';
+
+  @override
+  String get propertyLocationOnMap => 'Property location on map';
+
+  @override
+  String get createLabel => 'Create';
+
+  @override
+  String get selectLocation => 'Select location';
+
+  @override
+  String get usableAreaSize => 'Usable area size';
+
+  @override
+  String get startingPrice => 'Starting price';
+
+  @override
+  String get classicStyle => 'Classic';
+
+  @override
+  String get securityGuardLabel => 'Security Guard';
+
+  @override
+  String get showresults1 => 'Showresults';
+
+  @override
+  String get draftLabel => 'Draft';
+
+  @override
+  String get termsGovernanceDisclaimer =>
+      'These terms are governed by Thai law. Disputes go to Bangkok court.';
+
+  @override
+  String get tryAgain => 'Try again';
+
+  @override
+  String get emailNotVerifiedYet => 'Email not verified yet';
+
+  @override
+  String get yourProfile => 'Your Profile';
+
+  @override
+  String get notSpecified => 'Not specified';
+
+  @override
+  String get languageProficiency => 'Language Proficiency';
+
+  @override
+  String get addressNotSpecified => 'Address not specified';
+
+  @override
+  String get noNotificationsFound => 'No notifications found';
+
+  @override
+  String get enableLocationServicesPrompt =>
+      'Please enable location services for current location';
+
+  @override
+  String get locationPermissionRequired => 'Location permission required';
+
+  @override
+  String get demoPropertyPunnawithi1 =>
+      'Property 2: Cheap house Punnawithi near BTS';
+
+  @override
+  String get cheapRentalHouse => 'Cheap rental house';
+
+  @override
+  String get luxuryRiversideCondo => 'Luxury riverside condo';
+
+  @override
+  String get dragAndDropHint =>
+      'Or drag and drop files here. Supports JPG, PNG, WebP up to 5MB.';
+
+  @override
+  String get demoActivity => 'Sample Activity';
+
+  @override
+  String get electrical_appliances_photos => 'Image';
+
+  @override
+  String get furniture_photos => 'Image';
+
+  @override
+  String get buyerDataNotFound => 'Buyer data not found';
+
+  @override
+  String get sixMonthLeaseContract => '6-month lease contract';
+
+  @override
+  String get selectContractEndDate => 'Select contract end date';
+
+  @override
+  String get fullNameLabel => 'Full Name';
+
+  @override
+  String get resetPasswordTitle => 'Reset Password';
+
+  @override
+  String get resendLink => 'Resend link';
+
+  @override
+  String get createPropertyLabel => 'Create Property';
+
+  @override
+  String get noNotificationsNow => 'No notifications at this time.';
+
+  @override
+  String get locationPermissionDeniedPermanently =>
+      'Location permission denied permanently. Please enable in settings.';
+
+  @override
+  String get cannotGetLocation => 'Cannot get current location';
+
+  @override
+  String get demoPropertyPunnawithi2 =>
+      'Property 3: Cheap house Punnawithi near BTS';
+
+  @override
+  String get twoStoryHouse => '2-Story House';
+
+  @override
+  String get propertyDataNotFound => 'Property data not found';
+
+  @override
+  String get twelveMonthLeaseContract => '12-month lease contract';
+
+  @override
+  String get setNewPasswordPrompt => 'Please set your new password';
+
+  @override
+  String get propertyHighlightsLabel => 'Property Highlights';
+
+  @override
+  String get externalLinksDisclaimer =>
+      'Links to other sites are for convenience only. We are not responsible for their content.';
+
+  @override
+  String get demoPR2 => 'Sample PR 2';
+
+  @override
+  String get houseWithGarden => 'House with garden';
+
+  @override
+  String get enterNewPasswordPrompt => 'Please enter new password';
+
+  @override
+  String get demoNews2 => 'Sample News 2';
+
+  @override
+  String get demoProperty4 => 'Property 4';
+
+  @override
+  String get checkInternetConnectionLabel =>
+      'Please check your internet connection';
+
+  @override
+  String get invalidDataCheckAndTryAgain =>
+      'Invalid data. Please check and try again.';
+
+  @override
+  String get passwordRequirementNote =>
+      'Your password must be at least 8 characters with letters and numbers.';
+
+  @override
+  String get demoActivity2 => 'Sample Activity 2';
+
+  @override
+  String get demoProperty5 => 'Property 5';
+
+  @override
+  String get cannotConnectToServer =>
+      'Cannot connect to server. Please check internet.';
+
+  @override
+  String get noProfileAccess =>
+      'You do not have permission to access this data.';
 }

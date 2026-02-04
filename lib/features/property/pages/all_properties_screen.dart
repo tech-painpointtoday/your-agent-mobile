@@ -8,6 +8,7 @@ import 'package:youragent/features/property/widgets/property_list_item.dart';
 import 'package:youragent/features/property/widgets/property_filter_bottom_sheet.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 /// Screen showing all properties in a list
 class AllPropertiesScreen extends StatefulWidget {
@@ -83,7 +84,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
-      builder: (context) => const PropertyFilterBottomSheet(),
+      builder: (context) => PropertyFilterBottomSheet(),
     );
   }
 
@@ -123,9 +124,9 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                     ),
                   ),
                   // Title
-                  const Text(
-                    'ทรัพย์ของคุณ',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.myProperties,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -191,7 +192,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                         child: AppBadges.plain(
-                          label: 'ไม่พบรายการทรัพย์',
+                          label: AppLocalizations.of(context)!.propertyNotFound,
                           color: BadgeColor.default_,
                         ),
                       ),
@@ -217,7 +218,9 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                           Expanded(
                             child: AppSearchBar(
                               controller: _searchController,
-                              hintText: 'ค้นหา...',
+                              hintText: AppLocalizations.of(
+                                context,
+                              )!.searchHint,
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -336,9 +339,9 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
             ),
           ),
           const SizedBox(height: 24),
-          const Text(
-            'ขณะนี้ยังไม่มีข้อมูลทรัพย์ในระบบ',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.noPropertiesInSystem,
+            style: const TextStyle(
               color: AppColors.baseDarkGrey,
               fontSize: 14,
               fontWeight: FontWeight.w400,

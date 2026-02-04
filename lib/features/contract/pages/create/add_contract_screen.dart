@@ -19,6 +19,7 @@ import 'steps/attachment_step.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 
 import 'package:youragent/features/contract/pages/create/steps/payment_step.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class AddContractScreen extends StatelessWidget {
   const AddContractScreen({super.key});
@@ -62,11 +63,11 @@ class _AddContractView extends StatelessWidget {
 
             AppConfirmationBottomSheet.show(
               context: context,
-              title: 'ยืนยันการยกเลิก',
+              title: AppLocalizations.of(context)!.confirmCancelLabel,
               description:
-                  'ข้อมูลที่คุณกรอกไว้จะหายไป คุณต้องการยกเลิกใช่หรือไม่?',
-              confirmLabel: 'ยืนยันการยกเลิก',
-              cancelLabel: 'กลับไปทำต่อ',
+                  AppLocalizations.of(context)!.confirmCancelMessage,
+              confirmLabel: AppLocalizations.of(context)!.confirmCancelLabel,
+              cancelLabel: AppLocalizations.of(context)!.continueEditingLabel,
               style: ConfirmationStyle.destructive,
               onConfirm: () => Navigator.of(context).pop(),
             );
@@ -75,7 +76,7 @@ class _AddContractView extends StatelessWidget {
         titleSpacing: 0,
         title: BlocBuilder<ContractFormBloc, ContractFormState>(
           builder: (context, state) {
-            String title = 'สร้างสัญญา';
+            String title = AppLocalizations.of(context)!.createContractButton;
             return Text(
               title,
               style: GoogleFonts.anuphan(
@@ -108,7 +109,7 @@ class _AddContractView extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    'บันทึกร่าง',
+                    AppLocalizations.of(context)!.saveDraftButton,
                     style: GoogleFonts.anuphan(
                       color: Colors.white,
                       fontSize: 14,
@@ -180,7 +181,7 @@ class _AddContractView extends StatelessWidget {
                 buildWhen: (prev, curr) => prev.step != curr.step,
                 builder: (context, state) {
                   return AppButton(
-                    text: 'ย้อนกลับ',
+                    text: AppLocalizations.of(context)!.backButton,
                     style: AppButtonStyle.outline,
                     onPressed: state.step > 1
                         ? () => context.read<ContractFormBloc>().add(
@@ -204,7 +205,7 @@ class _AddContractView extends StatelessWidget {
                       state.status == ContractFormStatus.submmitting;
 
                   return AppButton(
-                    text: isLastStep ? 'สร้างสัญญา' : 'ถัดไป',
+                    text: isLastStep ? AppLocalizations.of(context)!.createContractButton : AppLocalizations.of(context)!.nextButton,
                     style: AppButtonStyle.primary,
                     onPressed: (state.isValid && !isLoading)
                         ? () {

@@ -16,6 +16,7 @@ import '../create/steps/additional_info_step.dart';
 import '../create/steps/general_info_step.dart';
 import '../create/steps/property_detail_step.dart';
 import '../create/steps/property_images_step.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 enum EditPropertyStepType {
   generalInfo,
@@ -71,7 +72,7 @@ class EditPropertyFormScreen extends StatelessWidget {
         backgroundColor: AppColors.primary,
         appBar: AppBar(
           title: Text(
-            'แก้ไขข้อมูล',
+            AppLocalizations.of(context)!.editDataTitle,
             style: GoogleFonts.anuphan(
               color: Colors.white,
               fontSize: 18,
@@ -115,8 +116,8 @@ class EditPropertyFormScreen extends StatelessWidget {
         if (state.propertyFormStatus == PropertyFormStatus.submissionSuccess) {
           StatusDialog.showSuccess(
             context: context,
-            title: 'สำเร็จ',
-            message: 'บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว',
+            title: AppLocalizations.of(context)!.successTitle,
+            message: AppLocalizations.of(context)!.changesSavedMessage,
           );
           context.pop();
         } else if (state.propertyFormStatus ==
@@ -156,7 +157,7 @@ class EditPropertyFormScreen extends StatelessWidget {
           children: [
             Expanded(
               child: AppButton(
-                text: 'ยกเลิก',
+                text: AppLocalizations.of(context)!.statusCancelled,
                 style: AppButtonStyle.outline,
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -168,17 +169,17 @@ class EditPropertyFormScreen extends StatelessWidget {
                   final isValid = state.isValid;
 
                   return AppButton(
-                    text: 'บันทึก',
+                    text: AppLocalizations.of(context)!.confirmSaveLabel,
                     style: AppButtonStyle.primary,
                     onPressed: isValid
                         ? () {
                             AppConfirmationBottomSheet.show(
                               context: context,
-                              title: 'บันทึกการเปลี่ยนแปลง?',
+                              title: AppLocalizations.of(context)!.saveChangesQuestion,
                               description:
-                                  'คุณต้องการบันทึกการเปลี่ยนแปลงนี้ใช่หรือไม่',
-                              confirmLabel: 'บันทึก',
-                              cancelLabel: 'ยกเลิก',
+                                  AppLocalizations.of(context)!.saveChangesConfirmation,
+                              confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
+                              cancelLabel: AppLocalizations.of(context)!.statusCancelled,
                               style: ConfirmationStyle.normal,
                               onConfirm: () {
                                 context.read<PropertyFormBloc>().add(

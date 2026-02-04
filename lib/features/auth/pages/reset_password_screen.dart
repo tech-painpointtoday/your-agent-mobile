@@ -11,6 +11,7 @@ import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String token;
@@ -43,10 +44,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
     AppConfirmationBottomSheet.show(
       context: context,
-      title: 'ยืนยันการเปลี่ยนรหัสผ่าน',
-      description: 'คุณแน่ใจหรือไม่ที่จะใช้รหัสผ่านนี้?',
-      confirmLabel: 'ยืนยัน',
-      cancelLabel: 'ยกเลิก',
+      title: AppLocalizations.of(context)!.confirmPassword,
+      description: AppLocalizations.of(context)!.confirmPasswordUseQuestion,
+      confirmLabel: AppLocalizations.of(context)!.confirm,
+      cancelLabel: AppLocalizations.of(context)!.statusCancelled,
       style: ConfirmationStyle.normal,
       onConfirm: () {
         context.read<AuthBloc>().add(
@@ -69,8 +70,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           if (state.resetPasswordStatus == ResetPasswordStatus.success) {
             StatusDialog.showSuccess(
               context: context,
-              title: 'สำเร็จ',
-              message: 'ตั้งรหัสผ่านใหม่สำเร็จ กรุณาเข้าสู่ระบบ',
+              title: AppLocalizations.of(context)!.successTitle,
+              message: AppLocalizations.of(context)!.passwordSuccess,
               onDismiss: () {
                 if (!mounted) return;
                 context.go('/login');
@@ -79,8 +80,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           } else if (state.resetPasswordStatus == ResetPasswordStatus.failure) {
             StatusDialog.showError(
               context: context,
-              title: 'เกิดข้อผิดพลาด',
-              message: state.errorMessage ?? 'ไม่สามารถตั้งรหัสผ่านใหม่ได้',
+              title: AppLocalizations.of(context)!.errorOccurredTitle,
+              message: state.errorMessage ?? AppLocalizations.of(context)!.resetPasswordFailed,
             );
           }
         }
@@ -102,7 +103,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       icon: const Icon(Icons.arrow_back_ios_new_rounded),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   // Illustration
                   Center(
                     child: Image.asset(
@@ -111,10 +112,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       height: 150,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
                   // Title
                   Text(
-                    'รีเซ็ตรหัสผ่าน',
+                    AppLocalizations.of(context)!.resetPasswordTitle,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.anuphan(
                       fontSize: 28,
@@ -122,50 +123,50 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       color: AppColors.baseDarkGrey,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   // Subtitle
                   Text(
-                    'กรุณาตั้งรหัสผ่านใหม่ของคุณ',
+                    AppLocalizations.of(context)!.setNewPasswordPrompt,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.anuphan(
                       fontSize: 14,
                       color: AppColors.baseDarkGrey,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
                   // Password Fields
                   LabeledPasswordField(
-                    label: 'รหัสผ่านใหม่',
+                    label: AppLocalizations.of(context)!.newPasswordLabel,
                     controller: _passwordController,
                     validator: (v) {
                       if (v == null || v.isEmpty) {
-                        return 'กรุณากรอกรหัสผ่านใหม่';
+                        return AppLocalizations.of(context)!.enterNewPasswordPrompt;
                       }
                       if (v.length < 6) {
-                        return 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+                        return AppLocalizations.of(context)!.enterNewPasswordPrompt;
                       }
                       return null;
                     },
                   ),
                   LabeledPasswordField(
-                    label: 'ยืนยันรหัสผ่านใหม่',
+                    label: AppLocalizations.of(context)!.confirmNewPasswordHint,
                     controller: _passwordConfirmationController,
                     compareController: _passwordController,
                     validator: (v) {
                       if (v == null || v.isEmpty) {
-                        return 'กรุณายืนยันรหัสผ่านใหม่';
+                        return AppLocalizations.of(context)!.confirmNewPasswordHint;
                       }
                       if (v != _passwordController.text) {
-                        return 'รหัสผ่านไม่ตรงกัน';
+                        return AppLocalizations.of(context)!.passwordMismatchTitle;
                       }
                       return null;
                     },
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
                   // Submit Button
                   AppButton(
                     text:
-                        'ส่งลิงค์รีเซ็ตรหัสผ่าน', // Using exact text from image
+                        AppLocalizations.of(context)!.sendResetPasswordLink, // Using exact text from image
                     style: AppButtonStyle.primary,
                     onPressed: _onConfirmPressed,
                   ),

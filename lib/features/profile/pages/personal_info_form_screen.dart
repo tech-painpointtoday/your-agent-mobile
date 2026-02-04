@@ -12,6 +12,7 @@ import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/profile_bloc.dart';
 import '../models/agent_profile.dart';
 import 'profile_screen.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class PersonalInfoFormScreen extends StatefulWidget {
   final AgentDetails? agent;
@@ -69,9 +70,9 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
 
     AppConfirmationBottomSheet.show(
       context: context,
-      title: 'บันทึกข้อมูลส่วนตัว?',
-      description: 'คุณต้องการบันทึกการแก้ไขข้อมูลส่วนตัวใช่หรือไม่?',
-      confirmLabel: 'บันทึก',
+      title: AppLocalizations.of(context)!.savePersonalInfoTitle,
+      description: AppLocalizations.of(context)!.savePersonalInfoMessage,
+      confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
       onConfirm: () {
         context.read<ProfileBloc>().add(UpdateWorkInfo(data));
       },
@@ -88,7 +89,7 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
         } else if (state is ProfileError) {
           StatusDialog.showError(
             context: context,
-            title: 'เกิดข้อผิดพลาด',
+            title: AppLocalizations.of(context)!.errorOccurredTitle,
             message: state.message,
           );
         }
@@ -112,56 +113,56 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const AppBadge(
-                          label: 'ข้อมูลส่วนตัว',
+                        AppBadge(
+                          label: AppLocalizations.of(context)!.personalInfoLabel,
                           color: BadgeColor.blue,
                           style: BadgeStyle.plain,
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24),
                         AppTextField(
-                          label: 'ชื่อ-นามสกุล',
+                          label: AppLocalizations.of(context)!.nameLabel,
                           controller: _nameController,
-                          hintText: 'กรอกชื่อ-นามสกุล',
+                          hintText: AppLocalizations.of(context)!.nameHintText,
                           isRequired: true,
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         AppTextField(
-                          label: 'อีเมล',
+                          label: AppLocalizations.of(context)!.email,
                           controller: _emailController,
                           hintText: 'example@email.com',
                           isRequired: true,
                           keyboardType: TextInputType.emailAddress,
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         AppTextField(
-                          label: 'หมายเลขโทรศัพท์',
+                          label: AppLocalizations.of(context)!.phone_number,
                           controller: _phoneController,
                           hintText: '0xx-xxx-xxxx',
                           isRequired: true,
                           keyboardType: TextInputType.phone,
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         AppTextField(
-                          label: 'ประวัติส่วนตัว',
+                          label: AppLocalizations.of(context)!.bioLabel,
                           controller: _bioController,
-                          hintText: 'เล่ารายละเอียดเกี่ยวกับตัวคุณ...',
+                          hintText: AppLocalizations.of(context)!.bioHintText,
                           maxLines: 5,
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         AppTextField(
-                          label: 'เลขบัตรประชาชน',
+                          label: AppLocalizations.of(context)!.nationalIdLabel,
                           controller: _nationalIdController,
-                          hintText: 'กรอกเลขบัตรประชาชน',
+                          hintText: AppLocalizations.of(context)!.nationalIdHintText,
                           keyboardType: TextInputType.number,
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         AppTextField(
-                          label: 'ที่อยู่',
+                          label: AppLocalizations.of(context)!.address,
                           controller: _addressController,
-                          hintText: 'กรอกที่อยู่',
+                          hintText: AppLocalizations.of(context)!.addressHintText,
                           maxLines: 3,
                         ),
-                        const SizedBox(height: 40),
+                        SizedBox(height: 40),
                       ],
                     ),
                   ),
@@ -188,7 +189,7 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
         onPressed: () => context.pop(),
       ),
       title: Text(
-        'แก้ไขข้อมูลส่วนตัว',
+        AppLocalizations.of(context)!.editPersonalInfoTitle,
         style: GoogleFonts.anuphan(
           color: Colors.white,
           fontSize: 18,
@@ -221,17 +222,17 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
         children: [
           Expanded(
             child: AppButton(
-              text: 'ยกเลิก',
+              text: AppLocalizations.of(context)!.statusCancelled,
               style: AppButtonStyle.outline,
               onPressed: () => context.pop(),
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Expanded(
             child: BlocBuilder<ProfileBloc, ProfileState>(
               builder: (context, state) {
                 return AppButton(
-                  text: 'บันทึก',
+                  text: AppLocalizations.of(context)!.confirmSaveLabel,
                   style: AppButtonStyle.primary,
                   isLoading: state is ProfileUpdateLoading,
                   onPressed: _onSave,

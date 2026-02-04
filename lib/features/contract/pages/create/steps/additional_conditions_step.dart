@@ -5,6 +5,7 @@ import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class AdditionalConditionsStep extends StatefulWidget {
   final bool hideHeader;
@@ -42,8 +43,10 @@ class _AdditionalConditionsStepState extends State<AdditionalConditionsStep> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const AppBadge(
-                          label: 'เงื่อนไขสัญญาเพิ่มเติม',
+                        AppBadge(
+                          label: AppLocalizations.of(
+                            context,
+                          )!.additionalContractConditions,
                           fontSize: 16,
                           color: BadgeColor.blue,
                         ),
@@ -56,8 +59,10 @@ class _AdditionalConditionsStepState extends State<AdditionalConditionsStep> {
                     ),
                   if (!widget.hideHeader) const SizedBox(height: 24),
                   AppTextField(
-                    label: 'เงื่อนไขสัญญาเพิ่มเติม',
-                    hintText: 'ระบุเงื่อนไข...',
+                    label: AppLocalizations.of(
+                      context,
+                    )!.additionalContractConditions,
+                    hintText: AppLocalizations.of(context)!.conditions,
                     maxLines: 15,
                     showScrollbar: true,
                     scrollController: _scrollController,

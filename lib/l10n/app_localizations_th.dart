@@ -121,13 +121,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get allergy_hint => 'ฝุ่น, เกสรดอกไม้, ...';
 
   @override
-  String get bedrooms => 'ห้องนอน';
-
-  @override
   String get bathrooms => 'ห้องน้ำ';
-
-  @override
-  String get area => 'พื้นที่';
 
   @override
   String get search_filter => 'ตัวกรองการค้นหา';
@@ -137,15 +131,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get fireplace => 'เตาผิง';
-
-  @override
-  String get swimming_pool => 'สระว่ายน้ำ';
-
-  @override
-  String get garage => 'โรงจอดรถ';
-
-  @override
-  String get garden => 'สวน';
 
   @override
   String get playground => 'สนามเด็กเล่น';
@@ -169,31 +154,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get unit_sqm => 'ตร.ม.';
 
   @override
-  String bath_count(Object count) {
-    return '$count ห้องน้ำ';
-  }
-
-  @override
-  String bed_count(Object count) {
-    return '$count ห้องนอน';
-  }
-
-  @override
-  String area_sqm(Object area) {
-    return '$area ตร.ม.';
-  }
-
-  @override
-  String floor_count(Object count) {
-    return '$count ชั้น';
-  }
-
-  @override
-  String price_per_sqm(Object price) {
-    return '$price บาท/ตร.ม.';
-  }
-
-  @override
   String get yourHomeAgent => 'YourHome Agent';
 
   @override
@@ -201,11 +161,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get schedule_viewing => 'นัดชมบ้าน';
-
-  @override
-  String people_interested(Object count) {
-    return '$count คนกำลังสนใจ!';
-  }
 
   @override
   String get inquire => 'สอบถาม';
@@ -311,49 +266,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get confirm_password => 'ยืนยันรหัสผ่าน';
 
   @override
-  String get agent_license_number => 'หมายเลขใบอนุญาต';
-
-  @override
-  String get agent_license_hint => 'หมายเลขใบอนุญาต';
-
-  @override
-  String get business_type => 'ประเภทธุรกิจ';
-
-  @override
-  String get business_type_hint => 'กรุณาเลือก';
-
-  @override
-  String get company_name => 'ชื่อบริษัท';
-
-  @override
-  String get company_name_hint => 'ชื่อบริษัท';
-
-  @override
-  String get register_button => 'ลงทะเบียน';
-
-  @override
-  String get register_agent_title => 'ลงทะเบียนตัวแทน';
-
-  @override
-  String get register_admin_title => 'ลงทะเบียนผู้ดูแลระบบ';
-
-  @override
-  String get register_agency_title => 'ลงทะเบียนองค์กร';
-
-  @override
-  String get thb => 'บาท';
-
-  @override
-  String get hero_slogan_part1 => 'ชีวิตที่ดี';
-
-  @override
-  String get hero_slogan_part2 => 'บ้านที่ใช่สำหรับคุณ';
-
-  @override
-  String get hero_subtitle =>
-      'เพราะเราเชื่อว่าบ้านที่ใช่ จะช่วยให้ชีวิตเราดียิ่งขึ้น';
-
-  @override
   String get select_role_title => 'เลือกบทบาทของคุณ';
 
   @override
@@ -409,16 +321,50 @@ class AppLocalizationsTh extends AppLocalizations {
   String get business_type_brokerage => 'บริษัทนายหน้า';
 
   @override
-  String get role_agent => 'สำหรับตัวแทน (Agent)';
+  String get role_agent => 'ตัวแทน';
 
   @override
-  String get role_agency => 'สำหรับองค์กร (Agency)';
+  String get role_agency => 'บริษัท';
 
   @override
-  String get role_admin => 'สำหรับผู้ดูแลระบบ (Admin)';
+  String get role_admin => 'สำหรับผู้ดูแลระบบ';
 
   @override
-  String get create_property => 'สร้างอสังหาริมทรัพย์';
+  String get register_agent_title => 'ลงทะเบียนตัวแทน';
+
+  @override
+  String get register_admin_title => 'ลงทะเบียนผู้ดูแลระบบ';
+
+  @override
+  String get register_agency_title => 'ลงทะเบียนองค์กร';
+
+  @override
+  String get agent_license_number => 'หมายเลขใบอนุญาต';
+
+  @override
+  String get agent_license_hint => 'หมายเลขใบอนุญาต';
+
+  @override
+  String get business_type => 'ประเภทธุรกิจ';
+
+  @override
+  String get business_type_hint => 'กรุณาเลือก';
+
+  @override
+  String get company_name => 'ชื่อบริษัท';
+
+  @override
+  String get company_name_hint => 'ชื่อบริษัท';
+
+  @override
+  String get register_button => 'ลงทะเบียน';
+
+  @override
+  String get hero_subtitle =>
+      'เพราะเราเชื่อว่าบ้านที่ใช่ จะช่วยให้ชีวิตเราดียิ่งขึ้น';
+
+  @override
+  String get create_property_title => 'สร้างอสังหาริมทรัพย์ใหม่';
 
   @override
   String get create_property_subtitle =>
@@ -437,12 +383,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get photos => 'รูปภาพ';
 
   @override
-  String get built_date => 'ปีที่สร้าง (YYYY-MM-DD)';
-
-  @override
-  String get type => 'ประเภท';
-
-  @override
   String get status => 'สถานะ';
 
   @override
@@ -453,15 +393,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get garage_spaces => 'ที่จอดรถ';
-
-  @override
-  String get price_thb => 'ราคา (บาท)';
-
-  @override
-  String get land_size => 'ขนาดที่ดิน (ตร.วา)';
-
-  @override
-  String get building_size => 'ขนาดอาคาร (ตร.ม.)';
 
   @override
   String get house_color => 'สีบ้าน';
@@ -477,9 +408,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get direction => 'ทิศทาง';
-
-  @override
-  String get select_direction => 'เลือกทิศทาง (ไม่บังคับ)';
 
   @override
   String get city => 'เมือง';
@@ -507,13 +435,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get property_location_subtitle =>
-      'คลิกบนแผนที่หรือใช้ตำแหน่งปัจจุบันของคุณเพื่อตั้งค่าตำแหน่งอสังหาริมทรัพย์';
-
-  @override
-  String get use_current_location => 'ใช้ตำแหน่งปัจจุบัน';
-
-  @override
-  String get clear_location => 'ล้างตำแหน่ง';
+      'คลิกบนแผนที่หรือใช้ตำแหน่งปัจจุบันของคุณเพื่อกำหนดตำแหน่งอสังหาริมทรัพย์';
 
   @override
   String get set_by_map => 'ตั้งโดยคลิกบนแผนที่';
@@ -528,18 +450,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get image_format_note => 'JPEG/PNG/WebP ไม่เกิน 5MB ต่อไฟล์';
 
   @override
-  String get take_photo => 'ถ่ายรูป';
-
-  @override
   String get use_camera => 'ใช้กล้องของอุปกรณ์เพื่อถ่ายรูป';
 
   @override
   String get selected_photos => 'รูปภาพที่เลือก';
-
-  @override
-  String photo_count(Object count) {
-    return 'เลือก $count รูป';
-  }
 
   @override
   String get clear_all => 'ล้างทั้งหมด';
@@ -751,9 +665,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get house_age_label => 'อายุบ้าน';
 
   @override
-  String get not_specified => 'ไม่ได้ระบุ';
-
-  @override
   String get feature_floors_label => 'จำนวนชั้น';
 
   @override
@@ -764,11 +675,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get feature_parking_label => 'ที่จอดรถ';
-
-  @override
-  String parking_count(Object count) {
-    return '$count ที่จอดรถ';
-  }
 
   @override
   String get more_details_title => 'รายละเอียดเพิ่มเติม';
@@ -945,21 +851,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get now => 'ตอนนี้';
 
   @override
-  String minutes_ago(Object count) {
-    return '$count นาทีที่แล้ว';
-  }
-
-  @override
-  String hours_ago(Object count) {
-    return '$count ชั่วโมงที่แล้ว';
-  }
-
-  @override
-  String days_ago(Object count) {
-    return '$count วันที่แล้ว';
-  }
-
-  @override
   String get unread => 'ยังไม่ได้อ่าน';
 
   @override
@@ -970,11 +861,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get availability_calendar_view => 'มุมมองปฏิทิน';
-
-  @override
-  String availability_count_available(Object count) {
-    return 'มี $count ช่วงเวลา';
-  }
 
   @override
   String get profile_bio => 'ประวัติส่วนตัว';
@@ -989,10 +875,16 @@ class AppLocalizationsTh extends AppLocalizations {
   String get profile_company => 'ชื่อบริษัท';
 
   @override
+  String get workInfo => 'ข้อมูลการทำงาน';
+
+  @override
   String get profile_license => 'หมายเลขใบอนุญาต';
 
   @override
   String get profile_radius => 'รัศมีที่ให้บริการ';
+
+  @override
+  String get kmUnit => 'กม.';
 
   @override
   String get profile_service_area => 'จุดศูนย์กลางพื้นที่บริการ';
@@ -1033,9 +925,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get filter => 'กรอง';
-
-  @override
-  String get all => 'ทั้งหมด';
 
   @override
   String get no_available_times => 'ไม่มีเวลาที่ว่าง';
@@ -1168,15 +1057,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get create_rental_contract => 'สร้างสัญญาเช่า';
 
   @override
-  String get electrical_appliances_photos => 'รูปภาพเครื่องใช้ไฟฟ้า';
-
-  @override
-  String get furniture_photos => 'รูปภาพเฟอร์นิเจอร์';
-
-  @override
-  String get properties => 'อสังหาริมทรัพย์';
-
-  @override
   String get appointments => 'นัดหมาย';
 
   @override
@@ -1215,9 +1095,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get contract_date => 'วันที่ทำสัญญา';
 
   @override
-  String get create_new_account => 'สร้างบัญชีใหม่';
-
-  @override
   String get individual => 'บุคคลธรรมดา';
 
   @override
@@ -1242,28 +1119,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get property_type_label => 'ประเภททรัพย์';
 
   @override
-  String get select_property_type => 'เลือกประเภททรัพย์';
-
-  @override
-  String get condominium => 'คอนโดมิเนียม';
-
-  @override
-  String get single_house => 'บ้านเดี่ยว';
-
-  @override
-  String get project_name => 'ชื่อโครงการ';
-
-  @override
   String get house_or_room_number => 'เลขที่บ้าน/ห้อง';
 
   @override
   String get floor_label => 'ชั้น';
-
-  @override
-  String get soi_alley_village => 'ซอย/ตรอก/หมู่บ้าน (ถ้ามี)';
-
-  @override
-  String get road_if_any => 'ถนน (ถ้ามี)';
 
   @override
   String get select_country => 'เลือกประเทศ';
@@ -1359,9 +1218,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get account_number => 'เลขบัญชี';
 
   @override
-  String get additional_conditions_optional => 'เงื่อนไขเพิ่มเติม (ไม่บังคับ)';
-
-  @override
   String get additional_conditions => 'เงื่อนไขเพิ่มเติม';
 
   @override
@@ -1386,9 +1242,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get baht_per_month => 'บาท/เดือน';
 
   @override
-  String get baht => 'บาท';
-
-  @override
   String get months => 'เดือน';
 
   @override
@@ -1398,6 +1251,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get dashboard_overview => 'ภาพรวมแดชบอร์ด';
 
   @override
+  String get properties => 'อสังหาริมทรัพย์';
+
+  @override
   String get contracts => 'เอกสารสัญญา';
 
   @override
@@ -1405,6 +1261,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get edit_profile => 'แก้ไขโปรไฟล์';
+
+  @override
+  String get create_new_account => 'สร้างบัญชีใหม่';
 
   @override
   String get legal_entity => 'นิติบุคคล';
@@ -1422,21 +1281,22 @@ class AppLocalizationsTh extends AppLocalizations {
   String get select_color => 'เลือกสี';
 
   @override
+  String get use_current_location => 'ใช้ตำแหน่งปัจจุบัน';
+
+  @override
+  String get clear_location => 'ล้างตำแหน่ง';
+
+  @override
   String get select_type => 'เลือกประเภท';
 
   @override
   String get upload_at_least_one_image => 'กรุณาอัปโหลดรูปภาพอย่างน้อย 1 รูป';
 
   @override
-  String images_added(Object count) {
-    return 'เพิ่ม $count รูปภาพแล้ว';
-  }
-
-  @override
   String get select_file => 'เลือกไฟล์ของคุณ';
 
   @override
-  String get retry => 'ลองอีกครั้ง';
+  String get take_photo => 'ถ่ายรูป';
 
   @override
   String get property_not_found => 'ไม่พบอสังหาริมทรัพย์';
@@ -1448,16 +1308,19 @@ class AppLocalizationsTh extends AppLocalizations {
   String get new_ticket => 'ตั๋วใหม่';
 
   @override
-  String get send_reply => 'ส่งคำตอบ';
+  String get send_reply => 'ส่งการตอบกลับ';
 
   @override
-  String get add_floor_plan => 'เพิ่มแผนผังชั้น';
+  String get add_floor_plan => 'เพิ่มแปลนพื้น';
 
   @override
-  String get view_floor_plan => 'ดูแผนผังชั้น';
+  String get view_floor_plan => 'ดูแปลนพื้น';
 
   @override
   String get back_to_login => 'กลับไปหน้าเข้าสู่ระบบ';
+
+  @override
+  String get create_property => 'สร้างอสังหาริมทรัพย์ใหม่';
 
   @override
   String get bookings => 'การจอง';
@@ -1536,6 +1399,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get month_december => 'ธันวาคม';
+
+  @override
+  String get not_specified => 'ไม่ระบุ';
 
   @override
   String get email_not_verified => 'ยังไม่ได้ยืนยัน';
@@ -1628,7 +1494,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get field_required => 'จำเป็นต้องระบุข้อมูล';
 
   @override
-  String get loading => 'กำลังดำเนินการ...';
+  String get loading => 'กำลังโหลด...';
 
   @override
   String get management => 'จัดการ';
@@ -1653,4 +1519,1712 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get help_center => 'ศูนย์ช่วยเหลือ';
+
+  @override
+  String get profilePhotoUpdated => 'อัปเดตรูปโปรไฟล์เรียบร้อยแล้ว';
+
+  @override
+  String get emailVerified => 'ยืนยันอีเมลแล้ว';
+
+  @override
+  String get profileCompleteness => 'ความสมบูรณ์ของโปรไฟล์';
+
+  @override
+  String get connectionCodeCopied => 'คัดลอกรหัสเพื่อเชื่อมต่อกับบริษัทแล้ว';
+
+  @override
+  String get notConnectedAgency => 'ยังไม่ได้เชื่อมต่อกับบริษัท';
+
+  @override
+  String get addInfo => 'เพิ่มข้อมูล';
+
+  @override
+  String get socialLinks => 'ลิงก์โซเชียล';
+
+  @override
+  String get editInfo => 'แก้ไขข้อมูล';
+
+  @override
+  String get generalInfoSubtitle => 'ชื่ออสังหาริมทรัพย์ และที่อยู่';
+
+  @override
+  String get propertyDetailSubtitle => 'รายละเอียดห้อง ขนาด และราคา';
+
+  @override
+  String get additionalInfoSubtitle => 'สไตล์การตกแต่ง จุดเด่น และส่วนกลาง';
+
+  @override
+  String get propertyImagesSubtitle => 'อัปโหลดรูปภาพอย่างน้อย 5 รูป';
+
+  @override
+  String get propertyIdPrefix => 'รหัส: ';
+
+  @override
+  String get confirmInfo => 'ยืนยันข้อมูล';
+
+  @override
+  String get deleteConfirmationWarning => 'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้';
+
+  @override
+  String get deleteAll => 'ลบทั้งหมด';
+
+  @override
+  String get propertyCreatedSuccess => 'สร้างทรัพย์สำเร็จ';
+
+  @override
+  String get errorWithPrefix => 'เกิดข้อผิดพลาด: ';
+
+  @override
+  String get comingSoon => 'เร็วๆ นี้';
+
+  @override
+  String get createPropertyConfirmation =>
+      'คุณต้องการสร้างประกาศทรัพย์นี้ใช่หรือไม่?';
+
+  @override
+  String get draftSaved => 'บันทึกร่าง';
+
+  @override
+  String get styleColonial => 'โคโลเนียล';
+
+  @override
+  String get styleContemporary => 'ร่วมสมัย';
+
+  @override
+  String get styleLoft => 'ลอฟท์';
+
+  @override
+  String get styleMinimal => 'มินิมอล';
+
+  @override
+  String get styleNatural => 'เนเชอรัล';
+
+  @override
+  String get styleNordic => 'นอร์ดิก';
+
+  @override
+  String get styleThaiContemporary => 'ไทยร่วมสมัย';
+
+  @override
+  String get styleVintage => 'วินเทจ';
+
+  @override
+  String get styleOther => 'อื่นๆ';
+
+  @override
+  String get petFriendly => 'Pet Friendly';
+
+  @override
+  String get elderlyFriendly => 'Elderly Friendly';
+
+  @override
+  String get fitness => 'ฟิตเนส';
+
+  @override
+  String get swimmingPool => 'สระว่ายน้ำ';
+
+  @override
+  String get garden => 'สนามหญ้า';
+
+  @override
+  String get coWorkingSpace => 'Co-Working Space';
+
+  @override
+  String get sportsField => 'สนามกีฬา';
+
+  @override
+  String get cctv => 'CCTV';
+
+  @override
+  String get evCharger => 'EV Charger';
+
+  @override
+  String get smartHome => 'Smart Home';
+
+  @override
+  String get park => 'สวนสาธารณะ';
+
+  @override
+  String get houseType => 'บ้าน';
+
+  @override
+  String get condoType => 'คอนโด';
+
+  @override
+  String get townhomeType => 'ทาวน์โฮม';
+
+  @override
+  String get apartmentType => 'อพาร์ตเมนต์';
+
+  @override
+  String get homeOfficeType => 'โฮมออฟฟิศ';
+
+  @override
+  String get poolVillaType => 'พูลวิลล่า';
+
+  @override
+  String get statusDraft => 'ฉบับร่าง';
+
+  @override
+  String get statusPending => 'รอการอนุมัติ';
+
+  @override
+  String get statusApproved => 'อนุมัติแล้ว';
+
+  @override
+  String get statusRejected => 'ไม่อนุมัติ';
+
+  @override
+  String get colorWhite => 'ขาว';
+
+  @override
+  String get colorCream => 'ครีม';
+
+  @override
+  String get colorGrey => 'เทา';
+
+  @override
+  String get colorBlack => 'ดำ';
+
+  @override
+  String get colorBrown => 'น้ำตาล';
+
+  @override
+  String get colorRed => 'แดง';
+
+  @override
+  String get colorYellow => 'เหลือง';
+
+  @override
+  String get colorGreen => 'เขียว';
+
+  @override
+  String get colorBlue => 'ฟ้า';
+
+  @override
+  String get colorPink => 'ชมพู';
+
+  @override
+  String get colorPurple => 'ม่วง';
+
+  @override
+  String get colorOrange => 'ส้ม';
+
+  @override
+  String get dirNorth => 'ทิศเหนือ';
+
+  @override
+  String get dirSouth => 'ทิศใต้';
+
+  @override
+  String get dirEast => 'ทิศตะวันออก';
+
+  @override
+  String get dirWest => 'ทิศตะวันตก';
+
+  @override
+  String get dirNorthEast => 'ทิศตะวันออกเฉียงเหนือ';
+
+  @override
+  String get dirSouthEast => 'ทิศตะวันออกเฉียงใต้';
+
+  @override
+  String get dirNorthWest => 'ทิศตะวันตกเฉียงเหนือ';
+
+  @override
+  String get dirSouthWest => 'ทิศตะวันตกเฉียงใต้';
+
+  @override
+  String get additional_info_section => 'ข้อมูลเพิ่มเติม';
+
+  @override
+  String get propertyNameLabel => 'ชื่ออสังหาฯ';
+
+  @override
+  String get propertyNameHint => 'ชื่ออสังหาฯ';
+
+  @override
+  String get propertyNameDescription =>
+      'ชื่ออสังหาฯ นี้จะปรากฏบนหัวข้อประกาศของคุณ';
+
+  @override
+  String get developerLabel => 'ผู้พัฒนาโครงการ';
+
+  @override
+  String get developerHint => 'ผู้พัฒนาโครงการ';
+
+  @override
+  String get addDeveloper => 'เพิ่มผู้พัฒนาโครงการ';
+
+  @override
+  String get projectNameLabel => 'ชื่อโครงการ';
+
+  @override
+  String get addProject => 'เพิ่มชื่อโครงการ';
+
+  @override
+  String get searchDeveloper => 'ค้นหาผู้พัฒนาโครงการ';
+
+  @override
+  String get searchDeveloperDescription => 'ค้นหาผู้พัฒนาโครงการของทรัพย์นี้';
+
+  @override
+  String get searchProjectDescription => 'ค้นหาชื่อโครงการของทรัพย์นี้';
+
+  @override
+  String get buildingLabel => 'ตึก/อาคาร';
+
+  @override
+  String get buildingHint => 'ตึก/อาคาร';
+
+  @override
+  String get floorLabel => 'ชั้น';
+
+  @override
+  String get floorHint => 'ชั้น';
+
+  @override
+  String get roomNoLabel => 'เลขที่ห้อง';
+
+  @override
+  String get roomNoHint => 'เลขที่ห้อง';
+
+  @override
+  String get houseNoLabel => 'เลขที่บ้าน';
+
+  @override
+  String get houseNoHint => 'เลขที่บ้าน';
+
+  @override
+  String get locationLabel => 'สถานที่';
+
+  @override
+  String get locationHint => 'ตำแหน่งที่ตั้ง';
+
+  @override
+  String get locationDescription =>
+      'เลือกตำแหน่งบนแผนที่หรือใช้ตำแหน่งปัจจุบันของคุณเพื่อกำหนดที่ตั้งอสังหาริมทรัพย์';
+
+  @override
+  String get useCurrentLocation => 'ใช้ตำแหน่งปัจจุบัน';
+
+  @override
+  String get clearLocation => 'ล้างตำแหน่ง';
+
+  @override
+  String get listingTypeLabel => 'ประเภทประกาศ';
+
+  @override
+  String get listingSale => 'ขาย';
+
+  @override
+  String get listingRent => 'เช่า';
+
+  @override
+  String get listingSaleRent => 'ขายและเช่า';
+
+  @override
+  String get occupancyStatusLabel => 'สถานะ';
+
+  @override
+  String get occupancyAvailable => 'ว่าง';
+
+  @override
+  String get propertyDirectionHint => 'เลือกทิศหน้าบ้าน';
+
+  @override
+  String get floorUnit => 'ชั้น';
+
+  @override
+  String get roomUnit => 'ห้อง';
+
+  @override
+  String get parkingUnit => 'ที่';
+
+  @override
+  String get descriptionLabel => 'รายละเอียด';
+
+  @override
+  String get propertiesTitle => 'อสังหาริมทรัพย์';
+
+  @override
+  String get myProperties => 'ทรัพย์ของคุณ';
+
+  @override
+  String get viewAll => 'ดูทั้งหมด';
+
+  @override
+  String get noPropertiesFoundSearch => 'ไม่พบทรัพย์ที่ค้นหา';
+
+  @override
+  String get retry => 'ลองใหม่';
+
+  @override
+  String get noPropertiesInSystem => 'ขณะนี้ยังไม่มีข้อมูลทรัพย์ในระบบ';
+
+  @override
+  String get changePassword => 'เปลี่ยนรหัสผ่าน';
+
+  @override
+  String get save_draft => 'บันทึกร่าง';
+
+  @override
+  String get ok => 'ตกลง';
+
+  @override
+  String get next => 'ถัดไป';
+
+  @override
+  String get searchHint => 'ค้นหา...';
+
+  @override
+  String get labelCode => 'รหัส';
+
+  @override
+  String get searchFilter => 'ตัวกรองการค้นหา';
+
+  @override
+  String get approvalStatus => 'สถานะการอนุมัติ';
+
+  @override
+  String get all => 'ทั้งหมด';
+
+  @override
+  String get pendingAt => 'รอการอนุมัติ';
+
+  @override
+  String get approvedAt => 'อนุมัติแล้ว';
+
+  @override
+  String get disapprovedAt => 'ไม่อนุมัติ';
+
+  @override
+  String get minPrice => 'ราคาต่ำสุด';
+
+  @override
+  String get maxPrice => 'ราคาสูงสุด';
+
+  @override
+  String get propertyHighlights => 'จุดเด่นของอสังหาริมทรัพย์';
+
+  @override
+  String get commonFacilities => 'ส่วนกลาง';
+
+  @override
+  String get nearExpressway => 'ใกล้ทางด่วน';
+
+  @override
+  String get nearStation => 'ใกล้รถไฟฟ้า';
+
+  @override
+  String get nearHospital => 'ใกล้โรงพยาบาล';
+
+  @override
+  String get newProject => 'โครงการใหม่';
+
+  @override
+  String get securityGuard => 'เจ้าหน้าที่รักษาความปลอดภัย';
+
+  @override
+  String get baht => 'บาท';
+
+  @override
+  String get clearFilters => 'ล้างตัวกรอง';
+
+  @override
+  String get luxury => 'หรูหรา';
+
+  @override
+  String get classic => 'คลาสสิก';
+
+  @override
+  String get modern => 'โมเดิร์น';
+
+  @override
+  String get natural => 'เนเชอรัล';
+
+  @override
+  String get loft => 'ลอฟท์';
+
+  @override
+  String get occupancyStatusVacancy => 'ว่าง';
+
+  @override
+  String get occupancyStatusOccupied => 'ไม่ว่าง';
+
+  @override
+  String get propertyColor => 'สีทรัพย์';
+
+  @override
+  String get colorCyan => 'ฟ้า';
+
+  @override
+  String get totalFloorsLabel => 'จำนวนชั้น';
+
+  @override
+  String get bedroomsLabel => 'จำนวนห้องนอน';
+
+  @override
+  String get bathroomsLabel => 'จำนวนห้องน้ำ';
+
+  @override
+  String get parkingLabel => 'จำนวนที่จอดรถ';
+
+  @override
+  String get landSizeLabel => 'ขนาดที่ดิน';
+
+  @override
+  String get usableAreaLabel => 'พื้นที่ใช้สอย';
+
+  @override
+  String get propertyStyleLabel => 'สไตล์ทรัพย์';
+
+  @override
+  String get minimal => 'มินิมอล';
+
+  @override
+  String get vintage => 'วินเทจ';
+
+  @override
+  String get contemporary => 'ร่วมสมัย';
+
+  @override
+  String get colonialStyle => 'โคโลเนียล';
+
+  @override
+  String get nordicStyle => 'บอร์ดิก';
+
+  @override
+  String get thaiContemporary => 'ไทยร่วมสมัย';
+
+  @override
+  String get builtLabel => 'วันที่สร้าง';
+
+  @override
+  String get builtHint => 'เลือกวันที่สร้าง';
+
+  @override
+  String get propertyColorLabel => 'สีทรัพย์';
+
+  @override
+  String get propertyColorHint => 'เลือกสีทรัพย์';
+
+  @override
+  String get priceLabel => 'ราคา';
+
+  @override
+  String get currencyUnit => 'บาท';
+
+  @override
+  String get sqWahUnit => 'ตร.ว.';
+
+  @override
+  String get sqmUnit => 'ตร.ม.';
+
+  @override
+  String get propertyDirectionLabel => 'ทิศหน้าบ้าน';
+
+  @override
+  String get propertyTypeTitle => 'ประเภททรัพย์';
+
+  @override
+  String get studio => 'สตูดิโอ';
+
+  @override
+  String get project_name => 'ชื่อโครงการ';
+
+  @override
+  String get projectNameHint => 'ชื่อโครงการ';
+
+  @override
+  String get occupancyOccupied => 'ไม่ว่าง';
+
+  @override
+  String get type => 'ประเภท';
+
+  @override
+  String get garage => 'โรงจอดรถ';
+
+  @override
+  String get swimming_pool => 'สระว่ายน้ำ';
+
+  @override
+  String get settingsTitle => 'การตั้งค่า';
+
+  @override
+  String get accountManagementTitle => 'จัดการบัญชี';
+
+  @override
+  String get changeLanguageLabel => 'เปลี่ยนภาษา';
+
+  @override
+  String get notificationSettingsLabel => 'ตั้งค่าการแจ้งเตือน';
+
+  @override
+  String get matchingSettingsLabel => 'ตั้งค่าการค้นหาความเข้ากัน';
+
+  @override
+  String get termsLabel => 'ข้อตกลงและเงื่อนไขการใช้งาน';
+
+  @override
+  String get privacyLabel => 'นโยบายความเป็นส่วนตัว';
+
+  @override
+  String get contactUsLabel => 'ติดต่อเรา';
+
+  @override
+  String get logoutConfirmTitle => 'ออกจากระบบ?';
+
+  @override
+  String get logoutConfirmMessage => 'คุณต้องการออกจากระบบหรือไม่?';
+
+  @override
+  String get versionLabel => 'เวอร์ชั่น';
+
+  @override
+  String get requestChangeEmailLabel => 'แจ้งเปลี่ยนอีเมล';
+
+  @override
+  String get requestChangePhoneLabel => 'แจ้งเปลี่ยนหมายเลขโทรศัพท์';
+
+  @override
+  String get deleteAccountLabel => 'ลบบัญชีผู้ใช้งาน';
+
+  @override
+  String get personalInfoLabel => 'ข้อมูลส่วนตัว';
+
+  @override
+  String get editPersonalInfoTitle => 'แก้ไขข้อมูลส่วนตัว';
+
+  @override
+  String get savePersonalInfoTitle => 'บันทึกข้อมูลส่วนตัว?';
+
+  @override
+  String get savePersonalInfoMessage =>
+      'คุณต้องการบันทึกการแก้ไขข้อมูลส่วนตัวใช่หรือไม่?';
+
+  @override
+  String get nameLabel => 'ชื่อ-นามสกุล';
+
+  @override
+  String get nameHintText => 'กรอกชื่อ-นามสกุล';
+
+  @override
+  String get mobileHintText => '0xx-xxx-xxxx';
+
+  @override
+  String get bioLabel => 'ประวัติส่วนตัว';
+
+  @override
+  String get bioHintText => 'เล่ารายละเอียดเกี่ยวกับตัวคุณ...';
+
+  @override
+  String get nationalIdLabel => 'เลขบัตรประชาชน';
+
+  @override
+  String get nationalIdHintText => 'กรอกเลขบัตรประชาชน';
+
+  @override
+  String get addressHintText => 'กรอกที่อยู่';
+
+  @override
+  String get workInfoLabel => 'ข้อมูลการทำงาน';
+
+  @override
+  String get addWorkInfoTitle => 'เพิ่มข้อมูลการทำงาน';
+
+  @override
+  String get saveWorkInfoTitle => 'บันทึกข้อมูลการทำงาน?';
+
+  @override
+  String get saveWorkInfoMessage =>
+      'คุณต้องการบันทึกข้อมูลการทำงานนี้ใช่หรือไม่?';
+
+  @override
+  String get companyNameHint => 'ชื่อบริษัท';
+
+  @override
+  String get licenseNumberHint => 'หมายเลขใบอนุญาต';
+
+  @override
+  String get yearsOfExperienceLabel => 'ประสบการณ์การทำงาน';
+
+  @override
+  String get yearsOfExperienceHint => '0';
+
+  @override
+  String get languageProficiencyLabel => 'ความถนัดด้านภาษา';
+
+  @override
+  String get addLabel => 'เพิ่ม';
+
+  @override
+  String get linkOrIdHint => 'ลิงก์ หรือ ไอดี';
+
+  @override
+  String get currentPasswordLabel => 'รหัสผ่านปัจจุบัน';
+
+  @override
+  String get currentPasswordHint => 'กรอกรหัสผ่านปัจจุบัน';
+
+  @override
+  String get newPasswordLabel => 'รหัสผ่านใหม่';
+
+  @override
+  String get newPasswordHint => 'กรอกรหัสผ่านใหม่';
+
+  @override
+  String get confirmNewPasswordLabel => 'ยืนยันรหัสผ่านใหม่';
+
+  @override
+  String get confirmNewPasswordHint => 'กรุณายืนยันรหัสผ่านใหม่';
+
+  @override
+  String get passwordMismatchTitle => 'รหัสผ่านไม่ตรงกัน';
+
+  @override
+  String get passwordMismatchMessage =>
+      'กรุณาตรวจสอบรหัสผ่านใหม่และยืนยันรหัสผ่านใหม่อีกครั้ง';
+
+  @override
+  String get passwordChangeSuccessTitle => 'เปลี่ยนรหัสผ่านสำเร็จ';
+
+  @override
+  String get passwordChangeSuccessMessage =>
+      'รหัสผ่านของคุณได้รับการเปลี่ยนเรียบร้อยแล้ว';
+
+  @override
+  String get thaiLanguage => 'ภาษาไทย';
+
+  @override
+  String get englishLanguage => 'ภาษาอังกฤษ';
+
+  @override
+  String get searching => 'กำลังค้นหา…';
+
+  @override
+  String get serviceAreaLabel => 'ข้อมูลพื้นที่ให้บริการ';
+
+  @override
+  String get serviceAreaHint => 'พื้นที่ให้บริการ';
+
+  @override
+  String get serviceAreaDescription =>
+      'เลือกตำแหน่งบนแผนที่หรือใช้ตำแหน่งปัจจุบันของคุณเพื่อกำหนดพื้นที่ให้บริการ';
+
+  @override
+  String get useCurrentLocationLabel => 'ใช้ตำแหน่งปัจจุบัน';
+
+  @override
+  String get clearLocationLabel => 'ล้างตำแหน่ง';
+
+  @override
+  String get serviceRadiusLabel => 'รัศมีที่ให้บริการ';
+
+  @override
+  String get serviceRadiusHint => 'รัศมีที่ให้บริการ';
+
+  @override
+  String get serviceRadiusUnit => 'กม.';
+
+  @override
+  String get saveServiceAreaTitle => 'บันทึกพื้นที่ให้บริการ?';
+
+  @override
+  String get saveServiceAreaMessage =>
+      'คุณต้องการบันทึกข้อมูลพื้นที่ให้บริการนี้ใช่หรือไม่?';
+
+  @override
+  String get addServiceAreaTitle => 'เพิ่มข้อมูลพื้นที่ให้บริการ';
+
+  @override
+  String get specifyLocationTitle => 'ระบุตำแหน่ง';
+
+  @override
+  String get specifyLocationMessage =>
+      'กรุณาเลือกตำแหน่งศูนย์กลางพื้นที่ให้บริการบนแผนที่';
+
+  @override
+  String get changePasswordTitle => 'เปลี่ยนรหัสผ่าน';
+
+  @override
+  String get changePasswordDescription =>
+      'รหัสผ่านของคุณต้องมีอย่างน้อย 8 ตัวอักษร และประกอบด้วยตัวอักษรและตัวเลข';
+
+  @override
+  String get changePasswordButton => 'เปลี่ยนรหัสผ่าน';
+
+  @override
+  String get change_language => 'เปลี่ยนภาษา';
+
+  @override
+  String get select_language => 'เลือกภาษาหลักของระบบ';
+
+  @override
+  String get addDeveloperTitle => 'เพิ่มผู้พัฒนาโครงการ';
+
+  @override
+  String get developerNameLabel => 'ชื่อผู้พัฒนาโครงการ';
+
+  @override
+  String get developerNameHint => 'ชื่อผู้พัฒนาโครงการ';
+
+  @override
+  String get addProjectNameTitle => 'เพิ่มชื่อโครงการ';
+
+  @override
+  String get locationTitle => 'ตำแหน่งที่ตั้ง';
+
+  @override
+  String get searchLocationHint => 'ค้นหาตำแหน่งที่ตั้ง';
+
+  @override
+  String get confirmLocationButton => 'ยืนยันตำแหน่งนี้';
+
+  @override
+  String get propertyTypeLabel => 'ประเภททรัพย์';
+
+  @override
+  String get propertyImagesLabel => 'รูปภาพทรัพย์';
+
+  @override
+  String get uploadImagesButton => 'อัปโหลดรูปภาพ';
+
+  @override
+  String get imageSampleLabel => 'ตัวอย่างรูปภาพ';
+
+  @override
+  String get deleteAllImagesButton => 'ลบรูปภาพทั้งหมด';
+
+  @override
+  String get takePhotoButton => 'ถ่ายรูปภาพ';
+
+  @override
+  String get selectFromAlbumButton => 'เลือกจากอัลบั้ม';
+
+  @override
+  String get deleteAllConfirmLabel => 'ลบทั้งหมด';
+
+  @override
+  String get showLessButton => 'เเสดงน้อยลง';
+
+  @override
+  String get showMoreButton => 'ดูเพิ่มเติม';
+
+  @override
+  String get retryButton => 'ลองใหม่';
+
+  @override
+  String get editDataButton => 'แก้ไขข้อมูล';
+
+  @override
+  String get selectLocationTitle => 'เลือกตำแหน่ง';
+
+  @override
+  String get selectLocationMessage =>
+      'กรุณาเลือกตำแหน่งบนแผนที่หรือค้นหาสถานที่';
+
+  @override
+  String get mapAddressLabel => 'ที่อยู่ตามแผนที่';
+
+  @override
+  String get saveButton => 'บันทึก';
+
+  @override
+  String get editDataTitle => 'แก้ไขข้อมูล';
+
+  @override
+  String get successTitle => 'สำเร็จ';
+
+  @override
+  String get changesSavedMessage => 'บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว';
+
+  @override
+  String get saveChangesConfirmation =>
+      'คุณต้องการบันทึกการเปลี่ยนแปลงนี้ใช่หรือไม่';
+
+  @override
+  String get confirmSaveLabel => 'บันทึก';
+
+  @override
+  String get cancelSaveLabel => 'ยกเลิก';
+
+  @override
+  String get pleaseFillAllFieldsError => 'กรุณากรอกข้อมูลให้ครบถ้วน';
+
+  @override
+  String get listingTypeValueSale => 'ขาย';
+
+  @override
+  String get listingTypeValueRent => 'เช่า';
+
+  @override
+  String get listingTypeValueSaleAndRent => 'ขายและเช่า';
+
+  @override
+  String get statusValueAvailable => 'ว่าง';
+
+  @override
+  String get statusValueNotAvailable => 'ไม่ว่าง';
+
+  @override
+  String get propertyDetailFallback => 'รายละเอียดทรัพย์สิน';
+
+  @override
+  String get addDeveloperDescription =>
+      'ถ้าคุณเพิ่มผู้พัฒนาโครงการใหม่ ระบบจะเก็บข้อมูลไว้ให้ และคุณสามารถค้นหาได้ง่ายๆ ในครั้งถัดไปเลย';
+
+  @override
+  String get addProjectNameDescription =>
+      'ถ้าคุณเพิ่มชื่อโครงการใหม่ ระบบจะเก็บข้อมูลไว้ให้ และคุณสามารถค้นหาได้ง่ายๆ ในครั้งถัดไปเลย';
+
+  @override
+  String get addNowButton => 'เพิ่มเลย!!!';
+
+  @override
+  String get deleteAllImagesConfirmTitle => 'ลบรูปภาพทั้งหมด?';
+
+  @override
+  String get deleteAllImagesConfirmMessage =>
+      'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้';
+
+  @override
+  String get imagesDeletedMessage => 'ลบรูปภาพทั้งหมดเรียบร้อยแล้ว';
+
+  @override
+  String get searchFilterLabel => 'ตัวกรองการค้นหา';
+
+  @override
+  String get approvalStatusTitle => 'สถานะการอนุมัติ';
+
+  @override
+  String get statusIncomplete => 'ยังไม่สมบูรณ์';
+
+  @override
+  String get statusComplete => 'สมบูรณ์';
+
+  @override
+  String get contractTypeTitle => 'ประเภทสัญญา';
+
+  @override
+  String get saleContractType => 'สัญญาขาย';
+
+  @override
+  String get rentContractType => 'สัญญาเช่า';
+
+  @override
+  String get clearFiltersButton => 'ล้างค่า';
+
+  @override
+  String get showResultsButton => 'แสดงผลลัพธ์';
+
+  @override
+  String get confirmCancelTitle => 'ยืนยันการยกเลิก';
+
+  @override
+  String get confirmCancelMessage =>
+      'ข้อมูลที่คุณกรอกไว้จะหายไป คุณต้องการยกเลิกใช่หรือไม่?';
+
+  @override
+  String get confirmCancelLabel => 'ยืนยันการยกเลิก';
+
+  @override
+  String get continueEditingLabel => 'กลับไปทำต่อ';
+
+  @override
+  String get createContractTitle => 'สร้างสัญญา';
+
+  @override
+  String get saveDraftButton => 'บันทึกร่าง';
+
+  @override
+  String get backButton => 'ย้อนกลับ';
+
+  @override
+  String get createContractButton => 'สร้างสัญญา';
+
+  @override
+  String get nextButton => 'ถัดไป';
+
+  @override
+  String get statusPendingSignature => 'รอการลงนาม';
+
+  @override
+  String get statusCancelled => 'ยกเลิก';
+
+  @override
+  String get registrationSuccessTitle => 'ลงทะเบียนสำเร็จ';
+
+  @override
+  String get accountCreatedMessage => 'บัญชีถูกสร้างเรียบร้อยแล้ว';
+
+  @override
+  String get errorOccurredTitle => 'เกิดข้อผิดพลาด';
+
+  @override
+  String get createNewAccountTitle => 'สร้างบัญชีใหม่';
+
+  @override
+  String get sentToOwnerMessage => 'ส่งเอกสารไปยังเจ้าของทรัพย์เรียบร้อยแล้ว';
+
+  @override
+  String get sentToBuyerMessage => 'ส่งเอกสารไปยังผู้ซื้อเรียบร้อยแล้ว';
+
+  @override
+  String get changeEmailTitle => 'แจ้งเปลี่ยนอีเมล';
+
+  @override
+  String get changeEmailSubtitle =>
+      'กรอกอีเมลใหม่ที่อยากเปลี่ยนได้เลย ถ้าคุณยืนยันแล้ว เราจะรีบตรวจสอบและแจ้งให้ทราบทันที';
+
+  @override
+  String get requestChangeButton => 'แจ้งเปลี่ยน';
+
+  @override
+  String get newEmailLabel => 'อีเมลใหม่';
+
+  @override
+  String get changePhoneTitle => 'แจ้งเปลี่ยนหมายเลขโทรศัพท์';
+
+  @override
+  String get changePhoneSubtitle =>
+      'กรอกหมายเลขโทรศัพท์ใหม่ที่อยากเปลี่ยนได้เลย ถ้าคุณยืนยันแล้ว เราจะรีบตรวจสอบและแจ้งให้ทราบทันที';
+
+  @override
+  String get newPhoneLabel => 'หมายเลขโทรศัพท์ใหม่';
+
+  @override
+  String get deleteAccountTitle => 'ลบบัญชีผู้ใช้งาน?';
+
+  @override
+  String get deleteAccountConfirmPrompt =>
+      'หากคุณต้องการลบบัญชีผู้ใช้งาน กรุณาพิมพ์คำว่า ';
+
+  @override
+  String get deleteAccountConfirmSuffix => ' เพื่อยืนยันการลบบัญชี';
+
+  @override
+  String get typeToDeleteHint => 'พิมพ์ข้อความที่นี่...';
+
+  @override
+  String get yesDeleteImmediately => 'ใช่, ลบทันที';
+
+  @override
+  String get unexpectedErrorTryAgain =>
+      'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองอีกครั้ง';
+
+  @override
+  String get welcome => 'ยินดีต้อนรับ';
+
+  @override
+  String get agencyUnknown => 'เอเจนซี่ไม่ระบุชื่อ';
+
+  @override
+  String get searchProperty => 'ค้นหาทรัพย์ของคุณ...';
+
+  @override
+  String get finance => 'การเงิน';
+
+  @override
+  String get contactListLabel => 'รายชื่อผู้ติดต่อ';
+
+  @override
+  String get coAgent => 'ตัวแทนร่วม';
+
+  @override
+  String get data => 'ข้อมูลลูกค้า';
+
+  @override
+  String get recommendedForYou => 'แนะนำสำหรับคุณ';
+
+  @override
+  String get curatedForYou => 'คัดสรรสิ่งที่ดีที่สุดมาเพื่อคุณโดยเฉพาะ';
+
+  @override
+  String get sample => 'ตัวอย่างประชาสัมพันธ์';
+
+  @override
+  String get activityDemoUser12Min => 'ก้องเกียร การธุรกิจเลิศ • 12 นาที';
+
+  @override
+  String get dateDemoDec24 => '24 ธ.ค. 2568, 12:00 น.';
+
+  @override
+  String get activities => 'กิจกรรม';
+
+  @override
+  String get activitiesSubtitle =>
+      'รวมกิจกรรม ข่าวสาร และประชาสัมพันธ์ที่น่าสนใจ';
+
+  @override
+  String get contract => 'สัญญา';
+
+  @override
+  String get signedByBoth => 'ทั้งสองฝ่ายลงนามแล้ว';
+
+  @override
+  String get signedByLessor => 'ผู้ให้เช่าลงนามแล้ว';
+
+  @override
+  String get signedByLessee => 'ผู้เช่าลงนามแล้ว';
+
+  @override
+  String get notSignedYet => 'ยังไม่มีผู้ลงนาม';
+
+  @override
+  String get downloadPdf => 'ดาวน์โหลด PDF';
+
+  @override
+  String get pleaseWait => 'กรุณารอสักครู่';
+
+  @override
+  String get document => 'กำลังโหลดเอกสาร PDF...';
+
+  @override
+  String get property => 'เจ้าของทรัพย์';
+
+  @override
+  String get file => 'แชร์ไฟล์ PDF';
+
+  @override
+  String get submit => 'ส่ง';
+
+  @override
+  String get submitDocument => 'ส่งเอกสารอีกครั้ง?';
+
+  @override
+  String get loadingPdf => 'กำลังโหลด PDF...';
+
+  @override
+  String get preparingPdf => 'กำลังเตรียม PDF...';
+
+  @override
+  String get editContract => 'แก้ไขสัญญา';
+
+  @override
+  String get deleteContract => 'ลบสัญญา?';
+
+  @override
+  String get deleteBackContract =>
+      'คุณต้องการลบสัญญานี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้';
+
+  @override
+  String get contractDocument => 'ไม่พบเอกสารสัญญา';
+
+  @override
+  String get dataContract => 'ขณะนี้ยังไม่มีข้อมูลสัญญาในระบบ';
+
+  @override
+  String get errorLabel => 'ผิดพลาด';
+
+  @override
+  String get saveDataSuccess => 'บันทึกข้อมูลไม่สำเร็จ';
+
+  @override
+  String get saveChangesQuestion => 'บันทึกการเปลี่ยนแปลง?';
+
+  @override
+  String get dataProperty => 'ข้อมูลเจ้าของทรัพย์';
+
+  @override
+  String get dataAddress => 'ข้อมูลส่วนตัว ที่อยู่ และช่องทางการติดต่อ';
+
+  @override
+  String get addDetails => 'เพิ่มรายการเครื่องใช้ไฟฟ้า และรายละเอียด';
+
+  @override
+  String get payment => 'การชำระเงิน';
+
+  @override
+  String get addContractConditionsAdditional => 'ระบุเงื่อนไขสัญญาเพิ่มเติม';
+
+  @override
+  String get contractFile => 'ไฟล์แนบสัญญา';
+
+  @override
+  String get editAddContractFile => 'เพิ่ม และแก้ไขไฟล์แนบสัญญา';
+
+  @override
+  String get conditions => 'ระบุเงื่อนไข...';
+
+  @override
+  String get personTypeLabel => 'ประเภทบุคคล';
+
+  @override
+  String get searchDataNameProperty =>
+      'ค้นหาชื่อเจ้าของทรัพย์ในระบบ เพื่อเชื่อมต่อข้อมูล';
+
+  @override
+  String get currentAddressLabel => 'ที่อยู่ปัจจุบัน';
+
+  @override
+  String get deleteItemQuestion => 'ลบรายการนี้?';
+
+  @override
+  String get nameFile => 'ชื่อไฟล์';
+
+  @override
+  String get uploadFile => 'อัปโหลดไฟล์ PDF อย่างน้อย 1 ไฟล์';
+
+  @override
+  String get sellingPrice => 'ราคาขาย';
+
+  @override
+  String get rentalPrice => 'ราคาเช่า';
+
+  @override
+  String get paymentDueDateLabel => 'วันที่ครบกำหนดชำระ';
+
+  @override
+  String get enterDateRangeHint => 'ระบุวันที่ 1-31';
+
+  @override
+  String get latePaymentPenalty => 'ค่าปรับล่าช้า';
+
+  @override
+  String get bahtPerDay => 'บาท/วัน';
+
+  @override
+  String get enterBranchHint => 'ระบุสาขา';
+
+  @override
+  String get enterAccountNumberHint => 'ระบุเลขบัญชี';
+
+  @override
+  String get select => 'เลือกจากรูปอสังหาฯ';
+
+  @override
+  String get furnitureExampleHint => 'เช่น เตียงนอน, โซฟา';
+
+  @override
+  String get furnitureDescExampleHint => 'เช่น เตียงนอน 6 ฟุต สีไม้สน';
+
+  @override
+  String get propertyPhotos => 'รูปอสังหาฯ';
+
+  @override
+  String get searchDataName => 'ค้นหาชื่ออสังหาฯ ในระบบ เพื่อเชื่อมต่อข้อมูล';
+
+  @override
+  String get contractSelect => 'เลือกวันที่ทำสัญญา';
+
+  @override
+  String get totalLeasePeriod => 'รวมระยะเวลาเช่า';
+
+  @override
+  String get applianceExampleHint => 'เช่น ตู้เย็น, พัดลม';
+
+  @override
+  String get applianceDescExampleHint => 'เช่น ตู้เย็นสามประตู สีดำ ซื้อมาใหม่';
+
+  @override
+  String get signed => 'ลงนามแล้ว';
+
+  @override
+  String get notSigned => 'ยังไม่ได้ลงนาม';
+
+  @override
+  String get buyer => 'ผู้ซื้อ';
+
+  @override
+  String get callProperty => 'โทรหาเจ้าของทรัพย์';
+
+  @override
+  String get call => 'โทร';
+
+  @override
+  String get dataPhoneCall => 'ไม่มีข้อมูลเบอร์โทรศัพท์';
+
+  @override
+  String get edit => 'แก้ไข';
+
+  @override
+  String get townhouse => 'ทาวน์เฮ้าส์/ทาวน์โฮม';
+
+  @override
+  String get showresults => 'แสดงผลลัพธ์';
+
+  @override
+  String get dataPropertyContract =>
+      'ลงทะเบียนข้อมูลเจ้าของทรัพย์ เพื่อทำสัญญา';
+
+  @override
+  String get registering => 'กำลังสมัคร...';
+
+  @override
+  String get registerMember => 'สมัครสมาชิก';
+
+  @override
+  String get demoNameSomchai => 'สมชาย ใจดี';
+
+  @override
+  String get demoAddress1 => '123/456 กรุงเทพฯ';
+
+  @override
+  String get demoNameJaidee => 'ใจดี มีสุข';
+
+  @override
+  String get demoAddress2 => '456/789 กรุงเทพฯ';
+
+  @override
+  String get registerToStart => 'ลงทะเบียนเพื่อเริ่มต้นใช้งานระบบ';
+
+  @override
+  String get forAgent => 'สำหรับเอเจนต์';
+
+  @override
+  String get forAgency => 'สำหรับบริษัท';
+
+  @override
+  String get submitEmailSuccess => 'ส่งอีเมลสำเร็จ';
+
+  @override
+  String get emailPassword => 'กรุณาตรวจสอบอีเมลของคุณเพื่อรีเซ็ตรหัสผ่าน';
+
+  @override
+  String get submitEmail => 'ไม่สามารถส่งอีเมลได้';
+
+  @override
+  String get welcomeAgentManual => 'ยินดีต้อนรับเข้าสู่คู่มือใหม่ของเอเจนต์';
+
+  @override
+  String get submitPassword => 'ส่งลิงก์รีเซ็ตรหัสผ่านเรียบร้อยแล้ว';
+
+  @override
+  String get confirmPassword => 'ยืนยันการเปลี่ยนรหัสผ่าน';
+
+  @override
+  String get confirmPasswordUseQuestion =>
+      'คุณแน่ใจหรือไม่ที่จะใช้รหัสผ่านนี้?';
+
+  @override
+  String get passwordSuccess => 'ตั้งรหัสผ่านใหม่สำเร็จ กรุณาเข้าสู่ระบบ';
+
+  @override
+  String get confirmEmail => 'ยืนยันอีเมล';
+
+  @override
+  String get confirmSubmitEmail =>
+      'เราได้ส่งลิงก์ยืนยันไปที่อีเมลของคุณแล้ว\\nกรุณายืนยันอีเมลผ่านลิงก์ที่ส่งไป เพื่อเริ่มต้นใช้งาน';
+
+  @override
+  String get locationProperty => 'ตำแหน่งทรัพย์';
+
+  @override
+  String get saveLocation => 'บันทึกตำแหน่งนี้?';
+
+  @override
+  String get confirmLocationPropertySelect =>
+      'ยืนยันการเลือกตำแหน่งนี้สำหรับประกาศทรัพย์';
+
+  @override
+  String get searchAddress => 'กำลังค้นหาที่อยู่…';
+
+  @override
+  String get confirmThisLocation => 'ยืนยันตําแหน่งนี้';
+
+  @override
+  String get noDataFound => 'ไม่พบข้อมูล';
+
+  @override
+  String get dateFormat => 'dd ม.ค. yyyy';
+
+  @override
+  String get demoCompanyName => 'บริษัท ยัวร์โฮม แพลตฟอร์ม จำกัด';
+
+  @override
+  String get lastUpdateDemo => 'อัปเดตล่าสุด 24 ธ.ค. 2568, 12:00 น.';
+
+  @override
+  String get decline => 'ไม่ยอมรับ';
+
+  @override
+  String get accept => 'ยอมรับ';
+
+  @override
+  String get userAllDocumentConditions =>
+      'ผู้ใช้บริการตกลงที่จะใช้บริการของบริษัท ยัวร์เอเจนต์ แพลตฟอร์ม จำกัด ตามข้อกำหนดและเงื่อนไขที่กำหนดไว้ในเอกสารฉบับนี้ โดยการเข้าใช้งานหรือใช้บริการใดๆ ของแพลตฟอร์ม ถือว่าผู้ใช้บริการยอมรับและผูกพันตามข้อกำหนดและเงื่อนไขทั้งหมด';
+
+  @override
+  String get cancelDeleteEditUserConditions =>
+      'บริษัทขอสงวนสิทธิ์ในการแก้ไข เปลี่ยนแปลง หรือยกเลิกข้อกำหนดและเงื่อนไขการใช้งานได้ตลอดเวลา โดยจะแจ้งให้ผู้ใช้บริการทราบผ่านทางเว็บไซต์หรือช่องทางอื่นๆ ที่เหมาะสม การแก้ไขใดๆ จะมีผลบังคับใช้ทันทีหลังจากประกาศ';
+
+  @override
+  String get dataUser =>
+      'ผู้ใช้บริการต้องรับผิดชอบต่อข้อมูลที่ให้ไว้ในแพลตฟอร์ม และต้องให้ข้อมูลที่ถูกต้อง ครบถ้วน และเป็นปัจจุบัน บริษัทไม่รับผิดชอบต่อความเสียหายใดๆ ที่เกิดจากการให้ข้อมูลที่ไม่ถูกต้องหรือไม่ครบถ้วน';
+
+  @override
+  String get submitDataUser =>
+      'ผู้ใช้บริการตกลงที่จะไม่ใช้บริการในทางที่ผิดกฎหมาย หรือเพื่อวัตถุประสงค์ที่ผิดกฎหมาย รวมถึงการละเมิดสิทธิ์ของผู้อื่น การส่งข้อมูลที่เป็นเท็จ หรือการกระทำใดๆ ที่อาจก่อให้เกิดความเสียหายต่อบริษัทหรือบุคคลที่สาม';
+
+  @override
+  String get cancelUserConditions =>
+      'บริษัทขอสงวนสิทธิ์ในการระงับหรือยกเลิกการให้บริการแก่ผู้ใช้บริการที่ละเมิดข้อกำหนดและเงื่อนไขการใช้งาน โดยไม่ต้องแจ้งให้ทราบล่วงหน้า และไม่ต้องรับผิดชอบต่อความเสียหายใดๆ ที่เกิดขึ้นจากการระงับหรือยกเลิกการให้บริการ';
+
+  @override
+  String get closeDataUser =>
+      'บริษัท ยัวร์เอเจนต์ แพลตฟอร์ม จำกัด ให้ความสำคัญกับการคุ้มครองข้อมูลส่วนบุคคลของผู้ใช้บริการ โดยจะเก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลตามนโยบายความเป็นส่วนตัวนี้เท่านั้น';
+
+  @override
+  String get dataNameEmailCallAddressUser =>
+      'ข้อมูลส่วนบุคคลที่บริษัทเก็บรวบรวม ได้แก่ ชื่อ นามสกุล อีเมล หมายเลขโทรศัพท์ ที่อยู่ และข้อมูลอื่นๆ ที่ผู้ใช้บริการให้ไว้ในระหว่างการใช้งานแพลตฟอร์ม';
+
+  @override
+  String get submitData =>
+      'บริษัทจะใช้ข้อมูลส่วนบุคคลเพื่อการให้บริการ การปรับปรุงบริการ การส่งข้อมูลข่าวสาร และวัตถุประสงค์อื่นๆ ที่เกี่ยวข้องกับบริการของบริษัทเท่านั้น';
+
+  @override
+  String get closeDataImageUser =>
+      'บริษัทจะไม่เปิดเผยข้อมูลส่วนบุคคลให้แก่บุคคลที่สามโดยไม่ได้รับความยินยอมจากผู้ใช้บริการ ยกเว้นในกรณีที่กฎหมายกำหนด หรือเพื่อการป้องกันหรือระงับอันตรายต่อชีวิต ร่างกาย หรือสุขภาพ';
+
+  @override
+  String get deleteEditDataUser =>
+      'ผู้ใช้บริการมีสิทธิ์ในการเข้าถึง แก้ไข หรือลบข้อมูลส่วนบุคคลของตนได้ตลอดเวลา โดยติดต่อผ่านช่องทางที่บริษัทกำหนด';
+
+  @override
+  String get dataAll =>
+      'ข้อมูลที่แสดงในแพลตฟอร์มเป็นข้อมูลที่ได้รับจากแหล่งต่างๆ บริษัทไม่รับประกันความถูกต้อง ครบถ้วน หรือเป็นปัจจุบันของข้อมูลทั้งหมด';
+
+  @override
+  String get disclaimerExcerpt =>
+      'บริษัทไม่รับผิดชอบต่อความเสียหายใดๆ ที่เกิดจากการใช้หรือไม่สามารถใช้บริการของแพลตฟอร์ม รวมถึงความเสียหายทางอ้อม ตามมา หรือเฉพาะเจาะจง';
+
+  @override
+  String get cancelEdit =>
+      'บริษัทขอสงวนสิทธิ์ในการแก้ไข เปลี่ยนแปลง หรือยกเลิกบริการใดๆ ได้ตลอดเวลาโดยไม่ต้องแจ้งให้ทราบล่วงหน้า';
+
+  @override
+  String get activityDemoUser15Min => 'ก้องเกียร การธุรกิจเลิศ • 15 นาที';
+
+  @override
+  String get dateDemoDec25 => '25 ธ.ค. 2568, 14:00 น.';
+
+  @override
+  String get newBooking => 'การจองใหม่';
+
+  @override
+  String get alert => 'การแจ้งเตือน';
+
+  @override
+  String get archive => 'เก็บถาวร';
+
+  @override
+  String get deleteAlert => 'ลบการแจ้งเตือน?';
+
+  @override
+  String get deleteBackAlert =>
+      'คุณต้องการลบการแจ้งเตือนนี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้';
+
+  @override
+  String get closeLocation => 'เปิดบริการตำแหน่ง';
+
+  @override
+  String get notAuthorized => 'ไม่ได้รับอนุญาต';
+
+  @override
+  String get locationPermissionPrompt =>
+      'กรุณาอนุญาตการเข้าถึงตำแหน่งเพื่อใช้งานฟีเจอร์นี้';
+
+  @override
+  String get goToSettings => 'ไปที่ตั้งค่า';
+
+  @override
+  String get propertyHouse =>
+      'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก';
+
+  @override
+  String get demoPropertyPunnawithi1_Title =>
+      'บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก';
+
+  @override
+  String get demoLocationPunnawithi => 'ปุณณวิถี, กรุงเทพมหานคร';
+
+  @override
+  String get condoNearBts => 'คอนโดใกล้ BTS';
+
+  @override
+  String get demoLocationSukhumvit => 'สุขุมวิท, กรุงเทพมหานคร';
+
+  @override
+  String get townhome3Floors => 'ทาวน์โฮม 3 ชั้น';
+
+  @override
+  String get demoLocationLadprao => 'ลาดพร้าว, กรุงเทพมหานคร';
+
+  @override
+  String get demoLocationRamkhamhaeng => 'รามคำแหง, กรุงเทพมหานคร';
+
+  @override
+  String get demoLocationSathon => 'สาธร, กรุงเทพมหานคร';
+
+  @override
+  String get demoLocationBangna => 'บางนา, กรุงเทพมหานคร';
+
+  @override
+  String get townhouseTownhome => 'ทาวน์เฮาส์/ทาวน์โฮม';
+
+  @override
+  String get pleaseLoginAgain => 'กรุณาเข้าสู่ระบบอีกครั้ง';
+
+  @override
+  String get systemErrorTryAgain => 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่อีกครั้ง';
+
+  @override
+  String get errorTryAgain => 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+
+  @override
+  String get subdistrictLabel => 'แขวง';
+
+  @override
+  String get districtLabel => 'เขต';
+
+  @override
+  String get subdistrictThaiLabel => 'ตำบล';
+
+  @override
+  String get districtThaiLabel => 'อำเภอ';
+
+  @override
+  String get soiLabel => 'ซอย';
+
+  @override
+  String get noAttachedPhotos => 'ไม่มีรูปภาพแนบ';
+
+  @override
+  String get searchSuccess => 'ค้นหาสำเร็จ';
+
+  @override
+  String get noResultsFound => 'ไม่พบผลลัพธ์';
+
+  @override
+  String get demoNews1 => 'ตัวอย่างข่าวสาร';
+
+  @override
+  String get shareDocument => 'แชร์เอกสาร';
+
+  @override
+  String get submitDocumentQuestion => 'ส่งเอกสาร?';
+
+  @override
+  String get buyerInfo => 'ข้อมูลผู้ซื้อ';
+
+  @override
+  String get addFurnitureDetails => 'เพิ่มรายการเฟอร์นิเจอร์ และรายละเอียด';
+
+  @override
+  String get paymentMethods => 'ค่าใช้จ่าย และช่องทางการชำระเงิน';
+
+  @override
+  String get additionalContractConditions => 'เงื่อนไขสัญญาเพิ่มเติม';
+
+  @override
+  String get fileNameHint => 'ชื่อไฟล์ เช่น สำเนาบัตรประชาชน';
+
+  @override
+  String get propertyOwnerNotFound => 'ไม่พบข้อมูลเจ้าของทรัพย์';
+
+  @override
+  String get enterAccountNameHint => 'ระบุชื่อบัญชี';
+
+  @override
+  String get contractFormat => 'รูปแบบสัญญา';
+
+  @override
+  String get selectContractStartDate => 'เลือกวันที่เริ่มสัญญา';
+
+  @override
+  String get registerBuyerToContract => 'ลงทะเบียนข้อมูลผู้ซื้อ เพื่อทำสัญญา';
+
+  @override
+  String get enterRegisteredEmailHint =>
+      'กรอกอีเมลที่ลงทะเบียนไว้ เพื่อรับลิงก์รีเซ็ตรหัสผ่าน';
+
+  @override
+  String get sendResetPasswordLink => 'ส่งลิงค์รีเซ็ตรหัสผ่าน';
+
+  @override
+  String get resetPasswordFailed => 'ไม่สามารถตั้งรหัสผ่านใหม่ได้';
+
+  @override
+  String get emailSentSuccessfully => 'ส่งอีเมลเรียบร้อยแล้ว';
+
+  @override
+  String get propertyNotFound => 'ไม่พบรายการทรัพย์';
+
+  @override
+  String get propertyLocationOnMap => 'ตำแหน่งทรัพย์บนแผนที่';
+
+  @override
+  String get createLabel => 'สร้าง';
+
+  @override
+  String get selectLocation => 'เลือกตําแหน่ง';
+
+  @override
+  String get usableAreaSize => 'ขนาดพื้นที่ใช้สอย';
+
+  @override
+  String get startingPrice => 'ราคาเริ่มต้น';
+
+  @override
+  String get classicStyle => 'คลาสสิค';
+
+  @override
+  String get securityGuardLabel => 'เจ้าหน้าที่ รปภ.';
+
+  @override
+  String get showresults1 => 'แสดงผลลัพธ์';
+
+  @override
+  String get draftLabel => 'ร่าง';
+
+  @override
+  String get termsGovernanceDisclaimer =>
+      'ข้อกำหนดและเงื่อนไขการใช้งานนี้อยู่ภายใต้กฎหมายไทย หากเกิดข้อพิพาทใดๆ ให้ศาลที่มีเขตอำนาจในกรุงเทพมหานครเป็นผู้ชี้ขาด';
+
+  @override
+  String get tryAgain => 'ลองอีกครั้ง';
+
+  @override
+  String get emailNotVerifiedYet => 'ยังไม่ยืนยันอีเมล';
+
+  @override
+  String get yourProfile => 'โปรไฟล์ของคุณ';
+
+  @override
+  String get notSpecified => 'ไม่ได้ระบุ';
+
+  @override
+  String get languageProficiency => 'ความถนัดทางภาษา';
+
+  @override
+  String get addressNotSpecified => 'ไม่ได้ระบุที่อยู่';
+
+  @override
+  String get noNotificationsFound => 'ไม่พบการแจ้งเตือน';
+
+  @override
+  String get enableLocationServicesPrompt =>
+      'กรุณาเปิด Location Services เพื่อใช้งานตำแหน่งปัจจุบัน';
+
+  @override
+  String get locationPermissionRequired => 'ต้องอนุญาตตำแหน่ง';
+
+  @override
+  String get demoPropertyPunnawithi1 =>
+      'อสังหาริมทรัพย์ที่ 2 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก';
+
+  @override
+  String get cheapRentalHouse => 'บ้านเช่าถูก';
+
+  @override
+  String get luxuryRiversideCondo => 'คอนโดหรู ริมแม่น้ำ';
+
+  @override
+  String get dragAndDropHint =>
+      'หรือลากวางไฟล์ที่นี่\\nรองรับไฟล์ JPG, PNG, WebP ขนาดไม่เกิน 5MB ต่อไฟล์';
+
+  @override
+  String get demoActivity => 'ตัวอย่างกิจกรรม';
+
+  @override
+  String get electrical_appliances_photos => 'รูปภาพเครื่องใช้ไฟฟ้า';
+
+  @override
+  String get furniture_photos => 'รูปภาพเฟอร์นิเจอร์';
+
+  @override
+  String get buyerDataNotFound => 'ไม่พบข้อมูลผู้ซื้อ';
+
+  @override
+  String get sixMonthLeaseContract => 'สัญญาเช่า 6 เดือน';
+
+  @override
+  String get selectContractEndDate => 'เลือกวันที่สิ้นสุดสัญญา';
+
+  @override
+  String get fullNameLabel => 'ชื่อ - นามสกุล';
+
+  @override
+  String get resetPasswordTitle => 'รีเซ็ตรหัสผ่าน';
+
+  @override
+  String get resendLink => 'ส่งลิงก์อีกครั้ง';
+
+  @override
+  String get createPropertyLabel => 'สร้างทรัพย์';
+
+  @override
+  String get noNotificationsNow =>
+      'ยังไม่มีการแจ้งเตือนตอนนี้\\nเราจะอัปเดตให้คุณทราบที่นี่เมื่อมีแจ้งเตือน';
+
+  @override
+  String get locationPermissionDeniedPermanently =>
+      'คุณปิดสิทธิ์ตำแหน่งถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์';
+
+  @override
+  String get cannotGetLocation => 'ไม่สามารถรับตำแหน่งปัจจุบันได้';
+
+  @override
+  String get demoPropertyPunnawithi2 =>
+      'อสังหาริมทรัพย์ที่ 3 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก';
+
+  @override
+  String get twoStoryHouse => 'บ้านเดี่ยว 2 ชั้น';
+
+  @override
+  String get propertyDataNotFound => 'ไม่พบข้อมูลอสังหาฯ';
+
+  @override
+  String get twelveMonthLeaseContract => 'สัญญาเช่า 12 เดือน';
+
+  @override
+  String get setNewPasswordPrompt => 'กรุณาตั้งรหัสผ่านใหม่ของคุณ';
+
+  @override
+  String get propertyHighlightsLabel => 'จุดเด่นทรัพย์';
+
+  @override
+  String get externalLinksDisclaimer =>
+      'การเชื่อมโยงไปยังเว็บไซต์อื่นๆ ที่ปรากฏในแพลตฟอร์ม เป็นเพียงการอำนวยความสะดวกเท่านั้น บริษัทไม่รับผิดชอบต่อเนื้อหา หรือการปฏิบัติการใดๆ ของเว็บไซต์เหล่านั้น';
+
+  @override
+  String get demoPR2 => 'ตัวอย่างประชาสัมพันธ์ 2';
+
+  @override
+  String get houseWithGarden => 'บ้านพร้อมสวน';
+
+  @override
+  String get enterNewPasswordPrompt => 'กรุณากรอกรหัสผ่านใหม่';
+
+  @override
+  String get demoNews2 => 'ตัวอย่างข่าวสาร 2';
+
+  @override
+  String get demoProperty4 => 'อสังหาริมทรัพย์ที่ 4';
+
+  @override
+  String get checkInternetConnectionLabel =>
+      'กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต';
+
+  @override
+  String get invalidDataCheckAndTryAgain =>
+      'ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบและลองใหม่';
+
+  @override
+  String get passwordRequirementNote =>
+      'รหัสผ่านของคุณต้องมีอย่างน้อย 8 ตัวอักษร และประกอบ ด้วยตัวอักษรและตัวเลข';
+
+  @override
+  String get demoActivity2 => 'ตัวอย่างกิจกรรม 2';
+
+  @override
+  String get demoProperty5 => 'อสังหาริมทรัพย์ที่ 5';
+
+  @override
+  String get cannotConnectToServer =>
+      'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต';
+
+  @override
+  String get noProfileAccess => 'คุณไม่มีสิทธิ์เข้าถึงข้อมูลนี้';
 }

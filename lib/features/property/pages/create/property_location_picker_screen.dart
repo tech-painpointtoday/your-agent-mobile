@@ -7,6 +7,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../widgets/buttons/app_button.dart';
 import '../../../../widgets/dialogs/status_dialog.dart';
 import '../../../../widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class PropertyLocationPickerResult {
   final LatLng latLng;
@@ -59,8 +60,8 @@ class _PropertyLocationPickerScreenState
         _currentResult!.formattedAddressTh.trim().isEmpty) {
       StatusDialog.showWarning(
         context: context,
-        title: 'เลือกตำแหน่ง',
-        message: 'กรุณาเลือกตำแหน่งบนแผนที่หรือค้นหาสถานที่',
+        title: AppLocalizations.of(context)!.selectLocationTitle,
+        message: AppLocalizations.of(context)!.selectLocationMessage,
       );
       return;
     }
@@ -75,10 +76,10 @@ class _PropertyLocationPickerScreenState
 
     await AppConfirmationBottomSheet.show(
       context: context,
-      title: 'บันทึกตำแหน่งนี้?',
-      description: 'ยืนยันการเลือกตำแหน่งนี้สำหรับประกาศทรัพย์',
-      confirmLabel: 'บันทึก',
-      cancelLabel: 'ยกเลิก',
+      title: AppLocalizations.of(context)!.saveLocation,
+      description: AppLocalizations.of(context)!.confirmLocationPropertySelect,
+      confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
+      cancelLabel: AppLocalizations.of(context)!.statusCancelled,
       style: ConfirmationStyle.normal,
       onConfirm: () {
         if (mounted) Navigator.of(context).pop(pickerResult);
@@ -129,7 +130,7 @@ class _PropertyLocationPickerScreenState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'ที่อยู่ตามแผนที่',
+                    AppLocalizations.of(context)!.mapAddressLabel,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseBlack,
                       fontSize: 14,
@@ -140,7 +141,7 @@ class _PropertyLocationPickerScreenState
                   Text(
                     _currentResult?.formattedAddressTh.isNotEmpty == true
                         ? _currentResult!.formattedAddressTh
-                        : 'กำลังค้นหาที่อยู่…',
+                        : AppLocalizations.of(context)!.searchAddress,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseDarkGrey,
                       fontSize: 12,
@@ -160,7 +161,7 @@ class _PropertyLocationPickerScreenState
                   ),
                   const SizedBox(height: 12),
                   AppButton(
-                    text: 'บันทึก',
+                    text: AppLocalizations.of(context)!.confirmSaveLabel,
                     style: AppButtonStyle.primary,
                     onPressed: _onSave,
                   ),

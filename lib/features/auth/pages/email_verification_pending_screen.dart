@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class EmailVerificationPendingScreen extends StatelessWidget {
   final String email;
@@ -18,12 +19,12 @@ class EmailVerificationPendingScreen extends StatelessWidget {
         if (state is AuthOperationState) {
           if (state.resendEmailStatus == ResendEmailStatus.success) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('ส่งอีเมลเรียบร้อยแล้ว')),
+              SnackBar(content: Text(AppLocalizations.of(context)!.emailSentSuccessfully)),
             );
           } else if (state.resendEmailStatus == ResendEmailStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.resendEmailError ?? 'ไม่สามารถส่งอีเมลได้'),
+                content: Text(state.resendEmailError ?? AppLocalizations.of(context)!.submitEmail),
               ),
             );
           }
@@ -53,8 +54,8 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
-                const Text(
-                  'ยืนยันอีเมล',
+                Text(
+                  AppLocalizations.of(context)!.confirmEmail,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
@@ -64,9 +65,9 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'เราได้ส่งลิงก์ยืนยันไปที่อีเมลของคุณแล้ว\nกรุณายืนยันอีเมลผ่านลิงก์ที่ส่งไป เพื่อเริ่มต้นใช้งาน',
+                  AppLocalizations.of(context)!.confirmSubmitEmail,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: AppColors.baseGrey,
                     height: 1.4,
@@ -107,8 +108,8 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                                   ),
                                 ),
                               )
-                            : const Text(
-                                'ส่งลิงก์อีกครั้ง',
+                            : Text(
+                                AppLocalizations.of(context)!.resendLink,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.white,

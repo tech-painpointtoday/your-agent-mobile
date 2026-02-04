@@ -3,17 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 /// Entry point for adding a developer
 class AddDeveloperBottomSheet {
   static Future<Map<String, String>?> show(BuildContext context) {
     return PropertyInfoBottomSheet.show(
       context: context,
-      title: 'เพิ่มผู้พัฒนาโครงการ',
+      title: AppLocalizations.of(context)!.addDeveloperTitle,
       description:
-          'ถ้าคุณเพิ่มผู้พัฒนาโครงการใหม่ ระบบจะเก็บข้อมูลไว้ให้ และคุณสามารถค้นหาได้ง่ายๆ ในครั้งถัดไปเลย',
-      labelBase: 'ชื่อผู้พัฒนาโครงการ',
-      hintText: 'ชื่อผู้พัฒนาโครงการ',
+          AppLocalizations.of(context)!.addDeveloperDescription,
+      labelBase: AppLocalizations.of(context)!.developerNameHint,
+      hintText: AppLocalizations.of(context)!.developerNameHint,
     );
   }
 }
@@ -23,11 +24,11 @@ class AddProjectBottomSheet {
   static Future<Map<String, String>?> show(BuildContext context) {
     return PropertyInfoBottomSheet.show(
       context: context,
-      title: 'เพิ่มชื่อโครงการ',
+      title: AppLocalizations.of(context)!.addProjectNameTitle,
       description:
-          'ถ้าคุณเพิ่มชื่อโครงการใหม่ ระบบจะเก็บข้อมูลไว้ให้ และคุณสามารถค้นหาได้ง่ายๆ ในครั้งถัดไปเลย',
-      labelBase: 'ชื่อโครงการ',
-      hintText: 'ชื่อโครงการ',
+          AppLocalizations.of(context)!.addProjectNameDescription,
+      labelBase: AppLocalizations.of(context)!.projectNameHint,
+      hintText: AppLocalizations.of(context)!.projectNameHint,
     );
   }
 }
@@ -200,14 +201,14 @@ class _PropertyInfoBottomSheetState extends State<PropertyInfoBottomSheet> {
                 children: [
                   Expanded(
                     child: AppButton(
-                      text: 'ยกเลิก',
+                      text: AppLocalizations.of(context)!.statusCancelled,
                       style: AppButtonStyle.outline,
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
                   Expanded(
                     child: AppButton(
-                      text: 'เพิ่มเลย!!!',
+                      text: AppLocalizations.of(context)!.addNowButton,
                       style: AppButtonStyle.primary,
                       enabled: _isButtonEnabled,
                       onPressed: _isButtonEnabled

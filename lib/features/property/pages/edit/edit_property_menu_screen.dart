@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'edit_property_form_screen.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class EditPropertyMenuScreen extends StatelessWidget {
   final Property property;
@@ -17,7 +18,7 @@ class EditPropertyMenuScreen extends StatelessWidget {
       backgroundColor: AppColors.primary,
       appBar: AppBar(
         title: Text(
-          'แก้ไขข้อมูล',
+          AppLocalizations.of(context)!.editDataTitle,
           style: GoogleFonts.anuphan(
             color: Colors.white,
             fontSize: 18,
@@ -51,8 +52,8 @@ class EditPropertyMenuScreen extends StatelessWidget {
             children: [
               _buildMenuItem(
                 context,
-                title: 'ข้อมูลทั่วไป',
-                subtitle: 'ชื่ออสังหาริมทรัพย์ และที่อยู่',
+                title: AppLocalizations.of(context)!.general_information,
+                subtitle: AppLocalizations.of(context)!.generalInfoSubtitle,
                 iconPath: 'assets/icons/info.svg',
                 iconColor: AppColors.brandBlue,
                 bgColor: AppColors.supportBlueLight,
@@ -62,7 +63,7 @@ class EditPropertyMenuScreen extends StatelessWidget {
                     extra: {
                       'property': property,
                       'stepType': EditPropertyStepType.generalInfo,
-                      'title': 'ข้อมูลทั่วไป',
+                      'title': AppLocalizations.of(context)!.general_information,
                     },
                   );
                 },
@@ -70,8 +71,8 @@ class EditPropertyMenuScreen extends StatelessWidget {
               // const SizedBox(height: 16),
               // _buildMenuItem(
               //   context,
-              //   title: 'ตำแหน่งทรัพย์',
-              //   subtitle: 'ตำแหน่งทรัพย์บนแผนที่',
+              //   title: AppLocalizations.of(context)!.locationProperty,
+              //   subtitle: AppLocalizations.of(context)!.propertyLocationOnMap,
               //   iconPath: 'assets/icons/map-pin.svg',
               //   iconColor: AppColors.brandGreen,
               //   bgColor: AppColors.supportGreenLight,
@@ -81,7 +82,7 @@ class EditPropertyMenuScreen extends StatelessWidget {
               //       extra: {
               //         'property': property,
               //         'stepType': EditPropertyStepType.generalInfo,
-              //         'title': 'ตำแหน่งทรัพย์',
+              //         'title': AppLocalizations.of(context)!.locationProperty,
               //       },
               //     );
               //   },
@@ -89,8 +90,8 @@ class EditPropertyMenuScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _buildMenuItem(
                 context,
-                title: 'รายละเอียดทรัพย์',
-                subtitle: 'รายละเอียดห้อง ขนาด และราคา',
+                title: AppLocalizations.of(context)!.property_details_section,
+                subtitle: AppLocalizations.of(context)!.propertyDetailSubtitle,
                 iconPath: 'assets/icons/menu.svg',
                 iconColor: const Color(0xFF7F56D9), // Purple
                 bgColor: const Color(0xFFF9F5FF), // Light Purple
@@ -100,7 +101,7 @@ class EditPropertyMenuScreen extends StatelessWidget {
                     extra: {
                       'property': property,
                       'stepType': EditPropertyStepType.propertyDetail,
-                      'title': 'รายละเอียดทรัพย์',
+                      'title': AppLocalizations.of(context)!.property_details_section,
                     },
                   );
                 },
@@ -108,8 +109,8 @@ class EditPropertyMenuScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _buildMenuItem(
                 context,
-                title: 'รายละเอียดเพิ่มเติม',
-                subtitle: 'สไตล์การตกแต่ง จุดเด่น และส่วนกลาง',
+                title: AppLocalizations.of(context)!.additional_details_section,
+                subtitle: AppLocalizations.of(context)!.additionalInfoSubtitle,
                 iconPath: 'assets/icons/star-moving.svg',
                 iconColor: const Color(0xFFE94A88), // Pink
                 bgColor: const Color(0xFFFDF2FA), // Light Pink
@@ -119,7 +120,7 @@ class EditPropertyMenuScreen extends StatelessWidget {
                     extra: {
                       'property': property,
                       'stepType': EditPropertyStepType.additionalInfo,
-                      'title': 'รายละเอียดเพิ่มเติม',
+                      'title': AppLocalizations.of(context)!.additional_details_section,
                     },
                   );
                 },
@@ -127,8 +128,8 @@ class EditPropertyMenuScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _buildMenuItem(
                 context,
-                title: 'รูปภาพทรัพย์',
-                subtitle: 'อัปโหลดรูปภาพอย่างน้อย 5 รูป',
+                title: AppLocalizations.of(context)!.propertyImagesLabel,
+                subtitle: AppLocalizations.of(context)!.propertyImagesSubtitle,
                 iconPath: 'assets/icons/image.svg',
                 iconColor: AppColors.supportOrangeDark,
                 bgColor: AppColors.supportOrangeLight,
@@ -138,7 +139,7 @@ class EditPropertyMenuScreen extends StatelessWidget {
                     extra: {
                       'property': property,
                       'stepType': EditPropertyStepType.propertyImages,
-                      'title': 'รูปภาพทรัพย์',
+                      'title': AppLocalizations.of(context)!.propertyImagesLabel,
                     },
                   );
                 },

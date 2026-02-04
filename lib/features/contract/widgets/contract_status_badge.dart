@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import '../../../domain/entities/contract_status.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class ContractStatusBadge extends StatelessWidget {
   final ContractStatus status;
@@ -17,7 +18,7 @@ class ContractStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final config = _getStatusConfig(status);
+    final config = _getStatusConfig(context, status);
     final countSuffix = (signedCount != null && totalCount != null)
         ? ' ($signedCount/$totalCount)'
         : '';
@@ -53,18 +54,19 @@ class ContractStatusBadge extends StatelessWidget {
     );
   }
 
-  _StatusConfig _getStatusConfig(ContractStatus status) {
+  _StatusConfig _getStatusConfig(BuildContext context, ContractStatus status) {
+    final l10n = AppLocalizations.of(context)!;
     switch (status) {
       case ContractStatus.draft:
         return _StatusConfig(
-          label: 'ยังไม่สมบูรณ์',
+          label: l10n.statusIncomplete,
           backgroundColor: AppColors.supportOrangeLight,
           dotColor: AppColors.supportOrangeDark,
           textColor: AppColors.supportOrangeDark,
         );
       case ContractStatus.pendingSignature:
         return _StatusConfig(
-          label: 'รอการลงนาม',
+          label: l10n.statusPendingSignature,
           backgroundColor: AppColors.supportOrangeLight,
           dotColor: AppColors.supportOrangeDark,
           textColor: AppColors.supportOrangeDark,
@@ -72,14 +74,14 @@ class ContractStatusBadge extends StatelessWidget {
       case ContractStatus.signed:
       case ContractStatus.completed:
         return _StatusConfig(
-          label: 'สมบูรณ์',
+          label: l10n.statusComplete,
           backgroundColor: AppColors.supportGreenLight,
           dotColor: AppColors.supportGreenDark,
           textColor: AppColors.supportGreenDark,
         );
       case ContractStatus.cancelled:
         return _StatusConfig(
-          label: 'ยกเลิก',
+          label: l10n.statusCancelled,
           backgroundColor: AppColors.supportRedLight,
           dotColor: AppColors.supportRedDark,
           textColor: AppColors.supportRedDark,

@@ -20,6 +20,7 @@ import '../create/steps/furniture_step.dart';
 import '../create/steps/payment_step.dart';
 import '../create/steps/additional_conditions_step.dart';
 import '../create/steps/attachment_step.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 enum EditContractStepType {
   ownerInfo,
@@ -141,16 +142,16 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
         if (state.status == ContractFormStatus.success) {
           StatusDialog.showSuccess(
             context: context,
-            title: 'สำเร็จ',
-            message: 'บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว',
+            title: AppLocalizations.of(context)!.successTitle,
+            message: AppLocalizations.of(context)!.changesSavedMessage,
           );
           context.pop(true);
         } else if (state.status == ContractFormStatus.failure) {
           AppConfirmationBottomSheet.show(
             context: context,
-            title: 'ผิดพลาด',
-            description: state.errorMessage ?? 'บันทึกข้อมูลไม่สำเร็จ',
-            confirmLabel: 'ตกลง',
+            title: AppLocalizations.of(context)!.errorLabel,
+            description: state.errorMessage ?? AppLocalizations.of(context)!.saveDataSuccess,
+            confirmLabel: AppLocalizations.of(context)!.ok,
             cancelLabel: '',
             style: ConfirmationStyle.destructive,
             onConfirm: () {},
@@ -192,7 +193,7 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
           children: [
             Expanded(
               child: AppButton(
-                text: 'ยกเลิก',
+                text: AppLocalizations.of(context)!.statusCancelled,
                 style: AppButtonStyle.outline,
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -206,17 +207,17 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
                       state.status == ContractFormStatus.submmitting;
 
                   return AppButton(
-                    text: 'บันทึก',
+                    text: AppLocalizations.of(context)!.confirmSaveLabel,
                     style: AppButtonStyle.primary,
                     enabled: isValid && !isLoading,
                     onPressed: () {
                       AppConfirmationBottomSheet.show(
                         context: context,
-                        title: 'บันทึกการเปลี่ยนแปลง?',
+                        title: AppLocalizations.of(context)!.saveChangesQuestion,
                         description:
-                            'คุณต้องการบันทึกการเปลี่ยนแปลงนี้ใช่หรือไม่',
-                        confirmLabel: 'บันทึก',
-                        cancelLabel: 'ยกเลิก',
+                            AppLocalizations.of(context)!.saveChangesConfirmation,
+                        confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
+                        cancelLabel: AppLocalizations.of(context)!.statusCancelled,
                         style: ConfirmationStyle.normal,
                         onConfirm: () {
                           context.read<ContractFormBloc>().add(

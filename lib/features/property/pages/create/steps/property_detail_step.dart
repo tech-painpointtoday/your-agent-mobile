@@ -12,6 +12,7 @@ import '../../../../../widgets/form_fields/app_text_form_field.dart';
 import '../../../../../widgets/inputs/app_selection_pills.dart';
 import '../../../../../widgets/form_fields/app_dropdown_form_field.dart';
 import '../../../../../widgets/badges/app_badge.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class PropertyDetailStep extends StatefulWidget {
   final int? step;
@@ -95,7 +96,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      'รายละเอียดทรัพย์',
+                      AppLocalizations.of(context)!.property_details_section,
                       style: GoogleFonts.anuphan(
                         color: AppColors.primary,
                         fontSize: 14,
@@ -114,13 +115,26 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Listing Type
               AppSelectionPills<String>(
-                label: 'ประเภทประกาศ',
+                label: AppLocalizations.of(context)!.listingTypeLabel,
                 value: state.listingType,
                 isRequired: true,
-                options: const [
-                  SelectionPillOption(label: 'ขาย', value: 'ขาย'),
-                  SelectionPillOption(label: 'เช่า', value: 'เช่า'),
-                  SelectionPillOption(label: 'ขายและเช่า', value: 'ขายและเช่า'),
+                options: [
+                  SelectionPillOption(
+                    label: AppLocalizations.of(context)!.listingTypeValueSale,
+                    value: AppLocalizations.of(context)!.listingTypeValueSale,
+                  ),
+                  SelectionPillOption(
+                    label: AppLocalizations.of(context)!.listingTypeValueRent,
+                    value: AppLocalizations.of(context)!.listingTypeValueRent,
+                  ),
+                  SelectionPillOption(
+                    label: AppLocalizations.of(
+                      context,
+                    )!.listingTypeValueSaleAndRent,
+                    value: AppLocalizations.of(
+                      context,
+                    )!.listingTypeValueSaleAndRent,
+                  ),
                 ],
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
                   PropertyFormListingTypeChanged(val),
@@ -130,12 +144,22 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Occupancy Status
               AppSelectionPills<String>(
-                label: 'สถานะ',
+                label: AppLocalizations.of(context)!.occupancyStatusLabel,
                 value: state.status,
                 isRequired: true,
-                options: const [
-                  SelectionPillOption(label: 'ว่าง', value: 'ว่าง'),
-                  SelectionPillOption(label: 'ไม่ว่าง', value: 'ไม่ว่าง'),
+                options: [
+                  SelectionPillOption(
+                    label: AppLocalizations.of(context)!.statusValueAvailable,
+                    value: AppLocalizations.of(context)!.statusValueAvailable,
+                  ),
+                  SelectionPillOption(
+                    label: AppLocalizations.of(
+                      context,
+                    )!.statusValueNotAvailable,
+                    value: AppLocalizations.of(
+                      context,
+                    )!.statusValueNotAvailable,
+                  ),
                 ],
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
                   PropertyFormStatusChanged(val),
@@ -177,7 +201,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
               else ...[
                 // Fallback: Total Floors
                 AppSelectionPills<int>(
-                  label: 'จำนวนชั้น',
+                  label: AppLocalizations.of(context)!.totalFloorsLabel,
                   value: state.totalFloors,
                   isRequired: true,
                   options: List.generate(
@@ -192,7 +216,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
                 // Fallback: Bedrooms
                 AppSelectionPills<int>(
-                  label: 'จำนวนห้องนอน',
+                  label: AppLocalizations.of(context)!.bedroomsLabel,
                   value: state.bedrooms,
                   isRequired: true,
                   options: [
@@ -211,7 +235,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
                 // Fallback: Bathrooms
                 AppSelectionPills<int>(
-                  label: 'จำนวนห้องน้ำ',
+                  label: AppLocalizations.of(context)!.bathroomsLabel,
                   value: state.bathrooms,
                   isRequired: true,
                   options: List.generate(
@@ -226,7 +250,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
                 // Fallback: Parking
                 AppSelectionPills<int>(
-                  label: 'จำนวนที่จอดรถ',
+                  label: AppLocalizations.of(context)!.parkingLabel,
                   value: state.garage,
                   isRequired: true,
                   options: List.generate(
@@ -242,12 +266,12 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Construction Date (Built)
               AppTextFormField(
-                label: 'วันที่สร้าง',
+                label: AppLocalizations.of(context)!.builtLabel,
                 controller: _builtController,
                 isRequired: true,
                 readOnly: false,
                 showCursor: false,
-                hintText: 'เลือกวันที่สร้าง',
+                hintText: AppLocalizations.of(context)!.builtHint,
                 suffix: Padding(
                   padding: const EdgeInsets.all(16),
                   child: SvgPicture.asset(
@@ -281,10 +305,10 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Property Color (Asset Color) - Updated to use AppDropdownFormField
               AppDropdownFormField<PropertyColor>(
-                label: 'สีทรัพย์',
+                label: AppLocalizations.of(context)!.propertyColor,
                 value: state.houseColor,
                 isRequired: true,
-                hint: 'เลือกสีทรัพย์',
+                hint: AppLocalizations.of(context)!.propertyColorHint,
                 items: PropertyColor.values,
                 itemLabel: (color) => color.label,
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
@@ -295,13 +319,13 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Price
               AppTextFormField(
-                label: 'ราคา',
+                label: AppLocalizations.of(context)!.priceLabel,
                 controller: _priceController,
                 inputFormatters: [CurrencyInputFormatter()],
                 isRequired: true,
                 hintText: '0',
                 suffix: Text(
-                  'บาท',
+                  AppLocalizations.of(context)!.currencyUnit,
                   style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                 ),
                 keyboardType: TextInputType.number,
@@ -319,7 +343,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   if (!isCondoOrApt) ...[
                     Expanded(
                       child: AppTextFormField(
-                        label: 'ขนาดที่ดิน',
+                        label: AppLocalizations.of(context)!.landSizeLabel,
                         controller: _landSizeController,
                         maxLength: 6,
                         inputFormatters: [
@@ -329,7 +353,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                         isRequired: true,
                         hintText: '0.00',
                         suffix: Text(
-                          'ตร.ว.',
+                          AppLocalizations.of(context)!.sqWahUnit,
                           style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                         ),
                         keyboardType: const TextInputType.numberWithOptions(
@@ -348,7 +372,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   ],
                   Expanded(
                     child: AppTextFormField(
-                      label: 'พื้นที่ใช้สอย',
+                      label: AppLocalizations.of(context)!.usableAreaLabel,
                       controller: _buildingSizeController,
                       maxLength: 6,
                       inputFormatters: [
@@ -358,7 +382,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                       isRequired: true,
                       hintText: '0.00',
                       suffix: Text(
-                        'ตร.ม.',
+                        AppLocalizations.of(context)!.sqmUnit,
                         style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                       ),
                       keyboardType: const TextInputType.numberWithOptions(
@@ -378,9 +402,9 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Direction - Updated to use AppDropdownFormField
               AppDropdownFormField<PropertyDirection>(
-                label: 'ทิศหน้าบ้าน',
+                label: AppLocalizations.of(context)!.propertyDirectionLabel,
                 value: state.direction,
-                hint: 'เลือกทิศหน้าบ้าน',
+                hint: AppLocalizations.of(context)!.propertyDirectionHint,
                 items: PropertyDirection.values,
                 itemLabel: (dir) => dir.label,
                 onChanged: (val) => context.read<PropertyFormBloc>().add(

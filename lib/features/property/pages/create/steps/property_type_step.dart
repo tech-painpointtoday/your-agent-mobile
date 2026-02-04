@@ -5,6 +5,7 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class PropertyTypeStep extends StatelessWidget {
   final int? step;
@@ -30,7 +31,7 @@ class PropertyTypeStep extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
-                  'ประเภททรัพย์',
+                  AppLocalizations.of(context)!.propertyTypeLabel,
                   style: GoogleFonts.anuphan(
                     color: AppColors.primary,
                     fontSize: 14,

@@ -14,6 +14,7 @@ import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import '../../../widgets/form_fields/social_login_section.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function(Locale) changeLocale;
@@ -100,14 +101,14 @@ class _LoginScreenState extends State<LoginScreen> {
       if (state.forgotPasswordStatus == ForgotPasswordStatus.success) {
         StatusDialog.showSuccess(
           context: context,
-          title: 'ส่งอีเมลสำเร็จ',
-          message: 'กรุณาตรวจสอบอีเมลของคุณเพื่อรีเซ็ตรหัสผ่าน',
+          title: AppLocalizations.of(context)!.submitEmailSuccess,
+          message: AppLocalizations.of(context)!.emailPassword,
         );
       } else if (state.forgotPasswordStatus == ForgotPasswordStatus.failure) {
         StatusDialog.showError(
           context: context,
-          title: 'เกิดข้อผิดพลาด',
-          message: state.errorMessage ?? 'ไม่สามารถส่งอีเมลได้',
+          title: AppLocalizations.of(context)!.errorOccurredTitle,
+          message: state.errorMessage ?? AppLocalizations.of(context)!.submitEmail,
         );
       }
     }
@@ -133,12 +134,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String get _title {
     // Match screenshot title (same for both roles)
-    return 'เข้าสู่ระบบ';
+    return AppLocalizations.of(context)!.login_now;
   }
 
   String get _subtitle {
     // From screenshot
-    return 'ยินดีต้อนรับเข้าสู่คู่มือใหม่ของเอเจนต์';
+    return AppLocalizations.of(context)!.welcomeAgentManual;
   }
 
   Widget _roleSegment(AppLocalizations l10n) {
@@ -171,10 +172,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     BlendMode.srcIn,
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Flexible(
                   child: Text(
-                    role == UserRole.agent ? 'สำหรับเอเจนต์' : 'สำหรับบริษัท',
+                    role == UserRole.agent ? AppLocalizations.of(context)!.forAgent : AppLocalizations.of(context)!.forAgency,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 16,
@@ -195,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Row(
       children: [
         buildChip(role: UserRole.agent, selected: _role == UserRole.agent),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         buildChip(role: UserRole.agency, selected: _role == UserRole.agency),
       ],
     );
@@ -242,7 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 // Illustration (placeholder using existing asset)
                 Center(
                   child: Image.asset(
@@ -253,28 +254,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 180,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   _title,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w600,
                     color: AppColors.baseBlack,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
                   _subtitle,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     color: AppColors.baseGrey,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 _roleSegment(l10n),
-                const SizedBox(height: 18),
+                SizedBox(height: 18),
                 Form(
                   key: _formKey,
                   child: Column(
@@ -304,7 +305,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12),
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
@@ -347,7 +348,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       GestureDetector(
                         onTap: () {
                           setState(() => _rememberMe = !_rememberMe);
@@ -382,7 +383,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Flexible(
                                     child: Text(
                                       l10n.remember_me,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 14,
                                         color: AppColors.baseDarkGrey,
                                       ),
@@ -395,7 +396,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () => context.push('/forgot-password'),
                               child: Text(
                                 l10n.forgot_password,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: AppColors.baseGrey,
                                 ),
                               ),
@@ -403,7 +404,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8),
                       BlocBuilder<AuthBloc, AuthState>(
                         builder: (context, state) {
                           final loading = state is AuthLoading;
@@ -421,7 +422,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 elevation: 0,
                               ),
                               child: loading
-                                  ? const SizedBox(
+                                  ? SizedBox(
                                       width: 20,
                                       height: 20,
                                       child: CircularProgressIndicator(
@@ -434,7 +435,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     )
                                   : Text(
                                       l10n.login_button,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w700,
                                         color: AppColors.white,
@@ -444,16 +445,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                       ),
-                      const SizedBox(height: 18),
+                      SizedBox(height: 18),
                       SocialLoginSection(role: _role),
-                      const SizedBox(height: 14),
-                      const SizedBox(height: 14),
+                      SizedBox(height: 14),
+                      SizedBox(height: 14),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             l10n.don_t_have_account,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.baseGrey,
                               fontSize: 14,
                             ),
@@ -462,7 +463,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () => context.go('/register'),
                             child: Text(
                               l10n.register_now,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.primary,
                                 fontSize: 14,
                               ),

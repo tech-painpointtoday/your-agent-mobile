@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class AccountActionSheets {
   static Future<void> showChangeEmail(BuildContext context) {
@@ -58,16 +59,16 @@ class _EmailChangeSheetState extends State<_EmailChangeSheet> {
   @override
   Widget build(BuildContext context) {
     return _BaseActionSheet(
-      title: 'แจ้งเปลี่ยนอีเมล',
+      title: AppLocalizations.of(context)!.requestChangeEmailLabel,
       subtitle:
-          'กรอกอีเมลใหม่ที่อยากเปลี่ยนได้เลย ถ้าคุณยืนยันแล้ว เราจะรีบตรวจสอบและแจ้งให้ทราบทันที',
-      actionLabel: 'แจ้งเปลี่ยน',
+          AppLocalizations.of(context)!.changeEmailSubtitle,
+      actionLabel: AppLocalizations.of(context)!.requestChangeButton,
       isActionEnabled: _isEnabled,
       onAction: () => Navigator.pop(context),
       child: AppTextField(
-        label: 'อีเมลใหม่',
+        label: AppLocalizations.of(context)!.newEmailLabel,
         isRequired: true,
-        hintText: 'อีเมลใหม่',
+        hintText: AppLocalizations.of(context)!.newEmailLabel,
         controller: _controller,
         onChanged: _validate,
         keyboardType: TextInputType.emailAddress,
@@ -112,16 +113,16 @@ class _PhoneChangeSheetState extends State<_PhoneChangeSheet> {
   @override
   Widget build(BuildContext context) {
     return _BaseActionSheet(
-      title: 'แจ้งเปลี่ยนหมายเลขโทรศัพท์',
+      title: AppLocalizations.of(context)!.requestChangePhoneLabel,
       subtitle:
-          'กรอกหมายเลขโทรศัพท์ใหม่ที่อยากเปลี่ยนได้เลย ถ้าคุณยืนยันแล้ว เราจะรีบตรวจสอบและแจ้งให้ทราบทันที',
-      actionLabel: 'แจ้งเปลี่ยน',
+          AppLocalizations.of(context)!.changePhoneSubtitle,
+      actionLabel: AppLocalizations.of(context)!.requestChangeButton,
       isActionEnabled: _isEnabled,
       onAction: () => Navigator.pop(context),
       child: AppTextField(
-        label: 'หมายเลขโทรศัพท์ใหม่',
+        label: AppLocalizations.of(context)!.newPhoneLabel,
         isRequired: true,
-        hintText: 'หมายเลขโทรศัพท์ใหม่',
+        hintText: AppLocalizations.of(context)!.newPhoneLabel,
         controller: _controller,
         onChanged: _validate,
         prefix: Padding(
@@ -192,7 +193,7 @@ class _BaseActionSheet extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 Text(
                   title,
                   style: GoogleFonts.anuphan(
@@ -201,7 +202,7 @@ class _BaseActionSheet extends StatelessWidget {
                     color: AppColors.brandBlue,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
                 Text(
                   subtitle,
                   style: GoogleFonts.anuphan(
@@ -211,12 +212,12 @@ class _BaseActionSheet extends StatelessWidget {
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24),
                 child,
               ],
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -235,12 +236,12 @@ class _BaseActionSheet extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: AppButton(
-                    text: 'ยกเลิก',
+                    text: AppLocalizations.of(context)!.statusCancelled,
                     style: AppButtonStyle.outline,
                     onPressed: () => Navigator.pop(context),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   flex: 3,
                   child: AppButton(
@@ -311,9 +312,9 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Text(
-                'ลบบัญชีผู้ใช้งาน?',
+                AppLocalizations.of(context)!.deleteAccountTitle,
                 style: GoogleFonts.anuphan(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
@@ -321,7 +322,7 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: RichText(
@@ -333,9 +334,9 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                       fontWeight: FontWeight.w400,
                       height: 1.5,
                     ),
-                    children: const [
+                    children: [
                       TextSpan(
-                        text: 'หากคุณต้องการลบบัญชีผู้ใช้งาน กรุณาพิมพ์คำว่า ',
+                        text: AppLocalizations.of(context)!.deleteAccountConfirmPrompt,
                       ),
                       TextSpan(
                         text: '“Delete”',
@@ -345,15 +346,15 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                           color: AppColors.baseDarkGrey,
                         ),
                       ),
-                      TextSpan(text: ' เพื่อยืนยันการลบบัญชี'),
+                      TextSpan(text: AppLocalizations.of(context)!.deleteAccountConfirmSuffix),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
               AppTextField(
                 label: '',
-                hintText: 'พิมพ์ข้อความที่นี่...',
+                hintText: AppLocalizations.of(context)!.typeToDeleteHint,
                 controller: _controller,
                 onChanged: (value) {
                   setState(() {
@@ -361,10 +362,10 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                   });
                 },
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               AppButton(
                 width: double.infinity,
-                text: 'ใช่, ลบทันที',
+                text: AppLocalizations.of(context)!.yesDeleteImmediately,
                 style: AppButtonStyle.destructive,
                 onPressed: _canDelete
                     ? () {
@@ -372,11 +373,11 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                       }
                     : null,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               AppButton(
                 width: double.infinity,
                 onPressed: () => Navigator.pop(context),
-                text: 'ยกเลิก',
+                text: AppLocalizations.of(context)!.statusCancelled,
                 style: AppButtonStyle.ghost,
               ),
             ],

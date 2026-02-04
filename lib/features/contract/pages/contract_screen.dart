@@ -10,6 +10,7 @@ import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/features/contract/pages/create/add_contract_screen.dart';
 import 'package:youragent/features/contract/pages/contract_detail_screen.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 /// Screen showing all contract documents in a list
 class ContractScreen extends StatefulWidget {
@@ -154,8 +155,8 @@ class _ContractScreenState extends State<ContractScreen> {
                     ),
                   ),
                   // Title
-                  const Text(
-                    'เอกสารสัญญา',
+                  Text(
+                    AppLocalizations.of(context)!.contracts,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -224,7 +225,7 @@ class _ContractScreenState extends State<ContractScreen> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                         child: AppBadges.plain(
-                          label: 'ไม่พบเอกสารสัญญา',
+                          label: AppLocalizations.of(context)!.contractDocument,
                           color: BadgeColor.default_,
                         ),
                       ),
@@ -250,7 +251,7 @@ class _ContractScreenState extends State<ContractScreen> {
                           Expanded(
                             child: AppSearchBar(
                               controller: _searchController,
-                              hintText: 'ค้นหา...',
+                              hintText: AppLocalizations.of(context)!.searchHint,
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -308,7 +309,7 @@ class _ContractScreenState extends State<ContractScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('Error: $_error'),
-            TextButton(onPressed: _loadContracts, child: const Text('Retry')),
+            TextButton(onPressed: _loadContracts, child: Text('Retry')),
           ],
         ),
       );
@@ -363,8 +364,8 @@ class _ContractScreenState extends State<ContractScreen> {
             color: AppColors.baseGrey,
           ),
           const SizedBox(height: 24),
-          const Text(
-            'ขณะนี้ยังไม่มีข้อมูลสัญญาในระบบ',
+          Text(
+            AppLocalizations.of(context)!.dataContract,
             style: TextStyle(
               color: AppColors.baseDarkGrey,
               fontSize: 14,

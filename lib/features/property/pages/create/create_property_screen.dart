@@ -14,6 +14,7 @@ import 'steps/general_info_step.dart';
 import 'steps/property_detail_step.dart';
 import 'steps/property_images_step.dart';
 import 'steps/property_type_step.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class CreatePropertyScreen extends StatelessWidget {
   const CreatePropertyScreen({super.key});
@@ -65,10 +66,10 @@ class _CreatePropertyView extends StatelessWidget {
 
             AppConfirmationBottomSheet.show(
               context: context,
-              title: 'ยืนยันข้อมูล',
-              description: 'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้',
-              confirmLabel: 'ลบทั้งหมด',
-              cancelLabel: 'ยกเลิก',
+              title: AppLocalizations.of(context)!.confirmInfo,
+              description: AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
+              confirmLabel: AppLocalizations.of(context)!.deleteAllConfirmLabel,
+              cancelLabel: AppLocalizations.of(context)!.statusCancelled,
               icon: 'assets/images/dialog/confirmation_clear.png',
               style: ConfirmationStyle.destructive,
               onConfirm: () {
@@ -81,7 +82,7 @@ class _CreatePropertyView extends StatelessWidget {
         title: BlocBuilder<PropertyFormBloc, PropertyFormState>(
           builder: (context, state) {
             return Text(
-              state.step == 6 ? 'ยืนยันข้อมูล' : 'สร้างทรัพย์',
+              state.step == 6 ? AppLocalizations.of(context)!.confirmInfo : AppLocalizations.of(context)!.createPropertyLabel,
               style: GoogleFonts.anuphan(
                 color: Colors.white,
                 fontSize: 18,
@@ -112,7 +113,7 @@ class _CreatePropertyView extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    'บันทึกร่าง',
+                    AppLocalizations.of(context)!.saveDraftButton,
                     style: GoogleFonts.anuphan(
                       color: Colors.white,
                       fontSize: 14,
@@ -141,7 +142,7 @@ class _CreatePropertyView extends StatelessWidget {
                   size: 48,
                 ),
                 content: Text(
-                  'สร้างทรัพย์สำเร็จ',
+                  AppLocalizations.of(context)!.propertyCreatedSuccess,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.anuphan(
                     fontSize: 18,
@@ -157,7 +158,7 @@ class _CreatePropertyView extends StatelessWidget {
                         // TODO: Navigate to Detail Screen
                       },
                       child: Text(
-                        'ตกลง',
+                        AppLocalizations.of(context)!.ok,
                         style: GoogleFonts.anuphan(color: AppColors.primary),
                       ),
                     ),
@@ -180,7 +181,7 @@ class _CreatePropertyView extends StatelessWidget {
                   TextButton(
                     onPressed: () => Navigator.of(ctx).pop(),
                     child: Text(
-                      'ตกลง',
+                      AppLocalizations.of(context)!.ok,
                       style: GoogleFonts.anuphan(color: AppColors.primary),
                     ),
                   ),
@@ -251,7 +252,7 @@ class _CreatePropertyView extends StatelessWidget {
                 buildWhen: (previous, current) => previous.step != current.step,
                 builder: (context, state) {
                   return AppButton(
-                    text: 'ย้อนกลับ',
+                    text: AppLocalizations.of(context)!.backButton,
                     style: AppButtonStyle
                         .outline, // Assuming outline style exists, or use ghost
                     onPressed: state.step > 1
@@ -275,7 +276,7 @@ class _CreatePropertyView extends StatelessWidget {
                 builder: (context, state) {
                   final isLastStep = state.step == 6; // Confirmation step
                   return AppButton(
-                    text: isLastStep ? 'สร้าง' : 'ถัดไป',
+                    text: isLastStep ? AppLocalizations.of(context)!.createLabel : AppLocalizations.of(context)!.nextButton,
                     style: AppButtonStyle.primary,
                     // If creating, check validation AND not currently submitting
                     onPressed:
@@ -310,10 +311,10 @@ class _CreatePropertyView extends StatelessWidget {
     if (state.step == 6) {
       AppConfirmationBottomSheet.show(
         context: context,
-        title: 'ยืนยันข้อมูล',
-        description: 'คุณต้องการสร้างประกาศทรัพย์นี้ใช่หรือไม่?',
-        confirmLabel: 'ยืนยัน',
-        cancelLabel: 'ยกเลิก',
+        title: AppLocalizations.of(context)!.confirmInfo,
+        description: AppLocalizations.of(context)!.createPropertyConfirmation,
+        confirmLabel: AppLocalizations.of(context)!.confirm,
+        cancelLabel: AppLocalizations.of(context)!.statusCancelled,
         style: ConfirmationStyle.normal,
         onConfirm: () {
           print('onConfirm');

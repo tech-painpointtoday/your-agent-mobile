@@ -14,6 +14,7 @@ import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class FurnitureStep extends StatefulWidget {
   final bool hideHeader;
@@ -53,7 +54,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 24),
               title: Text(
-                'ถ่ายรูปภาพ',
+                AppLocalizations.of(context)!.takePhotoButton,
                 style: GoogleFonts.anuphan(fontSize: 16),
               ),
               trailing: SvgPicture.asset(
@@ -81,7 +82,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 24),
               title: Text(
-                'เลือกจากอัลบั้ม',
+                AppLocalizations.of(context)!.selectFromAlbumButton,
                 style: GoogleFonts.anuphan(fontSize: 16),
               ),
               trailing: SvgPicture.asset(
@@ -112,7 +113,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                 title: Text(
-                  'เลือกจากรูปอสังหาฯ',
+                  AppLocalizations.of(context)!.select,
                   style: GoogleFonts.anuphan(fontSize: 16),
                 ),
                 trailing: SvgPicture.asset(
@@ -166,7 +167,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
             ),
             const SizedBox(height: 16),
             Text(
-              'เลือกจากรูปอสังหาฯ',
+              AppLocalizations.of(context)!.select,
               style: GoogleFonts.anuphan(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -222,10 +223,10 @@ class _FurnitureStepState extends State<FurnitureStep> {
   void _showDeleteAllConfirmation(String furnitureId) {
     AppConfirmationBottomSheet.show(
       context: context,
-      title: 'ลบรูปภาพทั้งหมด?',
-      description: 'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้',
-      confirmLabel: 'ลบทั้งหมด',
-      cancelLabel: 'ยกเลิก',
+      title: AppLocalizations.of(context)!.deleteAllImagesConfirmTitle,
+      description: AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
+      confirmLabel: AppLocalizations.of(context)!.deleteAllConfirmLabel,
+      cancelLabel: AppLocalizations.of(context)!.statusCancelled,
       style: ConfirmationStyle.destructive,
       onConfirm: () {
         final state = context.read<ContractFormBloc>().state;
@@ -239,8 +240,8 @@ class _FurnitureStepState extends State<FurnitureStep> {
         );
         StatusDialog.showSuccess(
           context: context,
-          title: 'สำเร็จ',
-          message: 'ลบรูปภาพทั้งหมดเรียบร้อยแล้ว',
+          title: AppLocalizations.of(context)!.successTitle,
+          message: AppLocalizations.of(context)!.imagesDeletedMessage,
         );
       },
     );
@@ -264,7 +265,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
                     children: [
                       AppBadge(
                         color: BadgeColor.default_,
-                        label: 'รูปภาพเฟอร์นิเจอร์',
+                        label: AppLocalizations.of(context)!.furniture_photos,
                         fontSize: 16,
                       ),
                       AppBadge(
@@ -291,11 +292,11 @@ class _FurnitureStepState extends State<FurnitureStep> {
                             if (item.hasData) {
                               AppConfirmationBottomSheet.show(
                                 context: context,
-                                title: 'ลบรายการนี้?',
+                                title: AppLocalizations.of(context)!.deleteItemQuestion,
                                 description:
-                                    'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้',
-                                confirmLabel: 'ลบ',
-                                cancelLabel: 'ยกเลิก',
+                                    AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
+                                confirmLabel: AppLocalizations.of(context)!.delete,
+                                cancelLabel: AppLocalizations.of(context)!.statusCancelled,
                                 style: ConfirmationStyle.destructive,
                                 onConfirm: () {
                                   context.read<ContractFormBloc>().add(
@@ -382,7 +383,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
               const Icon(Icons.add, color: AppColors.baseGrey, size: 20),
               const SizedBox(width: 8),
               Text(
-                'เพิ่มรายการ',
+                AppLocalizations.of(context)!.add_item,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseDarkGrey,
                   fontSize: 16,
@@ -450,9 +451,9 @@ class _FurnitureItemCard extends StatelessWidget {
         ),
         const Divider(height: 32),
         AppTextField(
-          label: 'ชื่อ',
+          label: AppLocalizations.of(context)!.full_name,
           isRequired: true,
-          hintText: 'เช่น เตียงนอน, โซฟา',
+          hintText: AppLocalizations.of(context)!.furnitureExampleHint,
           controller: TextEditingController(text: item.name)
             ..selection = TextSelection.fromPosition(
               TextPosition(offset: item.name.length),
@@ -461,8 +462,8 @@ class _FurnitureItemCard extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         AppTextField(
-          label: 'รายละเอียด',
-          hintText: 'เช่น เตียงนอน 6 ฟุต สีไม้สน',
+          label: AppLocalizations.of(context)!.descriptionLabel,
+          hintText: AppLocalizations.of(context)!.furnitureDescExampleHint,
           controller: TextEditingController(text: item.description ?? '')
             ..selection = TextSelection.fromPosition(
               TextPosition(offset: (item.description ?? '').length),
@@ -500,7 +501,7 @@ class _FurnitureItemCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'เลือกจากรูปอสังหาฯ',
+                      AppLocalizations.of(context)!.select,
                       style: GoogleFonts.anuphan(
                         color: AppColors.primary,
                         fontSize: 16,
@@ -544,7 +545,7 @@ class _FurnitureItemCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'อัปโหลดรูปภาพ',
+                    AppLocalizations.of(context)!.uploadImagesButton,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseDarkGrey,
                       fontSize: 16,
@@ -573,7 +574,7 @@ class _FurnitureItemCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'ตัวอย่างรูปภาพ',
+                AppLocalizations.of(context)!.imageSampleLabel,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseBlack,
                   fontSize: 16,
@@ -595,7 +596,7 @@ class _FurnitureItemCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'ลบรูปภาพทั้งหมด',
+                      AppLocalizations.of(context)!.deleteAllImagesButton,
                       style: GoogleFonts.anuphan(
                         color: AppColors.error,
                         fontSize: 14,
@@ -628,7 +629,7 @@ class _FurnitureItemCard extends StatelessWidget {
 
               final isNetwork =
                   path.startsWith('http') || path.startsWith('https');
-              final fileName = isExisting ? 'รูปอสังหาฯ' : path.split('/').last;
+              final fileName = isExisting ? AppLocalizations.of(context)!.propertyPhotos : path.split('/').last;
 
               return Stack(
                 children: [

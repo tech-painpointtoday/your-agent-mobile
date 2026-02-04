@@ -21,6 +21,7 @@ import '../models/agent_profile.dart';
 import '../widgets/change_password_bottom_sheet.dart';
 import '../../../widgets/modals/app_image_picker_bottom_sheet.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -109,7 +110,7 @@ class ProfileView extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   AppButton(
-                    text: 'ลองอีกครั้ง',
+                    text: AppLocalizations.of(context)!.tryAgain,
                     style: AppButtonStyle.primary,
                     onPressed: () =>
                         context.read<ProfileBloc>().add(FetchProfile()),
@@ -124,13 +125,13 @@ class ProfileView extends StatelessWidget {
                 if (state is ProfileUpdateSuccess) {
                   StatusDialog.showSuccess(
                     context: context,
-                    title: 'สำเร็จ',
-                    message: 'อัปเดตรูปโปรไฟล์เรียบร้อยแล้ว',
+                    title: AppLocalizations.of(context)!.successTitle,
+                    message: AppLocalizations.of(context)!.profilePhotoUpdated,
                   );
                 } else if (state is ProfileError) {
                   StatusDialog.showError(
                     context: context,
-                    title: 'เกิดข้อผิดพลาด',
+                    title: AppLocalizations.of(context)!.errorOccurredTitle,
                     message: state.message,
                   );
                 }
@@ -213,7 +214,7 @@ class ProfileView extends StatelessWidget {
                   const SizedBox(height: 12),
                   if (profile.verificationStatus.emailVerified)
                     AppBadge(
-                      label: 'ยืนยันอีเมลแล้ว',
+                      label: AppLocalizations.of(context)!.emailVerified,
                       color: BadgeColor.green,
                       style: BadgeStyle.done,
                       padding: const EdgeInsets.symmetric(
@@ -223,7 +224,7 @@ class ProfileView extends StatelessWidget {
                     )
                   else
                     AppBadge(
-                      label: 'ยังไม่ยืนยันอีเมล',
+                      label: AppLocalizations.of(context)!.emailNotVerifiedYet,
                       color: BadgeColor.orange,
                       style: BadgeStyle.done,
                       padding: const EdgeInsets.symmetric(
@@ -232,11 +233,11 @@ class ProfileView extends StatelessWidget {
                       ),
                     ),
                   const SizedBox(height: 24),
-                  _buildProfileCompletenessWidget(agent),
+                  _buildProfileCompletenessWidget(context, agent),
                   const SizedBox(height: 24),
                   _buildPersonalInfoCard(context, agent),
                   const SizedBox(height: 16),
-                  _buildConnectionCodeCard(agent),
+                  _buildConnectionCodeCard(context, agent),
                   const SizedBox(height: 16),
                   _buildWorkInfoCard(context, agent),
                   const SizedBox(height: 16),
@@ -288,7 +289,7 @@ class ProfileView extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'โปรไฟล์ของคุณ',
+                  AppLocalizations.of(context)!.yourProfile,
                   style: GoogleFonts.anuphan(
                     color: Colors.white,
                     fontSize: 20,
@@ -412,7 +413,7 @@ class ProfileView extends StatelessWidget {
         ),
         const Spacer(),
         AppButton(
-          text: 'เปลี่ยนรหัสผ่าน',
+          text: AppLocalizations.of(context)!.changePasswordButton,
           style: AppButtonStyle.outline,
           height: 36,
           iconPath: 'assets/icons/security-shield.svg',
@@ -448,7 +449,7 @@ class ProfileView extends StatelessWidget {
 
   Widget _buildPersonalInfoCard(BuildContext context, AgentDetails agent) {
     return _ProfileCard(
-      title: 'ข้อมูลส่วนตัว',
+      title: AppLocalizations.of(context)!.personalInfoLabel,
       onEdit: () => context.push('/profile/edit', extra: agent),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -459,16 +460,16 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 8),
           _buildInfoRow(
             'assets/icons/phone.svg',
-            agent.mobileNumber ?? 'ไม่ได้ระบุ',
+            agent.mobileNumber ?? AppLocalizations.of(context)!.notSpecified,
           ),
           const SizedBox(height: 16),
           Text(
-            'ประวัติส่วนตัว',
+            AppLocalizations.of(context)!.bioLabel,
             style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
           ),
           const SizedBox(height: 4),
           Text(
-            agent.bio ?? 'ไม่ได้ระบุ',
+            agent.bio ?? AppLocalizations.of(context)!.notSpecified,
             style: GoogleFonts.anuphan(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -480,15 +481,15 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildConnectionCodeCard(AgentDetails agent) {
+  Widget _buildConnectionCodeCard(BuildContext context, AgentDetails agent) {
     return _ProfileCard(
-      title: 'รหัสเพื่อเชื่อมต่อกับบริษัท',
+      title: AppLocalizations.of(context)!.profile_agent_code,
       onCopy: (BuildContext context) {
         Clipboard.setData(ClipboardData(text: agent.agentCredential));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'คัดลอกรหัสเพื่อเชื่อมต่อกับบริษัทแล้ว',
+              AppLocalizations.of(context)!.connectionCodeCopied,
               style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.white),
             ),
           ),
@@ -513,7 +514,7 @@ class ProfileView extends StatelessWidget {
             ],
           ),
           Text(
-            'ยังไม่ได้เชื่อมต่อกับบริษัท',
+            AppLocalizations.of(context)!.notConnectedAgency,
             style: GoogleFonts.anuphan(fontSize: 12, color: AppColors.baseGrey),
           ),
         ],
@@ -527,16 +528,16 @@ class ProfileView extends StatelessWidget {
 
     if (!hasWorkInfo) {
       return _ProfileCard(
-        title: 'ข้อมูลการทำงาน',
+        title: AppLocalizations.of(context)!.workInfoLabel,
         child: DottedAddButton(
-          label: 'เพิ่มข้อมูล',
+          label: AppLocalizations.of(context)!.addInfo,
           onTap: () => context.push('/profile/work-info', extra: agent),
         ),
       );
     }
 
     return _ProfileCard(
-      title: 'ข้อมูลการทำงาน',
+      title: AppLocalizations.of(context)!.workInfoLabel,
       onEdit: () => context.push('/profile/work-info', extra: agent),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -545,7 +546,7 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 12),
           _buildWorkInfoRow(
             'assets/icons/file-check.svg',
-            'เลขที่ใบอนุญาต ${agent.licenseNumber ?? "ไม่ได้ระบุ"}',
+            'เลขที่ใบอนุญาต ${agent.licenseNumber ?? AppLocalizations.of(context)!.notSpecified}',
           ),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
@@ -554,7 +555,7 @@ class ProfileView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'ความถนัดทางภาษา',
+            AppLocalizations.of(context)!.languageProficiency,
             style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
           ),
           const SizedBox(height: 8),
@@ -584,7 +585,7 @@ class ProfileView extends StatelessWidget {
             )
           else
             Text(
-              'ไม่ได้ระบุ',
+              AppLocalizations.of(context)!.notSpecified,
               style: GoogleFonts.anuphan(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
@@ -593,7 +594,7 @@ class ProfileView extends StatelessWidget {
             ),
           const SizedBox(height: 16),
           Text(
-            'ลิงก์โซเชียล',
+            AppLocalizations.of(context)!.socialLinks,
             style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
           ),
           const SizedBox(height: 8),
@@ -622,7 +623,7 @@ class ProfileView extends StatelessWidget {
             )
           else
             Text(
-              'ไม่ได้ระบุ',
+              AppLocalizations.of(context)!.notSpecified,
               style: GoogleFonts.anuphan(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
@@ -675,9 +676,9 @@ class ProfileView extends StatelessWidget {
 
     if (!hasServiceArea) {
       return _ProfileCard(
-        title: 'ข้อมูลพื้นที่ให้บริการ',
+        title: AppLocalizations.of(context)!.serviceAreaLabel,
         child: DottedAddButton(
-          label: 'เพิ่มข้อมูล',
+          label: AppLocalizations.of(context)!.addInfo,
           onTap: () => context.push('/profile/service-area', extra: agent),
         ),
       );
@@ -687,7 +688,7 @@ class ProfileView extends StatelessWidget {
     final lng = double.tryParse(agent.serviceAreaCenterLng!);
 
     return _ProfileCard(
-      title: 'ข้อมูลพื้นที่ให้บริการ',
+      title: AppLocalizations.of(context)!.serviceAreaLabel,
       onEdit: () => context.push('/profile/service-area', extra: agent),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -702,7 +703,7 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 16),
           _buildWorkInfoRow(
             'assets/icons/map-pin.svg',
-            agent.address ?? 'ไม่ได้ระบุที่อยู่',
+            agent.address ?? AppLocalizations.of(context)!.addressNotSpecified,
           ),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
@@ -747,7 +748,10 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileCompletenessWidget(AgentDetails agent) {
+  Widget _buildProfileCompletenessWidget(
+    BuildContext context,
+    AgentDetails agent,
+  ) {
     // Basic account: Lv 1
     // Work Info: Lv 2
     // Service Area: Lv 3
@@ -765,7 +769,7 @@ class ProfileView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'ความสมบูรณ์ของโปรไฟล์',
+              AppLocalizations.of(context)!.profileCompleteness,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
                 fontWeight: FontWeight.w400,

@@ -18,6 +18,7 @@ import '../../auth/bloc/auth_state.dart';
 import '../../notifications/bloc/notification_bloc.dart';
 import '../../notifications/bloc/notification_event.dart';
 import '../../notifications/bloc/notification_state.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
         searchBar: const HomeSearchBar(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
+          children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: MenuGridCard(),
@@ -177,22 +178,24 @@ class _HomeHeaderState extends State<HomeHeader> {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'ยินดีต้อนรับ',
+                AppLocalizations.of(context)!.welcome,
                 style: TextStyle(
                   color: AppColors.white.withValues(alpha: 0.90),
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: 2),
               Text(
-                userName.isNotEmpty ? userName : 'เอเจนซี่ ดวงเด่น',
+                userName.isNotEmpty
+                    ? userName
+                    : AppLocalizations.of(context)!.agencyDuangDen,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -204,18 +207,18 @@ class _HomeHeaderState extends State<HomeHeader> {
             ],
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10),
         _HeaderActionIcon(
           svgPath: 'assets/icons/bell.svg',
           onTap: () => context.push('/notifications'),
           showBadge: true,
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10),
         _HeaderActionIcon(
           svgPath: 'assets/icons/message-round.svg',
           onTap: null,
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10),
         _LogoutButton(),
       ],
     );
@@ -365,7 +368,7 @@ class _HeaderActionIcon extends StatelessWidget {
                     ? state.unreadCount
                     : 0;
 
-                if (unreadCount == 0) return const SizedBox.shrink();
+                if (unreadCount == 0) return SizedBox.shrink();
 
                 return Positioned(
                   right: -4,
@@ -411,7 +414,7 @@ class HomeSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppSearchBar(
-      hintText: 'ค้นหาทรัพย์ของคุณ...',
+      hintText: AppLocalizations.of(context)!.searchProperty,
       controller: controller,
     );
   }
@@ -438,67 +441,70 @@ class HomeMenuItem {
 class MenuGridCard extends StatelessWidget {
   const MenuGridCard({super.key});
 
-  static const List<HomeMenuItem> _items = [
-    HomeMenuItem(
-      label: 'Property',
-      subtitle: 'อสังหาริมทรัพย์',
-      imagePath: 'assets/images/home/property.png',
-      route: '/property',
-      accent: Color(0xFF2563EB),
-    ),
-    HomeMenuItem(
-      label: 'Money',
-      subtitle: 'การเงิน',
-      imagePath: 'assets/images/home/money.png',
-      route: '/money',
-      accent: Color(0xFF10B981),
-    ),
-    HomeMenuItem(
-      label: 'Calendar',
-      subtitle: 'ตารางเวลา',
-      imagePath: 'assets/images/home/calendar.png',
-      route: '/calendar',
-      accent: Color(0xFFF59E0B),
-    ),
-    HomeMenuItem(
-      label: 'Contact',
-      subtitle: 'รายชื่อผู้ติดต่อ',
-      imagePath: 'assets/images/home/contact.png',
-      route: '/contact',
-      accent: Color(0xFF22C55E),
-    ),
-    HomeMenuItem(
-      label: 'Dashboard',
-      subtitle: 'แดชบอร์ด',
-      imagePath: 'assets/images/home/dashboard.png',
-      route: '/dashboard',
-      accent: Color(0xFFF97316),
-      enable: false,
-    ),
-    HomeMenuItem(
-      label: 'Co-Agent',
-      subtitle: 'ตัวแทนร่วม',
-      imagePath: 'assets/images/home/co_agent.png',
-      route: '/co-agent',
-      accent: Color(0xFF6366F1),
-      enable: false,
-    ),
-    HomeMenuItem(
-      label: 'Contract',
-      subtitle: 'เอกสารสัญญา',
-      imagePath: 'assets/images/home/contract.png',
-      route: '/contract',
-      accent: Color(0xFF0EA5E9),
-    ),
-    HomeMenuItem(
-      label: 'Bureau',
-      subtitle: 'ข้อมูลลูกค้า',
-      imagePath: 'assets/images/home/bureau.png',
-      route: '/bureau',
-      accent: Color(0xFF06B6D4),
-      enable: false,
-    ),
-  ];
+  List<HomeMenuItem> _getItems(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      HomeMenuItem(
+        label: 'Property',
+        subtitle: l10n.propertiesTitle,
+        imagePath: 'assets/images/home/property.png',
+        route: '/property',
+        accent: const Color(0xFF2563EB),
+      ),
+      HomeMenuItem(
+        label: 'Money',
+        subtitle: l10n.finance,
+        imagePath: 'assets/images/home/money.png',
+        route: '/money',
+        accent: const Color(0xFF10B981),
+      ),
+      HomeMenuItem(
+        label: 'Calendar',
+        subtitle: l10n.availability,
+        imagePath: 'assets/images/home/calendar.png',
+        route: '/calendar',
+        accent: const Color(0xFFF59E0B),
+      ),
+      HomeMenuItem(
+        label: 'Contact',
+        subtitle: l10n.contactListLabel,
+        imagePath: 'assets/images/home/contact.png',
+        route: '/contact',
+        accent: const Color(0xFF22C55E),
+      ),
+      HomeMenuItem(
+        label: 'Dashboard',
+        subtitle: l10n.dashboard,
+        imagePath: 'assets/images/home/dashboard.png',
+        route: '/dashboard',
+        accent: const Color(0xFFF97316),
+        enable: false,
+      ),
+      HomeMenuItem(
+        label: 'Co-Agent',
+        subtitle: l10n.coAgent,
+        imagePath: 'assets/images/home/co_agent.png',
+        route: '/co-agent',
+        accent: const Color(0xFF6366F1),
+        enable: false,
+      ),
+      HomeMenuItem(
+        label: 'Contract',
+        subtitle: l10n.contracts,
+        imagePath: 'assets/images/home/contract.png',
+        route: '/contract',
+        accent: const Color(0xFF0EA5E9),
+      ),
+      HomeMenuItem(
+        label: 'Bureau',
+        subtitle: l10n.data,
+        imagePath: 'assets/images/home/bureau.png',
+        route: '/bureau',
+        accent: const Color(0xFF06B6D4),
+        enable: false,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -525,8 +531,9 @@ class MenuGridCard extends StatelessWidget {
           crossAxisSpacing: 8,
           childAspectRatio: 0.80,
         ),
-        itemCount: _items.length,
-        itemBuilder: (context, index) => _MenuGridItem(item: _items[index]),
+        itemCount: _getItems(context).length,
+        itemBuilder: (context, index) =>
+            _MenuGridItem(item: _getItems(context)[index]),
       ),
     );
   }
@@ -555,7 +562,7 @@ class _MenuGridItem extends StatelessWidget {
                 width: 24,
                 height: 24,
                 color: AppColors.baseLightGrey,
-                child: const Icon(
+                child: Icon(
                   Icons.error_outline,
                   size: 16,
                   color: AppColors.baseGrey,
@@ -564,7 +571,7 @@ class _MenuGridItem extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             item.label,
             textAlign: TextAlign.center,
@@ -576,7 +583,7 @@ class _MenuGridItem extends StatelessWidget {
               color: AppColors.baseDarkGrey,
             ),
           ),
-          const SizedBox(height: 2),
+          SizedBox(height: 2),
           Text(
             item.subtitle,
             textAlign: TextAlign.center,
@@ -625,24 +632,24 @@ class _RecommendedSectionState extends State<RecommendedSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'แนะนำสำหรับคุณ',
-          style: TextStyle(
+        Text(
+          AppLocalizations.of(context)!.recommendedForYou,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w800,
             color: AppColors.primary,
           ),
         ),
-        const SizedBox(height: 2),
-        const Text(
-          'คัดสรรสิ่งที่ดีที่สุดมาเพื่อคุณโดยเฉพาะ',
-          style: TextStyle(
+        SizedBox(height: 2),
+        Text(
+          AppLocalizations.of(context)!.curatedForYou,
+          style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
             color: AppColors.baseDarkGrey,
           ),
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 14),
         SizedBox(
           height: 200,
           child: PageView.builder(
@@ -678,7 +685,7 @@ class _RecommendedSectionState extends State<RecommendedSection> {
                     ),
                     errorWidget: (context, url, error) => Container(
                       color: AppColors.basePaleGrey,
-                      child: const Icon(
+                      child: Icon(
                         Icons.error_outline,
                         color: AppColors.baseGrey,
                         size: 48,
@@ -690,7 +697,7 @@ class _RecommendedSectionState extends State<RecommendedSection> {
             },
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         _DotsIndicator(count: _images.length, index: _index),
       ],
     );
@@ -726,34 +733,37 @@ class _DotsIndicator extends StatelessWidget {
 class ActivitiesSection extends StatelessWidget {
   const ActivitiesSection({super.key});
 
-  static const List<ActivityItem> _activities = [
-    ActivityItem(
-      title: 'ตัวอย่างประชาสัมพันธ์',
-      description:
-          'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale Figma Draft Rotate Invite Figma Italic Compo...',
-      imageUrl:
-          'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=200&h=200&fit=crop',
-      type: ActivityType.publicRelations,
-    ),
-    ActivityItem(
-      title: 'ตัวอย่างข่าวสาร',
-      description:
-          'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
-      imageUrl:
-          'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=200&h=200&fit=crop',
-      type: ActivityType.news,
-      metadata: 'ก้องเกียร การธุรกิจเลิศ • 12 นาที',
-    ),
-    ActivityItem(
-      title: 'ตัวอย่างกิจกรรม',
-      description:
-          'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
-      imageUrl:
-          'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
-      type: ActivityType.activity,
-      metadata: '24 ธ.ค. 2568, 12:00 น.',
-    ),
-  ];
+  List<ActivityItem> _getActivities(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      ActivityItem(
+        title: l10n.sample,
+        description:
+            'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale Figma Draft Rotate Invite Figma Italic Compo...',
+        imageUrl:
+            'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=200&h=200&fit=crop',
+        type: ActivityType.publicRelations,
+      ),
+      ActivityItem(
+        title: l10n.demoNews1,
+        description:
+            'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
+        imageUrl:
+            'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=200&h=200&fit=crop',
+        type: ActivityType.news,
+        metadata: l10n.activityDemoUser12Min,
+      ),
+      ActivityItem(
+        title: l10n.demoActivity,
+        description:
+            'Figma Ipsum Component Variant Main Layer. Edit Effect Pencil Draft Pixel Underline. Scale...',
+        imageUrl:
+            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
+        type: ActivityType.activity,
+        metadata: l10n.dateDemoDec24,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -766,9 +776,9 @@ class ActivitiesSection extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    'กิจกรรม',
+                    AppLocalizations.of(context)!.activities,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
@@ -777,7 +787,7 @@ class ActivitiesSection extends StatelessWidget {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    'รวมกิจกรรม ข่าวสาร และประชาสัมพันธ์ที่น่าสนใจ',
+                    AppLocalizations.of(context)!.activitiesSubtitle,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
@@ -790,11 +800,11 @@ class ActivitiesSection extends StatelessWidget {
             GestureDetector(
               onTap: () => context.push('/activities'),
               behavior: HitTestBehavior.opaque,
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 6),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
                 child: Text(
-                  'ดูทั้งหมด',
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.viewAll,
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: AppColors.baseDarkGrey,
@@ -804,8 +814,8 @@ class ActivitiesSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
-        ..._activities.map(
+        SizedBox(height: 10),
+        ..._getActivities(context).map(
           (activity) => Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: _ActivityCard(activity: activity),
@@ -870,7 +880,7 @@ class _ActivityCard extends StatelessWidget {
                     color: AppColors.baseDarkGrey,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   activity.description,
                   maxLines: 2,
@@ -883,7 +893,7 @@ class _ActivityCard extends StatelessWidget {
                   ),
                 ),
                 if (activity.metadata != null) ...[
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Row(
                     children: [
                       if (activity.type == ActivityType.activity)
@@ -897,7 +907,7 @@ class _ActivityCard extends StatelessWidget {
                           ),
                         ),
                       if (activity.type == ActivityType.activity)
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                       if (activity.type == ActivityType.news)
                         SvgPicture.asset(
                           'assets/icons/clock.svg',
@@ -909,7 +919,7 @@ class _ActivityCard extends StatelessWidget {
                           ),
                         ),
                       if (activity.type == ActivityType.news)
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                       Text(
                         activity.metadata!,
                         style: const TextStyle(
@@ -924,7 +934,7 @@ class _ActivityCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: CachedNetworkImage(
@@ -941,7 +951,7 @@ class _ActivityCard extends StatelessWidget {
                 width: 76,
                 height: 76,
                 color: AppColors.basePaleGrey,
-                child: const Icon(
+                child: Icon(
                   Icons.error_outline,
                   color: AppColors.baseGrey,
                   size: 24,

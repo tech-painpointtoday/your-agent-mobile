@@ -9,6 +9,7 @@ import 'package:youragent/features/auth/bloc/auth_event.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:youragent/features/profile/widgets/language_selection_bottom_sheet.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   final Function(Locale) changeLocale;
@@ -23,7 +24,7 @@ class SettingsScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: false,
         title: Text(
-          'การตั้งค่า',
+          AppLocalizations.of(context)!.settingsTitle,
           style: GoogleFonts.anuphan(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -58,12 +59,12 @@ class SettingsScreen extends StatelessWidget {
             children: [
               _SettingsItem(
                 icon: 'assets/icons/user.svg',
-                label: 'จัดการบัญชี',
+                label: AppLocalizations.of(context)!.accountManagementTitle,
                 onTap: () => context.push('/profile/settings/account'),
               ),
               _SettingsItem(
                 icon: 'assets/icons/globe.svg',
-                label: 'เปลี่ยนภาษา',
+                label: AppLocalizations.of(context)!.change_language,
                 onTap: () {
                   LanguageSelectionBottomSheet.show(
                     context: context,
@@ -74,33 +75,33 @@ class SettingsScreen extends StatelessWidget {
               ),
               _SettingsItem(
                 icon: 'assets/icons/bell.svg',
-                label: 'ตั้งค่าการแจ้งเตือน',
+                label: AppLocalizations.of(context)!.notificationSettingsLabel,
                 onTap: () {},
               ),
               _SettingsItem(
                 icon: 'assets/icons/settings.svg',
-                label: 'ตั้งค่าการค้นหาความเข้ากัน',
+                label: AppLocalizations.of(context)!.matchingSettingsLabel,
                 onTap: () {},
               ),
               _SettingsItem(
                 icon: 'assets/icons/clipboard-2.svg',
-                label: 'ข้อตกลงและเงื่อนไขการใช้งาน',
+                label: AppLocalizations.of(context)!.termsLabel,
                 onTap: () {},
               ),
               _SettingsItem(
                 icon: 'assets/icons/security-shield.svg',
-                label: 'นโยบายความเป็นส่วนตัว',
+                label: AppLocalizations.of(context)!.privacyLabel,
                 onTap: () {},
               ),
               _SettingsItem(
                 icon: 'assets/icons/message-information.svg',
-                label: 'ติดต่อเรา',
+                label: AppLocalizations.of(context)!.contactUsLabel,
                 onTap: () {},
               ),
               const SizedBox(height: 8),
               _SettingsItem(
                 icon: 'assets/icons/logout.svg',
-                label: 'ออกจากระบบ',
+                label: AppLocalizations.of(context)!.logout_button,
                 labelColor: AppColors.supportRedDark,
                 iconColor: AppColors.supportRedDark,
                 backgroundColor: AppColors.supportRedLight.withValues(
@@ -137,9 +138,9 @@ class SettingsScreen extends StatelessWidget {
   void _handleLogout(BuildContext context) {
     StatusDialog.showDestructive(
       context: context,
-      title: 'ออกจากระบบ?',
-      message: 'คุณต้องการออกจากระบบหรือไม่?',
-      actionLabel: 'ออกจากระบบ',
+      title: AppLocalizations.of(context)!.logoutConfirmTitle,
+      message: AppLocalizations.of(context)!.logoutConfirmMessage,
+      actionLabel: AppLocalizations.of(context)!.logout_button,
       onAction: () {
         context.read<AuthBloc>().add(const SignOutEvent());
       },

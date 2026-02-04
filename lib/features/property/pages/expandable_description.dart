@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class ExpandableDescription extends StatefulWidget {
   final String text;
@@ -48,7 +49,7 @@ class _ExpandableDescriptionState extends State<ExpandableDescription> {
           child: Row(
             children: [
               Text(
-                _isExpanded ? 'เเสดงน้อยลง' : 'ดูเพิ่มเติม',
+                _isExpanded ? AppLocalizations.of(context)!.showLessButton : AppLocalizations.of(context)!.showMoreButton,
                 style: GoogleFonts.anuphan(
                   color: AppColors.brandGreen,
                   fontSize: 14,

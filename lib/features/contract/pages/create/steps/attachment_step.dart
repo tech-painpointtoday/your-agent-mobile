@@ -12,6 +12,7 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class AttachmentStep extends StatefulWidget {
   final bool hideHeader;
@@ -60,7 +61,7 @@ class _AttachmentStepState extends State<AttachmentStep> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppBadge(
-                        label: 'ไฟล์แนบสัญญา',
+                        label: AppLocalizations.of(context)!.contractFile,
                         fontSize: 16,
                         color: BadgeColor.blue,
                       ),
@@ -106,11 +107,11 @@ class _AttachmentStepState extends State<AttachmentStep> {
                                 attachment.isRemote) {
                               AppConfirmationBottomSheet.show(
                                 context: context,
-                                title: 'ลบรายการนี้?',
+                                title: AppLocalizations.of(context)!.deleteItemQuestion,
                                 description:
-                                    'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้',
-                                confirmLabel: 'ลบ',
-                                cancelLabel: 'ยกเลิก',
+                                    AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
+                                confirmLabel: AppLocalizations.of(context)!.delete,
+                                cancelLabel: AppLocalizations.of(context)!.statusCancelled,
                                 style: ConfirmationStyle.destructive,
                                 onConfirm: performDelete,
                               );
@@ -175,7 +176,7 @@ class _AttachmentStepState extends State<AttachmentStep> {
               ),
               const SizedBox(width: 8),
               Text(
-                'เพิ่มรายการ',
+                AppLocalizations.of(context)!.add_item,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseDarkGrey,
                   fontSize: 16,
@@ -247,7 +248,7 @@ class _AttachmentItemCard extends StatelessWidget {
         // Manual Label for Name
         RichText(
           text: TextSpan(
-            text: 'ชื่อไฟล์',
+            text: AppLocalizations.of(context)!.nameFile,
             style: GoogleFonts.anuphan(
               color: AppColors.baseBlack,
               fontSize: 14,
@@ -273,7 +274,7 @@ class _AttachmentItemCard extends StatelessWidget {
               child: AppTextField(
                 label: '',
                 isRequired: false,
-                hintText: 'ชื่อไฟล์ เช่น สำเนาบัตรประชาชน',
+                hintText: AppLocalizations.of(context)!.fileNameHint,
                 controller: TextEditingController(text: attachment.name)
                   ..selection = TextSelection.fromPosition(
                     TextPosition(offset: attachment.name.length),
@@ -315,7 +316,7 @@ class _AttachmentItemCard extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          'อัปโหลดไฟล์ PDF อย่างน้อย 1 ไฟล์',
+          AppLocalizations.of(context)!.uploadFile,
           style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
         ),
         if (attachment.filePath != null || attachment.fileUrl != null) ...[

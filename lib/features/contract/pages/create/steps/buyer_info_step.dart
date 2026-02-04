@@ -13,6 +13,7 @@ import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import '../../../widgets/user_registration_bottom_sheet.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class BuyerInfoStep extends StatefulWidget {
   final bool hideHeader;
@@ -82,7 +83,7 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         AppBadge(
-                          label: 'ข้อมูลผู้ซื้อ',
+                          label: AppLocalizations.of(context)!.buyerInfo,
                           fontSize: 16,
                           color: BadgeColor.blue,
                         ),
@@ -97,16 +98,16 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
 
                   // Person Type Selection
                   AppChipSelection<PersonType>(
-                    label: 'ประเภทบุคคล',
+                    label: AppLocalizations.of(context)!.personTypeLabel,
                     isRequired: true,
                     value: state.buyerType,
-                    options: const [
+                    options: [
                       AppChipOption(
-                        label: 'บุคคลธรรมดา',
+                        label: AppLocalizations.of(context)!.individual,
                         value: PersonType.individual,
                       ),
                       AppChipOption(
-                        label: 'นิติบุคคล',
+                        label: AppLocalizations.of(context)!.juristic_person,
                         value: PersonType.juristic,
                       ),
                     ],
@@ -120,11 +121,11 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
                   TypeAheadField<Buyer>(
                     controller: _nameController,
                     builder: (context, controller, focusNode) => AppTextField(
-                      label: 'ชื่อ-นามสกุล / ชื่อบริษัท',
+                      label: AppLocalizations.of(context)!.full_name_or_company,
                       controller: controller,
                       focusNode: focusNode,
                       isRequired: true,
-                      hintText: 'ชื่อ-นามสกุล / ชื่อบริษัท',
+                      hintText: AppLocalizations.of(context)!.full_name_or_company,
                       onChanged: (value) => context
                           .read<ContractFormBloc>()
                           .add(ContractFormBuyerNameUpdated(value)),
@@ -165,14 +166,14 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
                     emptyBuilder: (context) => Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        'ไม่พบข้อมูลผู้ซื้อ',
+                        AppLocalizations.of(context)!.buyerDataNotFound,
                         style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                       ),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'ค้นหาชื่อเจ้าของทรัพย์ในระบบ เพื่อเชื่อมต่อข้อมูล', // Hint text from image
+                    AppLocalizations.of(context)!.searchDataNameProperty, // Hint text from image
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseGrey,
                       fontSize: 12,
@@ -191,7 +192,7 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
                       ),
                       icon: const Icon(Icons.add, size: 20),
                       label: Text(
-                        'สร้างบัญชีใหม่',
+                        AppLocalizations.of(context)!.createNewAccountTitle,
                         style: GoogleFonts.anuphan(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -214,10 +215,10 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
 
                   // ID Card / Tax ID
                   AppTextField(
-                    label: 'เลขบัตรประชาชน / เลขนิติบุคคล',
+                    label: AppLocalizations.of(context)!.id_card_or_tax_id,
                     controller: _idCardController,
                     isRequired: true,
-                    hintText: 'เลขบัตรประชาชน / เลขนิติบุคคล',
+                    hintText: AppLocalizations.of(context)!.id_card_or_tax_id,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormBuyerIdCardUpdated(value),
                     ),
@@ -226,10 +227,10 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
 
                   // Address
                   AppTextField(
-                    label: 'ที่อยู่ปัจจุบัน',
+                    label: AppLocalizations.of(context)!.currentAddressLabel,
                     controller: _addressController,
                     isRequired: true,
-                    hintText: 'ที่อยู่ปัจจุบัน',
+                    hintText: AppLocalizations.of(context)!.currentAddressLabel,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormBuyerAddressUpdated(value),
                     ),
@@ -238,10 +239,10 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
 
                   // Phone
                   AppTextField(
-                    label: 'หมายเลขโทรศัพท์',
+                    label: AppLocalizations.of(context)!.phone_number,
                     controller: _phoneController,
                     isRequired: true,
-                    hintText: 'หมายเลขโทรศัพท์',
+                    hintText: AppLocalizations.of(context)!.phone_number,
                     keyboardType: TextInputType.phone,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormBuyerPhoneUpdated(value),
@@ -251,10 +252,10 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
 
                   // Email
                   AppTextField(
-                    label: 'อีเมล',
+                    label: AppLocalizations.of(context)!.email,
                     controller: _emailController,
                     isRequired: true,
-                    hintText: 'อีเมล',
+                    hintText: AppLocalizations.of(context)!.email,
                     keyboardType: TextInputType.emailAddress,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormBuyerEmailUpdated(value),

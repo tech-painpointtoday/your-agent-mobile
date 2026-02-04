@@ -17,6 +17,7 @@ import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/features/property/widgets/add_property_info_bottom_sheets.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class GeneralInfoStep extends StatefulWidget {
   final int? step;
@@ -384,7 +385,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      'ข้อมูลทั่วไป',
+                      AppLocalizations.of(context)!.general_information,
                       style: GoogleFonts.anuphan(
                         color: AppColors.primary,
                         fontSize: 14,
@@ -403,14 +404,14 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
               // Title
               AppTextFormField(
-                label: 'ชื่ออสังหาฯ',
+                label: AppLocalizations.of(context)!.propertyNameHint,
                 controller: _nameController,
                 isRequired: true,
-                hintText: 'ชื่ออสังหาฯ',
+                hintText: AppLocalizations.of(context)!.propertyNameHint,
               ),
               const SizedBox(height: 8),
               Text(
-                'ชื่ออสังหาฯ นี้จะปรากฏบนหัวข้อประกาศของคุณ',
+                AppLocalizations.of(context)!.propertyNameDescription,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseGrey,
                   fontSize: 12,
@@ -421,14 +422,14 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               if (!isCondoOrApt) ...[
                 // Developer
                 AppTextFormField(
-                  label: 'ผู้พัฒนาโครงการ',
+                  label: AppLocalizations.of(context)!.developerHint,
                   controller: _developerController,
-                  hintText: 'ผู้พัฒนาโครงการ',
+                  hintText: AppLocalizations.of(context)!.developerHint,
                 ),
                 const SizedBox(height: 8),
                 AppButton(
                   width: double.infinity,
-                  text: 'เพิ่มผู้พัฒนาโครงการ',
+                  text: AppLocalizations.of(context)!.addDeveloperTitle,
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
@@ -440,14 +441,14 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
                 // Project Name
                 AppTextFormField(
-                  label: 'ชื่อโครงการ',
+                  label: AppLocalizations.of(context)!.projectNameHint,
                   controller: _projectController,
-                  hintText: 'ชื่อโครงการ',
+                  hintText: AppLocalizations.of(context)!.projectNameHint,
                 ),
                 const SizedBox(height: 8),
                 AppButton(
                   width: double.infinity,
-                  text: 'เพิ่มชื่อโครงการ',
+                  text: AppLocalizations.of(context)!.addProjectNameTitle,
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
@@ -466,10 +467,12 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       controller: _developerController,
                       builder: (context, controller, focusNode) =>
                           AppTextFormField(
-                            label: 'ผู้พัฒนาโครงการ',
+                            label: AppLocalizations.of(context)!.developerHint,
                             controller: controller,
                             focusNode: focusNode,
-                            hintText: 'ค้นหาผู้พัฒนาโครงการ',
+                            hintText: AppLocalizations.of(
+                              context,
+                            )!.searchDeveloper,
                             isRequired: isCondoOrApt,
                             suffix: Padding(
                               padding: const EdgeInsets.all(16),
@@ -507,16 +510,16 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         );
                         FocusScope.of(context).unfocus();
                       },
-                      emptyBuilder: (context) => const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text('ไม่พบข้อมูล'),
+                      emptyBuilder: (context) => Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(AppLocalizations.of(context)!.noDataFound),
                       ),
                     );
                   },
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'ค้นหาผู้พัฒนาโครงการของทรัพย์นี้',
+                  AppLocalizations.of(context)!.searchDeveloperDescription,
                   style: GoogleFonts.anuphan(
                     color: AppColors.baseGrey,
                     fontSize: 14,
@@ -525,7 +528,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 const SizedBox(height: 24),
                 AppButton(
                   width: double.infinity,
-                  text: 'เพิ่มผู้พัฒนาโครงการ',
+                  text: AppLocalizations.of(context)!.addDeveloperTitle,
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
@@ -542,10 +545,14 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       controller: _projectController,
                       builder: (context, controller, focusNode) =>
                           AppTextFormField(
-                            label: 'ชื่อโครงการ',
+                            label: AppLocalizations.of(
+                              context,
+                            )!.projectNameHint,
                             controller: controller,
                             focusNode: focusNode,
-                            hintText: 'ชื่อโครงการ',
+                            hintText: AppLocalizations.of(
+                              context,
+                            )!.projectNameHint,
                             isRequired: isCondoOrApt,
                             suffix: Padding(
                               padding: const EdgeInsets.all(16),
@@ -604,16 +611,16 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         // Unfocus to hide keyboard
                         FocusScope.of(context).unfocus();
                       },
-                      emptyBuilder: (context) => const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text('ไม่พบข้อมูล'),
+                      emptyBuilder: (context) => Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(AppLocalizations.of(context)!.noDataFound),
                       ),
                     );
                   },
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'ค้นหาชื่อโครงการของทรัพย์นี้',
+                  AppLocalizations.of(context)!.searchProjectDescription,
                   style: GoogleFonts.anuphan(
                     color: AppColors.baseGrey,
                     fontSize: 14,
@@ -622,7 +629,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 const SizedBox(height: 24),
                 AppButton(
                   width: double.infinity,
-                  text: 'เพิ่มชื่อโครงการ',
+                  text: AppLocalizations.of(context)!.addProjectNameTitle,
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
@@ -634,22 +641,22 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
                 // Building Info
                 AppTextFormField(
-                  label: 'ตึก/อาคาร',
+                  label: AppLocalizations.of(context)!.buildingHint,
                   controller: _buildingController,
-                  hintText: 'ตึก/อาคาร',
+                  hintText: AppLocalizations.of(context)!.buildingHint,
                 ),
                 const SizedBox(height: 16),
                 AppTextFormField(
-                  label: 'ชั้น',
+                  label: AppLocalizations.of(context)!.floorUnit,
                   controller: _floorController,
-                  hintText: 'ชั้น',
+                  hintText: AppLocalizations.of(context)!.floorUnit,
                   isRequired: true,
                 ),
                 const SizedBox(height: 16),
                 AppTextFormField(
-                  label: 'เลขที่ห้อง',
+                  label: AppLocalizations.of(context)!.roomNoHint,
                   controller: _roomNoController,
-                  hintText: 'เลขที่ห้อง',
+                  hintText: AppLocalizations.of(context)!.roomNoHint,
                   isRequired: true,
                 ),
                 const SizedBox(height: 16),
@@ -658,18 +665,18 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               // Address
               if (!isCondoOrApt)
                 AppTextFormField(
-                  label: 'เลขที่บ้าน',
+                  label: AppLocalizations.of(context)!.houseNoHint,
                   controller: _houseNoController,
                   isRequired: true,
-                  hintText: 'เลขที่บ้าน',
+                  hintText: AppLocalizations.of(context)!.houseNoHint,
                 ),
               const SizedBox(height: 16),
 
               // Location Section
               AppTextFormField(
-                label: 'ตำแหน่งที่ตั้ง',
+                label: AppLocalizations.of(context)!.locationTitle,
                 controller: _addressController,
-                hintText: 'ตำแหน่งที่ตั้ง',
+                hintText: AppLocalizations.of(context)!.locationTitle,
                 isRequired: true,
                 readOnly: false,
                 showCursor: false,
@@ -689,7 +696,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               ),
               const SizedBox(height: 8),
               Text(
-                'เลือกตำแหน่งบนแผนที่หรือใช้ตำแหน่งปัจจุบันของคุณเพื่อกำหนดที่ตั้งอสังหาริมทรัพย์',
+                AppLocalizations.of(context)!.locationDescription,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseGrey,
                   fontSize: 12,
@@ -729,7 +736,9 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                   Expanded(
                     flex: 3,
                     child: AppButton(
-                      text: 'ใช้ตำแหน่งปัจจุบัน',
+                      text: AppLocalizations.of(
+                        context,
+                      )!.useCurrentLocationLabel,
                       style: AppButtonStyle.primary,
                       onPressed: _useCurrentLocation,
                       backgroundColor: AppColors.brandLightGreen,
@@ -741,7 +750,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                   Expanded(
                     flex: 2,
                     child: AppButton(
-                      text: 'ล้างตำแหน่ง',
+                      text: AppLocalizations.of(context)!.clearLocationLabel,
                       style: AppButtonStyle.outline,
                       onPressed: _clearLocation,
                     ),

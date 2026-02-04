@@ -6,6 +6,7 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class LocationSearchBottomSheet extends StatefulWidget {
   final LatLng? initialLocation;
@@ -106,7 +107,7 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
           Row(
             children: [
               Text(
-                'ตำแหน่งที่ตั้ง',
+                AppLocalizations.of(context)!.locationTitle,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseBlack,
                   fontSize: 16,
@@ -128,7 +129,7 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
           AppTextFormField(
             label: '', // Label handled above
             controller: _searchController,
-            hintText: 'ค้นหาตำแหน่งที่ตั้ง',
+            hintText: AppLocalizations.of(context)!.searchLocationHint,
             suffix: const Icon(Icons.search, color: AppColors.baseGrey),
             onChanged: (val) {
               setState(() {
@@ -138,7 +139,7 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
           ),
           const SizedBox(height: 8),
           Text(
-            'เลือกตำแหน่งบนแผนที่หรือใช้ตำแหน่งปัจจุบันของคุณเพื่อกำหนดที่ตั้งอสังหาริมทรัพย์',
+            AppLocalizations.of(context)!.locationDescription,
             style: GoogleFonts.anuphan(color: AppColors.baseGrey, fontSize: 12),
           ),
           const SizedBox(height: 16),
@@ -162,7 +163,7 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
           ),
           const SizedBox(height: 24),
           AppButton(
-            text: 'ยืนยันตำแหน่งนี้',
+            text: AppLocalizations.of(context)!.confirmLocationButton,
             style: AppButtonStyle.primary,
             onPressed: () {
               Navigator.pop(context, {

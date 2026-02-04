@@ -13,6 +13,7 @@ import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import '../../../widgets/user_registration_bottom_sheet.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class PropertyOwnerStep extends StatefulWidget {
   final bool hideHeader;
@@ -86,7 +87,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         AppBadge(
-                          label: 'ข้อมูลเจ้าของทรัพย์',
+                          label: AppLocalizations.of(context)!.dataProperty,
                           fontSize: 16,
                           color: BadgeColor.blue,
                         ),
@@ -101,16 +102,16 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // Person Type Selection
                   AppChipSelection<PersonType>(
-                    label: 'ประเภทบุคคล',
+                    label: AppLocalizations.of(context)!.personTypeLabel,
                     isRequired: true,
                     value: state.ownerType,
-                    options: const [
+                    options: [
                       AppChipOption(
-                        label: 'บุคคลธรรมดา',
+                        label: AppLocalizations.of(context)!.individual,
                         value: PersonType.individual,
                       ),
                       AppChipOption(
-                        label: 'นิติบุคคล',
+                        label: AppLocalizations.of(context)!.juristic_person,
                         value: PersonType.juristic,
                       ),
                     ],
@@ -124,11 +125,13 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                   TypeAheadField<PropertyOwner>(
                     controller: _nameController,
                     builder: (context, controller, focusNode) => AppTextField(
-                      label: 'ชื่อ-นามสกุล / ชื่อบริษัท',
+                      label: AppLocalizations.of(context)!.full_name_or_company,
                       controller: controller,
                       focusNode: focusNode,
                       isRequired: true,
-                      hintText: 'ชื่อ-นามสกุล / ชื่อบริษัท',
+                      hintText: AppLocalizations.of(
+                        context,
+                      )!.full_name_or_company,
                       onChanged: (value) => context
                           .read<ContractFormBloc>()
                           .add(ContractFormOwnerNameUpdated(value)),
@@ -170,14 +173,14 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     emptyBuilder: (context) => Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        'ไม่พบข้อมูลเจ้าของทรัพย์',
+                        AppLocalizations.of(context)!.propertyOwnerNotFound,
                         style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                       ),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'ค้นหาชื่อเจ้าของทรัพย์ในระบบ เพื่อเชื่อมต่อข้อมูล',
+                    AppLocalizations.of(context)!.searchDataNameProperty,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseGrey,
                       fontSize: 12,
@@ -196,7 +199,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                       ),
                       icon: const Icon(Icons.add, size: 20),
                       label: Text(
-                        'สร้างบัญชีใหม่',
+                        AppLocalizations.of(context)!.createNewAccountTitle,
                         style: GoogleFonts.anuphan(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -219,10 +222,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // ID Card / Tax ID
                   AppTextField(
-                    label: 'เลขบัตรประชาชน / เลขนิติบุคคล',
+                    label: AppLocalizations.of(context)!.id_card_or_tax_id,
                     controller: _idCardController,
                     isRequired: true,
-                    hintText: 'เลขบัตรประชาชน / เลขนิติบุคคล',
+                    hintText: AppLocalizations.of(context)!.id_card_or_tax_id,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerIdCardUpdated(value),
                     ),
@@ -231,10 +234,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // Address
                   AppTextField(
-                    label: 'ที่อยู่ปัจจุบัน',
+                    label: AppLocalizations.of(context)!.currentAddressLabel,
                     controller: _addressController,
                     isRequired: true,
-                    hintText: 'ที่อยู่ปัจจุบัน',
+                    hintText: AppLocalizations.of(context)!.currentAddressLabel,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerAddressUpdated(value),
                     ),
@@ -243,10 +246,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // Phone
                   AppTextField(
-                    label: 'หมายเลขโทรศัพท์',
+                    label: AppLocalizations.of(context)!.phone_number,
                     controller: _phoneController,
                     isRequired: true,
-                    hintText: 'หมายเลขโทรศัพท์',
+                    hintText: AppLocalizations.of(context)!.phone_number,
                     keyboardType: TextInputType.phone,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerPhoneUpdated(value),
@@ -256,10 +259,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // Email
                   AppTextField(
-                    label: 'อีเมล',
+                    label: AppLocalizations.of(context)!.email,
                     controller: _emailController,
                     isRequired: true,
-                    hintText: 'อีเมล',
+                    hintText: AppLocalizations.of(context)!.email,
                     keyboardType: TextInputType.emailAddress,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerEmailUpdated(value),
@@ -269,10 +272,12 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // Signatory
                   AppTextField(
-                    label: 'ผู้มีอำนาจลงนาม',
+                    label: AppLocalizations.of(context)!.authorized_signatory,
                     controller: _signatoryController,
                     isRequired: true,
-                    hintText: 'ผู้มีอำนาจลงนาม',
+                    hintText: AppLocalizations.of(
+                      context,
+                    )!.authorized_signatory,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerSignatoryUpdated(value),
                     ),

@@ -4,6 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../widgets/buttons/app_button.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class LocationPickerScreen extends StatefulWidget {
   final LatLng? initialLocation;
@@ -52,7 +53,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'เลือกตําแหน่ง',
+          AppLocalizations.of(context)!.selectLocation,
           style: GoogleFonts.anuphan(fontWeight: FontWeight.w600),
         ),
         backgroundColor: Colors.white,
@@ -127,7 +128,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                     ),
                   const SizedBox(height: 16),
                   AppButton(
-                    text: 'ยืนยันตําแหน่งนี้',
+                    text: AppLocalizations.of(context)!.confirmThisLocation,
                     style: AppButtonStyle.primary,
                     onPressed: () {
                       Navigator.pop(context, {

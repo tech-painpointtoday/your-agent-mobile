@@ -6,6 +6,7 @@ import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 enum RegistrationUserType { owner, buyer }
 
@@ -83,15 +84,15 @@ class _UserRegistrationBottomSheetState
         Navigator.pop(context);
         StatusDialog.showSuccess(
           context: context,
-          title: 'ลงทะเบียนสำเร็จ',
-          message: 'บัญชีถูกสร้างเรียบร้อยแล้ว',
+          title: AppLocalizations.of(context)!.registrationSuccessTitle,
+          message: AppLocalizations.of(context)!.accountCreatedMessage,
         );
       }
     } catch (e) {
       if (mounted) {
         StatusDialog.showError(
           context: context,
-          title: 'เกิดข้อผิดพลาด',
+          title: AppLocalizations.of(context)!.errorOccurredTitle,
           message: e.toString().replaceFirst('Exception: ', ''),
         );
       }
@@ -104,10 +105,10 @@ class _UserRegistrationBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-    final title = 'สร้างบัญชีใหม่';
+    final title = AppLocalizations.of(context)!.createNewAccountTitle;
     final subtitle = widget.type == RegistrationUserType.owner
-        ? 'ลงทะเบียนข้อมูลเจ้าของทรัพย์ เพื่อทำสัญญา'
-        : 'ลงทะเบียนข้อมูลผู้ซื้อ เพื่อทำสัญญา';
+        ? AppLocalizations.of(context)!.dataPropertyContract
+        : AppLocalizations.of(context)!.registerBuyerToContract;
 
     return Container(
       width: double.infinity,
@@ -166,42 +167,42 @@ class _UserRegistrationBottomSheetState
               child: Column(
                 children: [
                   AppTextField(
-                    label: 'ชื่อ - นามสกุล',
+                    label: AppLocalizations.of(context)!.fullNameLabel,
                     controller: _nameController,
                     isRequired: true,
-                    hintText: 'ชื่อ - นามสกุล',
+                    hintText: AppLocalizations.of(context)!.fullNameLabel,
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
-                    label: 'หมายเลขโทรศัพท์',
+                    label: AppLocalizations.of(context)!.phone_number,
                     controller: _phoneController,
                     isRequired: true,
-                    hintText: 'หมายเลขโทรศัพท์',
+                    hintText: AppLocalizations.of(context)!.phone_number,
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
-                    label: 'อีเมล',
+                    label: AppLocalizations.of(context)!.email,
                     controller: _emailController,
                     isRequired: true,
-                    hintText: 'อีเมล',
+                    hintText: AppLocalizations.of(context)!.email,
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 20),
                   if (widget.type == RegistrationUserType.owner) ...[
                     AppTextField(
-                      label: 'ที่อยู่',
+                      label: AppLocalizations.of(context)!.address,
                       controller: _addressController,
                       isRequired: true,
-                      hintText: 'ที่อยู่ปัจจุบัน',
+                      hintText: AppLocalizations.of(context)!.currentAddressLabel,
                     ),
                     const SizedBox(height: 20),
                   ],
                   AppTextField(
-                    label: 'รหัสผ่าน',
+                    label: AppLocalizations.of(context)!.password,
                     controller: _passwordController,
                     isRequired: true,
-                    hintText: 'รหัสผ่าน',
+                    hintText: AppLocalizations.of(context)!.password,
                     obscureText: _obscurePassword,
                     suffix: IconButton(
                       icon: Icon(
@@ -217,10 +218,10 @@ class _UserRegistrationBottomSheetState
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
-                    label: 'ยืนยันรหัสผ่าน',
+                    label: AppLocalizations.of(context)!.confirm_password_hint,
                     controller: _confirmPasswordController,
                     isRequired: true,
-                    hintText: 'ยืนยันรหัสผ่าน',
+                    hintText: AppLocalizations.of(context)!.confirm_password_hint,
                     obscureText: _obscureConfirmPassword,
                     suffix: IconButton(
                       icon: SvgPicture.asset(
@@ -248,7 +249,7 @@ class _UserRegistrationBottomSheetState
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                text: _isLoading ? 'กำลังสมัคร...' : 'สมัครสมาชิก',
+                text: _isLoading ? AppLocalizations.of(context)!.registering : AppLocalizations.of(context)!.registerMember,
                 style: AppButtonStyle.primary,
                 onPressed: _isLoading ? null : _handleRegister,
               ),

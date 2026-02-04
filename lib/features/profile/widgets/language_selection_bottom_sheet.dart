@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class LanguageSelectionBottomSheet extends StatefulWidget {
   final Function(Locale) onLanguageSelected;
@@ -79,7 +80,7 @@ class _LanguageSelectionBottomSheetState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'เปลี่ยนภาษา',
+                  AppLocalizations.of(context)!.change_language,
                   style: GoogleFonts.anuphan(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -88,7 +89,7 @@ class _LanguageSelectionBottomSheetState
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'เลือกภาษาหลักของระบบ',
+                  AppLocalizations.of(context)!.select_language,
                   style: GoogleFonts.anuphan(
                     fontSize: 14,
                     color: AppColors.baseGrey,
@@ -97,7 +98,7 @@ class _LanguageSelectionBottomSheetState
                 ),
                 const SizedBox(height: 24),
                 _LanguageOption(
-                  label: 'ภาษาไทย',
+                  label: AppLocalizations.of(context)!.thaiLanguage,
                   flagAsset: 'assets/country/TH.png',
                   isSelected: _selectedLocale.languageCode == 'th',
                   onTap: () =>
@@ -105,7 +106,7 @@ class _LanguageSelectionBottomSheetState
                 ),
                 const SizedBox(height: 12),
                 _LanguageOption(
-                  label: 'ภาษาอังกฤษ',
+                  label: AppLocalizations.of(context)!.englishLanguage,
                   flagAsset: 'assets/country/US.png',
                   isSelected: _selectedLocale.languageCode == 'en',
                   onTap: () =>
@@ -133,7 +134,7 @@ class _LanguageSelectionBottomSheetState
                 Expanded(
                   flex: 2,
                   child: AppButton(
-                    text: 'ยกเลิก',
+                    text: AppLocalizations.of(context)!.statusCancelled,
                     style: AppButtonStyle.outline,
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -142,7 +143,7 @@ class _LanguageSelectionBottomSheetState
                 Expanded(
                   flex: 3,
                   child: AppButton(
-                    text: 'บันทึก',
+                    text: AppLocalizations.of(context)!.confirmSaveLabel,
                     style: AppButtonStyle.primary,
                     onPressed: () {
                       widget.onLanguageSelected(_selectedLocale);

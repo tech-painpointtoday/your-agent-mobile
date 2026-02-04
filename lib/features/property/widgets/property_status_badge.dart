@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:youragent/domain/entities/property.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 /// Status badge widget that displays property status with appropriate colors
 class PropertyStatusBadge extends StatelessWidget {
@@ -11,7 +12,7 @@ class PropertyStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final config = _getStatusConfig(status);
+    final config = _getStatusConfig(context, status);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -44,35 +45,39 @@ class PropertyStatusBadge extends StatelessWidget {
     );
   }
 
-  _StatusConfig _getStatusConfig(PropertyApprovalStatus status) {
+  _StatusConfig _getStatusConfig(
+    BuildContext context,
+    PropertyApprovalStatus status,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
     switch (status) {
       case PropertyApprovalStatus.draft:
-        return const _StatusConfig(
-          label: 'ร่าง',
-          backgroundColor: Color(0xFFFFF6E8),
-          dotColor: Color(0xFFFA7C2E),
-          textColor: Color(0xFFFA7C2E),
+        return _StatusConfig(
+          label: l10n.draftLabel,
+          backgroundColor: const Color(0xFFFFF6E8),
+          dotColor: const Color(0xFFFA7C2E),
+          textColor: const Color(0xFFFA7C2E),
         );
       case PropertyApprovalStatus.pending:
-        return const _StatusConfig(
-          label: 'รอการอนุมัติ',
-          backgroundColor: Color(0xFFFFF6E8),
-          dotColor: Color(0xFFFA7C2E),
-          textColor: Color(0xFFFA7C2E),
+        return _StatusConfig(
+          label: l10n.pendingAt,
+          backgroundColor: const Color(0xFFFFF6E8),
+          dotColor: const Color(0xFFFA7C2E),
+          textColor: const Color(0xFFFA7C2E),
         );
       case PropertyApprovalStatus.approved:
-        return const _StatusConfig(
-          label: 'อนุมัติแล้ว',
-          backgroundColor: Color(0xFFE8FCEC),
-          dotColor: Color(0xFF3FBE59),
-          textColor: Color(0xFF3FBE59),
+        return _StatusConfig(
+          label: l10n.approvedAt,
+          backgroundColor: const Color(0xFFE8FCEC),
+          dotColor: const Color(0xFF3FBE59),
+          textColor: const Color(0xFF3FBE59),
         );
       case PropertyApprovalStatus.rejected:
-        return const _StatusConfig(
-          label: 'ไม่อนุมัติ',
-          backgroundColor: Color(0xFFFFECEC),
-          dotColor: Color(0xFFF04437),
-          textColor: Color(0xFFF04437),
+        return _StatusConfig(
+          label: l10n.disapprovedAt,
+          backgroundColor: const Color(0xFFFFECEC),
+          dotColor: const Color(0xFFF04437),
+          textColor: const Color(0xFFF04437),
         );
     }
   }

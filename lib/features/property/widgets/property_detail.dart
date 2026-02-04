@@ -17,6 +17,7 @@ import 'package:youragent/features/property/bloc/property_metadata/property_meta
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_event.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_state.dart';
 import 'package:youragent/widgets/map/map_view.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 const double carouselHeight = 280;
 const double overlap = 40;
@@ -155,7 +156,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'สถานที่',
+                      AppLocalizations.of(context)!.locationLabel,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseDarkGrey,
                         fontSize: 16,
@@ -204,76 +205,76 @@ class _PropertyDetailState extends State<PropertyDetail> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: PropertyDetailSection(
-                  title: 'รายละเอียดทรัพย์',
+                  title: AppLocalizations.of(context)!.property_details_section,
                   svgIcon: 'assets/icons/menu.svg', // Updated Icon
                   rows: [
                     if (property.propertyType != null)
                       PropertyDetailRow(
-                        label: 'ประเภททรัพย์',
+                        label: AppLocalizations.of(context)!.propertyTypeLabel,
                         value: property.propertyType!.label,
                       ),
                     if (property.listingType?.isNotEmpty == true)
                       PropertyDetailRow(
-                        label: 'ประเภทประกาศ',
+                        label: AppLocalizations.of(context)!.listingTypeLabel,
                         value: property.listingType!,
                       ),
                     if (property.status?.isNotEmpty == true)
                       PropertyDetailRow(
-                        label: 'สถานะ',
+                        label: AppLocalizations.of(context)!.occupancyStatusLabel,
                         value: property.status!,
                       ),
                     if (property.totalFloors != null &&
                         property.totalFloors! > 0)
                       PropertyDetailRow(
-                        label: 'จำนวนชั้น',
+                        label: AppLocalizations.of(context)!.totalFloorsLabel,
                         value: '${property.totalFloors} ชั้น',
                       ),
                     if (property.bedrooms > 0)
                       PropertyDetailRow(
-                        label: 'จำนวนห้องนอน',
+                        label: AppLocalizations.of(context)!.bedroomsLabel,
                         value: '${property.bedrooms} ห้อง',
                       ),
                     if (property.bathrooms > 0)
                       PropertyDetailRow(
-                        label: 'จำนวนห้องน้ำ',
+                        label: AppLocalizations.of(context)!.bathroomsLabel,
                         value: '${property.bathrooms} ห้อง',
                       ),
                     if (property.garage != null && property.garage! > 0)
                       PropertyDetailRow(
-                        label: 'จำนวนที่จอดรถ',
+                        label: AppLocalizations.of(context)!.parkingLabel,
                         value: '${property.garage} ที่',
                       ),
                     PropertyDetailRow(
-                      label: 'วันที่สร้าง',
+                      label: AppLocalizations.of(context)!.builtLabel,
                       value: DateFormat(
-                        'dd ม.ค. yyyy',
+                        AppLocalizations.of(context)!.dateFormat,
                         'th',
                       ).format(property.createdAt),
                     ),
                     if (property.houseColor != null)
                       PropertyDetailRow(
-                        label: 'สีทรัพย์',
+                        label: AppLocalizations.of(context)!.propertyColor,
                         value: property.houseColor!.label,
                       ),
                     if (property.price > 0)
                       PropertyDetailRow(
-                        label: 'ราคา',
+                        label: AppLocalizations.of(context)!.priceLabel,
                         value:
                             '${NumberFormat("#,##0", "en_US").format(property.price)} บาท',
                       ),
                     if (property.landSize != null && property.landSize! > 0)
                       PropertyDetailRow(
-                        label: 'ขนาดที่ดิน',
+                        label: AppLocalizations.of(context)!.landSizeLabel,
                         value: '${property.landSize} ตร.ว.',
                       ),
                     if (property.area > 0)
                       PropertyDetailRow(
-                        label: 'ขนาดพื้นที่ใช้สอย',
+                        label: AppLocalizations.of(context)!.usableAreaSize,
                         value: '${property.area} ตร.ม.',
                       ),
                     if (property.direction != null)
                       PropertyDetailRow(
-                        label: 'ทิศบ้าน',
+                        label: AppLocalizations.of(context)!.direction_label,
                         value: property.direction!.label,
                       ),
                   ],
@@ -312,7 +313,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'รายละเอียดเพิ่มเติม',
+                            AppLocalizations.of(context)!.additional_details_section,
                             style: GoogleFonts.anuphan(
                               color: const Color(0xFF181D27),
                               fontSize: 16,
@@ -326,7 +327,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     // if (property.propertyStyle != null) ...[
                     //   const SizedBox(height: 24),
                     //   Text(
-                    //     'สไตล์ทรัพย์',
+                    //     AppLocalizations.of(context)!.propertyStyleLabel,
                     //     style: GoogleFonts.anuphan(
                     //       color: AppColors.baseDarkGrey,
                     //       fontSize: 16,
@@ -358,7 +359,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     const SizedBox(height: 16),
 
                     Text(
-                      'รายละเอียด',
+                      AppLocalizations.of(context)!.descriptionLabel,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseDarkGrey,
                         fontSize: 16,

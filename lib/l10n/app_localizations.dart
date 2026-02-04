@@ -62,15 +62,17 @@ import 'app_localizations_th.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
-  static AppLocalizations? of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,17 +84,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('th')
+    Locale('th'),
   ];
 
   /// No description provided for @app_title.
@@ -317,23 +320,11 @@ abstract class AppLocalizations {
   /// **'Dust, Pollen, ...'**
   String get allergy_hint;
 
-  /// No description provided for @bedrooms.
-  ///
-  /// In en, this message translates to:
-  /// **'Bedrooms'**
-  String get bedrooms;
-
   /// No description provided for @bathrooms.
   ///
   /// In en, this message translates to:
   /// **'Bathrooms'**
   String get bathrooms;
-
-  /// No description provided for @area.
-  ///
-  /// In en, this message translates to:
-  /// **'Area'**
-  String get area;
 
   /// No description provided for @search_filter.
   ///
@@ -352,24 +343,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fireplace'**
   String get fireplace;
-
-  /// No description provided for @swimming_pool.
-  ///
-  /// In en, this message translates to:
-  /// **'Swimming Pool'**
-  String get swimming_pool;
-
-  /// No description provided for @garage.
-  ///
-  /// In en, this message translates to:
-  /// **'Garage'**
-  String get garage;
-
-  /// No description provided for @garden.
-  ///
-  /// In en, this message translates to:
-  /// **'Garden'**
-  String get garden;
 
   /// No description provided for @playground.
   ///
@@ -413,36 +386,6 @@ abstract class AppLocalizations {
   /// **'sqm'**
   String get unit_sqm;
 
-  /// No description provided for @bath_count.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} bath(s)'**
-  String bath_count(Object count);
-
-  /// No description provided for @bed_count.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} bed(s)'**
-  String bed_count(Object count);
-
-  /// No description provided for @area_sqm.
-  ///
-  /// In en, this message translates to:
-  /// **'{area} sqm'**
-  String area_sqm(Object area);
-
-  /// No description provided for @floor_count.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} floor(s)'**
-  String floor_count(Object count);
-
-  /// No description provided for @price_per_sqm.
-  ///
-  /// In en, this message translates to:
-  /// **'{price} THB/sqm'**
-  String price_per_sqm(Object price);
-
   /// No description provided for @yourHomeAgent.
   ///
   /// In en, this message translates to:
@@ -460,12 +403,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Schedule viewing'**
   String get schedule_viewing;
-
-  /// No description provided for @people_interested.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} people interested!'**
-  String people_interested(Object count);
 
   /// No description provided for @inquire.
   ///
@@ -671,90 +608,6 @@ abstract class AppLocalizations {
   /// **'Confirm Password'**
   String get confirm_password;
 
-  /// No description provided for @agent_license_number.
-  ///
-  /// In en, this message translates to:
-  /// **'License Number'**
-  String get agent_license_number;
-
-  /// No description provided for @agent_license_hint.
-  ///
-  /// In en, this message translates to:
-  /// **'License number'**
-  String get agent_license_hint;
-
-  /// No description provided for @business_type.
-  ///
-  /// In en, this message translates to:
-  /// **'Business Type'**
-  String get business_type;
-
-  /// No description provided for @business_type_hint.
-  ///
-  /// In en, this message translates to:
-  /// **'Please select'**
-  String get business_type_hint;
-
-  /// No description provided for @company_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Company Name'**
-  String get company_name;
-
-  /// No description provided for @company_name_hint.
-  ///
-  /// In en, this message translates to:
-  /// **'Company name'**
-  String get company_name_hint;
-
-  /// No description provided for @register_button.
-  ///
-  /// In en, this message translates to:
-  /// **'REGISTER'**
-  String get register_button;
-
-  /// No description provided for @register_agent_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Register as Agent'**
-  String get register_agent_title;
-
-  /// No description provided for @register_admin_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Register as Admin'**
-  String get register_admin_title;
-
-  /// No description provided for @register_agency_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Register as Agency'**
-  String get register_agency_title;
-
-  /// No description provided for @thb.
-  ///
-  /// In en, this message translates to:
-  /// **'THB'**
-  String get thb;
-
-  /// No description provided for @hero_slogan_part1.
-  ///
-  /// In en, this message translates to:
-  /// **'A Good Life'**
-  String get hero_slogan_part1;
-
-  /// No description provided for @hero_slogan_part2.
-  ///
-  /// In en, this message translates to:
-  /// **'A Good House For You'**
-  String get hero_slogan_part2;
-
-  /// No description provided for @hero_subtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Because we believe that a happy future starts with the right home'**
-  String get hero_subtitle;
-
   /// No description provided for @select_role_title.
   ///
   /// In en, this message translates to:
@@ -866,13 +719,13 @@ abstract class AppLocalizations {
   /// No description provided for @role_agent.
   ///
   /// In en, this message translates to:
-  /// **'For Agent'**
+  /// **'Agent'**
   String get role_agent;
 
   /// No description provided for @role_agency.
   ///
   /// In en, this message translates to:
-  /// **'For Agency'**
+  /// **'Agency'**
   String get role_agency;
 
   /// No description provided for @role_admin.
@@ -881,11 +734,77 @@ abstract class AppLocalizations {
   /// **'For Admin'**
   String get role_admin;
 
-  /// No description provided for @create_property.
+  /// No description provided for @register_agent_title.
   ///
   /// In en, this message translates to:
-  /// **'Create Property'**
-  String get create_property;
+  /// **'Register as Agent'**
+  String get register_agent_title;
+
+  /// No description provided for @register_admin_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Register as Admin'**
+  String get register_admin_title;
+
+  /// No description provided for @register_agency_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Register as Agency'**
+  String get register_agency_title;
+
+  /// No description provided for @agent_license_number.
+  ///
+  /// In en, this message translates to:
+  /// **'License Number'**
+  String get agent_license_number;
+
+  /// No description provided for @agent_license_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'License Number'**
+  String get agent_license_hint;
+
+  /// No description provided for @business_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Type'**
+  String get business_type;
+
+  /// No description provided for @business_type_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select'**
+  String get business_type_hint;
+
+  /// No description provided for @company_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Name'**
+  String get company_name;
+
+  /// No description provided for @company_name_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Name'**
+  String get company_name_hint;
+
+  /// No description provided for @register_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register_button;
+
+  /// No description provided for @hero_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The right home for a better life'**
+  String get hero_subtitle;
+
+  /// No description provided for @create_property_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Property'**
+  String get create_property_title;
 
   /// No description provided for @create_property_subtitle.
   ///
@@ -917,18 +836,6 @@ abstract class AppLocalizations {
   /// **'Photos'**
   String get photos;
 
-  /// No description provided for @built_date.
-  ///
-  /// In en, this message translates to:
-  /// **'Built (YYYY-MM-DD)'**
-  String get built_date;
-
-  /// No description provided for @type.
-  ///
-  /// In en, this message translates to:
-  /// **'Type'**
-  String get type;
-
   /// No description provided for @status.
   ///
   /// In en, this message translates to:
@@ -952,24 +859,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Garage Spaces'**
   String get garage_spaces;
-
-  /// No description provided for @price_thb.
-  ///
-  /// In en, this message translates to:
-  /// **'Price (THB)'**
-  String get price_thb;
-
-  /// No description provided for @land_size.
-  ///
-  /// In en, this message translates to:
-  /// **'Land Size (sq.wa)'**
-  String get land_size;
-
-  /// No description provided for @building_size.
-  ///
-  /// In en, this message translates to:
-  /// **'Building Size (sq.m)'**
-  String get building_size;
 
   /// No description provided for @house_color.
   ///
@@ -1000,12 +889,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Direction'**
   String get direction;
-
-  /// No description provided for @select_direction.
-  ///
-  /// In en, this message translates to:
-  /// **'Select Direction (Optional)'**
-  String get select_direction;
 
   /// No description provided for @city.
   ///
@@ -1061,18 +944,6 @@ abstract class AppLocalizations {
   /// **'Click on the map or use your current location to set the property location.'**
   String get property_location_subtitle;
 
-  /// No description provided for @use_current_location.
-  ///
-  /// In en, this message translates to:
-  /// **'Use Current Location'**
-  String get use_current_location;
-
-  /// No description provided for @clear_location.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear Location'**
-  String get clear_location;
-
   /// No description provided for @set_by_map.
   ///
   /// In en, this message translates to:
@@ -1097,12 +968,6 @@ abstract class AppLocalizations {
   /// **'JPEG/PNG/WebP up to 5MB each'**
   String get image_format_note;
 
-  /// No description provided for @take_photo.
-  ///
-  /// In en, this message translates to:
-  /// **'Take Photo'**
-  String get take_photo;
-
   /// No description provided for @use_camera.
   ///
   /// In en, this message translates to:
@@ -1114,12 +979,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Selected Photos'**
   String get selected_photos;
-
-  /// No description provided for @photo_count.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} photo(s) selected'**
-  String photo_count(Object count);
 
   /// No description provided for @clear_all.
   ///
@@ -1529,12 +1388,6 @@ abstract class AppLocalizations {
   /// **'House age'**
   String get house_age_label;
 
-  /// No description provided for @not_specified.
-  ///
-  /// In en, this message translates to:
-  /// **'Not specified'**
-  String get not_specified;
-
   /// No description provided for @feature_floors_label.
   ///
   /// In en, this message translates to:
@@ -1558,12 +1411,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Parking'**
   String get feature_parking_label;
-
-  /// No description provided for @parking_count.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} parking spot(s)'**
-  String parking_count(Object count);
 
   /// No description provided for @more_details_title.
   ///
@@ -1895,24 +1742,6 @@ abstract class AppLocalizations {
   /// **'Now'**
   String get now;
 
-  /// No description provided for @minutes_ago.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} minutes ago'**
-  String minutes_ago(Object count);
-
-  /// No description provided for @hours_ago.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} hours ago'**
-  String hours_ago(Object count);
-
-  /// No description provided for @days_ago.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} days ago'**
-  String days_ago(Object count);
-
   /// No description provided for @unread.
   ///
   /// In en, this message translates to:
@@ -1936,12 +1765,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Calendar View'**
   String get availability_calendar_view;
-
-  /// No description provided for @availability_count_available.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} available times'**
-  String availability_count_available(Object count);
 
   /// No description provided for @profile_bio.
   ///
@@ -1967,6 +1790,12 @@ abstract class AppLocalizations {
   /// **'Company Name'**
   String get profile_company;
 
+  /// No description provided for @workInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Work Information'**
+  String get workInfo;
+
   /// No description provided for @profile_license.
   ///
   /// In en, this message translates to:
@@ -1978,6 +1807,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Service Radius'**
   String get profile_radius;
+
+  /// No description provided for @kmUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'km'**
+  String get kmUnit;
 
   /// No description provided for @profile_service_area.
   ///
@@ -2056,12 +1891,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Filter'**
   String get filter;
-
-  /// No description provided for @all.
-  ///
-  /// In en, this message translates to:
-  /// **'All'**
-  String get all;
 
   /// No description provided for @no_available_times.
   ///
@@ -2309,24 +2138,6 @@ abstract class AppLocalizations {
   /// **'Create Rental Contract'**
   String get create_rental_contract;
 
-  /// No description provided for @electrical_appliances_photos.
-  ///
-  /// In en, this message translates to:
-  /// **'Electrical Appliances Photos (Please specify)'**
-  String get electrical_appliances_photos;
-
-  /// No description provided for @furniture_photos.
-  ///
-  /// In en, this message translates to:
-  /// **'Furniture Photos (Please specify)'**
-  String get furniture_photos;
-
-  /// No description provided for @properties.
-  ///
-  /// In en, this message translates to:
-  /// **'Properties'**
-  String get properties;
-
   /// No description provided for @appointments.
   ///
   /// In en, this message translates to:
@@ -2399,12 +2210,6 @@ abstract class AppLocalizations {
   /// **'Contract Date'**
   String get contract_date;
 
-  /// No description provided for @create_new_account.
-  ///
-  /// In en, this message translates to:
-  /// **'Create New Account'**
-  String get create_new_account;
-
   /// No description provided for @individual.
   ///
   /// In en, this message translates to:
@@ -2453,30 +2258,6 @@ abstract class AppLocalizations {
   /// **'Property Type'**
   String get property_type_label;
 
-  /// No description provided for @select_property_type.
-  ///
-  /// In en, this message translates to:
-  /// **'Select property type'**
-  String get select_property_type;
-
-  /// No description provided for @condominium.
-  ///
-  /// In en, this message translates to:
-  /// **'Condominium'**
-  String get condominium;
-
-  /// No description provided for @single_house.
-  ///
-  /// In en, this message translates to:
-  /// **'Single House'**
-  String get single_house;
-
-  /// No description provided for @project_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Project Name'**
-  String get project_name;
-
   /// No description provided for @house_or_room_number.
   ///
   /// In en, this message translates to:
@@ -2488,18 +2269,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Floor'**
   String get floor_label;
-
-  /// No description provided for @soi_alley_village.
-  ///
-  /// In en, this message translates to:
-  /// **'Soi/Alley/Village (if any)'**
-  String get soi_alley_village;
-
-  /// No description provided for @road_if_any.
-  ///
-  /// In en, this message translates to:
-  /// **'Road (if any)'**
-  String get road_if_any;
 
   /// No description provided for @select_country.
   ///
@@ -2687,12 +2456,6 @@ abstract class AppLocalizations {
   /// **'Account Number'**
   String get account_number;
 
-  /// No description provided for @additional_conditions_optional.
-  ///
-  /// In en, this message translates to:
-  /// **'Additional Conditions (Optional)'**
-  String get additional_conditions_optional;
-
   /// No description provided for @additional_conditions.
   ///
   /// In en, this message translates to:
@@ -2741,12 +2504,6 @@ abstract class AppLocalizations {
   /// **'THB/month'**
   String get baht_per_month;
 
-  /// No description provided for @baht.
-  ///
-  /// In en, this message translates to:
-  /// **'THB'**
-  String get baht;
-
   /// No description provided for @months.
   ///
   /// In en, this message translates to:
@@ -2765,6 +2522,12 @@ abstract class AppLocalizations {
   /// **'Dashboard Overview'**
   String get dashboard_overview;
 
+  /// No description provided for @properties.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties'**
+  String get properties;
+
   /// No description provided for @contracts.
   ///
   /// In en, this message translates to:
@@ -2782,6 +2545,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Profile'**
   String get edit_profile;
+
+  /// No description provided for @create_new_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Account'**
+  String get create_new_account;
 
   /// No description provided for @legal_entity.
   ///
@@ -2813,6 +2582,18 @@ abstract class AppLocalizations {
   /// **'Select Color'**
   String get select_color;
 
+  /// No description provided for @use_current_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Current Location'**
+  String get use_current_location;
+
+  /// No description provided for @clear_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Location'**
+  String get clear_location;
+
   /// No description provided for @select_type.
   ///
   /// In en, this message translates to:
@@ -2825,23 +2606,17 @@ abstract class AppLocalizations {
   /// **'Please upload at least 1 image'**
   String get upload_at_least_one_image;
 
-  /// No description provided for @images_added.
-  ///
-  /// In en, this message translates to:
-  /// **'Added {count} images'**
-  String images_added(Object count);
-
   /// No description provided for @select_file.
   ///
   /// In en, this message translates to:
   /// **'Select Your File'**
   String get select_file;
 
-  /// No description provided for @retry.
+  /// No description provided for @take_photo.
   ///
   /// In en, this message translates to:
-  /// **'Retry'**
-  String get retry;
+  /// **'Take Photo'**
+  String get take_photo;
 
   /// No description provided for @property_not_found.
   ///
@@ -2884,6 +2659,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to Login'**
   String get back_to_login;
+
+  /// No description provided for @create_property.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Property'**
+  String get create_property;
 
   /// No description provided for @bookings.
   ///
@@ -3040,6 +2821,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'December'**
   String get month_december;
+
+  /// No description provided for @not_specified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified'**
+  String get not_specified;
 
   /// No description provided for @email_not_verified.
   ///
@@ -3274,9 +3061,3310 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Help Center'**
   String get help_center;
+
+  /// No description provided for @profilePhotoUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo updated successfully'**
+  String get profilePhotoUpdated;
+
+  /// No description provided for @emailVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Verified'**
+  String get emailVerified;
+
+  /// No description provided for @profileCompleteness.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Completeness'**
+  String get profileCompleteness;
+
+  /// No description provided for @connectionCodeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection code copied to clipboard'**
+  String get connectionCodeCopied;
+
+  /// No description provided for @notConnectedAgency.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected to any agency'**
+  String get notConnectedAgency;
+
+  /// No description provided for @addInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Information'**
+  String get addInfo;
+
+  /// No description provided for @socialLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Social Links'**
+  String get socialLinks;
+
+  /// No description provided for @editInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Information'**
+  String get editInfo;
+
+  /// No description provided for @generalInfoSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Property name and address'**
+  String get generalInfoSubtitle;
+
+  /// No description provided for @propertyDetailSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Room details, size, and price'**
+  String get propertyDetailSubtitle;
+
+  /// No description provided for @additionalInfoSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Decor style, highlights, and amenities'**
+  String get additionalInfoSubtitle;
+
+  /// No description provided for @propertyImagesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload at least 5 images'**
+  String get propertyImagesSubtitle;
+
+  /// No description provided for @propertyIdPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Code: '**
+  String get propertyIdPrefix;
+
+  /// No description provided for @confirmInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Information'**
+  String get confirmInfo;
+
+  /// No description provided for @deleteConfirmationWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Once deleted, it cannot be undone.'**
+  String get deleteConfirmationWarning;
+
+  /// No description provided for @deleteAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All'**
+  String get deleteAll;
+
+  /// No description provided for @propertyCreatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Created Successfully'**
+  String get propertyCreatedSuccess;
+
+  /// No description provided for @errorWithPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: '**
+  String get errorWithPrefix;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming Soon'**
+  String get comingSoon;
+
+  /// No description provided for @createPropertyConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to create this property listing?'**
+  String get createPropertyConfirmation;
+
+  /// No description provided for @draftSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft Saved'**
+  String get draftSaved;
+
+  /// No description provided for @styleColonial.
+  ///
+  /// In en, this message translates to:
+  /// **'Colonial'**
+  String get styleColonial;
+
+  /// No description provided for @styleContemporary.
+  ///
+  /// In en, this message translates to:
+  /// **'Contemporary'**
+  String get styleContemporary;
+
+  /// No description provided for @styleLoft.
+  ///
+  /// In en, this message translates to:
+  /// **'Loft'**
+  String get styleLoft;
+
+  /// No description provided for @styleMinimal.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimal'**
+  String get styleMinimal;
+
+  /// No description provided for @styleNatural.
+  ///
+  /// In en, this message translates to:
+  /// **'Natural'**
+  String get styleNatural;
+
+  /// No description provided for @styleNordic.
+  ///
+  /// In en, this message translates to:
+  /// **'Nordic'**
+  String get styleNordic;
+
+  /// No description provided for @styleThaiContemporary.
+  ///
+  /// In en, this message translates to:
+  /// **'Thai Contemporary'**
+  String get styleThaiContemporary;
+
+  /// No description provided for @styleVintage.
+  ///
+  /// In en, this message translates to:
+  /// **'Vintage'**
+  String get styleVintage;
+
+  /// No description provided for @styleOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get styleOther;
+
+  /// No description provided for @petFriendly.
+  ///
+  /// In en, this message translates to:
+  /// **'Pet Friendly'**
+  String get petFriendly;
+
+  /// No description provided for @elderlyFriendly.
+  ///
+  /// In en, this message translates to:
+  /// **'Elderly Friendly'**
+  String get elderlyFriendly;
+
+  /// No description provided for @fitness.
+  ///
+  /// In en, this message translates to:
+  /// **'Fitness'**
+  String get fitness;
+
+  /// No description provided for @swimmingPool.
+  ///
+  /// In en, this message translates to:
+  /// **'Swimming Pool'**
+  String get swimmingPool;
+
+  /// No description provided for @garden.
+  ///
+  /// In en, this message translates to:
+  /// **'Garden'**
+  String get garden;
+
+  /// No description provided for @coWorkingSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Co-Working Space'**
+  String get coWorkingSpace;
+
+  /// No description provided for @sportsField.
+  ///
+  /// In en, this message translates to:
+  /// **'Sports Field'**
+  String get sportsField;
+
+  /// No description provided for @cctv.
+  ///
+  /// In en, this message translates to:
+  /// **'CCTV'**
+  String get cctv;
+
+  /// No description provided for @evCharger.
+  ///
+  /// In en, this message translates to:
+  /// **'EV Charger'**
+  String get evCharger;
+
+  /// No description provided for @smartHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart Home'**
+  String get smartHome;
+
+  /// No description provided for @park.
+  ///
+  /// In en, this message translates to:
+  /// **'Park'**
+  String get park;
+
+  /// No description provided for @houseType.
+  ///
+  /// In en, this message translates to:
+  /// **'House'**
+  String get houseType;
+
+  /// No description provided for @condoType.
+  ///
+  /// In en, this message translates to:
+  /// **'Condo'**
+  String get condoType;
+
+  /// No description provided for @townhomeType.
+  ///
+  /// In en, this message translates to:
+  /// **'Townhome'**
+  String get townhomeType;
+
+  /// No description provided for @apartmentType.
+  ///
+  /// In en, this message translates to:
+  /// **'Apartment'**
+  String get apartmentType;
+
+  /// No description provided for @homeOfficeType.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Office'**
+  String get homeOfficeType;
+
+  /// No description provided for @poolVillaType.
+  ///
+  /// In en, this message translates to:
+  /// **'Pool Villa'**
+  String get poolVillaType;
+
+  /// No description provided for @statusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get statusDraft;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Approval'**
+  String get statusPending;
+
+  /// No description provided for @statusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get statusApproved;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get statusRejected;
+
+  /// No description provided for @colorWhite.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get colorWhite;
+
+  /// No description provided for @colorCream.
+  ///
+  /// In en, this message translates to:
+  /// **'Cream'**
+  String get colorCream;
+
+  /// No description provided for @colorGrey.
+  ///
+  /// In en, this message translates to:
+  /// **'Grey'**
+  String get colorGrey;
+
+  /// No description provided for @colorBlack.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get colorBlack;
+
+  /// No description provided for @colorBrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown'**
+  String get colorBrown;
+
+  /// No description provided for @colorRed.
+  ///
+  /// In en, this message translates to:
+  /// **'Red'**
+  String get colorRed;
+
+  /// No description provided for @colorYellow.
+  ///
+  /// In en, this message translates to:
+  /// **'Yellow'**
+  String get colorYellow;
+
+  /// No description provided for @colorGreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get colorGreen;
+
+  /// No description provided for @colorBlue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get colorBlue;
+
+  /// No description provided for @colorPink.
+  ///
+  /// In en, this message translates to:
+  /// **'Pink'**
+  String get colorPink;
+
+  /// No description provided for @colorPurple.
+  ///
+  /// In en, this message translates to:
+  /// **'Purple'**
+  String get colorPurple;
+
+  /// No description provided for @colorOrange.
+  ///
+  /// In en, this message translates to:
+  /// **'Orange'**
+  String get colorOrange;
+
+  /// No description provided for @dirNorth.
+  ///
+  /// In en, this message translates to:
+  /// **'North'**
+  String get dirNorth;
+
+  /// No description provided for @dirSouth.
+  ///
+  /// In en, this message translates to:
+  /// **'South'**
+  String get dirSouth;
+
+  /// No description provided for @dirEast.
+  ///
+  /// In en, this message translates to:
+  /// **'East'**
+  String get dirEast;
+
+  /// No description provided for @dirWest.
+  ///
+  /// In en, this message translates to:
+  /// **'West'**
+  String get dirWest;
+
+  /// No description provided for @dirNorthEast.
+  ///
+  /// In en, this message translates to:
+  /// **'North East'**
+  String get dirNorthEast;
+
+  /// No description provided for @dirSouthEast.
+  ///
+  /// In en, this message translates to:
+  /// **'South East'**
+  String get dirSouthEast;
+
+  /// No description provided for @dirNorthWest.
+  ///
+  /// In en, this message translates to:
+  /// **'North West'**
+  String get dirNorthWest;
+
+  /// No description provided for @dirSouthWest.
+  ///
+  /// In en, this message translates to:
+  /// **'South West'**
+  String get dirSouthWest;
+
+  /// No description provided for @additional_info_section.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Info'**
+  String get additional_info_section;
+
+  /// No description provided for @propertyNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Name'**
+  String get propertyNameLabel;
+
+  /// No description provided for @propertyNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Name'**
+  String get propertyNameHint;
+
+  /// No description provided for @propertyNameDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This name will appear as the title of your listing.'**
+  String get propertyNameDescription;
+
+  /// No description provided for @developerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer'**
+  String get developerLabel;
+
+  /// No description provided for @developerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer'**
+  String get developerHint;
+
+  /// No description provided for @addDeveloper.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Developer'**
+  String get addDeveloper;
+
+  /// No description provided for @projectNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Project Name'**
+  String get projectNameLabel;
+
+  /// No description provided for @addProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Project'**
+  String get addProject;
+
+  /// No description provided for @searchDeveloper.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Developer'**
+  String get searchDeveloper;
+
+  /// No description provided for @searchDeveloperDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for the property developer'**
+  String get searchDeveloperDescription;
+
+  /// No description provided for @searchProjectDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for the property project name'**
+  String get searchProjectDescription;
+
+  /// No description provided for @buildingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Building'**
+  String get buildingLabel;
+
+  /// No description provided for @buildingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Building'**
+  String get buildingHint;
+
+  /// No description provided for @floorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor'**
+  String get floorLabel;
+
+  /// No description provided for @floorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor'**
+  String get floorHint;
+
+  /// No description provided for @roomNoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Room Number'**
+  String get roomNoLabel;
+
+  /// No description provided for @roomNoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Room Number'**
+  String get roomNoHint;
+
+  /// No description provided for @houseNoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'House Number'**
+  String get houseNoLabel;
+
+  /// No description provided for @houseNoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'House Number'**
+  String get houseNoHint;
+
+  /// No description provided for @locationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get locationLabel;
+
+  /// No description provided for @locationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get locationHint;
+
+  /// No description provided for @locationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a location on the map or use your current location to set the property location'**
+  String get locationDescription;
+
+  /// No description provided for @useCurrentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Current Location'**
+  String get useCurrentLocation;
+
+  /// No description provided for @clearLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Location'**
+  String get clearLocation;
+
+  /// No description provided for @listingTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing Type'**
+  String get listingTypeLabel;
+
+  /// No description provided for @listingSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get listingSale;
+
+  /// No description provided for @listingRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get listingRent;
+
+  /// No description provided for @listingSaleRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale & Rent'**
+  String get listingSaleRent;
+
+  /// No description provided for @occupancyStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get occupancyStatusLabel;
+
+  /// No description provided for @occupancyAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get occupancyAvailable;
+
+  /// No description provided for @propertyDirectionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select property direction'**
+  String get propertyDirectionHint;
+
+  /// No description provided for @floorUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Floors'**
+  String get floorUnit;
+
+  /// No description provided for @roomUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Rooms'**
+  String get roomUnit;
+
+  /// No description provided for @parkingUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Spaces'**
+  String get parkingUnit;
+
+  /// No description provided for @descriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get descriptionLabel;
+
+  /// No description provided for @propertiesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties'**
+  String get propertiesTitle;
+
+  /// No description provided for @myProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'My Properties'**
+  String get myProperties;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @noPropertiesFoundSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'No properties found for your search'**
+  String get noPropertiesFoundSearch;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @noPropertiesInSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Currently there are no properties in the system'**
+  String get noPropertiesInSystem;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePassword;
+
+  /// No description provided for @save_draft.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Draft'**
+  String get save_draft;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get searchHint;
+
+  /// No description provided for @labelCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get labelCode;
+
+  /// No description provided for @searchFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Filter'**
+  String get searchFilter;
+
+  /// No description provided for @approvalStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Approval Status'**
+  String get approvalStatus;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @pendingAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pendingAt;
+
+  /// No description provided for @approvedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get approvedAt;
+
+  /// No description provided for @disapprovedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Disapproved'**
+  String get disapprovedAt;
+
+  /// No description provided for @minPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Min Price'**
+  String get minPrice;
+
+  /// No description provided for @maxPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Price'**
+  String get maxPrice;
+
+  /// No description provided for @propertyHighlights.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Highlights'**
+  String get propertyHighlights;
+
+  /// No description provided for @commonFacilities.
+  ///
+  /// In en, this message translates to:
+  /// **'Common Facilities'**
+  String get commonFacilities;
+
+  /// No description provided for @nearExpressway.
+  ///
+  /// In en, this message translates to:
+  /// **'Near Expressway'**
+  String get nearExpressway;
+
+  /// No description provided for @nearStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Near Station'**
+  String get nearStation;
+
+  /// No description provided for @nearHospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Near Hospital'**
+  String get nearHospital;
+
+  /// No description provided for @newProject.
+  ///
+  /// In en, this message translates to:
+  /// **'New Project'**
+  String get newProject;
+
+  /// No description provided for @securityGuard.
+  ///
+  /// In en, this message translates to:
+  /// **'Security Guard'**
+  String get securityGuard;
+
+  /// No description provided for @baht.
+  ///
+  /// In en, this message translates to:
+  /// **'Baht'**
+  String get baht;
+
+  /// No description provided for @clearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Filters'**
+  String get clearFilters;
+
+  /// No description provided for @luxury.
+  ///
+  /// In en, this message translates to:
+  /// **'Luxury'**
+  String get luxury;
+
+  /// No description provided for @classic.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get classic;
+
+  /// No description provided for @modern.
+  ///
+  /// In en, this message translates to:
+  /// **'Modern'**
+  String get modern;
+
+  /// No description provided for @natural.
+  ///
+  /// In en, this message translates to:
+  /// **'Natural'**
+  String get natural;
+
+  /// No description provided for @loft.
+  ///
+  /// In en, this message translates to:
+  /// **'Loft'**
+  String get loft;
+
+  /// No description provided for @occupancyStatusVacancy.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacant'**
+  String get occupancyStatusVacancy;
+
+  /// No description provided for @occupancyStatusOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupied'**
+  String get occupancyStatusOccupied;
+
+  /// No description provided for @propertyColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Color'**
+  String get propertyColor;
+
+  /// No description provided for @colorCyan.
+  ///
+  /// In en, this message translates to:
+  /// **'Cyan'**
+  String get colorCyan;
+
+  /// No description provided for @totalFloorsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Floors'**
+  String get totalFloorsLabel;
+
+  /// No description provided for @bedroomsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bedrooms'**
+  String get bedroomsLabel;
+
+  /// No description provided for @bathroomsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bathrooms'**
+  String get bathroomsLabel;
+
+  /// No description provided for @parkingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parking Spaces'**
+  String get parkingLabel;
+
+  /// No description provided for @landSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Land Size'**
+  String get landSizeLabel;
+
+  /// No description provided for @usableAreaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Usable Area'**
+  String get usableAreaLabel;
+
+  /// No description provided for @propertyStyleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Style'**
+  String get propertyStyleLabel;
+
+  /// No description provided for @minimal.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimal'**
+  String get minimal;
+
+  /// No description provided for @vintage.
+  ///
+  /// In en, this message translates to:
+  /// **'Vintage'**
+  String get vintage;
+
+  /// No description provided for @contemporary.
+  ///
+  /// In en, this message translates to:
+  /// **'Contemporary'**
+  String get contemporary;
+
+  /// No description provided for @colonialStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Colonial'**
+  String get colonialStyle;
+
+  /// No description provided for @nordicStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nordic'**
+  String get nordicStyle;
+
+  /// No description provided for @thaiContemporary.
+  ///
+  /// In en, this message translates to:
+  /// **'Thai Contemporary'**
+  String get thaiContemporary;
+
+  /// No description provided for @builtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Built Date'**
+  String get builtLabel;
+
+  /// No description provided for @builtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select built date'**
+  String get builtHint;
+
+  /// No description provided for @propertyColorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Color'**
+  String get propertyColorLabel;
+
+  /// No description provided for @propertyColorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select property color'**
+  String get propertyColorHint;
+
+  /// No description provided for @priceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get priceLabel;
+
+  /// No description provided for @currencyUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'THB'**
+  String get currencyUnit;
+
+  /// No description provided for @sqWahUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'sq.wa'**
+  String get sqWahUnit;
+
+  /// No description provided for @sqmUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'sq.m'**
+  String get sqmUnit;
+
+  /// No description provided for @propertyDirectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Direction'**
+  String get propertyDirectionLabel;
+
+  /// No description provided for @propertyTypeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Type'**
+  String get propertyTypeTitle;
+
+  /// No description provided for @studio.
+  ///
+  /// In en, this message translates to:
+  /// **'Studio'**
+  String get studio;
+
+  /// No description provided for @project_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Project Name'**
+  String get project_name;
+
+  /// No description provided for @projectNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Project Name'**
+  String get projectNameHint;
+
+  /// No description provided for @occupancyOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupied'**
+  String get occupancyOccupied;
+
+  /// No description provided for @type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
+
+  /// No description provided for @garage.
+  ///
+  /// In en, this message translates to:
+  /// **'Garage'**
+  String get garage;
+
+  /// No description provided for @swimming_pool.
+  ///
+  /// In en, this message translates to:
+  /// **'Swimming Pool'**
+  String get swimming_pool;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @accountManagementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Management'**
+  String get accountManagementTitle;
+
+  /// No description provided for @changeLanguageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Language'**
+  String get changeLanguageLabel;
+
+  /// No description provided for @notificationSettingsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get notificationSettingsLabel;
+
+  /// No description provided for @matchingSettingsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching System Settings'**
+  String get matchingSettingsLabel;
+
+  /// No description provided for @termsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms and Conditions'**
+  String get termsLabel;
+
+  /// No description provided for @privacyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyLabel;
+
+  /// No description provided for @contactUsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get contactUsLabel;
+
+  /// No description provided for @logoutConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout?'**
+  String get logoutConfirmTitle;
+
+  /// No description provided for @logoutConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to log out?'**
+  String get logoutConfirmMessage;
+
+  /// No description provided for @versionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get versionLabel;
+
+  /// No description provided for @requestChangeEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Change Email'**
+  String get requestChangeEmailLabel;
+
+  /// No description provided for @requestChangePhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Change Phone Number'**
+  String get requestChangePhoneLabel;
+
+  /// No description provided for @deleteAccountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccountLabel;
+
+  /// No description provided for @personalInfoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get personalInfoLabel;
+
+  /// No description provided for @editPersonalInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Personal Information'**
+  String get editPersonalInfoTitle;
+
+  /// No description provided for @savePersonalInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Personal Information?'**
+  String get savePersonalInfoTitle;
+
+  /// No description provided for @savePersonalInfoMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to save changes to personal information?'**
+  String get savePersonalInfoMessage;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get nameLabel;
+
+  /// No description provided for @nameHintText.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter name'**
+  String get nameHintText;
+
+  /// No description provided for @mobileHintText.
+  ///
+  /// In en, this message translates to:
+  /// **'0xx-xxx-xxxx'**
+  String get mobileHintText;
+
+  /// No description provided for @bioLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bio'**
+  String get bioLabel;
+
+  /// No description provided for @bioHintText.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about yourself...'**
+  String get bioHintText;
+
+  /// No description provided for @nationalIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'National ID'**
+  String get nationalIdLabel;
+
+  /// No description provided for @nationalIdHintText.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter National ID'**
+  String get nationalIdHintText;
+
+  /// No description provided for @addressHintText.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter address'**
+  String get addressHintText;
+
+  /// No description provided for @workInfoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Work Information'**
+  String get workInfoLabel;
+
+  /// No description provided for @addWorkInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Work Information'**
+  String get addWorkInfoTitle;
+
+  /// No description provided for @saveWorkInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Work Information?'**
+  String get saveWorkInfoTitle;
+
+  /// No description provided for @saveWorkInfoMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to save this work information?'**
+  String get saveWorkInfoMessage;
+
+  /// No description provided for @companyNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Name'**
+  String get companyNameHint;
+
+  /// No description provided for @licenseNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'License Number'**
+  String get licenseNumberHint;
+
+  /// No description provided for @yearsOfExperienceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Years of Experience'**
+  String get yearsOfExperienceLabel;
+
+  /// No description provided for @yearsOfExperienceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'0'**
+  String get yearsOfExperienceHint;
+
+  /// No description provided for @languageProficiencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Language Proficiency'**
+  String get languageProficiencyLabel;
+
+  /// No description provided for @addLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addLabel;
+
+  /// No description provided for @linkOrIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Link or ID'**
+  String get linkOrIdHint;
+
+  /// No description provided for @currentPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Password'**
+  String get currentPasswordLabel;
+
+  /// No description provided for @currentPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter current password'**
+  String get currentPasswordHint;
+
+  /// No description provided for @newPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get newPasswordLabel;
+
+  /// No description provided for @newPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new password'**
+  String get newPasswordHint;
+
+  /// No description provided for @confirmNewPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm New Password'**
+  String get confirmNewPasswordLabel;
+
+  /// No description provided for @confirmNewPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm new password'**
+  String get confirmNewPasswordHint;
+
+  /// No description provided for @passwordMismatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords Do Not Match'**
+  String get passwordMismatchTitle;
+
+  /// No description provided for @passwordMismatchMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your new password and confirmation'**
+  String get passwordMismatchMessage;
+
+  /// No description provided for @passwordChangeSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Password Changed Successfully'**
+  String get passwordChangeSuccessTitle;
+
+  /// No description provided for @passwordChangeSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password has been changed successfully'**
+  String get passwordChangeSuccessMessage;
+
+  /// No description provided for @thaiLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Thai'**
+  String get thaiLanguage;
+
+  /// No description provided for @englishLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get englishLanguage;
+
+  /// No description provided for @searching.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching...'**
+  String get searching;
+
+  /// No description provided for @serviceAreaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Area'**
+  String get serviceAreaLabel;
+
+  /// No description provided for @serviceAreaHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Area'**
+  String get serviceAreaHint;
+
+  /// No description provided for @serviceAreaDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a location on the map or use your current location to define your service area'**
+  String get serviceAreaDescription;
+
+  /// No description provided for @useCurrentLocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Current Location'**
+  String get useCurrentLocationLabel;
+
+  /// No description provided for @clearLocationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Location'**
+  String get clearLocationLabel;
+
+  /// No description provided for @serviceRadiusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Radius'**
+  String get serviceRadiusLabel;
+
+  /// No description provided for @serviceRadiusHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Radius'**
+  String get serviceRadiusHint;
+
+  /// No description provided for @serviceRadiusUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'km'**
+  String get serviceRadiusUnit;
+
+  /// No description provided for @saveServiceAreaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Service Area?'**
+  String get saveServiceAreaTitle;
+
+  /// No description provided for @saveServiceAreaMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to save this service area information?'**
+  String get saveServiceAreaMessage;
+
+  /// No description provided for @addServiceAreaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Service Area Information'**
+  String get addServiceAreaTitle;
+
+  /// No description provided for @specifyLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Specify Location'**
+  String get specifyLocationTitle;
+
+  /// No description provided for @specifyLocationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a service area center location on the map'**
+  String get specifyLocationMessage;
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePasswordTitle;
+
+  /// No description provided for @changePasswordDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password must be at least 8 characters and contain both letters and numbers'**
+  String get changePasswordDescription;
+
+  /// No description provided for @changePasswordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePasswordButton;
+
+  /// No description provided for @change_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Language'**
+  String get change_language;
+
+  /// No description provided for @select_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Select System Language'**
+  String get select_language;
+
+  /// No description provided for @addDeveloperTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Project Developer'**
+  String get addDeveloperTitle;
+
+  /// No description provided for @developerNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer Name'**
+  String get developerNameLabel;
+
+  /// No description provided for @developerNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer Name'**
+  String get developerNameHint;
+
+  /// No description provided for @addProjectNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Project Name'**
+  String get addProjectNameTitle;
+
+  /// No description provided for @locationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get locationTitle;
+
+  /// No description provided for @searchLocationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Location'**
+  String get searchLocationHint;
+
+  /// No description provided for @confirmLocationButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm This Location'**
+  String get confirmLocationButton;
+
+  /// No description provided for @propertyTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Type'**
+  String get propertyTypeLabel;
+
+  /// No description provided for @propertyImagesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Images'**
+  String get propertyImagesLabel;
+
+  /// No description provided for @uploadImagesButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Images'**
+  String get uploadImagesButton;
+
+  /// No description provided for @imageSampleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Image Samples'**
+  String get imageSampleLabel;
+
+  /// No description provided for @deleteAllImagesButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All Images'**
+  String get deleteAllImagesButton;
+
+  /// No description provided for @takePhotoButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get takePhotoButton;
+
+  /// No description provided for @selectFromAlbumButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Select from Album'**
+  String get selectFromAlbumButton;
+
+  /// No description provided for @deleteAllConfirmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All'**
+  String get deleteAllConfirmLabel;
+
+  /// No description provided for @showLessButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Less'**
+  String get showLessButton;
+
+  /// No description provided for @showMoreButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Show More'**
+  String get showMoreButton;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryButton;
+
+  /// No description provided for @editDataButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Data'**
+  String get editDataButton;
+
+  /// No description provided for @selectLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Location'**
+  String get selectLocationTitle;
+
+  /// No description provided for @selectLocationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a location on the map or search for a place'**
+  String get selectLocationMessage;
+
+  /// No description provided for @mapAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address from Map'**
+  String get mapAddressLabel;
+
+  /// No description provided for @saveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveButton;
+
+  /// No description provided for @editDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Data'**
+  String get editDataTitle;
+
+  /// No description provided for @successTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get successTitle;
+
+  /// No description provided for @changesSavedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes saved successfully'**
+  String get changesSavedMessage;
+
+  /// No description provided for @saveChangesConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to save these changes?'**
+  String get saveChangesConfirmation;
+
+  /// No description provided for @confirmSaveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get confirmSaveLabel;
+
+  /// No description provided for @cancelSaveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelSaveLabel;
+
+  /// No description provided for @pleaseFillAllFieldsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in all required fields'**
+  String get pleaseFillAllFieldsError;
+
+  /// No description provided for @listingTypeValueSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get listingTypeValueSale;
+
+  /// No description provided for @listingTypeValueRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get listingTypeValueRent;
+
+  /// No description provided for @listingTypeValueSaleAndRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale and Rent'**
+  String get listingTypeValueSaleAndRent;
+
+  /// No description provided for @statusValueAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get statusValueAvailable;
+
+  /// No description provided for @statusValueNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Available'**
+  String get statusValueNotAvailable;
+
+  /// No description provided for @propertyDetailFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Details'**
+  String get propertyDetailFallback;
+
+  /// No description provided for @addDeveloperDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'If you add a new project developer, the system will save the information and you can easily search for it next time.'**
+  String get addDeveloperDescription;
+
+  /// No description provided for @addProjectNameDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'If you add a new project name, the system will save the information and you can easily search for it next time.'**
+  String get addProjectNameDescription;
+
+  /// No description provided for @addNowButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Now!!!'**
+  String get addNowButton;
+
+  /// No description provided for @deleteAllImagesConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All Images?'**
+  String get deleteAllImagesConfirmTitle;
+
+  /// No description provided for @deleteAllImagesConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Once you delete, it cannot be undone'**
+  String get deleteAllImagesConfirmMessage;
+
+  /// No description provided for @imagesDeletedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'All images deleted successfully'**
+  String get imagesDeletedMessage;
+
+  /// No description provided for @searchFilterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Filter'**
+  String get searchFilterLabel;
+
+  /// No description provided for @approvalStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Approval Status'**
+  String get approvalStatusTitle;
+
+  /// No description provided for @statusIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Incomplete'**
+  String get statusIncomplete;
+
+  /// No description provided for @statusComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get statusComplete;
+
+  /// No description provided for @contractTypeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract Type'**
+  String get contractTypeTitle;
+
+  /// No description provided for @saleContractType.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale Contract'**
+  String get saleContractType;
+
+  /// No description provided for @rentContractType.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent Contract'**
+  String get rentContractType;
+
+  /// No description provided for @clearFiltersButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearFiltersButton;
+
+  /// No description provided for @showResultsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Results'**
+  String get showResultsButton;
+
+  /// No description provided for @confirmCancelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Cancel'**
+  String get confirmCancelTitle;
+
+  /// No description provided for @confirmCancelMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your entered data will be lost. Do you want to cancel?'**
+  String get confirmCancelMessage;
+
+  /// No description provided for @confirmCancelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Cancel'**
+  String get confirmCancelLabel;
+
+  /// No description provided for @continueEditingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Editing'**
+  String get continueEditingLabel;
+
+  /// No description provided for @createContractTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Contract'**
+  String get createContractTitle;
+
+  /// No description provided for @saveDraftButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Draft'**
+  String get saveDraftButton;
+
+  /// No description provided for @backButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get backButton;
+
+  /// No description provided for @createContractButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Contract'**
+  String get createContractButton;
+
+  /// No description provided for @nextButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get nextButton;
+
+  /// No description provided for @statusPendingSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Signature'**
+  String get statusPendingSignature;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// No description provided for @registrationSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Successful'**
+  String get registrationSuccessTitle;
+
+  /// No description provided for @accountCreatedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created successfully'**
+  String get accountCreatedMessage;
+
+  /// No description provided for @errorOccurredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An Error Occurred'**
+  String get errorOccurredTitle;
+
+  /// No description provided for @createNewAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Account'**
+  String get createNewAccountTitle;
+
+  /// No description provided for @sentToOwnerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Document sent to property owner successfully'**
+  String get sentToOwnerMessage;
+
+  /// No description provided for @sentToBuyerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Document sent to buyer successfully'**
+  String get sentToBuyerMessage;
+
+  /// No description provided for @changeEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Change Email'**
+  String get changeEmailTitle;
+
+  /// No description provided for @changeEmailSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the new email you want to change to. Once you confirm, we will check and inform you immediately.'**
+  String get changeEmailSubtitle;
+
+  /// No description provided for @requestChangeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Change'**
+  String get requestChangeButton;
+
+  /// No description provided for @newEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New Email'**
+  String get newEmailLabel;
+
+  /// No description provided for @changePhoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Change Phone Number'**
+  String get changePhoneTitle;
+
+  /// No description provided for @changePhoneSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the new phone number you want to change to. Once you confirm, we will check and inform you immediately.'**
+  String get changePhoneSubtitle;
+
+  /// No description provided for @newPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New Phone Number'**
+  String get newPhoneLabel;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account?'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountConfirmPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'If you want to delete your account, please type '**
+  String get deleteAccountConfirmPrompt;
+
+  /// No description provided for @deleteAccountConfirmSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' to confirm account deletion'**
+  String get deleteAccountConfirmSuffix;
+
+  /// No description provided for @typeToDeleteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type message here...'**
+  String get typeToDeleteHint;
+
+  /// No description provided for @yesDeleteImmediately.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, delete immediately'**
+  String get yesDeleteImmediately;
+
+  /// No description provided for @unexpectedErrorTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Unexpected error occurred. Please try again.'**
+  String get unexpectedErrorTryAgain;
+
+  /// No description provided for @welcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome'**
+  String get welcome;
+
+  /// No description provided for @agencyUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Agency Unknown'**
+  String get agencyUnknown;
+
+  /// No description provided for @searchProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Search property'**
+  String get searchProperty;
+
+  /// No description provided for @finance.
+  ///
+  /// In en, this message translates to:
+  /// **'Finance'**
+  String get finance;
+
+  /// No description provided for @contactListLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact List'**
+  String get contactListLabel;
+
+  /// No description provided for @coAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Co-Agent'**
+  String get coAgent;
+
+  /// No description provided for @data.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get data;
+
+  /// No description provided for @recommendedForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended for you'**
+  String get recommendedForYou;
+
+  /// No description provided for @curatedForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Specially curated just for you'**
+  String get curatedForYou;
+
+  /// No description provided for @sample.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample'**
+  String get sample;
+
+  /// No description provided for @activityDemoUser12Min.
+  ///
+  /// In en, this message translates to:
+  /// **'Kongkiat Labusinesslert • 12 mins'**
+  String get activityDemoUser12Min;
+
+  /// No description provided for @dateDemoDec24.
+  ///
+  /// In en, this message translates to:
+  /// **'Dec 24, 2025, 12:00 PM'**
+  String get dateDemoDec24;
+
+  /// No description provided for @activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities'**
+  String get activities;
+
+  /// No description provided for @activitiesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Aggregation of interesting activities, news, and PR'**
+  String get activitiesSubtitle;
+
+  /// No description provided for @contract.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract'**
+  String get contract;
+
+  /// No description provided for @signedByBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed by both parties'**
+  String get signedByBoth;
+
+  /// No description provided for @signedByLessor.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed by lessor'**
+  String get signedByLessor;
+
+  /// No description provided for @signedByLessee.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed by lessee'**
+  String get signedByLessee;
+
+  /// No description provided for @notSignedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No signers yet'**
+  String get notSignedYet;
+
+  /// No description provided for @downloadPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Download PDF'**
+  String get downloadPdf;
+
+  /// No description provided for @pleaseWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait'**
+  String get pleaseWait;
+
+  /// No description provided for @document.
+  ///
+  /// In en, this message translates to:
+  /// **'Document'**
+  String get document;
+
+  /// No description provided for @property.
+  ///
+  /// In en, this message translates to:
+  /// **'Property'**
+  String get property;
+
+  /// No description provided for @file.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get file;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @submitDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit document'**
+  String get submitDocument;
+
+  /// No description provided for @loadingPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading PDF...'**
+  String get loadingPdf;
+
+  /// No description provided for @preparingPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing PDF...'**
+  String get preparingPdf;
+
+  /// No description provided for @editContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit contract'**
+  String get editContract;
+
+  /// No description provided for @deleteContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete contract'**
+  String get deleteContract;
+
+  /// No description provided for @deleteBackContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete back contract'**
+  String get deleteBackContract;
+
+  /// No description provided for @contractDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract document'**
+  String get contractDocument;
+
+  /// No description provided for @dataContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Data contract'**
+  String get dataContract;
+
+  /// No description provided for @errorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get errorLabel;
+
+  /// No description provided for @saveDataSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Save data success'**
+  String get saveDataSuccess;
+
+  /// No description provided for @saveChangesQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes?'**
+  String get saveChangesQuestion;
+
+  /// No description provided for @dataProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Data property'**
+  String get dataProperty;
+
+  /// No description provided for @dataAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Data address'**
+  String get dataAddress;
+
+  /// No description provided for @addDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Add details'**
+  String get addDetails;
+
+  /// No description provided for @payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get payment;
+
+  /// No description provided for @addContractConditionsAdditional.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contract conditions'**
+  String get addContractConditionsAdditional;
+
+  /// No description provided for @contractFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract file'**
+  String get contractFile;
+
+  /// No description provided for @editAddContractFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit add contract file'**
+  String get editAddContractFile;
+
+  /// No description provided for @conditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions'**
+  String get conditions;
+
+  /// No description provided for @personTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Person Type'**
+  String get personTypeLabel;
+
+  /// No description provided for @searchDataNameProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Search data name property'**
+  String get searchDataNameProperty;
+
+  /// No description provided for @currentAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Address'**
+  String get currentAddressLabel;
+
+  /// No description provided for @deleteItemQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this item?'**
+  String get deleteItemQuestion;
+
+  /// No description provided for @nameFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Name file'**
+  String get nameFile;
+
+  /// No description provided for @uploadFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload file'**
+  String get uploadFile;
+
+  /// No description provided for @sellingPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Selling Price'**
+  String get sellingPrice;
+
+  /// No description provided for @rentalPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Rental Price'**
+  String get rentalPrice;
+
+  /// No description provided for @paymentDueDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Due Date'**
+  String get paymentDueDateLabel;
+
+  /// No description provided for @enterDateRangeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter date 1-31'**
+  String get enterDateRangeHint;
+
+  /// No description provided for @latePaymentPenalty.
+  ///
+  /// In en, this message translates to:
+  /// **'Late Payment Penalty'**
+  String get latePaymentPenalty;
+
+  /// No description provided for @bahtPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Baht/Day'**
+  String get bahtPerDay;
+
+  /// No description provided for @enterBranchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Specify branch'**
+  String get enterBranchHint;
+
+  /// No description provided for @enterAccountNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Specify account number'**
+  String get enterAccountNumberHint;
+
+  /// No description provided for @select.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get select;
+
+  /// No description provided for @furnitureExampleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: bed, sofa'**
+  String get furnitureExampleHint;
+
+  /// No description provided for @furnitureDescExampleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: 6ft pine wood bed'**
+  String get furnitureDescExampleHint;
+
+  /// No description provided for @propertyPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Photos'**
+  String get propertyPhotos;
+
+  /// No description provided for @searchDataName.
+  ///
+  /// In en, this message translates to:
+  /// **'Search data name'**
+  String get searchDataName;
+
+  /// No description provided for @contractSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract select'**
+  String get contractSelect;
+
+  /// No description provided for @totalLeasePeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Lease Period'**
+  String get totalLeasePeriod;
+
+  /// No description provided for @applianceExampleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: refrigerator, fan'**
+  String get applianceExampleHint;
+
+  /// No description provided for @applianceDescExampleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: new black three-door refrigerator'**
+  String get applianceDescExampleHint;
+
+  /// No description provided for @signed.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed'**
+  String get signed;
+
+  /// No description provided for @notSigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Not signed'**
+  String get notSigned;
+
+  /// No description provided for @buyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer'**
+  String get buyer;
+
+  /// No description provided for @callProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Call property'**
+  String get callProperty;
+
+  /// No description provided for @call.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get call;
+
+  /// No description provided for @dataPhoneCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Data phone'**
+  String get dataPhoneCall;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @townhouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Townhouse'**
+  String get townhouse;
+
+  /// No description provided for @showresults.
+  ///
+  /// In en, this message translates to:
+  /// **'Showresults'**
+  String get showresults;
+
+  /// No description provided for @dataPropertyContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Data property contract'**
+  String get dataPropertyContract;
+
+  /// No description provided for @registering.
+  ///
+  /// In en, this message translates to:
+  /// **'Registering...'**
+  String get registering;
+
+  /// No description provided for @registerMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Register Member'**
+  String get registerMember;
+
+  /// No description provided for @demoNameSomchai.
+  ///
+  /// In en, this message translates to:
+  /// **'Somchai Jaidee'**
+  String get demoNameSomchai;
+
+  /// No description provided for @demoAddress1.
+  ///
+  /// In en, this message translates to:
+  /// **'123/456 Bangkok'**
+  String get demoAddress1;
+
+  /// No description provided for @demoNameJaidee.
+  ///
+  /// In en, this message translates to:
+  /// **'Jaidee Meesuk'**
+  String get demoNameJaidee;
+
+  /// No description provided for @demoAddress2.
+  ///
+  /// In en, this message translates to:
+  /// **'456/789 Bangkok'**
+  String get demoAddress2;
+
+  /// No description provided for @registerToStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Register to start using the system'**
+  String get registerToStart;
+
+  /// No description provided for @forAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'For Agent'**
+  String get forAgent;
+
+  /// No description provided for @forAgency.
+  ///
+  /// In en, this message translates to:
+  /// **'For Agency'**
+  String get forAgency;
+
+  /// No description provided for @submitEmailSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit email success'**
+  String get submitEmailSuccess;
+
+  /// No description provided for @emailPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Email password'**
+  String get emailPassword;
+
+  /// No description provided for @submitEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit email'**
+  String get submitEmail;
+
+  /// No description provided for @welcomeAgentManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to the new agent manual'**
+  String get welcomeAgentManual;
+
+  /// No description provided for @submitPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit password'**
+  String get submitPassword;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPassword;
+
+  /// No description provided for @confirmPasswordUseQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to use this password?'**
+  String get confirmPasswordUseQuestion;
+
+  /// No description provided for @passwordSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password success'**
+  String get passwordSuccess;
+
+  /// No description provided for @confirmEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm email'**
+  String get confirmEmail;
+
+  /// No description provided for @confirmSubmitEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm submit email'**
+  String get confirmSubmitEmail;
+
+  /// No description provided for @locationProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Location property'**
+  String get locationProperty;
+
+  /// No description provided for @saveLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Save location'**
+  String get saveLocation;
+
+  /// No description provided for @confirmLocationPropertySelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm location property select'**
+  String get confirmLocationPropertySelect;
+
+  /// No description provided for @searchAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Search address'**
+  String get searchAddress;
+
+  /// No description provided for @confirmThisLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm this location'**
+  String get confirmThisLocation;
+
+  /// No description provided for @noDataFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get noDataFound;
+
+  /// No description provided for @dateFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'dd Jan yyyy'**
+  String get dateFormat;
+
+  /// No description provided for @demoCompanyName.
+  ///
+  /// In en, this message translates to:
+  /// **'YourHome Platform Co., Ltd.'**
+  String get demoCompanyName;
+
+  /// No description provided for @lastUpdateDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated Dec 24, 2025, 12:00 PM'**
+  String get lastUpdateDemo;
+
+  /// No description provided for @decline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get decline;
+
+  /// No description provided for @accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get accept;
+
+  /// No description provided for @userAllDocumentConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'User all document conditions'**
+  String get userAllDocumentConditions;
+
+  /// No description provided for @cancelDeleteEditUserConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel delete edit user conditions'**
+  String get cancelDeleteEditUserConditions;
+
+  /// No description provided for @dataUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Data user'**
+  String get dataUser;
+
+  /// No description provided for @submitDataUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit data user'**
+  String get submitDataUser;
+
+  /// No description provided for @cancelUserConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel user conditions'**
+  String get cancelUserConditions;
+
+  /// No description provided for @closeDataUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Close data user'**
+  String get closeDataUser;
+
+  /// No description provided for @dataNameEmailCallAddressUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Data name email call address user'**
+  String get dataNameEmailCallAddressUser;
+
+  /// No description provided for @submitData.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit data'**
+  String get submitData;
+
+  /// No description provided for @closeDataImageUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Close data image user'**
+  String get closeDataImageUser;
+
+  /// No description provided for @deleteEditDataUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete edit data user'**
+  String get deleteEditDataUser;
+
+  /// No description provided for @dataAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Data all'**
+  String get dataAll;
+
+  /// No description provided for @disclaimerExcerpt.
+  ///
+  /// In en, this message translates to:
+  /// **'The company is not responsible for any damages...'**
+  String get disclaimerExcerpt;
+
+  /// No description provided for @cancelEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel edit'**
+  String get cancelEdit;
+
+  /// No description provided for @activityDemoUser15Min.
+  ///
+  /// In en, this message translates to:
+  /// **'Kongkiat Labusinesslert • 15 mins'**
+  String get activityDemoUser15Min;
+
+  /// No description provided for @dateDemoDec25.
+  ///
+  /// In en, this message translates to:
+  /// **'Dec 25, 2025, 2:00 PM'**
+  String get dateDemoDec25;
+
+  /// No description provided for @newBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'New Booking'**
+  String get newBooking;
+
+  /// No description provided for @alert.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert'**
+  String get alert;
+
+  /// No description provided for @archive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get archive;
+
+  /// No description provided for @deleteAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete alert'**
+  String get deleteAlert;
+
+  /// No description provided for @deleteBackAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete back alert'**
+  String get deleteBackAlert;
+
+  /// No description provided for @closeLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Close location'**
+  String get closeLocation;
+
+  /// No description provided for @notAuthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Not authorized'**
+  String get notAuthorized;
+
+  /// No description provided for @locationPermissionPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please allow location access to use this feature'**
+  String get locationPermissionPrompt;
+
+  /// No description provided for @goToSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Settings'**
+  String get goToSettings;
+
+  /// No description provided for @propertyHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Property house'**
+  String get propertyHouse;
+
+  /// No description provided for @demoPropertyPunnawithi1_Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Cheap rental house Punnawithi near BTS'**
+  String get demoPropertyPunnawithi1_Title;
+
+  /// No description provided for @demoLocationPunnawithi.
+  ///
+  /// In en, this message translates to:
+  /// **'Punnawithi, Bangkok'**
+  String get demoLocationPunnawithi;
+
+  /// No description provided for @condoNearBts.
+  ///
+  /// In en, this message translates to:
+  /// **'Condo near BTS'**
+  String get condoNearBts;
+
+  /// No description provided for @demoLocationSukhumvit.
+  ///
+  /// In en, this message translates to:
+  /// **'Sukhumvit, Bangkok'**
+  String get demoLocationSukhumvit;
+
+  /// No description provided for @townhome3Floors.
+  ///
+  /// In en, this message translates to:
+  /// **'3-Story Townhome'**
+  String get townhome3Floors;
+
+  /// No description provided for @demoLocationLadprao.
+  ///
+  /// In en, this message translates to:
+  /// **'Ladprao, Bangkok'**
+  String get demoLocationLadprao;
+
+  /// No description provided for @demoLocationRamkhamhaeng.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramkhamhaeng, Bangkok'**
+  String get demoLocationRamkhamhaeng;
+
+  /// No description provided for @demoLocationSathon.
+  ///
+  /// In en, this message translates to:
+  /// **'Sathon, Bangkok'**
+  String get demoLocationSathon;
+
+  /// No description provided for @demoLocationBangna.
+  ///
+  /// In en, this message translates to:
+  /// **'Bangna, Bangkok'**
+  String get demoLocationBangna;
+
+  /// No description provided for @townhouseTownhome.
+  ///
+  /// In en, this message translates to:
+  /// **'Townhouse/Townhome'**
+  String get townhouseTownhome;
+
+  /// No description provided for @pleaseLoginAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in again'**
+  String get pleaseLoginAgain;
+
+  /// No description provided for @systemErrorTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'System error. Please try again.'**
+  String get systemErrorTryAgain;
+
+  /// No description provided for @errorTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred. Please try again.'**
+  String get errorTryAgain;
+
+  /// No description provided for @subdistrictLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub-district'**
+  String get subdistrictLabel;
+
+  /// No description provided for @districtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'District'**
+  String get districtLabel;
+
+  /// No description provided for @subdistrictThaiLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tambon'**
+  String get subdistrictThaiLabel;
+
+  /// No description provided for @districtThaiLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amphoe'**
+  String get districtThaiLabel;
+
+  /// No description provided for @soiLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Soi'**
+  String get soiLabel;
+
+  /// No description provided for @noAttachedPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'No attached photos'**
+  String get noAttachedPhotos;
+
+  /// No description provided for @searchSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Search success'**
+  String get searchSuccess;
+
+  /// No description provided for @noResultsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get noResultsFound;
+
+  /// No description provided for @demoNews1.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample News'**
+  String get demoNews1;
+
+  /// No description provided for @shareDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Document'**
+  String get shareDocument;
+
+  /// No description provided for @submitDocumentQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit document?'**
+  String get submitDocumentQuestion;
+
+  /// No description provided for @buyerInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer Information'**
+  String get buyerInfo;
+
+  /// No description provided for @addFurnitureDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Add furniture items and details'**
+  String get addFurnitureDetails;
+
+  /// No description provided for @paymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost and payment methods'**
+  String get paymentMethods;
+
+  /// No description provided for @additionalContractConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional contract conditions'**
+  String get additionalContractConditions;
+
+  /// No description provided for @fileNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'File name e.g. ID card copy'**
+  String get fileNameHint;
+
+  /// No description provided for @propertyOwnerNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Property owner data not found'**
+  String get propertyOwnerNotFound;
+
+  /// No description provided for @enterAccountNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Specify account name'**
+  String get enterAccountNameHint;
+
+  /// No description provided for @contractFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract format'**
+  String get contractFormat;
+
+  /// No description provided for @selectContractStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select contract start date'**
+  String get selectContractStartDate;
+
+  /// No description provided for @registerBuyerToContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Register buyer info to make contract'**
+  String get registerBuyerToContract;
+
+  /// No description provided for @enterRegisteredEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter registered email for reset link'**
+  String get enterRegisteredEmailHint;
+
+  /// No description provided for @sendResetPasswordLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send reset password link'**
+  String get sendResetPasswordLink;
+
+  /// No description provided for @resetPasswordFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to set new password'**
+  String get resetPasswordFailed;
+
+  /// No description provided for @emailSentSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Email sent successfully'**
+  String get emailSentSuccessfully;
+
+  /// No description provided for @propertyNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Property not found'**
+  String get propertyNotFound;
+
+  /// No description provided for @propertyLocationOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Property location on map'**
+  String get propertyLocationOnMap;
+
+  /// No description provided for @createLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get createLabel;
+
+  /// No description provided for @selectLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select location'**
+  String get selectLocation;
+
+  /// No description provided for @usableAreaSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Usable area size'**
+  String get usableAreaSize;
+
+  /// No description provided for @startingPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting price'**
+  String get startingPrice;
+
+  /// No description provided for @classicStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get classicStyle;
+
+  /// No description provided for @securityGuardLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Security Guard'**
+  String get securityGuardLabel;
+
+  /// No description provided for @showresults1.
+  ///
+  /// In en, this message translates to:
+  /// **'Showresults'**
+  String get showresults1;
+
+  /// No description provided for @draftLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get draftLabel;
+
+  /// No description provided for @termsGovernanceDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'These terms are governed by Thai law. Disputes go to Bangkok court.'**
+  String get termsGovernanceDisclaimer;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get tryAgain;
+
+  /// No description provided for @emailNotVerifiedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Email not verified yet'**
+  String get emailNotVerifiedYet;
+
+  /// No description provided for @yourProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Profile'**
+  String get yourProfile;
+
+  /// No description provided for @notSpecified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified'**
+  String get notSpecified;
+
+  /// No description provided for @languageProficiency.
+  ///
+  /// In en, this message translates to:
+  /// **'Language Proficiency'**
+  String get languageProficiency;
+
+  /// No description provided for @addressNotSpecified.
+  ///
+  /// In en, this message translates to:
+  /// **'Address not specified'**
+  String get addressNotSpecified;
+
+  /// No description provided for @noNotificationsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications found'**
+  String get noNotificationsFound;
+
+  /// No description provided for @enableLocationServicesPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable location services for current location'**
+  String get enableLocationServicesPrompt;
+
+  /// No description provided for @locationPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission required'**
+  String get locationPermissionRequired;
+
+  /// No description provided for @demoPropertyPunnawithi1.
+  ///
+  /// In en, this message translates to:
+  /// **'Property 2: Cheap house Punnawithi near BTS'**
+  String get demoPropertyPunnawithi1;
+
+  /// No description provided for @cheapRentalHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Cheap rental house'**
+  String get cheapRentalHouse;
+
+  /// No description provided for @luxuryRiversideCondo.
+  ///
+  /// In en, this message translates to:
+  /// **'Luxury riverside condo'**
+  String get luxuryRiversideCondo;
+
+  /// No description provided for @dragAndDropHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Or drag and drop files here. Supports JPG, PNG, WebP up to 5MB.'**
+  String get dragAndDropHint;
+
+  /// No description provided for @demoActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample Activity'**
+  String get demoActivity;
+
+  /// No description provided for @electrical_appliances_photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get electrical_appliances_photos;
+
+  /// No description provided for @furniture_photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get furniture_photos;
+
+  /// No description provided for @buyerDataNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer data not found'**
+  String get buyerDataNotFound;
+
+  /// No description provided for @sixMonthLeaseContract.
+  ///
+  /// In en, this message translates to:
+  /// **'6-month lease contract'**
+  String get sixMonthLeaseContract;
+
+  /// No description provided for @selectContractEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select contract end date'**
+  String get selectContractEndDate;
+
+  /// No description provided for @fullNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullNameLabel;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @resendLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend link'**
+  String get resendLink;
+
+  /// No description provided for @createPropertyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Property'**
+  String get createPropertyLabel;
+
+  /// No description provided for @noNotificationsNow.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications at this time.'**
+  String get noNotificationsNow;
+
+  /// No description provided for @locationPermissionDeniedPermanently.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission denied permanently. Please enable in settings.'**
+  String get locationPermissionDeniedPermanently;
+
+  /// No description provided for @cannotGetLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot get current location'**
+  String get cannotGetLocation;
+
+  /// No description provided for @demoPropertyPunnawithi2.
+  ///
+  /// In en, this message translates to:
+  /// **'Property 3: Cheap house Punnawithi near BTS'**
+  String get demoPropertyPunnawithi2;
+
+  /// No description provided for @twoStoryHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'2-Story House'**
+  String get twoStoryHouse;
+
+  /// No description provided for @propertyDataNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Property data not found'**
+  String get propertyDataNotFound;
+
+  /// No description provided for @twelveMonthLeaseContract.
+  ///
+  /// In en, this message translates to:
+  /// **'12-month lease contract'**
+  String get twelveMonthLeaseContract;
+
+  /// No description provided for @setNewPasswordPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please set your new password'**
+  String get setNewPasswordPrompt;
+
+  /// No description provided for @propertyHighlightsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Highlights'**
+  String get propertyHighlightsLabel;
+
+  /// No description provided for @externalLinksDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Links to other sites are for convenience only. We are not responsible for their content.'**
+  String get externalLinksDisclaimer;
+
+  /// No description provided for @demoPR2.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample PR 2'**
+  String get demoPR2;
+
+  /// No description provided for @houseWithGarden.
+  ///
+  /// In en, this message translates to:
+  /// **'House with garden'**
+  String get houseWithGarden;
+
+  /// No description provided for @enterNewPasswordPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter new password'**
+  String get enterNewPasswordPrompt;
+
+  /// No description provided for @demoNews2.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample News 2'**
+  String get demoNews2;
+
+  /// No description provided for @demoProperty4.
+  ///
+  /// In en, this message translates to:
+  /// **'Property 4'**
+  String get demoProperty4;
+
+  /// No description provided for @checkInternetConnectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your internet connection'**
+  String get checkInternetConnectionLabel;
+
+  /// No description provided for @invalidDataCheckAndTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid data. Please check and try again.'**
+  String get invalidDataCheckAndTryAgain;
+
+  /// No description provided for @passwordRequirementNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password must be at least 8 characters with letters and numbers.'**
+  String get passwordRequirementNote;
+
+  /// No description provided for @demoActivity2.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample Activity 2'**
+  String get demoActivity2;
+
+  /// No description provided for @demoProperty5.
+  ///
+  /// In en, this message translates to:
+  /// **'Property 5'**
+  String get demoProperty5;
+
+  /// No description provided for @cannotConnectToServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot connect to server. Please check internet.'**
+  String get cannotConnectToServer;
+
+  /// No description provided for @noProfileAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to access this data.'**
+  String get noProfileAccess;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -3285,25 +6373,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'th'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'th'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'th': return AppLocalizationsTh();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'th':
+      return AppLocalizationsTh();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

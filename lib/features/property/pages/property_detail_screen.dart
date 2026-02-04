@@ -6,6 +6,7 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/features/property/widgets/property_detail.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class PropertyDetailScreen extends StatefulWidget {
   final int? propertyId;
@@ -97,7 +98,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
               SizedBox(
                 width: 200,
                 child: AppButton(
-                  text: 'ลองใหม่',
+                  text: AppLocalizations.of(context)!.retryButton,
                   style: AppButtonStyle.outline,
                   onPressed: _fetchPropertyDetail,
                   height: 40,
@@ -171,7 +172,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: AppButton(
-                text: 'แก้ไขข้อมูล',
+                text: AppLocalizations.of(context)!.editDataTitle,
                 style: AppButtonStyle.primary,
                 onPressed: () {
                   if (_property != null) {

@@ -13,6 +13,7 @@ import 'package:youragent/utils/app_utils.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class BasicInfoStep extends StatefulWidget {
   const BasicInfoStep({super.key});
@@ -63,7 +64,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AppBadge(
-                      label: 'ข้อมูลทั่วไป',
+                      label: AppLocalizations.of(context)!.general_information,
                       fontSize: 16,
                       color: BadgeColor.blue,
                     ),
@@ -81,11 +82,11 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   controller: _propertyNameController,
                   hideOnEmpty: false,
                   builder: (context, controller, focusNode) => AppTextField(
-                    label: 'ชื่ออสังหาฯ',
+                    label: AppLocalizations.of(context)!.propertyNameHint,
                     controller: controller,
                     focusNode: focusNode,
                     isRequired: true,
-                    hintText: 'ค้นหาชื่ออสังหาฯ',
+                    hintText: AppLocalizations.of(context)!.search_property_name,
                     onChanged: (value) {
                       context.read<ContractFormBloc>().add(
                         ContractFormPropertyNameUpdated(value),
@@ -168,14 +169,14 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   emptyBuilder: (context) => Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
-                      'ไม่พบข้อมูลอสังหาฯ',
+                      AppLocalizations.of(context)!.propertyDataNotFound,
                       style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                     ),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'ค้นหาชื่ออสังหาฯ ในระบบ เพื่อเชื่อมต่อข้อมูล',
+                  AppLocalizations.of(context)!.searchDataName,
                   style: GoogleFonts.anuphan(
                     color: AppColors.baseGrey,
                     fontSize: 12,
@@ -186,7 +187,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
 
                 // Contract Date Field
                 AppTextField(
-                  label: 'วันที่ทำสัญญา',
+                  label: AppLocalizations.of(context)!.contract_date,
                   isRequired: true,
                   readOnly: false,
                   controller: TextEditingController(
@@ -194,7 +195,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                         ? '${state.contractDate!.day}/${state.contractDate!.month}/${state.contractDate!.year + 543}'
                         : '',
                   ),
-                  hintText: 'เลือกวันที่ทำสัญญา',
+                  hintText: AppLocalizations.of(context)!.contractSelect,
                   onTap: () async {
                     final date = await showDatePicker(
                       context: context,
@@ -238,12 +239,12 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
 
                 // Contract Type Selection
                 AppChipSelection<ContractType>(
-                  label: 'ประเภทสัญญา',
+                  label: AppLocalizations.of(context)!.contractTypeTitle,
                   isRequired: true,
                   value: state.contractType,
-                  options: const [
-                    AppChipOption(label: 'สัญญาขาย', value: ContractType.buy),
-                    AppChipOption(label: 'สัญญาเช่า', value: ContractType.rent),
+                  options: [
+                    AppChipOption(label: AppLocalizations.of(context)!.saleContractType, value: ContractType.buy),
+                    AppChipOption(label: AppLocalizations.of(context)!.rentContractType, value: ContractType.rent),
                   ],
                   onChanged: (type) => context.read<ContractFormBloc>().add(
                     ContractFormTypeUpdated(type),
@@ -253,16 +254,16 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                 if (state.contractType == ContractType.rent) ...[
                   const SizedBox(height: 24),
                   AppChipSelection<String>(
-                    label: 'รูปแบบสัญญา',
+                    label: AppLocalizations.of(context)!.contractFormat,
                     value: state.leaseFormat.isEmpty ? null : state.leaseFormat,
-                    options: const [
+                    options: [
                       AppChipOption(
-                        label: 'สัญญาเช่า 6 เดือน',
-                        value: 'สัญญาเช่า 6 เดือน',
+                        label: AppLocalizations.of(context)!.sixMonthLeaseContract,
+                        value: AppLocalizations.of(context)!.sixMonthLeaseContract,
                       ),
                       AppChipOption(
-                        label: 'สัญญาเช่า 12 เดือน',
-                        value: 'สัญญาเช่า 12 เดือน',
+                        label: AppLocalizations.of(context)!.twelveMonthLeaseContract,
+                        value: AppLocalizations.of(context)!.twelveMonthLeaseContract,
                       ),
                     ],
                     onChanged: (format) {
@@ -273,14 +274,14 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   ),
                   const SizedBox(height: 24),
                   AppTextField(
-                    label: 'วันที่เริ่มสัญญา',
+                    label: AppLocalizations.of(context)!.contract_start_date,
                     isRequired: true,
                     controller: TextEditingController(
                       text: state.leaseStartDate != null
                           ? '${state.leaseStartDate!.day}/${state.leaseStartDate!.month}/${state.leaseStartDate!.year + 543}'
                           : '',
                     ),
-                    hintText: 'เลือกวันที่เริ่มสัญญา',
+                    hintText: AppLocalizations.of(context)!.selectContractStartDate,
                     onTap: () async {
                       final date = await showDatePicker(
                         context: context,
@@ -298,7 +299,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   ),
                   const SizedBox(height: 24),
                   AppTextField(
-                    label: 'วันที่สิ้นสุดสัญญา',
+                    label: AppLocalizations.of(context)!.twelveMonthLeaseContract,
                     isRequired: true,
                     readOnly: state.leaseFormat.isNotEmpty,
                     controller: TextEditingController(
@@ -306,7 +307,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                           ? '${state.leaseEndDate!.day}/${state.leaseEndDate!.month}/${state.leaseEndDate!.year + 543}'
                           : '',
                     ),
-                    hintText: 'เลือกวันที่สิ้นสุดสัญญา',
+                    hintText: AppLocalizations.of(context)!.selectContractEndDate,
                     onTap: state.leaseFormat.isNotEmpty
                         ? null
                         : () async {
@@ -331,7 +332,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   ),
                   const SizedBox(height: 24),
                   AppTextField(
-                    label: 'รวมระยะเวลาเช่า',
+                    label: AppLocalizations.of(context)!.totalLeasePeriod,
                     readOnly: true,
                     controller: TextEditingController(
                       text: _formatDuration(state.leaseDuration),

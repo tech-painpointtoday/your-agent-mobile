@@ -20,6 +20,7 @@ import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/profile_bloc.dart';
 import '../models/agent_profile.dart';
 import 'profile_screen.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class ServiceAreaFormScreen extends StatefulWidget {
   final AgentDetails? agent;
@@ -79,8 +80,8 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
     if (_selectedLocation == null) {
       StatusDialog.showWarning(
         context: context,
-        title: 'ระบุตำแหน่ง',
-        message: 'กรุณาเลือกตำแหน่งศูนย์กลางพื้นที่ให้บริการบนแผนที่',
+        title: AppLocalizations.of(context)!.specifyLocationTitle,
+        message: AppLocalizations.of(context)!.specifyLocationMessage,
       );
       return;
     }
@@ -93,9 +94,9 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
 
     AppConfirmationBottomSheet.show(
       context: context,
-      title: 'บันทึกพื้นที่ให้บริการ?',
-      description: 'คุณต้องการบันทึกข้อมูลพื้นที่ให้บริการนี้ใช่หรือไม่?',
-      confirmLabel: 'บันทึก',
+      title: AppLocalizations.of(context)!.saveServiceAreaTitle,
+      description: AppLocalizations.of(context)!.saveServiceAreaMessage,
+      confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
       onConfirm: () {
         context.read<ProfileBloc>().add(UpdateServiceArea(data));
       },
@@ -114,7 +115,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
           } else if (state is ProfileError) {
             StatusDialog.showError(
               context: context,
-              title: 'เกิดข้อผิดพลาด',
+              title: AppLocalizations.of(context)!.errorOccurredTitle,
               message: state.message,
             );
           }
@@ -136,17 +137,17 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const AppBadge(
-                          label: 'ข้อมูลพื้นที่ให้บริการ',
+                        AppBadge(
+                          label: AppLocalizations.of(context)!.serviceAreaLabel,
                           color: BadgeColor.blue,
                           style: BadgeStyle.plain,
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24),
                         // Location Section
                         AppTextFormField(
-                          label: 'พื้นที่ให้บริการ',
+                          label: AppLocalizations.of(context)!.serviceAreaHint,
                           controller: _addressController,
-                          hintText: 'พื้นที่ให้บริการ',
+                          hintText: AppLocalizations.of(context)!.serviceAreaHint,
                           isRequired: true,
                           readOnly: false,
                           showCursor: false,
@@ -165,15 +166,15 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Text(
-                          'เลือกตำแหน่งบนแผนที่หรือใช้ตำแหน่งปัจจุบันของคุณเพื่อกำหนดพื้นที่ให้บริการ',
+                          AppLocalizations.of(context)!.serviceAreaDescription,
                           style: GoogleFonts.anuphan(
                             fontSize: 14,
                             color: AppColors.baseGrey,
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24),
                         // Map
                         Container(
                           height: 200,
@@ -197,8 +198,8 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 8),
+                        SizedBox(height: 12),
 
                         // Action Buttons
                         Row(
@@ -206,7 +207,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                             Expanded(
                               flex: 3,
                               child: AppButton(
-                                text: 'ใช้ตำแหน่งปัจจุบัน',
+                                text: AppLocalizations.of(context)!.useCurrentLocationLabel,
                                 style: AppButtonStyle.primary,
                                 onPressed: _useCurrentLocation,
                                 backgroundColor: AppColors.brandLightGreen,
@@ -214,11 +215,11 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                                 iconPath: 'assets/icons/direction-up-right.svg',
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12),
                             Expanded(
                               flex: 2,
                               child: AppButton(
-                                text: 'ล้างตำแหน่ง',
+                                text: AppLocalizations.of(context)!.clearLocationLabel,
                                 style: AppButtonStyle.outline,
                                 onPressed: () {
                                   setState(() {
@@ -231,16 +232,16 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                           ],
                         ),
 
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24),
                         AppTextField(
-                          label: 'รัศมีที่ให้บริการ',
-                          hintText: 'รัศมีที่ให้บริการ',
+                          label: AppLocalizations.of(context)!.serviceRadiusHint,
+                          hintText: AppLocalizations.of(context)!.serviceRadiusHint,
                           controller: _radiusController,
                           keyboardType: TextInputType.number,
                           suffix: Padding(
                             padding: const EdgeInsets.all(16),
                             child: Text(
-                              'กม.',
+                              AppLocalizations.of(context)!.serviceRadiusUnit,
                               style: GoogleFonts.anuphan(
                                 color: AppColors.baseGrey,
                                 fontSize: 16,
@@ -248,7 +249,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 40),
+                        SizedBox(height: 40),
                       ],
                     ),
                   ),
@@ -275,7 +276,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
         onPressed: () => context.pop(),
       ),
       title: Text(
-        'เพิ่มข้อมูลพื้นที่ให้บริการ',
+        AppLocalizations.of(context)!.addServiceAreaTitle,
         style: GoogleFonts.anuphan(
           color: Colors.white,
           fontSize: 18,
@@ -308,17 +309,17 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
         children: [
           Expanded(
             child: AppButton(
-              text: 'ยกเลิก',
+              text: AppLocalizations.of(context)!.statusCancelled,
               style: AppButtonStyle.outline,
               onPressed: () => context.pop(),
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           Expanded(
             child: BlocBuilder<ProfileBloc, ProfileState>(
               builder: (context, state) {
                 return AppButton(
-                  text: 'บันทึก',
+                  text: AppLocalizations.of(context)!.confirmSaveLabel,
                   style: AppButtonStyle.primary,
                   isLoading: state is ProfileUpdateLoading,
                   onPressed: _onSave,

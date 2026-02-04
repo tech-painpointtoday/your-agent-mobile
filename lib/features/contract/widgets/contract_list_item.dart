@@ -6,6 +6,7 @@ import 'package:youragent/domain/entities/contract.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'contract_status_badge.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class ContractListItem extends StatefulWidget {
   final Contract contract;
@@ -158,7 +159,7 @@ class _ContractListItemState extends State<ContractListItem> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'เจ้าของทรัพย์',
+                                        AppLocalizations.of(context)!.property,
                                         style: GoogleFonts.anuphan(
                                           color: AppColors.baseDarkGrey,
                                           fontSize: 10,
@@ -175,14 +176,14 @@ class _ContractListItemState extends State<ContractListItem> {
                                       ),
                                       const SizedBox(height: 12),
                                       if (contract.sellerSignedAt != null)
-                                        const AppBadge(
-                                          label: 'ลงนามแล้ว',
+                                        AppBadge(
+                                          label: AppLocalizations.of(context)!.signed,
                                           color: BadgeColor.green,
                                           style: BadgeStyle.done,
                                         )
                                       else
-                                        const AppBadge(
-                                          label: 'ยังไม่ได้ลงนาม',
+                                        AppBadge(
+                                          label: AppLocalizations.of(context)!.notSigned,
                                           color: BadgeColor.default_,
                                           style: BadgeStyle.plain,
                                         ),
@@ -196,7 +197,7 @@ class _ContractListItemState extends State<ContractListItem> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'ผู้ซื้อ',
+                                        AppLocalizations.of(context)!.buyer,
                                         style: GoogleFonts.anuphan(
                                           color: AppColors.baseDarkGrey,
                                           fontSize: 10,
@@ -213,14 +214,14 @@ class _ContractListItemState extends State<ContractListItem> {
                                       ),
                                       const SizedBox(height: 12),
                                       if (contract.buyerSignedAt != null)
-                                        const AppBadge(
-                                          label: 'ลงนามแล้ว',
+                                        AppBadge(
+                                          label: AppLocalizations.of(context)!.signed,
                                           color: BadgeColor.green,
                                           style: BadgeStyle.done,
                                         )
                                       else
-                                        const AppBadge(
-                                          label: 'ยังไม่ได้ลงนาม',
+                                        AppBadge(
+                                          label: AppLocalizations.of(context)!.notSigned,
                                           color: BadgeColor.default_,
                                           style: BadgeStyle.plain,
                                         ),
@@ -284,7 +285,7 @@ class _ContractListItemState extends State<ContractListItem> {
                           PopupMenuItem(
                             enabled: false,
                             child: Text(
-                              'ไม่มีข้อมูลเบอร์โทรศัพท์',
+                              AppLocalizations.of(context)!.dataPhoneCall,
                               style: GoogleFonts.anuphan(fontSize: 14),
                             ),
                           ),
@@ -299,7 +300,7 @@ class _ContractListItemState extends State<ContractListItem> {
                   Expanded(
                     child: AppButton(
                       padding: EdgeInsets.zero,
-                      text: 'แชร์เอกสาร',
+                      text: AppLocalizations.of(context)!.shareDocument,
                       style: AppButtonStyle.outline,
                       height: 32,
                       textStyle: GoogleFonts.anuphan(
@@ -315,7 +316,7 @@ class _ContractListItemState extends State<ContractListItem> {
                   // Edit Button
                   Expanded(
                     child: AppButton(
-                      text: 'แก้ไข',
+                      text: AppLocalizations.of(context)!.edit,
                       style: AppButtonStyle.primary,
                       height: 32,
                       textStyle: GoogleFonts.anuphan(

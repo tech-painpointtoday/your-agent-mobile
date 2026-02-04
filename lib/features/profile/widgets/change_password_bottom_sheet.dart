@@ -7,6 +7,7 @@ import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import '../bloc/profile_bloc.dart';
 import '../pages/profile_screen.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class ChangePasswordBottomSheet extends StatefulWidget {
   const ChangePasswordBottomSheet({super.key});
@@ -73,8 +74,8 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
     if (_newPasswordController.text != _confirmPasswordController.text) {
       StatusDialog.showError(
         context: context,
-        title: 'รหัสผ่านไม่ตรงกัน',
-        message: 'กรุณาตรวจสอบรหัสผ่านใหม่และยืนยันรหัสผ่านใหม่อีกครั้ง',
+        title: AppLocalizations.of(context)!.passwordMismatchTitle,
+        message: AppLocalizations.of(context)!.passwordMismatchMessage,
       );
       return;
     }
@@ -97,13 +98,13 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
           Navigator.pop(context);
           StatusDialog.showSuccess(
             context: context,
-            title: 'เปลี่ยนรหัสผ่านสำเร็จ',
-            message: 'รหัสผ่านของคุณได้รับการเปลี่ยนเรียบร้อยแล้ว',
+            title: AppLocalizations.of(context)!.passwordChangeSuccessTitle,
+            message: AppLocalizations.of(context)!.passwordChangeSuccessMessage,
           );
         } else if (state is ProfileError) {
           StatusDialog.showError(
             context: context,
-            title: 'เกิดข้อผิดพลาด',
+            title: AppLocalizations.of(context)!.errorOccurredTitle,
             message: state.message,
           );
         }
@@ -139,7 +140,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'เปลี่ยนรหัสผ่าน',
+                      AppLocalizations.of(context)!.changePasswordButton,
                       style: GoogleFonts.anuphan(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -148,7 +149,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'รหัสผ่านของคุณต้องมีอย่างน้อย 8 ตัวอักษร และประกอบ ด้วยตัวอักษรและตัวเลข',
+                      AppLocalizations.of(context)!.passwordRequirementNote,
                       style: GoogleFonts.anuphan(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -157,25 +158,25 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                     ),
                     const SizedBox(height: 24),
                     AppTextField(
-                      label: 'รหัสผ่านปัจจุบัน',
+                      label: AppLocalizations.of(context)!.currentPasswordLabel,
                       controller: _currentPasswordController,
-                      hintText: 'กรอกรหัสผ่านปัจจุบัน',
+                      hintText: AppLocalizations.of(context)!.currentPasswordHint,
                       obscureText: true,
                       isRequired: true,
                     ),
                     const SizedBox(height: 24),
                     AppTextField(
-                      label: 'รหัสผ่านใหม่',
+                      label: AppLocalizations.of(context)!.newPasswordLabel,
                       controller: _newPasswordController,
-                      hintText: 'กรอกรหัสผ่านใหม่',
+                      hintText: AppLocalizations.of(context)!.newPasswordHint,
                       obscureText: true,
                       isRequired: true,
                     ),
                     const SizedBox(height: 24),
                     AppTextField(
-                      label: 'ยืนยันรหัสผ่านใหม่',
+                      label: AppLocalizations.of(context)!.confirmNewPasswordHint,
                       controller: _confirmPasswordController,
-                      hintText: 'ยืนยันรหัสผ่านใหม่',
+                      hintText: AppLocalizations.of(context)!.confirmNewPasswordHint,
                       obscureText: true,
 
                       isRequired: true,
@@ -209,7 +210,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                         Expanded(
                           flex: 2,
                           child: AppButton(
-                            text: 'ยกเลิก',
+                            text: AppLocalizations.of(context)!.statusCancelled,
                             style: AppButtonStyle.outline,
                             onPressed: () => Navigator.pop(context),
                           ),
@@ -218,7 +219,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                         Expanded(
                           flex: 4,
                           child: AppButton(
-                            text: 'เปลี่ยนรหัสผ่าน',
+                            text: AppLocalizations.of(context)!.changePasswordButton,
                             style: AppButtonStyle.primary,
                             isLoading: state is ProfileUpdateLoading,
                             enabled: _isFormValid,

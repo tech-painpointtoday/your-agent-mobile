@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -41,15 +42,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         if (state is AuthOperationState) {
           if (state.forgotPasswordStatus == ForgotPasswordStatus.success) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('ส่งลิงก์รีเซ็ตรหัสผ่านเรียบร้อยแล้ว'),
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.submitPassword),
               ),
             );
           } else if (state.forgotPasswordStatus ==
               ForgotPasswordStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage ?? 'ไม่สามารถส่งอีเมลได้'),
+                content: Text(state.errorMessage ?? AppLocalizations.of(context)!.submitEmail),
               ),
             );
           }
@@ -79,8 +80,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'ลืมรหัสผ่าน?',
+                Text(
+                  AppLocalizations.of(context)!.forgot_password,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
@@ -89,8 +90,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
-                  'กรอกอีเมลที่ลงทะเบียนไว้ เพื่อรับลิงก์รีเซ็ตรหัสผ่าน',
+                Text(
+                  AppLocalizations.of(context)!.enterRegisteredEmailHint,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: AppColors.baseGrey),
                 ),
@@ -158,8 +159,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   ),
                                 ),
                               )
-                            : const Text(
-                                'ส่งลิงก์รีเซ็ตรหัสผ่าน',
+                            : Text(
+                                AppLocalizations.of(context)!.sendResetPasswordLink,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w700,

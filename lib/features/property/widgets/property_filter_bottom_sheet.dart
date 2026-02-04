@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 /// Filter bottom sheet for properties
 class PropertyFilterBottomSheet extends StatefulWidget {
@@ -14,9 +15,9 @@ class PropertyFilterBottomSheet extends StatefulWidget {
 
 class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
   // Filter States
-  String? selectedApprovalStatus = 'ทั้งหมด';
-  String? selectedPropertyType = 'ทั้งหมด';
-  String? selectedListingType = 'ทั้งหมด';
+  String? selectedApprovalStatus;
+  String? selectedPropertyType;
+  String? selectedListingType;
   String? selectedStatus;
   String? selectedColor;
   final TextEditingController _minPriceController = TextEditingController();
@@ -30,6 +31,20 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
   Set<String> selectedPropertyStyles = {};
   Set<String> selectedPropertyHighlights = {};
   Set<String> selectedCommonFacilities = {};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          selectedApprovalStatus = AppLocalizations.of(context)!.all;
+          selectedPropertyType = AppLocalizations.of(context)!.all;
+          selectedListingType = AppLocalizations.of(context)!.all;
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -84,11 +99,14 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppBadge(label: 'ตัวกรองการค้นหา', color: BadgeColor.blue),
+                  AppBadge(
+                    label: AppLocalizations.of(context)!.searchFilterLabel,
+                    color: BadgeColor.blue,
+                  ),
                   const SizedBox(height: 16),
                   // สถานะการอนุมัติ
                   _buildFilterSection(
-                    title: 'สถานะการอนุมัติ',
+                    title: AppLocalizations.of(context)!.approvalStatusTitle,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -96,31 +114,47 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildChip(
-                          'ทั้งหมด',
-                          isSelected: selectedApprovalStatus == 'ทั้งหมด',
+                          AppLocalizations.of(context)!.all,
+                          isSelected:
+                              selectedApprovalStatus ==
+                              AppLocalizations.of(context)!.all,
                           onTap: () => setState(
-                            () => selectedApprovalStatus = 'ทั้งหมด',
+                            () => selectedApprovalStatus = AppLocalizations.of(
+                              context,
+                            )!.all,
                           ),
                         ),
                         _buildChip(
-                          'รอการอนุมัติ',
-                          isSelected: selectedApprovalStatus == 'รอการอนุมัติ',
+                          AppLocalizations.of(context)!.pendingAt,
+                          isSelected:
+                              selectedApprovalStatus ==
+                              AppLocalizations.of(context)!.pendingAt,
                           onTap: () => setState(
-                            () => selectedApprovalStatus = 'รอการอนุมัติ',
+                            () => selectedApprovalStatus = AppLocalizations.of(
+                              context,
+                            )!.pendingAt,
                           ),
                         ),
                         _buildChip(
-                          'อนุมัติแล้ว',
-                          isSelected: selectedApprovalStatus == 'อนุมัติแล้ว',
+                          AppLocalizations.of(context)!.approvedAt,
+                          isSelected:
+                              selectedApprovalStatus ==
+                              AppLocalizations.of(context)!.approvedAt,
                           onTap: () => setState(
-                            () => selectedApprovalStatus = 'อนุมัติแล้ว',
+                            () => selectedApprovalStatus = AppLocalizations.of(
+                              context,
+                            )!.approvedAt,
                           ),
                         ),
                         _buildChip(
-                          'ไม่อนุมัติ',
-                          isSelected: selectedApprovalStatus == 'ไม่อนุมัติ',
+                          AppLocalizations.of(context)!.disapprovedAt,
+                          isSelected:
+                              selectedApprovalStatus ==
+                              AppLocalizations.of(context)!.disapprovedAt,
                           onTap: () => setState(
-                            () => selectedApprovalStatus = 'ไม่อนุมัติ',
+                            () => selectedApprovalStatus = AppLocalizations.of(
+                              context,
+                            )!.disapprovedAt,
                           ),
                         ),
                       ],
@@ -130,7 +164,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // ประเภททรัพย์
                   _buildFilterSection(
-                    title: 'ประเภททรัพย์',
+                    title: AppLocalizations.of(context)!.propertyTypeLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -138,41 +172,69 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildChip(
-                          'ทั้งหมด',
-                          isSelected: selectedPropertyType == 'ทั้งหมด',
-                          onTap: () =>
-                              setState(() => selectedPropertyType = 'ทั้งหมด'),
-                        ),
-                        _buildChip(
-                          'บ้าน',
-                          isSelected: selectedPropertyType == 'บ้าน',
-                          onTap: () =>
-                              setState(() => selectedPropertyType = 'บ้าน'),
-                        ),
-                        _buildChip(
-                          'คอนโด',
-                          isSelected: selectedPropertyType == 'คอนโด',
-                          onTap: () =>
-                              setState(() => selectedPropertyType = 'คอนโด'),
-                        ),
-                        _buildChip(
-                          'ทาวน์โฮม',
-                          isSelected: selectedPropertyType == 'ทาวน์โฮม',
-                          onTap: () =>
-                              setState(() => selectedPropertyType = 'ทาวน์โฮม'),
-                        ),
-                        _buildChip(
-                          'อพาร์ตเมนต์',
-                          isSelected: selectedPropertyType == 'อพาร์ตเมนต์',
+                          AppLocalizations.of(context)!.all,
+                          isSelected:
+                              selectedPropertyType ==
+                              AppLocalizations.of(context)!.all,
                           onTap: () => setState(
-                            () => selectedPropertyType = 'อพาร์ตเมนต์',
+                            () => selectedPropertyType = AppLocalizations.of(
+                              context,
+                            )!.all,
                           ),
                         ),
                         _buildChip(
-                          'พูลวิลล่า',
-                          isSelected: selectedPropertyType == 'พูลวิลล่า',
+                          AppLocalizations.of(context)!.houseType,
+                          isSelected:
+                              selectedPropertyType ==
+                              AppLocalizations.of(context)!.houseType,
                           onTap: () => setState(
-                            () => selectedPropertyType = 'พูลวิลล่า',
+                            () => selectedPropertyType = AppLocalizations.of(
+                              context,
+                            )!.houseType,
+                          ),
+                        ),
+                        _buildChip(
+                          AppLocalizations.of(context)!.condoType,
+                          isSelected:
+                              selectedPropertyType ==
+                              AppLocalizations.of(context)!.condoType,
+                          onTap: () => setState(
+                            () => selectedPropertyType = AppLocalizations.of(
+                              context,
+                            )!.condoType,
+                          ),
+                        ),
+                        _buildChip(
+                          AppLocalizations.of(context)!.townhomeType,
+                          isSelected:
+                              selectedPropertyType ==
+                              AppLocalizations.of(context)!.townhomeType,
+                          onTap: () => setState(
+                            () => selectedPropertyType = AppLocalizations.of(
+                              context,
+                            )!.townhomeType,
+                          ),
+                        ),
+                        _buildChip(
+                          AppLocalizations.of(context)!.apartmentType,
+                          isSelected:
+                              selectedPropertyType ==
+                              AppLocalizations.of(context)!.apartmentType,
+                          onTap: () => setState(
+                            () => selectedPropertyType = AppLocalizations.of(
+                              context,
+                            )!.apartmentType,
+                          ),
+                        ),
+                        _buildChip(
+                          AppLocalizations.of(context)!.poolVillaType,
+                          isSelected:
+                              selectedPropertyType ==
+                              AppLocalizations.of(context)!.poolVillaType,
+                          onTap: () => setState(
+                            () => selectedPropertyType = AppLocalizations.of(
+                              context,
+                            )!.poolVillaType,
                           ),
                         ),
                       ],
@@ -182,7 +244,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // ประเภทประกาศ
                   _buildFilterSection(
-                    title: 'ประเภทประกาศ',
+                    title: AppLocalizations.of(context)!.listingTypeLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -190,28 +252,55 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildChip(
-                          'ทั้งหมด',
-                          isSelected: selectedListingType == 'ทั้งหมด',
-                          onTap: () =>
-                              setState(() => selectedListingType = 'ทั้งหมด'),
-                        ),
-                        _buildChip(
-                          'ขาย',
-                          isSelected: selectedListingType == 'ขาย',
-                          onTap: () =>
-                              setState(() => selectedListingType = 'ขาย'),
-                        ),
-                        _buildChip(
-                          'เช่า',
-                          isSelected: selectedListingType == 'เช่า',
-                          onTap: () =>
-                              setState(() => selectedListingType = 'เช่า'),
-                        ),
-                        _buildChip(
-                          'ขายและเช่า',
-                          isSelected: selectedListingType == 'ขายและเช่า',
+                          AppLocalizations.of(context)!.all,
+                          isSelected:
+                              selectedListingType ==
+                              AppLocalizations.of(context)!.all,
                           onTap: () => setState(
-                            () => selectedListingType = 'ขายและเช่า',
+                            () => selectedListingType = AppLocalizations.of(
+                              context,
+                            )!.all,
+                          ),
+                        ),
+                        _buildChip(
+                          AppLocalizations.of(context)!.listingTypeValueSale,
+                          isSelected:
+                              selectedListingType ==
+                              AppLocalizations.of(
+                                context,
+                              )!.listingTypeValueSale,
+                          onTap: () => setState(
+                            () => selectedListingType = AppLocalizations.of(
+                              context,
+                            )!.listingTypeValueSale,
+                          ),
+                        ),
+                        _buildChip(
+                          AppLocalizations.of(context)!.listingTypeValueRent,
+                          isSelected:
+                              selectedListingType ==
+                              AppLocalizations.of(
+                                context,
+                              )!.listingTypeValueRent,
+                          onTap: () => setState(
+                            () => selectedListingType = AppLocalizations.of(
+                              context,
+                            )!.listingTypeValueRent,
+                          ),
+                        ),
+                        _buildChip(
+                          AppLocalizations.of(
+                            context,
+                          )!.listingTypeValueSaleAndRent,
+                          isSelected:
+                              selectedListingType ==
+                              AppLocalizations.of(
+                                context,
+                              )!.listingTypeValueSaleAndRent,
+                          onTap: () => setState(
+                            () => selectedListingType = AppLocalizations.of(
+                              context,
+                            )!.listingTypeValueSaleAndRent,
                           ),
                         ),
                       ],
@@ -221,7 +310,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // สถานะ
                   _buildFilterSection(
-                    title: 'สถานะ',
+                    title: AppLocalizations.of(context)!.occupancyStatusLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -229,15 +318,30 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildChip(
-                          'ว่าง',
-                          isSelected: selectedStatus == 'ว่าง',
-                          onTap: () => setState(() => selectedStatus = 'ว่าง'),
+                          AppLocalizations.of(context)!.statusValueAvailable,
+                          isSelected:
+                              selectedStatus ==
+                              AppLocalizations.of(
+                                context,
+                              )!.statusValueAvailable,
+                          onTap: () => setState(
+                            () => selectedStatus = AppLocalizations.of(
+                              context,
+                            )!.statusValueAvailable,
+                          ),
                         ),
                         _buildChip(
-                          'ไม่ว่าง',
-                          isSelected: selectedStatus == 'ไม่ว่าง',
-                          onTap: () =>
-                              setState(() => selectedStatus = 'ไม่ว่าง'),
+                          AppLocalizations.of(context)!.statusValueNotAvailable,
+                          isSelected:
+                              selectedStatus ==
+                              AppLocalizations.of(
+                                context,
+                              )!.statusValueNotAvailable,
+                          onTap: () => setState(
+                            () => selectedStatus = AppLocalizations.of(
+                              context,
+                            )!.statusValueNotAvailable,
+                          ),
                         ),
                       ],
                     ),
@@ -246,7 +350,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // สีทรัพย์
                   _buildFilterSection(
-                    title: 'สีทรัพย์',
+                    title: AppLocalizations.of(context)!.propertyColor,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -254,70 +358,147 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildChip(
-                          'ขาว',
-                          isSelected: selectedColor == 'ขาว',
-                          onTap: () => setState(() => selectedColor = 'ขาว'),
+                          AppLocalizations.of(context)!.colorWhite,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorWhite,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorWhite,
+                          ),
                         ),
                         _buildChip(
-                          'เทา',
-                          isSelected: selectedColor == 'เทา',
-                          onTap: () => setState(() => selectedColor = 'เทา'),
+                          AppLocalizations.of(context)!.colorGrey,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorGrey,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorGrey,
+                          ),
                         ),
                         _buildChip(
-                          'ดำ',
-                          isSelected: selectedColor == 'ดำ',
-                          onTap: () => setState(() => selectedColor = 'ดำ'),
+                          AppLocalizations.of(context)!.colorBlack,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorBlack,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorBlack,
+                          ),
                         ),
                         _buildChip(
-                          'ครีม',
-                          isSelected: selectedColor == 'ครีม',
-                          onTap: () => setState(() => selectedColor = 'ครีม'),
+                          AppLocalizations.of(context)!.colorCream,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorCream,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorCream,
+                          ),
                         ),
                         _buildChip(
-                          'น้ำตาล',
-                          isSelected: selectedColor == 'น้ำตาล',
-                          onTap: () => setState(() => selectedColor = 'น้ำตาล'),
+                          AppLocalizations.of(context)!.colorBrown,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorBrown,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorBrown,
+                          ),
                         ),
                         _buildChip(
-                          'น้ำเงิน',
-                          isSelected: selectedColor == 'น้ำเงิน',
-                          onTap: () =>
-                              setState(() => selectedColor = 'น้ำเงิน'),
+                          AppLocalizations.of(context)!.color_blue,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.color_blue,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.color_blue,
+                          ),
                         ),
                         _buildChip(
-                          'ฟ้า',
-                          isSelected: selectedColor == 'ฟ้า',
-                          onTap: () => setState(() => selectedColor = 'ฟ้า'),
+                          AppLocalizations.of(context)!.colorCyan,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorCyan,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorCyan,
+                          ),
                         ),
                         _buildChip(
-                          'ชมพู',
-                          isSelected: selectedColor == 'ชมพู',
-                          onTap: () => setState(() => selectedColor = 'ชมพู'),
+                          AppLocalizations.of(context)!.colorPink,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorPink,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorPink,
+                          ),
                         ),
                         _buildChip(
-                          'เขียว',
-                          isSelected: selectedColor == 'เขียว',
-                          onTap: () => setState(() => selectedColor = 'เขียว'),
+                          AppLocalizations.of(context)!.colorGreen,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorGreen,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorGreen,
+                          ),
                         ),
                         _buildChip(
-                          'เหลือง',
-                          isSelected: selectedColor == 'เหลือง',
-                          onTap: () => setState(() => selectedColor = 'เหลือง'),
+                          AppLocalizations.of(context)!.colorYellow,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorYellow,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorYellow,
+                          ),
                         ),
                         _buildChip(
-                          'แดง',
-                          isSelected: selectedColor == 'แดง',
-                          onTap: () => setState(() => selectedColor = 'แดง'),
+                          AppLocalizations.of(context)!.colorRed,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorRed,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorRed,
+                          ),
                         ),
                         _buildChip(
-                          'ส้ม',
-                          isSelected: selectedColor == 'ส้ม',
-                          onTap: () => setState(() => selectedColor = 'ส้ม'),
+                          AppLocalizations.of(context)!.colorOrange,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorOrange,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorOrange,
+                          ),
                         ),
                         _buildChip(
-                          'ม่วง',
-                          isSelected: selectedColor == 'ม่วง',
-                          onTap: () => setState(() => selectedColor = 'ม่วง'),
+                          AppLocalizations.of(context)!.colorPurple,
+                          isSelected:
+                              selectedColor ==
+                              AppLocalizations.of(context)!.colorPurple,
+                          onTap: () => setState(
+                            () => selectedColor = AppLocalizations.of(
+                              context,
+                            )!.colorPurple,
+                          ),
                         ),
                       ],
                     ),
@@ -329,14 +510,14 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                     children: [
                       Expanded(
                         child: _buildPriceInput(
-                          label: 'ราคาเริ่มต้น',
+                          label: AppLocalizations.of(context)!.startingPrice,
                           controller: _minPriceController,
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: _buildPriceInput(
-                          label: 'ราคาสูงสุด',
+                          label: AppLocalizations.of(context)!.maxPrice,
                           controller: _maxPriceController,
                         ),
                       ),
@@ -346,7 +527,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // จำนวนชั้น
                   _buildFilterSection(
-                    title: 'จำนวนชั้น',
+                    title: AppLocalizations.of(context)!.totalFloorsLabel,
                     child: Row(
                       children: [
                         for (int i = 1; i <= 5; i++)
@@ -367,7 +548,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // จำนวนห้องนอน
                   _buildFilterSection(
-                    title: 'จำนวนห้องนอน',
+                    title: AppLocalizations.of(context)!.bedroomsLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -392,7 +573,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // จำนวนห้องน้ำ
                   _buildFilterSection(
-                    title: 'จำนวนห้องน้ำ',
+                    title: AppLocalizations.of(context)!.bathroomsLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -417,7 +598,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // จำนวนที่จอดรถ
                   _buildFilterSection(
-                    title: 'จำนวนที่จอดรถ',
+                    title: AppLocalizations.of(context)!.parkingLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -441,17 +622,17 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                     children: [
                       Expanded(
                         child: _buildSizeInput(
-                          label: 'ขนาดที่ดิน',
+                          label: AppLocalizations.of(context)!.landSizeLabel,
                           controller: _landSizeController,
-                          unit: 'ตร.ว.',
+                          unit: AppLocalizations.of(context)!.sqWahUnit,
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: _buildSizeInput(
-                          label: 'ขนาดพื้นที่ใช้สอย',
+                          label: AppLocalizations.of(context)!.usableAreaSize,
                           controller: _usableAreaController,
-                          unit: 'ตร.ม.',
+                          unit: AppLocalizations.of(context)!.sqmUnit,
                         ),
                       ),
                     ],
@@ -460,7 +641,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // สไตล์ทรัพย์
                   _buildFilterSection(
-                    title: 'สไตล์ทรัพย์',
+                    title: AppLocalizations.of(context)!.propertyStyleLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -468,164 +649,236 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildMultiSelectChip(
-                          'หรูหรา',
-                          isSelected: selectedPropertyStyles.contains('หรูหรา'),
-                          onTap: () {
-                            setState(() {
-                              if (selectedPropertyStyles.contains('หรูหรา')) {
-                                selectedPropertyStyles.remove('หรูหรา');
-                              } else {
-                                selectedPropertyStyles.add('หรูหรา');
-                              }
-                            });
-                          },
-                        ),
-                        _buildMultiSelectChip(
-                          'คลาสสิค',
+                          AppLocalizations.of(context)!.luxury,
                           isSelected: selectedPropertyStyles.contains(
-                            'คลาสสิค',
-                          ),
-                          onTap: () {
-                            setState(() {
-                              if (selectedPropertyStyles.contains('คลาสสิค')) {
-                                selectedPropertyStyles.remove('คลาสสิค');
-                              } else {
-                                selectedPropertyStyles.add('คลาสสิค');
-                              }
-                            });
-                          },
-                        ),
-                        _buildMultiSelectChip(
-                          'โมเดิร์น',
-                          isSelected: selectedPropertyStyles.contains(
-                            'โมเดิร์น',
-                          ),
-                          onTap: () {
-                            setState(() {
-                              if (selectedPropertyStyles.contains('โมเดิร์น')) {
-                                selectedPropertyStyles.remove('โมเดิร์น');
-                              } else {
-                                selectedPropertyStyles.add('โมเดิร์น');
-                              }
-                            });
-                          },
-                        ),
-                        _buildMultiSelectChip(
-                          'เนเชอรัล',
-                          isSelected: selectedPropertyStyles.contains(
-                            'เนเชอรัล',
-                          ),
-                          onTap: () {
-                            setState(() {
-                              if (selectedPropertyStyles.contains('เนเชอรัล')) {
-                                selectedPropertyStyles.remove('เนเชอรัล');
-                              } else {
-                                selectedPropertyStyles.add('เนเชอรัล');
-                              }
-                            });
-                          },
-                        ),
-                        _buildMultiSelectChip(
-                          'ลอฟท์',
-                          isSelected: selectedPropertyStyles.contains('ลอฟท์'),
-                          onTap: () {
-                            setState(() {
-                              if (selectedPropertyStyles.contains('ลอฟท์')) {
-                                selectedPropertyStyles.remove('ลอฟท์');
-                              } else {
-                                selectedPropertyStyles.add('ลอฟท์');
-                              }
-                            });
-                          },
-                        ),
-                        _buildMultiSelectChip(
-                          'มินิมอล',
-                          isSelected: selectedPropertyStyles.contains(
-                            'มินิมอล',
-                          ),
-                          onTap: () {
-                            setState(() {
-                              if (selectedPropertyStyles.contains('มินิมอล')) {
-                                selectedPropertyStyles.remove('มินิมอล');
-                              } else {
-                                selectedPropertyStyles.add('มินิมอล');
-                              }
-                            });
-                          },
-                        ),
-                        _buildMultiSelectChip(
-                          'วินเทจ',
-                          isSelected: selectedPropertyStyles.contains('วินเทจ'),
-                          onTap: () {
-                            setState(() {
-                              if (selectedPropertyStyles.contains('วินเทจ')) {
-                                selectedPropertyStyles.remove('วินเทจ');
-                              } else {
-                                selectedPropertyStyles.add('วินเทจ');
-                              }
-                            });
-                          },
-                        ),
-                        _buildMultiSelectChip(
-                          'ร่วมสมัย',
-                          isSelected: selectedPropertyStyles.contains(
-                            'ร่วมสมัย',
-                          ),
-                          onTap: () {
-                            setState(() {
-                              if (selectedPropertyStyles.contains('ร่วมสมัย')) {
-                                selectedPropertyStyles.remove('ร่วมสมัย');
-                              } else {
-                                selectedPropertyStyles.add('ร่วมสมัย');
-                              }
-                            });
-                          },
-                        ),
-                        _buildMultiSelectChip(
-                          'โคโลเนียล',
-                          isSelected: selectedPropertyStyles.contains(
-                            'โคโลเนียล',
+                            AppLocalizations.of(context)!.luxury,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                'โคโลเนียล',
+                                AppLocalizations.of(context)!.luxury,
                               )) {
-                                selectedPropertyStyles.remove('โคโลเนียล');
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(context)!.luxury,
+                                );
                               } else {
-                                selectedPropertyStyles.add('โคโลเนียล');
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(context)!.luxury,
+                                );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          'ไทยร่วมสมัย',
+                          AppLocalizations.of(context)!.classicStyle,
                           isSelected: selectedPropertyStyles.contains(
-                            'ไทยร่วมสมัย',
+                            AppLocalizations.of(context)!.classicStyle,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                'ไทยร่วมสมัย',
+                                AppLocalizations.of(context)!.classicStyle,
                               )) {
-                                selectedPropertyStyles.remove('ไทยร่วมสมัย');
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(context)!.classicStyle,
+                                );
                               } else {
-                                selectedPropertyStyles.add('ไทยร่วมสมัย');
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(context)!.classicStyle,
+                                );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          'บอร์ดิก',
+                          AppLocalizations.of(context)!.modern,
                           isSelected: selectedPropertyStyles.contains(
-                            'บอร์ดิก',
+                            AppLocalizations.of(context)!.modern,
                           ),
                           onTap: () {
                             setState(() {
-                              if (selectedPropertyStyles.contains('บอร์ดิก')) {
-                                selectedPropertyStyles.remove('บอร์ดิก');
+                              if (selectedPropertyStyles.contains(
+                                AppLocalizations.of(context)!.modern,
+                              )) {
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(context)!.modern,
+                                );
                               } else {
-                                selectedPropertyStyles.add('บอร์ดิก');
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(context)!.modern,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                        _buildMultiSelectChip(
+                          AppLocalizations.of(context)!.natural,
+                          isSelected: selectedPropertyStyles.contains(
+                            AppLocalizations.of(context)!.natural,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (selectedPropertyStyles.contains(
+                                AppLocalizations.of(context)!.natural,
+                              )) {
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(context)!.natural,
+                                );
+                              } else {
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(context)!.natural,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                        _buildMultiSelectChip(
+                          AppLocalizations.of(context)!.loft,
+                          isSelected: selectedPropertyStyles.contains(
+                            AppLocalizations.of(context)!.loft,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (selectedPropertyStyles.contains(
+                                AppLocalizations.of(context)!.loft,
+                              )) {
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(context)!.loft,
+                                );
+                              } else {
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(context)!.loft,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                        _buildMultiSelectChip(
+                          AppLocalizations.of(context)!.minimal,
+                          isSelected: selectedPropertyStyles.contains(
+                            AppLocalizations.of(context)!.minimal,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (selectedPropertyStyles.contains(
+                                AppLocalizations.of(context)!.minimal,
+                              )) {
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(context)!.minimal,
+                                );
+                              } else {
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(context)!.minimal,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                        _buildMultiSelectChip(
+                          AppLocalizations.of(context)!.vintage,
+                          isSelected: selectedPropertyStyles.contains(
+                            AppLocalizations.of(context)!.vintage,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (selectedPropertyStyles.contains(
+                                AppLocalizations.of(context)!.vintage,
+                              )) {
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(context)!.vintage,
+                                );
+                              } else {
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(context)!.vintage,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                        _buildMultiSelectChip(
+                          AppLocalizations.of(context)!.contemporary,
+                          isSelected: selectedPropertyStyles.contains(
+                            AppLocalizations.of(context)!.contemporary,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (selectedPropertyStyles.contains(
+                                AppLocalizations.of(context)!.contemporary,
+                              )) {
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(context)!.contemporary,
+                                );
+                              } else {
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(context)!.contemporary,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                        _buildMultiSelectChip(
+                          AppLocalizations.of(context)!.colonialStyle,
+                          isSelected: selectedPropertyStyles.contains(
+                            AppLocalizations.of(context)!.colonialStyle,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (selectedPropertyStyles.contains(
+                                AppLocalizations.of(context)!.colonialStyle,
+                              )) {
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(context)!.colonialStyle,
+                                );
+                              } else {
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(context)!.colonialStyle,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                        _buildMultiSelectChip(
+                          AppLocalizations.of(context)!.thaiContemporary,
+                          isSelected: selectedPropertyStyles.contains(
+                            AppLocalizations.of(context)!.thaiContemporary,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (selectedPropertyStyles.contains(
+                                AppLocalizations.of(context)!.thaiContemporary,
+                              )) {
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.thaiContemporary,
+                                );
+                              } else {
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.thaiContemporary,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                        _buildMultiSelectChip(
+                          AppLocalizations.of(context)!.nordicStyle,
+                          isSelected: selectedPropertyStyles.contains(
+                            AppLocalizations.of(context)!.nordicStyle,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (selectedPropertyStyles.contains(
+                                AppLocalizations.of(context)!.nordicStyle,
+                              )) {
+                                selectedPropertyStyles.remove(
+                                  AppLocalizations.of(context)!.nordicStyle,
+                                );
+                              } else {
+                                selectedPropertyStyles.add(
+                                  AppLocalizations.of(context)!.nordicStyle,
+                                );
                               }
                             });
                           },
@@ -637,7 +890,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // จุดเด่นทรัพย์
                   _buildFilterSection(
-                    title: 'จุดเด่นทรัพย์',
+                    title: AppLocalizations.of(context)!.propertyHighlightsLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -685,77 +938,85 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                           },
                         ),
                         _buildMultiSelectChip(
-                          'ใกล้ทางด่วน',
+                          AppLocalizations.of(context)!.nearExpressway,
                           isSelected: selectedPropertyHighlights.contains(
-                            'ใกล้ทางด่วน',
+                            AppLocalizations.of(context)!.nearExpressway,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyHighlights.contains(
-                                'ใกล้ทางด่วน',
+                                AppLocalizations.of(context)!.nearExpressway,
                               )) {
                                 selectedPropertyHighlights.remove(
-                                  'ใกล้ทางด่วน',
+                                  AppLocalizations.of(context)!.nearExpressway,
                                 );
                               } else {
-                                selectedPropertyHighlights.add('ใกล้ทางด่วน');
+                                selectedPropertyHighlights.add(
+                                  AppLocalizations.of(context)!.nearExpressway,
+                                );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          'ใกล้รถไฟฟ้า',
+                          AppLocalizations.of(context)!.nearStation,
                           isSelected: selectedPropertyHighlights.contains(
-                            'ใกล้รถไฟฟ้า',
+                            AppLocalizations.of(context)!.nearStation,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyHighlights.contains(
-                                'ใกล้รถไฟฟ้า',
+                                AppLocalizations.of(context)!.nearStation,
                               )) {
                                 selectedPropertyHighlights.remove(
-                                  'ใกล้รถไฟฟ้า',
+                                  AppLocalizations.of(context)!.nearStation,
                                 );
                               } else {
-                                selectedPropertyHighlights.add('ใกล้รถไฟฟ้า');
+                                selectedPropertyHighlights.add(
+                                  AppLocalizations.of(context)!.nearStation,
+                                );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          'ใกล้โรงพยาบาล',
+                          AppLocalizations.of(context)!.nearHospital,
                           isSelected: selectedPropertyHighlights.contains(
-                            'ใกล้โรงพยาบาล',
+                            AppLocalizations.of(context)!.nearHospital,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyHighlights.contains(
-                                'ใกล้โรงพยาบาล',
+                                AppLocalizations.of(context)!.nearHospital,
                               )) {
                                 selectedPropertyHighlights.remove(
-                                  'ใกล้โรงพยาบาล',
+                                  AppLocalizations.of(context)!.nearHospital,
                                 );
                               } else {
-                                selectedPropertyHighlights.add('ใกล้โรงพยาบาล');
+                                selectedPropertyHighlights.add(
+                                  AppLocalizations.of(context)!.nearHospital,
+                                );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          'โครงการใหม่',
+                          AppLocalizations.of(context)!.newProject,
                           isSelected: selectedPropertyHighlights.contains(
-                            'โครงการใหม่',
+                            AppLocalizations.of(context)!.newProject,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyHighlights.contains(
-                                'โครงการใหม่',
+                                AppLocalizations.of(context)!.newProject,
                               )) {
                                 selectedPropertyHighlights.remove(
-                                  'โครงการใหม่',
+                                  AppLocalizations.of(context)!.newProject,
                                 );
                               } else {
-                                selectedPropertyHighlights.add('โครงการใหม่');
+                                selectedPropertyHighlights.add(
+                                  AppLocalizations.of(context)!.newProject,
+                                );
                               }
                             });
                           },
@@ -767,7 +1028,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // ส่วนกลาง
                   _buildFilterSection(
-                    title: 'ส่วนกลาง',
+                    title: AppLocalizations.of(context)!.commonFacilities,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -775,50 +1036,64 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildMultiSelectChip(
-                          'ฟิตเนส',
+                          AppLocalizations.of(context)!.fitness,
                           isSelected: selectedCommonFacilities.contains(
-                            'ฟิตเนส',
+                            AppLocalizations.of(context)!.fitness,
                           ),
                           onTap: () {
                             setState(() {
-                              if (selectedCommonFacilities.contains('ฟิตเนส')) {
-                                selectedCommonFacilities.remove('ฟิตเนส');
+                              if (selectedCommonFacilities.contains(
+                                AppLocalizations.of(context)!.fitness,
+                              )) {
+                                selectedCommonFacilities.remove(
+                                  AppLocalizations.of(context)!.fitness,
+                                );
                               } else {
-                                selectedCommonFacilities.add('ฟิตเนส');
+                                selectedCommonFacilities.add(
+                                  AppLocalizations.of(context)!.fitness,
+                                );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          'สระว่ายน้ำ',
+                          AppLocalizations.of(context)!.swimmingPool,
                           isSelected: selectedCommonFacilities.contains(
-                            'สระว่ายน้ำ',
+                            AppLocalizations.of(context)!.swimmingPool,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedCommonFacilities.contains(
-                                'สระว่ายน้ำ',
+                                AppLocalizations.of(context)!.swimmingPool,
                               )) {
-                                selectedCommonFacilities.remove('สระว่ายน้ำ');
+                                selectedCommonFacilities.remove(
+                                  AppLocalizations.of(context)!.swimmingPool,
+                                );
                               } else {
-                                selectedCommonFacilities.add('สระว่ายน้ำ');
+                                selectedCommonFacilities.add(
+                                  AppLocalizations.of(context)!.swimmingPool,
+                                );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          'สนามหญ้า',
+                          AppLocalizations.of(context)!.garden,
                           isSelected: selectedCommonFacilities.contains(
-                            'สนามหญ้า',
+                            AppLocalizations.of(context)!.garden,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedCommonFacilities.contains(
-                                'สนามหญ้า',
+                                AppLocalizations.of(context)!.garden,
                               )) {
-                                selectedCommonFacilities.remove('สนามหญ้า');
+                                selectedCommonFacilities.remove(
+                                  AppLocalizations.of(context)!.garden,
+                                );
                               } else {
-                                selectedCommonFacilities.add('สนามหญ้า');
+                                selectedCommonFacilities.add(
+                                  AppLocalizations.of(context)!.garden,
+                                );
                               }
                             });
                           },
@@ -845,55 +1120,63 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                           },
                         ),
                         _buildMultiSelectChip(
-                          'สนามเด็กเล่น',
+                          AppLocalizations.of(context)!.playground,
                           isSelected: selectedCommonFacilities.contains(
-                            'สนามเด็กเล่น',
+                            AppLocalizations.of(context)!.playground,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedCommonFacilities.contains(
-                                'สนามเด็กเล่น',
-                              )) {
-                                selectedCommonFacilities.remove('สนามเด็กเล่น');
-                              } else {
-                                selectedCommonFacilities.add('สนามเด็กเล่น');
-                              }
-                            });
-                          },
-                        ),
-                        _buildMultiSelectChip(
-                          'สนามกีฬา',
-                          isSelected: selectedCommonFacilities.contains(
-                            'สนามกีฬา',
-                          ),
-                          onTap: () {
-                            setState(() {
-                              if (selectedCommonFacilities.contains(
-                                'สนามกีฬา',
-                              )) {
-                                selectedCommonFacilities.remove('สนามกีฬา');
-                              } else {
-                                selectedCommonFacilities.add('สนามกีฬา');
-                              }
-                            });
-                          },
-                        ),
-                        _buildMultiSelectChip(
-                          'เจ้าหน้าที่ รปภ.',
-                          isSelected: selectedCommonFacilities.contains(
-                            'เจ้าหน้าที่ รปภ.',
-                          ),
-                          onTap: () {
-                            setState(() {
-                              if (selectedCommonFacilities.contains(
-                                'เจ้าหน้าที่ รปภ.',
+                                AppLocalizations.of(context)!.playground,
                               )) {
                                 selectedCommonFacilities.remove(
-                                  'เจ้าหน้าที่ รปภ.',
+                                  AppLocalizations.of(context)!.playground,
                                 );
                               } else {
                                 selectedCommonFacilities.add(
-                                  'เจ้าหน้าที่ รปภ.',
+                                  AppLocalizations.of(context)!.playground,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                        _buildMultiSelectChip(
+                          AppLocalizations.of(context)!.sportsField,
+                          isSelected: selectedCommonFacilities.contains(
+                            AppLocalizations.of(context)!.sportsField,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (selectedCommonFacilities.contains(
+                                AppLocalizations.of(context)!.sportsField,
+                              )) {
+                                selectedCommonFacilities.remove(
+                                  AppLocalizations.of(context)!.sportsField,
+                                );
+                              } else {
+                                selectedCommonFacilities.add(
+                                  AppLocalizations.of(context)!.sportsField,
+                                );
+                              }
+                            });
+                          },
+                        ),
+                        _buildMultiSelectChip(
+                          AppLocalizations.of(context)!.securityGuardLabel,
+                          isSelected: selectedCommonFacilities.contains(
+                            AppLocalizations.of(context)!.securityGuardLabel,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (selectedCommonFacilities.contains(
+                                AppLocalizations.of(context)!.securityGuardLabel,
+                              )) {
+                                selectedCommonFacilities.remove(
+                                  AppLocalizations.of(context)!.securityGuardLabel,
+                                );
+                              } else {
+                                selectedCommonFacilities.add(
+                                  AppLocalizations.of(context)!.securityGuardLabel,
                                 );
                               }
                             });
@@ -932,7 +1215,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                 Expanded(
                   flex: 2,
                   child: AppButton(
-                    text: 'ล้างค่า',
+                    text: AppLocalizations.of(context)!.clearFiltersButton,
                     style: AppButtonStyle.outline,
                     onPressed: _clearFilters,
                   ),
@@ -1097,7 +1380,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
               ),
               const SizedBox(width: 8),
               Text(
-                'บาท',
+                AppLocalizations.of(context)!.currencyUnit,
                 textAlign: TextAlign.right,
                 style: GoogleFonts.anuphan(
                   color: const Color(0xFFA4A7AE),
@@ -1247,9 +1530,9 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
   void _clearFilters() {
     setState(() {
-      selectedApprovalStatus = 'ทั้งหมด';
-      selectedPropertyType = 'ทั้งหมด';
-      selectedListingType = 'ทั้งหมด';
+      selectedApprovalStatus = AppLocalizations.of(context)!.all;
+      selectedPropertyType = AppLocalizations.of(context)!.all;
+      selectedListingType = AppLocalizations.of(context)!.all;
       selectedStatus = null;
       selectedColor = null;
       _minPriceController.clear();
