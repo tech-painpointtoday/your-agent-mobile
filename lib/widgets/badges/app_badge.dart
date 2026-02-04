@@ -36,6 +36,8 @@ class AppBadge extends StatefulWidget {
   final Color? customDotColor;
   final double? fontSize;
   final EdgeInsets? padding;
+  final bool hasBorder;
+  final Color? borderColor;
 
   const AppBadge({
     super.key,
@@ -48,6 +50,8 @@ class AppBadge extends StatefulWidget {
     this.customDotColor,
     this.fontSize = 14,
     this.padding,
+    this.hasBorder = false,
+    this.borderColor,
   });
 
   @override
@@ -167,6 +171,12 @@ class _AppBadgeState extends State<AppBadge> {
                 ? _getHoverBackgroundColor(backgroundColor)
                 : backgroundColor,
             borderRadius: BorderRadius.circular(16),
+            border: (widget.hasBorder || widget.borderColor != null)
+                ? Border.all(
+                    color: widget.borderColor ?? _getTextColor(),
+                    width: 1,
+                  )
+                : null,
           ),
           child: content,
         ),

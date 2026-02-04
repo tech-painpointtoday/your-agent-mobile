@@ -214,7 +214,19 @@ class ProfileView extends StatelessWidget {
                       horizontal: 8,
                       vertical: 4,
                     ),
+                  )
+                else
+                  AppBadge(
+                    label: 'ยังไม่ยืนยันอีเมล',
+                    color: BadgeColor.orange,
+                    style: BadgeStyle.done,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                   ),
+                const SizedBox(height: 24),
+                _buildProfileCompletenessWidget(agent),
                 const SizedBox(height: 24),
                 _buildPersonalInfoCard(context, agent),
                 const SizedBox(height: 16),
@@ -522,18 +534,15 @@ class ProfileView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildWorkInfoRow(
-            'assets/icons/profile/briefcase-2.svg',
-            agent.companyName!,
-          ),
+          _buildWorkInfoRow('assets/icons/briefcase.svg', agent.companyName!),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
-            'assets/icons/profile/check-2.svg',
+            'assets/icons/file-check.svg',
             'เลขที่ใบอนุญาต ${agent.licenseNumber ?? "ไม่ได้ระบุ"}',
           ),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
-            'assets/icons/clock.svg',
+            'assets/icons/hour-glass.svg',
             'ประสบการณ์ ${agent.yearsOfExperience ?? 0} ปี',
           ),
           const SizedBox(height: 16),
@@ -726,6 +735,62 @@ class ProfileView extends StatelessWidget {
               height: 1.4,
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfileCompletenessWidget(AgentDetails agent) {
+    // Basic account: Lv 1
+    // Work Info: Lv 2
+    // Service Area: Lv 3
+    final hasWorkInfo = agent.companyName?.isNotEmpty == true;
+    final hasServiceArea = agent.reachableRadius?.isNotEmpty == true;
+
+    int currentLevel = 1;
+    if (hasWorkInfo) currentLevel = 2;
+    if (hasWorkInfo && hasServiceArea) currentLevel = 3;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'ความสมบูรณ์ของโปรไฟล์',
+              style: GoogleFonts.anuphan(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: AppColors.baseBlack,
+              ),
+            ),
+            AppBadge(
+              label: 'Lv. $currentLevel',
+              color: BadgeColor.blue,
+              style: BadgeStyle.plain,
+              hasBorder: true,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: List.generate(3, (index) {
+            final isActive = index < currentLevel;
+            return Expanded(
+              child: Container(
+                height: 12,
+                margin: EdgeInsets.only(right: index < 2 ? 8 : 0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  color: isActive
+                      ? AppColors.primary
+                      : AppColors.baseLightGrey.withValues(alpha: 0.5),
+                ),
+              ),
+            );
+          }),
         ),
       ],
     );

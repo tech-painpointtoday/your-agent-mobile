@@ -105,7 +105,7 @@ class AppButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isEnabled ? onPressed : null,
         style: ElevatedButton.styleFrom(
-          padding: height != null ? EdgeInsets.zero : padding,
+          padding: height != null ? padding ?? EdgeInsets.zero : padding,
           backgroundColor: background,
           foregroundColor: textCol,
           disabledBackgroundColor: disabledBgCol,
