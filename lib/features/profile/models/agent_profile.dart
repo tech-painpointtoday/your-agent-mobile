@@ -35,7 +35,7 @@ class AgentDetails {
   final String? bio;
   final String? profilePhoto;
   final Map<String, dynamic>? socialLinks;
-  final List<String>? languages;
+  final Map<String, dynamic>? languages;
   final int? yearsOfExperience;
   final String? companyName;
   final String? licenseNumber;
@@ -89,8 +89,8 @@ class AgentDetails {
       socialLinks: json['social_links'] is Map<String, dynamic>
           ? json['social_links'] as Map<String, dynamic>
           : null,
-      languages: json['languages'] is List
-          ? List<String>.from(json['languages'])
+      languages: json['languages'] is Map<String, dynamic>
+          ? json['languages'] as Map<String, dynamic>
           : null,
       yearsOfExperience: json['years_of_experience'],
       companyName: json['company_name'],

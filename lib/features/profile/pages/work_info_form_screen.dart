@@ -26,8 +26,8 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
   late final TextEditingController _companyController;
   late final TextEditingController _licenseController;
   late final TextEditingController _experienceController;
-  late final TextEditingController _languagesController;
-  late final TextEditingController _socialLinksController;
+  final List<LanguagePair> _languages = [];
+  final List<SocialLinkPair> _socialLinks = [];
 
   @override
   void initState() {
@@ -39,16 +39,50 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
     _experienceController = TextEditingController(
       text: widget.agent?.yearsOfExperience?.toString() ?? '0',
     );
-    _languagesController = TextEditingController(
-      text: widget.agent?.languages?.join(', ') ?? '',
-    );
-    _socialLinksController = TextEditingController(
-      text:
-          widget.agent?.socialLinks?.entries
-              .map((e) => '${e.key}: ${e.value}')
-              .join(', ') ??
-          '',
-    );
+
+    // Initialize languages
+    if (widget.agent?.languages != null &&
+        widget.agent!.languages!.isNotEmpty) {
+      widget.agent!.languages!.forEach((key, value) {
+        _languages.add(
+          LanguagePair(
+            id: UniqueKey().toString(),
+            keyController: TextEditingController(text: key),
+            valueController: TextEditingController(text: value.toString()),
+          ),
+        );
+      });
+    } else {
+      _languages.add(
+        LanguagePair(
+          id: UniqueKey().toString(),
+          keyController: TextEditingController(),
+          valueController: TextEditingController(),
+        ),
+      );
+    }
+
+    // Initialize social links
+    if (widget.agent?.socialLinks != null &&
+        widget.agent!.socialLinks!.isNotEmpty) {
+      widget.agent!.socialLinks!.forEach((key, value) {
+        _socialLinks.add(
+          SocialLinkPair(
+            id: UniqueKey().toString(),
+            keyController: TextEditingController(text: key),
+            valueController: TextEditingController(text: value.toString()),
+          ),
+        );
+      });
+    } else {
+      _socialLinks.add(
+        SocialLinkPair(
+          id: UniqueKey().toString(),
+          keyController: TextEditingController(),
+          valueController: TextEditingController(),
+        ),
+      );
+    }
   }
 
   @override
@@ -56,39 +90,39 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
     _companyController.dispose();
     _licenseController.dispose();
     _experienceController.dispose();
-    _languagesController.dispose();
-    _socialLinksController.dispose();
+    for (var p in _languages) {
+      p.keyController.dispose();
+      p.valueController.dispose();
+    }
+    for (var p in _socialLinks) {
+      p.keyController.dispose();
+      p.valueController.dispose();
+    }
     super.dispose();
   }
 
   void _onSave() {
-    // Map languages: e.g. "Thai, English" -> {"Thai": "Fluent", "English": "Fluent"}
     final Map<String, String> languagesMap = {};
-    _languagesController.text.split(',').forEach((lang) {
-      final name = lang.trim();
-      if (name.isNotEmpty) {
-        languagesMap[name] =
-            'Beginner'; // Default to Beginner as per API structure example
+    for (var p in _languages) {
+      final key = p.keyController.text.trim();
+      final value = p.valueController.text.trim();
+      if (key.isNotEmpty && value.isNotEmpty) {
+        languagesMap[key] = value;
       }
-    });
+    }
 
-    // Map social links: e.g. "facebook: url, line: id" -> {"facebook": "url", "line": "id"}
     final Map<String, String> socialLinksMap = {};
-    _socialLinksController.text.split(',').forEach((link) {
-      final parts = link.split(':');
-      if (parts.length >= 2) {
-        final key = parts[0].trim().toLowerCase();
-        final value = parts.sublist(1).join(':').trim();
-        if (key.isNotEmpty && value.isNotEmpty) {
-          socialLinksMap[key] = value;
+    for (var p in _socialLinks) {
+      final key = p.keyController.text.trim();
+      var value = p.valueController.text.trim();
+      if (key.isNotEmpty && value.isNotEmpty) {
+        // Fix prefix for website input
+        if (!value.startsWith('http://') && !value.startsWith('https://')) {
+          value = 'https://$value';
         }
-      } else {
-        final value = link.trim();
-        if (value.isNotEmpty) {
-          socialLinksMap['other'] = value;
-        }
+        socialLinksMap[key] = value;
       }
-    });
+    }
 
     final data = {
       'company_name': _companyController.text.trim(),
@@ -168,18 +202,55 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                           controller: _experienceController,
                           keyboardType: TextInputType.number,
                         ),
-                        const SizedBox(height: 16),
-                        AppTextField(
-                          label: 'ความถนัดด้านภาษา',
-                          hintText: 'เช่น ไทย, อังกฤษ, จีน',
-                          controller: _languagesController,
+                        const SizedBox(height: 24),
+                        _buildDynamicSection(
+                          title: 'ความถนัดด้านภาษา',
+                          items: _languages,
+                          keyHint: 'ภาษา (เช่น ไทย)',
+                          valueHint: 'ระดับ (เช่น Beginner)',
+                          onAdd: () {
+                            setState(() {
+                              _languages.add(
+                                LanguagePair(
+                                  id: UniqueKey().toString(),
+                                  keyController: TextEditingController(),
+                                  valueController: TextEditingController(),
+                                ),
+                              );
+                            });
+                          },
+                          onRemove: (index) {
+                            setState(() {
+                              _languages[index].keyController.dispose();
+                              _languages[index].valueController.dispose();
+                              _languages.removeAt(index);
+                            });
+                          },
                         ),
-                        const SizedBox(height: 16),
-                        AppTextField(
-                          label: 'ลิงก์โซเชียล',
-                          hintText: 'เช่น LinkedIn, Facebook, Instagram, ...',
-                          controller: _socialLinksController,
-                          maxLines: 4,
+                        const SizedBox(height: 24),
+                        _buildDynamicSection(
+                          title: 'ลิงก์โซเชียล',
+                          items: _socialLinks,
+                          keyHint: 'แพลตฟอร์ม (เช่น Facebook)',
+                          valueHint: 'ลิงก์ หรือ ไอดี',
+                          onAdd: () {
+                            setState(() {
+                              _socialLinks.add(
+                                SocialLinkPair(
+                                  id: UniqueKey().toString(),
+                                  keyController: TextEditingController(),
+                                  valueController: TextEditingController(),
+                                ),
+                              );
+                            });
+                          },
+                          onRemove: (index) {
+                            setState(() {
+                              _socialLinks[index].keyController.dispose();
+                              _socialLinks[index].valueController.dispose();
+                              _socialLinks.removeAt(index);
+                            });
+                          },
                         ),
                         const SizedBox(height: 40),
                       ],
@@ -263,4 +334,116 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
       ),
     );
   }
+
+  Widget _buildDynamicSection({
+    required String title,
+    required List<dynamic> items,
+    required String keyHint,
+    required String valueHint,
+    required VoidCallback onAdd,
+    required Function(int) onRemove,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.anuphan(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: AppColors.baseBlack,
+              ),
+            ),
+            GestureDetector(
+              onTap: onAdd,
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.add_circle_outline,
+                    size: 18,
+                    color: AppColors.primary,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'เพิ่ม',
+                    style: GoogleFonts.anuphan(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ...items.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          return Padding(
+            key: ValueKey(item.id),
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: AppTextField(
+                    label: '',
+                    hintText: keyHint,
+                    controller: item.keyController,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 3,
+                  child: AppTextField(
+                    label: '',
+                    hintText: valueHint,
+                    controller: item.valueController,
+                  ),
+                ),
+                if (items.length > 1) ...[
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () => onRemove(index),
+                    child: const Icon(
+                      Icons.remove_circle_outline,
+                      color: AppColors.supportRedDeep,
+                      size: 20,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+class LanguagePair {
+  final String id;
+  final TextEditingController keyController;
+  final TextEditingController valueController;
+  LanguagePair({
+    required this.id,
+    required this.keyController,
+    required this.valueController,
+  });
+}
+
+class SocialLinkPair {
+  final String id;
+  final TextEditingController keyController;
+  final TextEditingController valueController;
+  SocialLinkPair({
+    required this.id,
+    required this.keyController,
+    required this.valueController,
+  });
 }

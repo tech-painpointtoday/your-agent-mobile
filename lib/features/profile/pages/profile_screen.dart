@@ -541,31 +541,78 @@ class ProfileView extends StatelessWidget {
             'ความถนัดทางภาษา',
             style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
           ),
-          const SizedBox(height: 4),
-          Text(
-            agent.languages?.isNotEmpty == true
-                ? agent.languages!.join(', ')
-                : 'ไม่ได้ระบุ',
-            style: GoogleFonts.anuphan(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: AppColors.baseBlack,
+          const SizedBox(height: 8),
+          if (agent.languages?.isNotEmpty == true)
+            ...agent.languages!.entries.map(
+              (e) => Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.language,
+                      size: 16,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${e.key}: ${e.value}',
+                      style: GoogleFonts.anuphan(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.baseBlack,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Text(
+              'ไม่ได้ระบุ',
+              style: GoogleFonts.anuphan(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: AppColors.baseBlack,
+              ),
             ),
-          ),
           const SizedBox(height: 16),
           Text(
             'ลิงก์โซเชียล',
             style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
           ),
-          const SizedBox(height: 4),
-          Text(
-            agent.socialLinks?['links']?.toString() ?? 'ไม่ได้ระบุ',
-            style: GoogleFonts.anuphan(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: AppColors.baseBlack,
+          const SizedBox(height: 8),
+          if (agent.socialLinks?.isNotEmpty == true)
+            ...agent.socialLinks!.entries.map(
+              (e) => Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Row(
+                  children: [
+                    const Icon(Icons.link, size: 16, color: AppColors.primary),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '${e.key}: ${e.value}',
+                        style: GoogleFonts.anuphan(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.baseBlack,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Text(
+              'ไม่ได้ระบุ',
+              style: GoogleFonts.anuphan(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: AppColors.baseBlack,
+              ),
             ),
-          ),
         ],
       ),
     );
