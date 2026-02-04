@@ -38,6 +38,8 @@ import '../features/profile/pages/profile_screen.dart';
 import '../features/profile/pages/personal_info_form_screen.dart';
 import '../features/profile/pages/service_area_form_screen.dart';
 import '../features/profile/pages/work_info_form_screen.dart';
+import '../features/profile/pages/settings_screen.dart';
+import '../features/profile/pages/account_management_screen.dart';
 import '../widgets/main_navigation_screen.dart';
 
 /// Route observer used so ProfileScreen can refetch when user navigates back to it.
@@ -224,6 +226,14 @@ class AppRouter {
             child: ServiceAreaFormScreen(agent: agent),
           );
         },
+      ),
+      GoRoute(
+        path: '/profile/settings',
+        builder: (context, state) => SettingsScreen(changeLocale: changeLocale),
+      ),
+      GoRoute(
+        path: '/profile/settings/account',
+        builder: (context, state) => const AccountManagementScreen(),
       ),
       GoRoute(
         path: '/notifications/:id',

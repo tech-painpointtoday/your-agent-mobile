@@ -12,7 +12,6 @@ import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 import '../../../app/router.dart';
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/config/app_config.dart';
 import '../../../utils/image_url_helper.dart';
 import '../../../widgets/backgrounds/blue_wave_background.dart';
 import '../../../widgets/badges/app_badge.dart';
@@ -156,90 +155,98 @@ class ProfileView extends StatelessWidget {
   ) {
     final agent = profile.agent;
 
-    return SingleChildScrollView(
-      physics: const ClampingScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height:
-                (120 + MediaQuery.of(context).padding.top) +
-                (MediaQuery.of(context).size.width * (80 / 360) * 0.4),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                _buildHeader(context),
-                Positioned(
-                  bottom: 0,
-                  left: 16,
-                  right: 16,
-                  child: _buildProfileHeader(
-                    context,
-                    agent,
-                    profile.verificationStatus,
-                    profileBloc,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  agent.name,
-                  style: GoogleFonts.anuphan(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.baseBlack,
-                  ),
-                ),
-                Text(
-                  agent.email,
-                  style: GoogleFonts.anuphan(
-                    fontSize: 16,
-                    color: AppColors.baseGrey,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                if (profile.verificationStatus.emailVerified)
-                  AppBadge(
-                    label: 'ยืนยันอีเมลแล้ว',
-                    color: BadgeColor.green,
-                    style: BadgeStyle.done,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                  )
-                else
-                  AppBadge(
-                    label: 'ยังไม่ยืนยันอีเมล',
-                    color: BadgeColor.orange,
-                    style: BadgeStyle.done,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
+    return RefreshIndicator(
+      onRefresh: () async {
+        await Future.delayed(const Duration(seconds: 1));
+        profileBloc.add(FetchProfile());
+      },
+      color: AppColors.baseWhite,
+      backgroundColor: AppColors.primary,
+      child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(parent: BouncingScrollPhysics()),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height:
+                  (120 + MediaQuery.of(context).padding.top) +
+                  (MediaQuery.of(context).size.width * (80 / 360) * 0.4),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  _buildHeader(context),
+                  Positioned(
+                    bottom: 0,
+                    left: 16,
+                    right: 16,
+                    child: _buildProfileHeader(
+                      context,
+                      agent,
+                      profile.verificationStatus,
+                      profileBloc,
                     ),
                   ),
-                const SizedBox(height: 24),
-                _buildProfileCompletenessWidget(agent),
-                const SizedBox(height: 24),
-                _buildPersonalInfoCard(context, agent),
-                const SizedBox(height: 16),
-                _buildConnectionCodeCard(agent),
-                const SizedBox(height: 16),
-                _buildWorkInfoCard(context, agent),
-                const SizedBox(height: 16),
-                _buildServiceAreaCard(context, agent),
-                const SizedBox(height: 64),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    agent.name,
+                    style: GoogleFonts.anuphan(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.baseBlack,
+                    ),
+                  ),
+                  Text(
+                    agent.email,
+                    style: GoogleFonts.anuphan(
+                      fontSize: 16,
+                      color: AppColors.baseGrey,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (profile.verificationStatus.emailVerified)
+                    AppBadge(
+                      label: 'ยืนยันอีเมลแล้ว',
+                      color: BadgeColor.green,
+                      style: BadgeStyle.done,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                    )
+                  else
+                    AppBadge(
+                      label: 'ยังไม่ยืนยันอีเมล',
+                      color: BadgeColor.orange,
+                      style: BadgeStyle.done,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                    ),
+                  const SizedBox(height: 24),
+                  _buildProfileCompletenessWidget(agent),
+                  const SizedBox(height: 24),
+                  _buildPersonalInfoCard(context, agent),
+                  const SizedBox(height: 16),
+                  _buildConnectionCodeCard(agent),
+                  const SizedBox(height: 16),
+                  _buildWorkInfoCard(context, agent),
+                  const SizedBox(height: 16),
+                  _buildServiceAreaCard(context, agent),
+                  const SizedBox(height: 64),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -289,7 +296,7 @@ class ProfileView extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () => context.push('/profile/settings'),
                   icon: Container(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(

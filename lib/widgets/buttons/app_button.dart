@@ -99,30 +99,43 @@ class AppButton extends StatelessWidget {
       textCol = textColor!;
     }
 
+    ButtonStyle buttonStyle = ElevatedButton.styleFrom(
+      padding: height != null ? padding ?? EdgeInsets.zero : padding,
+      backgroundColor: background,
+      foregroundColor: textCol,
+      disabledBackgroundColor: disabledBgCol,
+      disabledForegroundColor: disabledTxtCol,
+
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: style == AppButtonStyle.outline
+            ? BorderSide(
+                color: isEnabled
+                    ? (borderColor ?? AppColors.baseLightGrey)
+                    : AppColors.baseLightGrey,
+                width: 1,
+              )
+            : BorderSide.none,
+      ),
+      elevation: elevation,
+    );
+
+    if (style == AppButtonStyle.ghost) {
+      buttonStyle = buttonStyle.copyWith(
+        elevation: WidgetStateProperty.resolveWith<double>((
+          Set<WidgetState> states,
+        ) {
+          return 0.0;
+        }),
+      );
+    }
+
     return SizedBox(
       height: height,
       width: width,
       child: ElevatedButton(
         onPressed: isEnabled ? onPressed : null,
-        style: ElevatedButton.styleFrom(
-          padding: height != null ? padding ?? EdgeInsets.zero : padding,
-          backgroundColor: background,
-          foregroundColor: textCol,
-          disabledBackgroundColor: disabledBgCol,
-          disabledForegroundColor: disabledTxtCol,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: style == AppButtonStyle.outline
-                ? BorderSide(
-                    color: isEnabled
-                        ? (borderColor ?? AppColors.baseLightGrey)
-                        : AppColors.baseLightGrey,
-                    width: 1,
-                  )
-                : BorderSide.none,
-          ),
-          elevation: elevation,
-        ),
+        style: buttonStyle,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
