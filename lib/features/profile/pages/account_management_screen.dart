@@ -18,7 +18,7 @@ class AccountManagementScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: false,
         title: Text(
-          AppLocalizations.of(context)!.accountManagementTitle,
+          AppLocalizations.of(context).accountManagementTitle,
           style: GoogleFonts.anuphan(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -53,18 +53,18 @@ class AccountManagementScreen extends StatelessWidget {
             children: [
               _AccountItem(
                 icon: 'assets/icons/email.svg',
-                label: AppLocalizations.of(context)!.requestChangeEmailLabel,
+                label: AppLocalizations.of(context).requestChangeEmailLabel,
                 onTap: () => AccountActionSheets.showChangeEmail(context),
               ),
               _AccountItem(
                 icon: 'assets/icons/phone.svg',
-                label: AppLocalizations.of(context)!.requestChangePhoneLabel,
+                label: AppLocalizations.of(context).requestChangePhoneLabel,
                 onTap: () => AccountActionSheets.showChangePhone(context),
               ),
               const SizedBox(height: 8),
               _AccountItem(
                 icon: 'assets/icons/user.svg',
-                label: AppLocalizations.of(context)!.deleteAccountLabel,
+                label: AppLocalizations.of(context).deleteAccountLabel,
                 labelColor: AppColors.supportRedDark,
                 iconColor: AppColors.supportRedDark,
                 backgroundColor: AppColors.supportRedLight.withValues(

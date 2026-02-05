@@ -49,7 +49,9 @@ class _ExpandableDescriptionState extends State<ExpandableDescription> {
           child: Row(
             children: [
               Text(
-                _isExpanded ? AppLocalizations.of(context)!.showLessButton : AppLocalizations.of(context)!.showMoreButton,
+                _isExpanded
+                    ? AppLocalizations.of(context).showLessButton
+                    : AppLocalizations.of(context).showMoreButton,
                 style: GoogleFonts.anuphan(
                   color: AppColors.brandGreen,
                   fontSize: 14,

@@ -72,7 +72,7 @@ class _ApplianceStepState extends State<ApplianceStep> {
             ),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)!.select,
+              AppLocalizations.of(context).select,
               style: GoogleFonts.anuphan(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
@@ -138,10 +138,10 @@ class _ApplianceStepState extends State<ApplianceStep> {
   void _showDeleteAllConfirmation(String applianceId) {
     AppConfirmationBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context)!.deleteAllImagesConfirmTitle,
-      description: AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
-      confirmLabel: AppLocalizations.of(context)!.deleteAllConfirmLabel,
-      cancelLabel: AppLocalizations.of(context)!.statusCancelled,
+      title: AppLocalizations.of(context).deleteAllImagesConfirmTitle,
+      description: AppLocalizations.of(context).deleteAllImagesConfirmMessage,
+      confirmLabel: AppLocalizations.of(context).deleteAllConfirmLabel,
+      cancelLabel: AppLocalizations.of(context).statusCancelled,
       style: ConfirmationStyle.destructive,
       onConfirm: () {
         final state = context.read<ContractFormBloc>().state;
@@ -155,8 +155,8 @@ class _ApplianceStepState extends State<ApplianceStep> {
         );
         StatusDialog.showSuccess(
           context: context,
-          title: AppLocalizations.of(context)!.successTitle,
-          message: AppLocalizations.of(context)!.imagesDeletedMessage,
+          title: AppLocalizations.of(context).successTitle,
+          message: AppLocalizations.of(context).imagesDeletedMessage,
         );
       },
     );
@@ -179,7 +179,9 @@ class _ApplianceStepState extends State<ApplianceStep> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppBadge(
-                        label: AppLocalizations.of(context)!.electrical_appliances_photos,
+                        label: AppLocalizations.of(
+                          context,
+                        ).electrical_appliances_photos,
                         fontSize: 16,
                         color: BadgeColor.blue,
                       ),
@@ -207,11 +209,18 @@ class _ApplianceStepState extends State<ApplianceStep> {
                             if (item.hasData) {
                               AppConfirmationBottomSheet.show(
                                 context: context,
-                                title: AppLocalizations.of(context)!.deleteItemQuestion,
-                                description:
-                                    AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
-                                confirmLabel: AppLocalizations.of(context)!.delete,
-                                cancelLabel: AppLocalizations.of(context)!.statusCancelled,
+                                title: AppLocalizations.of(
+                                  context,
+                                ).deleteItemQuestion,
+                                description: AppLocalizations.of(
+                                  context,
+                                ).deleteAllImagesConfirmMessage,
+                                confirmLabel: AppLocalizations.of(
+                                  context,
+                                ).delete,
+                                cancelLabel: AppLocalizations.of(
+                                  context,
+                                ).statusCancelled,
                                 style: ConfirmationStyle.destructive,
                                 onConfirm: () {
                                   context.read<ContractFormBloc>().add(
@@ -298,7 +307,7 @@ class _ApplianceStepState extends State<ApplianceStep> {
               const Icon(Icons.add, color: AppColors.baseGrey, size: 20),
               const SizedBox(width: 8),
               Text(
-                AppLocalizations.of(context)!.add_item,
+                AppLocalizations.of(context).add_item,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseDarkGrey,
                   fontSize: 16,
@@ -366,9 +375,9 @@ class _ApplianceItemCard extends StatelessWidget {
         ),
         const Divider(height: 32),
         AppTextField(
-          label: AppLocalizations.of(context)!.full_name,
+          label: AppLocalizations.of(context).full_name,
           isRequired: true,
-          hintText: AppLocalizations.of(context)!.applianceExampleHint,
+          hintText: AppLocalizations.of(context).applianceExampleHint,
           controller: TextEditingController(text: item.name)
             ..selection = TextSelection.fromPosition(
               TextPosition(offset: item.name.length),
@@ -377,8 +386,8 @@ class _ApplianceItemCard extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         AppTextField(
-          label: AppLocalizations.of(context)!.descriptionLabel,
-          hintText: AppLocalizations.of(context)!.applianceDescExampleHint,
+          label: AppLocalizations.of(context).descriptionLabel,
+          hintText: AppLocalizations.of(context).applianceDescExampleHint,
           controller: TextEditingController(text: item.description ?? '')
             ..selection = TextSelection.fromPosition(
               TextPosition(offset: (item.description ?? '').length),
@@ -416,7 +425,7 @@ class _ApplianceItemCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      AppLocalizations.of(context)!.select,
+                      AppLocalizations.of(context).select,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseDarkGrey,
                         fontSize: 16,
@@ -460,7 +469,7 @@ class _ApplianceItemCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    AppLocalizations.of(context)!.uploadImagesButton,
+                    AppLocalizations.of(context).uploadImagesButton,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseDarkGrey,
                       fontSize: 16,
@@ -489,7 +498,7 @@ class _ApplianceItemCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                AppLocalizations.of(context)!.imageSampleLabel,
+                AppLocalizations.of(context).imageSampleLabel,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseBlack,
                   fontSize: 16,
@@ -511,7 +520,7 @@ class _ApplianceItemCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      AppLocalizations.of(context)!.deleteAllImagesButton,
+                      AppLocalizations.of(context).deleteAllImagesButton,
                       style: GoogleFonts.anuphan(
                         color: AppColors.error,
                         fontSize: 14,
@@ -544,7 +553,9 @@ class _ApplianceItemCard extends StatelessWidget {
 
               final isNetwork =
                   path.startsWith('http') || path.startsWith('https');
-              final fileName = isExisting ? AppLocalizations.of(context)!.propertyPhotos : path.split('/').last;
+              final fileName = isExisting
+                  ? AppLocalizations.of(context).propertyPhotos
+                  : path.split('/').last;
 
               return Stack(
                 children: [

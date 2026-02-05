@@ -10,11 +10,10 @@ class AddDeveloperBottomSheet {
   static Future<Map<String, String>?> show(BuildContext context) {
     return PropertyInfoBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context)!.addDeveloperTitle,
-      description:
-          AppLocalizations.of(context)!.addDeveloperDescription,
-      labelBase: AppLocalizations.of(context)!.developerNameHint,
-      hintText: AppLocalizations.of(context)!.developerNameHint,
+      title: AppLocalizations.of(context).addDeveloperTitle,
+      description: AppLocalizations.of(context).addDeveloperDescription,
+      labelBase: AppLocalizations.of(context).developerNameHint,
+      hintText: AppLocalizations.of(context).developerNameHint,
     );
   }
 }
@@ -24,11 +23,10 @@ class AddProjectBottomSheet {
   static Future<Map<String, String>?> show(BuildContext context) {
     return PropertyInfoBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context)!.addProjectNameTitle,
-      description:
-          AppLocalizations.of(context)!.addProjectNameDescription,
-      labelBase: AppLocalizations.of(context)!.projectNameHint,
-      hintText: AppLocalizations.of(context)!.projectNameHint,
+      title: AppLocalizations.of(context).addProjectNameTitle,
+      description: AppLocalizations.of(context).addProjectNameDescription,
+      labelBase: AppLocalizations.of(context).projectNameHint,
+      hintText: AppLocalizations.of(context).projectNameHint,
     );
   }
 }
@@ -201,14 +199,14 @@ class _PropertyInfoBottomSheetState extends State<PropertyInfoBottomSheet> {
                 children: [
                   Expanded(
                     child: AppButton(
-                      text: AppLocalizations.of(context)!.statusCancelled,
+                      text: AppLocalizations.of(context).statusCancelled,
                       style: AppButtonStyle.outline,
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
                   Expanded(
                     child: AppButton(
-                      text: AppLocalizations.of(context)!.addNowButton,
+                      text: AppLocalizations.of(context).addNowButton,
                       style: AppButtonStyle.primary,
                       enabled: _isButtonEnabled,
                       onPressed: _isButtonEnabled

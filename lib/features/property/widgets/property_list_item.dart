@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/core/theme/app_colors.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/utils/app_utils.dart';
 import 'property_status_badge.dart';
 
@@ -91,7 +92,7 @@ class PropertyListItem extends StatelessWidget {
                 children: [
                   // Code
                   Text(
-                    'รหัส: ${property.id != null ? AppUtils.generatePropertyCode(propertyId: property.id!, createdAt: property.createdAt) : "???"}',
+                    '${AppLocalizations.of(context).labelCode}: ${property.id != null ? AppUtils.generatePropertyCode(propertyId: property.id!, createdAt: property.createdAt) : "???"}',
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseGrey,
                       fontSize: 10,
@@ -125,7 +126,10 @@ class PropertyListItem extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      PropertyStatusBadge(status: property.approvalStatus),
+                      PropertyStatusBadge(
+                        status: property.approvalStatus,
+                        isDraft: property.isDraft,
+                      ),
                       if (onEdit != null)
                         GestureDetector(
                           onTap: onEdit,

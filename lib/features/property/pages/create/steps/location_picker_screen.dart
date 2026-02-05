@@ -53,7 +53,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.selectLocation,
+          AppLocalizations.of(context).selectLocation,
           style: GoogleFonts.anuphan(fontWeight: FontWeight.w600),
         ),
         backgroundColor: Colors.white,
@@ -128,7 +128,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                     ),
                   const SizedBox(height: 16),
                   AppButton(
-                    text: AppLocalizations.of(context)!.confirmThisLocation,
+                    text: AppLocalizations.of(context).confirmThisLocation,
                     style: AppButtonStyle.primary,
                     onPressed: () {
                       Navigator.pop(context, {

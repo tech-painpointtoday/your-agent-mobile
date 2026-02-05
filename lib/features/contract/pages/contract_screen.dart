@@ -157,7 +157,7 @@ class _ContractScreenState extends State<ContractScreen> {
                   ),
                   // Title
                   Text(
-                    AppLocalizations.of(context)!.contracts,
+                    AppLocalizations.of(context).contracts,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -232,7 +232,7 @@ class _ContractScreenState extends State<ContractScreen> {
                           child: AppBadges.plain(
                             label: AppLocalizations.of(
                               context,
-                            )!.contractDocument,
+                            ).contractDocument,
                             color: BadgeColor.default_,
                           ),
                         ),
@@ -260,7 +260,7 @@ class _ContractScreenState extends State<ContractScreen> {
                                 controller: _searchController,
                                 hintText: AppLocalizations.of(
                                   context,
-                                )!.searchHint,
+                                ).searchHint,
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -391,7 +391,7 @@ class _ContractScreenState extends State<ContractScreen> {
           ),
           const SizedBox(height: 24),
           Text(
-            AppLocalizations.of(context)!.dataContract,
+            AppLocalizations.of(context).dataContract,
             style: const TextStyle(
               color: AppColors.baseDarkGrey,
               fontSize: 14,

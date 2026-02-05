@@ -80,7 +80,7 @@ class _LanguageSelectionBottomSheetState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.change_language,
+                  AppLocalizations.of(context).change_language,
                   style: GoogleFonts.anuphan(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -89,7 +89,7 @@ class _LanguageSelectionBottomSheetState
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  AppLocalizations.of(context)!.select_language,
+                  AppLocalizations.of(context).select_language,
                   style: GoogleFonts.anuphan(
                     fontSize: 14,
                     color: AppColors.baseGrey,
@@ -98,7 +98,7 @@ class _LanguageSelectionBottomSheetState
                 ),
                 const SizedBox(height: 24),
                 _LanguageOption(
-                  label: AppLocalizations.of(context)!.thaiLanguage,
+                  label: AppLocalizations.of(context).thaiLanguage,
                   flagAsset: 'assets/country/TH.png',
                   isSelected: _selectedLocale.languageCode == 'th',
                   onTap: () =>
@@ -106,7 +106,7 @@ class _LanguageSelectionBottomSheetState
                 ),
                 const SizedBox(height: 12),
                 _LanguageOption(
-                  label: AppLocalizations.of(context)!.englishLanguage,
+                  label: AppLocalizations.of(context).englishLanguage,
                   flagAsset: 'assets/country/US.png',
                   isSelected: _selectedLocale.languageCode == 'en',
                   onTap: () =>
@@ -134,7 +134,7 @@ class _LanguageSelectionBottomSheetState
                 Expanded(
                   flex: 2,
                   child: AppButton(
-                    text: AppLocalizations.of(context)!.statusCancelled,
+                    text: AppLocalizations.of(context).statusCancelled,
                     style: AppButtonStyle.outline,
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -143,7 +143,7 @@ class _LanguageSelectionBottomSheetState
                 Expanded(
                   flex: 3,
                   child: AppButton(
-                    text: AppLocalizations.of(context)!.confirmSaveLabel,
+                    text: AppLocalizations.of(context).confirmSaveLabel,
                     style: AppButtonStyle.primary,
                     onPressed: () {
                       widget.onLanguageSelected(_selectedLocale);

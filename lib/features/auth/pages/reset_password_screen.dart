@@ -44,20 +44,20 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
     AppConfirmationBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context)!.confirmPassword,
-      description: AppLocalizations.of(context)!.confirmPasswordUseQuestion,
-      confirmLabel: AppLocalizations.of(context)!.confirm,
-      cancelLabel: AppLocalizations.of(context)!.statusCancelled,
+      title: AppLocalizations.of(context).confirmPassword,
+      description: AppLocalizations.of(context).confirmPasswordUseQuestion,
+      confirmLabel: AppLocalizations.of(context).confirm,
+      cancelLabel: AppLocalizations.of(context).statusCancelled,
       style: ConfirmationStyle.normal,
       onConfirm: () {
         context.read<AuthBloc>().add(
-              AuthResetPasswordRequested(
-                token: widget.token,
-                email: widget.email,
-                password: _passwordController.text,
-                passwordConfirmation: _passwordConfirmationController.text,
-              ),
-            );
+          AuthResetPasswordRequested(
+            token: widget.token,
+            email: widget.email,
+            password: _passwordController.text,
+            passwordConfirmation: _passwordConfirmationController.text,
+          ),
+        );
       },
     );
   }
@@ -70,8 +70,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           if (state.resetPasswordStatus == ResetPasswordStatus.success) {
             StatusDialog.showSuccess(
               context: context,
-              title: AppLocalizations.of(context)!.successTitle,
-              message: AppLocalizations.of(context)!.passwordSuccess,
+              title: AppLocalizations.of(context).successTitle,
+              message: AppLocalizations.of(context).passwordSuccess,
               onDismiss: () {
                 if (!mounted) return;
                 context.go('/login');
@@ -80,8 +80,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           } else if (state.resetPasswordStatus == ResetPasswordStatus.failure) {
             StatusDialog.showError(
               context: context,
-              title: AppLocalizations.of(context)!.errorOccurredTitle,
-              message: state.errorMessage ?? AppLocalizations.of(context)!.resetPasswordFailed,
+              title: AppLocalizations.of(context).errorOccurredTitle,
+              message:
+                  state.errorMessage ??
+                  AppLocalizations.of(context).resetPasswordFailed,
             );
           }
         }
@@ -107,7 +109,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   // Illustration
                   Center(
                     child: Image.asset(
-                      'assets/images/auth/password_reset.png',
+                      'assets/images/sign_in/YA_Illustration_ResetPassword.png',
                       width: 150,
                       height: 150,
                     ),
@@ -115,7 +117,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   SizedBox(height: 32),
                   // Title
                   Text(
-                    AppLocalizations.of(context)!.resetPasswordTitle,
+                    AppLocalizations.of(context).resetPasswordTitle,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.anuphan(
                       fontSize: 28,
@@ -126,7 +128,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   SizedBox(height: 8),
                   // Subtitle
                   Text(
-                    AppLocalizations.of(context)!.setNewPasswordPrompt,
+                    AppLocalizations.of(context).setNewPasswordPrompt,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.anuphan(
                       fontSize: 14,
@@ -136,28 +138,36 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   SizedBox(height: 32),
                   // Password Fields
                   LabeledPasswordField(
-                    label: AppLocalizations.of(context)!.newPasswordLabel,
+                    label: AppLocalizations.of(context).newPasswordLabel,
                     controller: _passwordController,
                     validator: (v) {
                       if (v == null || v.isEmpty) {
-                        return AppLocalizations.of(context)!.enterNewPasswordPrompt;
+                        return AppLocalizations.of(
+                          context,
+                        ).enterNewPasswordPrompt;
                       }
                       if (v.length < 6) {
-                        return AppLocalizations.of(context)!.enterNewPasswordPrompt;
+                        return AppLocalizations.of(
+                          context,
+                        ).enterNewPasswordPrompt;
                       }
                       return null;
                     },
                   ),
                   LabeledPasswordField(
-                    label: AppLocalizations.of(context)!.confirmNewPasswordHint,
+                    label: AppLocalizations.of(context).confirmNewPasswordHint,
                     controller: _passwordConfirmationController,
                     compareController: _passwordController,
                     validator: (v) {
                       if (v == null || v.isEmpty) {
-                        return AppLocalizations.of(context)!.confirmNewPasswordHint;
+                        return AppLocalizations.of(
+                          context,
+                        ).confirmNewPasswordHint;
                       }
                       if (v != _passwordController.text) {
-                        return AppLocalizations.of(context)!.passwordMismatchTitle;
+                        return AppLocalizations.of(
+                          context,
+                        ).passwordMismatchTitle;
                       }
                       return null;
                     },
@@ -165,8 +175,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   SizedBox(height: 32),
                   // Submit Button
                   AppButton(
-                    text:
-                        AppLocalizations.of(context)!.sendResetPasswordLink, // Using exact text from image
+                    text: AppLocalizations.of(
+                      context,
+                    ).sendResetPasswordLink, // Using exact text from image
                     style: AppButtonStyle.primary,
                     onPressed: _onConfirmPressed,
                   ),

@@ -87,7 +87,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         AppBadge(
-                          label: AppLocalizations.of(context)!.dataProperty,
+                          label: AppLocalizations.of(context).dataProperty,
                           fontSize: 16,
                           color: BadgeColor.blue,
                         ),
@@ -102,16 +102,16 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // Person Type Selection
                   AppChipSelection<PersonType>(
-                    label: AppLocalizations.of(context)!.personTypeLabel,
+                    label: AppLocalizations.of(context).personTypeLabel,
                     isRequired: true,
                     value: state.ownerType,
                     options: [
                       AppChipOption(
-                        label: AppLocalizations.of(context)!.individual,
+                        label: AppLocalizations.of(context).individual,
                         value: PersonType.individual,
                       ),
                       AppChipOption(
-                        label: AppLocalizations.of(context)!.juristic_person,
+                        label: AppLocalizations.of(context).juristic_person,
                         value: PersonType.juristic,
                       ),
                     ],
@@ -125,13 +125,13 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                   TypeAheadField<PropertyOwner>(
                     controller: _nameController,
                     builder: (context, controller, focusNode) => AppTextField(
-                      label: AppLocalizations.of(context)!.full_name_or_company,
+                      label: AppLocalizations.of(context).full_name_or_company,
                       controller: controller,
                       focusNode: focusNode,
                       isRequired: true,
                       hintText: AppLocalizations.of(
                         context,
-                      )!.full_name_or_company,
+                      ).full_name_or_company,
                       onChanged: (value) => context
                           .read<ContractFormBloc>()
                           .add(ContractFormOwnerNameUpdated(value)),
@@ -173,14 +173,14 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     emptyBuilder: (context) => Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        AppLocalizations.of(context)!.propertyOwnerNotFound,
+                        AppLocalizations.of(context).propertyOwnerNotFound,
                         style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                       ),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    AppLocalizations.of(context)!.searchDataNameProperty,
+                    AppLocalizations.of(context).searchDataNameProperty,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseGrey,
                       fontSize: 12,
@@ -199,7 +199,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                       ),
                       icon: const Icon(Icons.add, size: 20),
                       label: Text(
-                        AppLocalizations.of(context)!.createNewAccountTitle,
+                        AppLocalizations.of(context).createNewAccountTitle,
                         style: GoogleFonts.anuphan(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -222,10 +222,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // ID Card / Tax ID
                   AppTextField(
-                    label: AppLocalizations.of(context)!.id_card_or_tax_id,
+                    label: AppLocalizations.of(context).id_card_or_tax_id,
                     controller: _idCardController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context)!.id_card_or_tax_id,
+                    hintText: AppLocalizations.of(context).id_card_or_tax_id,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerIdCardUpdated(value),
                     ),
@@ -234,10 +234,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // Address
                   AppTextField(
-                    label: AppLocalizations.of(context)!.currentAddressLabel,
+                    label: AppLocalizations.of(context).currentAddressLabel,
                     controller: _addressController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context)!.currentAddressLabel,
+                    hintText: AppLocalizations.of(context).currentAddressLabel,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerAddressUpdated(value),
                     ),
@@ -246,10 +246,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // Phone
                   AppTextField(
-                    label: AppLocalizations.of(context)!.phone_number,
+                    label: AppLocalizations.of(context).phone_number,
                     controller: _phoneController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context)!.phone_number,
+                    hintText: AppLocalizations.of(context).phone_number,
                     keyboardType: TextInputType.phone,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerPhoneUpdated(value),
@@ -259,10 +259,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // Email
                   AppTextField(
-                    label: AppLocalizations.of(context)!.email,
+                    label: AppLocalizations.of(context).email,
                     controller: _emailController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context)!.email,
+                    hintText: AppLocalizations.of(context).email,
                     keyboardType: TextInputType.emailAddress,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerEmailUpdated(value),
@@ -272,12 +272,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                   // Signatory
                   AppTextField(
-                    label: AppLocalizations.of(context)!.authorized_signatory,
+                    label: AppLocalizations.of(context).authorized_signatory,
                     controller: _signatoryController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(
-                      context,
-                    )!.authorized_signatory,
+                    hintText: AppLocalizations.of(context).authorized_signatory,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerSignatoryUpdated(value),
                     ),

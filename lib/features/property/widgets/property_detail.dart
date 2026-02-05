@@ -156,7 +156,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.locationLabel,
+                      AppLocalizations.of(context).locationLabel,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseDarkGrey,
                         fontSize: 16,
@@ -205,76 +205,78 @@ class _PropertyDetailState extends State<PropertyDetail> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: PropertyDetailSection(
-                  title: AppLocalizations.of(context)!.property_details_section,
+                  title: AppLocalizations.of(context).property_details_section,
                   svgIcon: 'assets/icons/menu.svg', // Updated Icon
                   rows: [
                     if (property.propertyType != null)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.propertyTypeLabel,
+                        label: AppLocalizations.of(context).propertyTypeLabel,
                         value: property.propertyType!.label,
                       ),
                     if (property.listingType?.isNotEmpty == true)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.listingTypeLabel,
+                        label: AppLocalizations.of(context).listingTypeLabel,
                         value: property.listingType!,
                       ),
                     if (property.status?.isNotEmpty == true)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.occupancyStatusLabel,
+                        label: AppLocalizations.of(
+                          context,
+                        ).occupancyStatusLabel,
                         value: property.status!,
                       ),
                     if (property.totalFloors != null &&
                         property.totalFloors! > 0)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.totalFloorsLabel,
+                        label: AppLocalizations.of(context).totalFloorsLabel,
                         value: '${property.totalFloors} ชั้น',
                       ),
                     if (property.bedrooms > 0)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.bedroomsLabel,
+                        label: AppLocalizations.of(context).bedroomsLabel,
                         value: '${property.bedrooms} ห้อง',
                       ),
                     if (property.bathrooms > 0)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.bathroomsLabel,
+                        label: AppLocalizations.of(context).bathroomsLabel,
                         value: '${property.bathrooms} ห้อง',
                       ),
                     if (property.garage != null && property.garage! > 0)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.parkingLabel,
+                        label: AppLocalizations.of(context).parkingLabel,
                         value: '${property.garage} ที่',
                       ),
                     PropertyDetailRow(
-                      label: AppLocalizations.of(context)!.builtLabel,
+                      label: AppLocalizations.of(context).builtLabel,
                       value: DateFormat(
-                        AppLocalizations.of(context)!.dateFormat,
+                        AppLocalizations.of(context).dateFormat,
                         'th',
                       ).format(property.createdAt),
                     ),
                     if (property.houseColor != null)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.propertyColor,
+                        label: AppLocalizations.of(context).propertyColor,
                         value: property.houseColor!.label,
                       ),
                     if (property.price > 0)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.priceLabel,
+                        label: AppLocalizations.of(context).priceLabel,
                         value:
                             '${NumberFormat("#,##0", "en_US").format(property.price)} บาท',
                       ),
                     if (property.landSize != null && property.landSize! > 0)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.landSizeLabel,
+                        label: AppLocalizations.of(context).landSizeLabel,
                         value: '${property.landSize} ตร.ว.',
                       ),
                     if (property.area > 0)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.usableAreaSize,
+                        label: AppLocalizations.of(context).usableAreaSize,
                         value: '${property.area} ตร.ม.',
                       ),
                     if (property.direction != null)
                       PropertyDetailRow(
-                        label: AppLocalizations.of(context)!.direction_label,
+                        label: AppLocalizations.of(context).direction_label,
                         value: property.direction!.label,
                       ),
                   ],
@@ -313,7 +315,9 @@ class _PropertyDetailState extends State<PropertyDetail> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            AppLocalizations.of(context)!.additional_details_section,
+                            AppLocalizations.of(
+                              context,
+                            ).additional_details_section,
                             style: GoogleFonts.anuphan(
                               color: const Color(0xFF181D27),
                               fontSize: 16,
@@ -359,7 +363,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     const SizedBox(height: 16),
 
                     Text(
-                      AppLocalizations.of(context)!.descriptionLabel,
+                      AppLocalizations.of(context).descriptionLabel,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseDarkGrey,
                         fontSize: 16,

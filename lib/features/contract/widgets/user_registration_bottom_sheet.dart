@@ -84,15 +84,15 @@ class _UserRegistrationBottomSheetState
         Navigator.pop(context);
         StatusDialog.showSuccess(
           context: context,
-          title: AppLocalizations.of(context)!.registrationSuccessTitle,
-          message: AppLocalizations.of(context)!.accountCreatedMessage,
+          title: AppLocalizations.of(context).registrationSuccessTitle,
+          message: AppLocalizations.of(context).accountCreatedMessage,
         );
       }
     } catch (e) {
       if (mounted) {
         StatusDialog.showError(
           context: context,
-          title: AppLocalizations.of(context)!.errorOccurredTitle,
+          title: AppLocalizations.of(context).errorOccurredTitle,
           message: e.toString().replaceFirst('Exception: ', ''),
         );
       }
@@ -105,10 +105,10 @@ class _UserRegistrationBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-    final title = AppLocalizations.of(context)!.createNewAccountTitle;
+    final title = AppLocalizations.of(context).createNewAccountTitle;
     final subtitle = widget.type == RegistrationUserType.owner
-        ? AppLocalizations.of(context)!.dataPropertyContract
-        : AppLocalizations.of(context)!.registerBuyerToContract;
+        ? AppLocalizations.of(context).dataPropertyContract
+        : AppLocalizations.of(context).registerBuyerToContract;
 
     return Container(
       width: double.infinity,
@@ -167,42 +167,44 @@ class _UserRegistrationBottomSheetState
               child: Column(
                 children: [
                   AppTextField(
-                    label: AppLocalizations.of(context)!.fullNameLabel,
+                    label: AppLocalizations.of(context).fullNameLabel,
                     controller: _nameController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context)!.fullNameLabel,
+                    hintText: AppLocalizations.of(context).fullNameLabel,
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
-                    label: AppLocalizations.of(context)!.phone_number,
+                    label: AppLocalizations.of(context).phone_number,
                     controller: _phoneController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context)!.phone_number,
+                    hintText: AppLocalizations.of(context).phone_number,
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
-                    label: AppLocalizations.of(context)!.email,
+                    label: AppLocalizations.of(context).email,
                     controller: _emailController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context)!.email,
+                    hintText: AppLocalizations.of(context).email,
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 20),
                   if (widget.type == RegistrationUserType.owner) ...[
                     AppTextField(
-                      label: AppLocalizations.of(context)!.address,
+                      label: AppLocalizations.of(context).address,
                       controller: _addressController,
                       isRequired: true,
-                      hintText: AppLocalizations.of(context)!.currentAddressLabel,
+                      hintText: AppLocalizations.of(
+                        context,
+                      ).currentAddressLabel,
                     ),
                     const SizedBox(height: 20),
                   ],
                   AppTextField(
-                    label: AppLocalizations.of(context)!.password,
+                    label: AppLocalizations.of(context).password,
                     controller: _passwordController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context)!.password,
+                    hintText: AppLocalizations.of(context).password,
                     obscureText: _obscurePassword,
                     suffix: IconButton(
                       icon: Icon(
@@ -218,10 +220,12 @@ class _UserRegistrationBottomSheetState
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
-                    label: AppLocalizations.of(context)!.confirm_password_hint,
+                    label: AppLocalizations.of(context).confirm_password_hint,
                     controller: _confirmPasswordController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context)!.confirm_password_hint,
+                    hintText: AppLocalizations.of(
+                      context,
+                    ).confirm_password_hint,
                     obscureText: _obscureConfirmPassword,
                     suffix: IconButton(
                       icon: SvgPicture.asset(
@@ -249,7 +253,9 @@ class _UserRegistrationBottomSheetState
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                text: _isLoading ? AppLocalizations.of(context)!.registering : AppLocalizations.of(context)!.registerMember,
+                text: _isLoading
+                    ? AppLocalizations.of(context).registering
+                    : AppLocalizations.of(context).registerMember,
                 style: AppButtonStyle.primary,
                 onPressed: _isLoading ? null : _handleRegister,
               ),

@@ -3138,7 +3138,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get showresults1 => 'แสดงผลลัพธ์';
 
   @override
-  String get draftLabel => 'ร่าง';
+  String get draftLabel => 'ฉบับร่าง';
 
   @override
   String get termsGovernanceDisclaimer =>

@@ -125,7 +125,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                   ),
                   // Title
                   Text(
-                    AppLocalizations.of(context)!.myProperties,
+                    AppLocalizations.of(context).myProperties,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -198,7 +198,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                           child: AppBadges.plain(
                             label: AppLocalizations.of(
                               context,
-                            )!.propertyNotFound,
+                            ).propertyNotFound,
                             color: BadgeColor.default_,
                           ),
                         ),
@@ -226,7 +226,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                                 controller: _searchController,
                                 hintText: AppLocalizations.of(
                                   context,
-                                )!.searchHint,
+                                ).searchHint,
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -363,7 +363,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
           ),
           const SizedBox(height: 24),
           Text(
-            AppLocalizations.of(context)!.noPropertiesInSystem,
+            AppLocalizations.of(context).noPropertiesInSystem,
             style: const TextStyle(
               color: AppColors.baseDarkGrey,
               fontSize: 14,

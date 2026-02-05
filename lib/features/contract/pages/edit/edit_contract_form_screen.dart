@@ -142,16 +142,18 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
         if (state.status == ContractFormStatus.success) {
           StatusDialog.showSuccess(
             context: context,
-            title: AppLocalizations.of(context)!.successTitle,
-            message: AppLocalizations.of(context)!.changesSavedMessage,
+            title: AppLocalizations.of(context).successTitle,
+            message: AppLocalizations.of(context).changesSavedMessage,
           );
           context.pop(true);
         } else if (state.status == ContractFormStatus.failure) {
           AppConfirmationBottomSheet.show(
             context: context,
-            title: AppLocalizations.of(context)!.errorLabel,
-            description: state.errorMessage ?? AppLocalizations.of(context)!.saveDataSuccess,
-            confirmLabel: AppLocalizations.of(context)!.ok,
+            title: AppLocalizations.of(context).errorLabel,
+            description:
+                state.errorMessage ??
+                AppLocalizations.of(context).saveDataSuccess,
+            confirmLabel: AppLocalizations.of(context).ok,
             cancelLabel: '',
             style: ConfirmationStyle.destructive,
             onConfirm: () {},
@@ -193,7 +195,7 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
           children: [
             Expanded(
               child: AppButton(
-                text: AppLocalizations.of(context)!.statusCancelled,
+                text: AppLocalizations.of(context).statusCancelled,
                 style: AppButtonStyle.outline,
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -207,17 +209,22 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
                       state.status == ContractFormStatus.submmitting;
 
                   return AppButton(
-                    text: AppLocalizations.of(context)!.confirmSaveLabel,
+                    text: AppLocalizations.of(context).confirmSaveLabel,
                     style: AppButtonStyle.primary,
                     enabled: isValid && !isLoading,
                     onPressed: () {
                       AppConfirmationBottomSheet.show(
                         context: context,
-                        title: AppLocalizations.of(context)!.saveChangesQuestion,
-                        description:
-                            AppLocalizations.of(context)!.saveChangesConfirmation,
-                        confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
-                        cancelLabel: AppLocalizations.of(context)!.statusCancelled,
+                        title: AppLocalizations.of(context).saveChangesQuestion,
+                        description: AppLocalizations.of(
+                          context,
+                        ).saveChangesConfirmation,
+                        confirmLabel: AppLocalizations.of(
+                          context,
+                        ).confirmSaveLabel,
+                        cancelLabel: AppLocalizations.of(
+                          context,
+                        ).statusCancelled,
                         style: ConfirmationStyle.normal,
                         onConfirm: () {
                           context.read<ContractFormBloc>().add(

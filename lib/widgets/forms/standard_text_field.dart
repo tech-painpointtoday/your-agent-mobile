@@ -57,7 +57,7 @@ class StandardTextField extends StatelessWidget {
               validator ??
               (value) {
                 if (isRequired && (value == null || value.isEmpty)) {
-                  return AppLocalizations.of(context)?.field_required;
+                  return AppLocalizations.of(context).field_required;
                 }
                 return null;
               },

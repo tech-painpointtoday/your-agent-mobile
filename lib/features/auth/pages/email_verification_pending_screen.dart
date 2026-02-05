@@ -19,12 +19,19 @@ class EmailVerificationPendingScreen extends StatelessWidget {
         if (state is AuthOperationState) {
           if (state.resendEmailStatus == ResendEmailStatus.success) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.of(context)!.emailSentSuccessfully)),
+              SnackBar(
+                content: Text(
+                  AppLocalizations.of(context).emailSentSuccessfully,
+                ),
+              ),
             );
           } else if (state.resendEmailStatus == ResendEmailStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.resendEmailError ?? AppLocalizations.of(context)!.submitEmail),
+                content: Text(
+                  state.resendEmailError ??
+                      AppLocalizations.of(context).submitEmail,
+                ),
               ),
             );
           }
@@ -48,14 +55,14 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                 // Illustration placeholder
                 Center(
                   child: Image.asset(
-                    'assets/images/auth/email_verification.png',
+                    'assets/images/sign_in/YA_Illustration_VerifyEmail.png',
                     width: 170,
                     height: 170,
                   ),
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  AppLocalizations.of(context)!.confirmEmail,
+                  AppLocalizations.of(context).confirmEmail,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
@@ -65,7 +72,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  AppLocalizations.of(context)!.confirmSubmitEmail,
+                  AppLocalizations.of(context).confirmSubmitEmail,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
@@ -109,7 +116,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                                 ),
                               )
                             : Text(
-                                AppLocalizations.of(context)!.resendLink,
+                                AppLocalizations.of(context).resendLink,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.white,

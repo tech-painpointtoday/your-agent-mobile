@@ -107,7 +107,7 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
           Row(
             children: [
               Text(
-                AppLocalizations.of(context)!.locationTitle,
+                AppLocalizations.of(context).locationTitle,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseBlack,
                   fontSize: 16,
@@ -129,7 +129,7 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
           AppTextFormField(
             label: '', // Label handled above
             controller: _searchController,
-            hintText: AppLocalizations.of(context)!.searchLocationHint,
+            hintText: AppLocalizations.of(context).searchLocationHint,
             suffix: const Icon(Icons.search, color: AppColors.baseGrey),
             onChanged: (val) {
               setState(() {
@@ -139,7 +139,7 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
           ),
           const SizedBox(height: 8),
           Text(
-            AppLocalizations.of(context)!.locationDescription,
+            AppLocalizations.of(context).locationDescription,
             style: GoogleFonts.anuphan(color: AppColors.baseGrey, fontSize: 12),
           ),
           const SizedBox(height: 16),
@@ -163,7 +163,7 @@ class _LocationSearchBottomSheetState extends State<LocationSearchBottomSheet> {
           ),
           const SizedBox(height: 24),
           AppButton(
-            text: AppLocalizations.of(context)!.confirmLocationButton,
+            text: AppLocalizations.of(context).confirmLocationButton,
             style: AppButtonStyle.primary,
             onPressed: () {
               Navigator.pop(context, {

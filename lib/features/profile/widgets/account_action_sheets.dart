@@ -59,16 +59,15 @@ class _EmailChangeSheetState extends State<_EmailChangeSheet> {
   @override
   Widget build(BuildContext context) {
     return _BaseActionSheet(
-      title: AppLocalizations.of(context)!.requestChangeEmailLabel,
-      subtitle:
-          AppLocalizations.of(context)!.changeEmailSubtitle,
-      actionLabel: AppLocalizations.of(context)!.requestChangeButton,
+      title: AppLocalizations.of(context).requestChangeEmailLabel,
+      subtitle: AppLocalizations.of(context).changeEmailSubtitle,
+      actionLabel: AppLocalizations.of(context).requestChangeButton,
       isActionEnabled: _isEnabled,
       onAction: () => Navigator.pop(context),
       child: AppTextField(
-        label: AppLocalizations.of(context)!.newEmailLabel,
+        label: AppLocalizations.of(context).newEmailLabel,
         isRequired: true,
-        hintText: AppLocalizations.of(context)!.newEmailLabel,
+        hintText: AppLocalizations.of(context).newEmailLabel,
         controller: _controller,
         onChanged: _validate,
         keyboardType: TextInputType.emailAddress,
@@ -113,16 +112,15 @@ class _PhoneChangeSheetState extends State<_PhoneChangeSheet> {
   @override
   Widget build(BuildContext context) {
     return _BaseActionSheet(
-      title: AppLocalizations.of(context)!.requestChangePhoneLabel,
-      subtitle:
-          AppLocalizations.of(context)!.changePhoneSubtitle,
-      actionLabel: AppLocalizations.of(context)!.requestChangeButton,
+      title: AppLocalizations.of(context).requestChangePhoneLabel,
+      subtitle: AppLocalizations.of(context).changePhoneSubtitle,
+      actionLabel: AppLocalizations.of(context).requestChangeButton,
       isActionEnabled: _isEnabled,
       onAction: () => Navigator.pop(context),
       child: AppTextField(
-        label: AppLocalizations.of(context)!.newPhoneLabel,
+        label: AppLocalizations.of(context).newPhoneLabel,
         isRequired: true,
-        hintText: AppLocalizations.of(context)!.newPhoneLabel,
+        hintText: AppLocalizations.of(context).newPhoneLabel,
         controller: _controller,
         onChanged: _validate,
         prefix: Padding(
@@ -236,7 +234,7 @@ class _BaseActionSheet extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: AppButton(
-                    text: AppLocalizations.of(context)!.statusCancelled,
+                    text: AppLocalizations.of(context).statusCancelled,
                     style: AppButtonStyle.outline,
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -299,11 +297,11 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                'assets/images/dialog/delete_account.png',
-                height: 120,
-                fit: BoxFit.contain,
+                'assets/images/dialog/YA_Illustration_ConfirmDeleteAccount.png',
+                width: 160,
+                fit: BoxFit.fitWidth,
                 errorBuilder: (context, error, stackTrace) => Container(
-                  height: 140,
+                  height: 160,
                   color: Colors.grey[100],
                   child: const Icon(
                     Icons.person_off,
@@ -314,7 +312,7 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
               ),
               SizedBox(height: 16),
               Text(
-                AppLocalizations.of(context)!.deleteAccountTitle,
+                AppLocalizations.of(context).deleteAccountTitle,
                 style: GoogleFonts.anuphan(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
@@ -336,7 +334,9 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                     ),
                     children: [
                       TextSpan(
-                        text: AppLocalizations.of(context)!.deleteAccountConfirmPrompt,
+                        text: AppLocalizations.of(
+                          context,
+                        ).deleteAccountConfirmPrompt,
                       ),
                       TextSpan(
                         text: '“Delete”',
@@ -346,7 +346,11 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                           color: AppColors.baseDarkGrey,
                         ),
                       ),
-                      TextSpan(text: AppLocalizations.of(context)!.deleteAccountConfirmSuffix),
+                      TextSpan(
+                        text: AppLocalizations.of(
+                          context,
+                        ).deleteAccountConfirmSuffix,
+                      ),
                     ],
                   ),
                 ),
@@ -354,7 +358,7 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
               SizedBox(height: 32),
               AppTextField(
                 label: '',
-                hintText: AppLocalizations.of(context)!.typeToDeleteHint,
+                hintText: AppLocalizations.of(context).typeToDeleteHint,
                 controller: _controller,
                 onChanged: (value) {
                   setState(() {
@@ -365,7 +369,7 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
               SizedBox(height: 16),
               AppButton(
                 width: double.infinity,
-                text: AppLocalizations.of(context)!.yesDeleteImmediately,
+                text: AppLocalizations.of(context).yesDeleteImmediately,
                 style: AppButtonStyle.destructive,
                 onPressed: _canDelete
                     ? () {
@@ -377,7 +381,7 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
               AppButton(
                 width: double.infinity,
                 onPressed: () => Navigator.pop(context),
-                text: AppLocalizations.of(context)!.statusCancelled,
+                text: AppLocalizations.of(context).statusCancelled,
                 style: AppButtonStyle.ghost,
               ),
             ],

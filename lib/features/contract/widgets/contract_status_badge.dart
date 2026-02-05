@@ -55,7 +55,7 @@ class ContractStatusBadge extends StatelessWidget {
   }
 
   _StatusConfig _getStatusConfig(BuildContext context, ContractStatus status) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     switch (status) {
       case ContractStatus.draft:
         return _StatusConfig(

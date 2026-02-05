@@ -35,7 +35,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
@@ -43,14 +43,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           if (state.forgotPasswordStatus == ForgotPasswordStatus.success) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(AppLocalizations.of(context)!.submitPassword),
+                content: Text(AppLocalizations.of(context).submitPassword),
               ),
             );
           } else if (state.forgotPasswordStatus ==
               ForgotPasswordStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage ?? AppLocalizations.of(context)!.submitEmail),
+                content: Text(
+                  state.errorMessage ??
+                      AppLocalizations.of(context).submitEmail,
+                ),
               ),
             );
           }
@@ -74,14 +77,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 8),
                 Center(
                   child: Image.asset(
-                    'assets/images/auth/password_forgot.png',
+                    'assets/images/sign_in/YA_Illustration_ForgotPassword.png',
                     width: 160,
                     height: 160,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  AppLocalizations.of(context)!.forgot_password,
+                  AppLocalizations.of(context).forgot_password,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
@@ -91,7 +94,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  AppLocalizations.of(context)!.enterRegisteredEmailHint,
+                  AppLocalizations.of(context).enterRegisteredEmailHint,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: AppColors.baseGrey),
                 ),
@@ -160,7 +163,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 ),
                               )
                             : Text(
-                                AppLocalizations.of(context)!.sendResetPasswordLink,
+                                AppLocalizations.of(
+                                  context,
+                                ).sendResetPasswordLink,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w700,

@@ -80,8 +80,8 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
     if (_selectedLocation == null) {
       StatusDialog.showWarning(
         context: context,
-        title: AppLocalizations.of(context)!.specifyLocationTitle,
-        message: AppLocalizations.of(context)!.specifyLocationMessage,
+        title: AppLocalizations.of(context).specifyLocationTitle,
+        message: AppLocalizations.of(context).specifyLocationMessage,
       );
       return;
     }
@@ -94,9 +94,9 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
 
     AppConfirmationBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context)!.saveServiceAreaTitle,
-      description: AppLocalizations.of(context)!.saveServiceAreaMessage,
-      confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
+      title: AppLocalizations.of(context).saveServiceAreaTitle,
+      description: AppLocalizations.of(context).saveServiceAreaMessage,
+      confirmLabel: AppLocalizations.of(context).confirmSaveLabel,
       onConfirm: () {
         context.read<ProfileBloc>().add(UpdateServiceArea(data));
       },
@@ -115,7 +115,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
           } else if (state is ProfileError) {
             StatusDialog.showError(
               context: context,
-              title: AppLocalizations.of(context)!.errorOccurredTitle,
+              title: AppLocalizations.of(context).errorOccurredTitle,
               message: state.message,
             );
           }
@@ -138,16 +138,18 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppBadge(
-                          label: AppLocalizations.of(context)!.serviceAreaLabel,
+                          label: AppLocalizations.of(context).serviceAreaLabel,
                           color: BadgeColor.blue,
                           style: BadgeStyle.plain,
                         ),
                         SizedBox(height: 24),
                         // Location Section
                         AppTextFormField(
-                          label: AppLocalizations.of(context)!.serviceAreaHint,
+                          label: AppLocalizations.of(context).serviceAreaHint,
                           controller: _addressController,
-                          hintText: AppLocalizations.of(context)!.serviceAreaHint,
+                          hintText: AppLocalizations.of(
+                            context,
+                          ).serviceAreaHint,
                           isRequired: true,
                           readOnly: false,
                           showCursor: false,
@@ -168,7 +170,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          AppLocalizations.of(context)!.serviceAreaDescription,
+                          AppLocalizations.of(context).serviceAreaDescription,
                           style: GoogleFonts.anuphan(
                             fontSize: 14,
                             color: AppColors.baseGrey,
@@ -207,7 +209,9 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                             Expanded(
                               flex: 3,
                               child: AppButton(
-                                text: AppLocalizations.of(context)!.useCurrentLocationLabel,
+                                text: AppLocalizations.of(
+                                  context,
+                                ).useCurrentLocationLabel,
                                 style: AppButtonStyle.primary,
                                 onPressed: _useCurrentLocation,
                                 backgroundColor: AppColors.brandLightGreen,
@@ -219,7 +223,9 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
                             Expanded(
                               flex: 2,
                               child: AppButton(
-                                text: AppLocalizations.of(context)!.clearLocationLabel,
+                                text: AppLocalizations.of(
+                                  context,
+                                ).clearLocationLabel,
                                 style: AppButtonStyle.outline,
                                 onPressed: () {
                                   setState(() {
@@ -234,14 +240,16 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
 
                         SizedBox(height: 24),
                         AppTextField(
-                          label: AppLocalizations.of(context)!.serviceRadiusHint,
-                          hintText: AppLocalizations.of(context)!.serviceRadiusHint,
+                          label: AppLocalizations.of(context).serviceRadiusHint,
+                          hintText: AppLocalizations.of(
+                            context,
+                          ).serviceRadiusHint,
                           controller: _radiusController,
                           keyboardType: TextInputType.number,
                           suffix: Padding(
                             padding: const EdgeInsets.all(16),
                             child: Text(
-                              AppLocalizations.of(context)!.serviceRadiusUnit,
+                              AppLocalizations.of(context).serviceRadiusUnit,
                               style: GoogleFonts.anuphan(
                                 color: AppColors.baseGrey,
                                 fontSize: 16,
@@ -276,7 +284,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
         onPressed: () => context.pop(),
       ),
       title: Text(
-        AppLocalizations.of(context)!.addServiceAreaTitle,
+        AppLocalizations.of(context).addServiceAreaTitle,
         style: GoogleFonts.anuphan(
           color: Colors.white,
           fontSize: 18,
@@ -309,7 +317,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
         children: [
           Expanded(
             child: AppButton(
-              text: AppLocalizations.of(context)!.statusCancelled,
+              text: AppLocalizations.of(context).statusCancelled,
               style: AppButtonStyle.outline,
               onPressed: () => context.pop(),
             ),
@@ -319,7 +327,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
             child: BlocBuilder<ProfileBloc, ProfileState>(
               builder: (context, state) {
                 return AppButton(
-                  text: AppLocalizations.of(context)!.confirmSaveLabel,
+                  text: AppLocalizations.of(context).confirmSaveLabel,
                   style: AppButtonStyle.primary,
                   isLoading: state is ProfileUpdateLoading,
                   onPressed: _onSave,

@@ -70,9 +70,9 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
 
     AppConfirmationBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context)!.savePersonalInfoTitle,
-      description: AppLocalizations.of(context)!.savePersonalInfoMessage,
-      confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
+      title: AppLocalizations.of(context).savePersonalInfoTitle,
+      description: AppLocalizations.of(context).savePersonalInfoMessage,
+      confirmLabel: AppLocalizations.of(context).confirmSaveLabel,
       onConfirm: () {
         context.read<ProfileBloc>().add(UpdateWorkInfo(data));
       },
@@ -89,7 +89,7 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
         } else if (state is ProfileError) {
           StatusDialog.showError(
             context: context,
-            title: AppLocalizations.of(context)!.errorOccurredTitle,
+            title: AppLocalizations.of(context).errorOccurredTitle,
             message: state.message,
           );
         }
@@ -114,20 +114,20 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppBadge(
-                          label: AppLocalizations.of(context)!.personalInfoLabel,
+                          label: AppLocalizations.of(context).personalInfoLabel,
                           color: BadgeColor.blue,
                           style: BadgeStyle.plain,
                         ),
                         SizedBox(height: 24),
                         AppTextField(
-                          label: AppLocalizations.of(context)!.nameLabel,
+                          label: AppLocalizations.of(context).nameLabel,
                           controller: _nameController,
-                          hintText: AppLocalizations.of(context)!.nameHintText,
+                          hintText: AppLocalizations.of(context).nameHintText,
                           isRequired: true,
                         ),
                         SizedBox(height: 16),
                         AppTextField(
-                          label: AppLocalizations.of(context)!.email,
+                          label: AppLocalizations.of(context).email,
                           controller: _emailController,
                           hintText: 'example@email.com',
                           isRequired: true,
@@ -135,7 +135,7 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
                         ),
                         SizedBox(height: 16),
                         AppTextField(
-                          label: AppLocalizations.of(context)!.phone_number,
+                          label: AppLocalizations.of(context).phone_number,
                           controller: _phoneController,
                           hintText: '0xx-xxx-xxxx',
                           isRequired: true,
@@ -143,23 +143,27 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
                         ),
                         SizedBox(height: 16),
                         AppTextField(
-                          label: AppLocalizations.of(context)!.bioLabel,
+                          label: AppLocalizations.of(context).bioLabel,
                           controller: _bioController,
-                          hintText: AppLocalizations.of(context)!.bioHintText,
+                          hintText: AppLocalizations.of(context).bioHintText,
                           maxLines: 5,
                         ),
                         SizedBox(height: 16),
                         AppTextField(
-                          label: AppLocalizations.of(context)!.nationalIdLabel,
+                          label: AppLocalizations.of(context).nationalIdLabel,
                           controller: _nationalIdController,
-                          hintText: AppLocalizations.of(context)!.nationalIdHintText,
+                          hintText: AppLocalizations.of(
+                            context,
+                          ).nationalIdHintText,
                           keyboardType: TextInputType.number,
                         ),
                         SizedBox(height: 16),
                         AppTextField(
-                          label: AppLocalizations.of(context)!.address,
+                          label: AppLocalizations.of(context).address,
                           controller: _addressController,
-                          hintText: AppLocalizations.of(context)!.addressHintText,
+                          hintText: AppLocalizations.of(
+                            context,
+                          ).addressHintText,
                           maxLines: 3,
                         ),
                         SizedBox(height: 40),
@@ -189,7 +193,7 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
         onPressed: () => context.pop(),
       ),
       title: Text(
-        AppLocalizations.of(context)!.editPersonalInfoTitle,
+        AppLocalizations.of(context).editPersonalInfoTitle,
         style: GoogleFonts.anuphan(
           color: Colors.white,
           fontSize: 18,
@@ -222,7 +226,7 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
         children: [
           Expanded(
             child: AppButton(
-              text: AppLocalizations.of(context)!.statusCancelled,
+              text: AppLocalizations.of(context).statusCancelled,
               style: AppButtonStyle.outline,
               onPressed: () => context.pop(),
             ),
@@ -232,7 +236,7 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
             child: BlocBuilder<ProfileBloc, ProfileState>(
               builder: (context, state) {
                 return AppButton(
-                  text: AppLocalizations.of(context)!.confirmSaveLabel,
+                  text: AppLocalizations.of(context).confirmSaveLabel,
                   style: AppButtonStyle.primary,
                   isLoading: state is ProfileUpdateLoading,
                   onPressed: _onSave,

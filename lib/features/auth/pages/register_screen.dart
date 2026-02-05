@@ -83,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return BlocListener<AuthBloc, AuthState>(
       listener: _listener,
@@ -98,16 +98,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 12),
                 Center(
                   child: Image.asset(
-                    _role == UserRole.agent
-                        ? 'assets/images/auth/register.png'
-                        : 'assets/images/auth/register.png',
+                    'assets/images/sign_up/YA_Illustration_SignUp.png',
                     width: 180,
                     height: 180,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  AppLocalizations.of(context)!.register_button,
+                  AppLocalizations.of(context).register_button,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
@@ -117,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  AppLocalizations.of(context)!.registerToStart,
+                  AppLocalizations.of(context).registerToStart,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: AppColors.baseGrey),
                 ),
@@ -157,7 +155,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               const SizedBox(width: 8),
                               Text(
-                                AppLocalizations.of(context)!.forAgent,
+                                AppLocalizations.of(context).forAgent,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -203,7 +201,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                AppLocalizations.of(context)!.forAgency,
+                                AppLocalizations.of(context).forAgency,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,

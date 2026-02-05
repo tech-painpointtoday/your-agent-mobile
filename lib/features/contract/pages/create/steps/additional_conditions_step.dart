@@ -46,7 +46,7 @@ class _AdditionalConditionsStepState extends State<AdditionalConditionsStep> {
                         AppBadge(
                           label: AppLocalizations.of(
                             context,
-                          )!.additionalContractConditions,
+                          ).additionalContractConditions,
                           fontSize: 16,
                           color: BadgeColor.blue,
                         ),
@@ -61,8 +61,8 @@ class _AdditionalConditionsStepState extends State<AdditionalConditionsStep> {
                   AppTextField(
                     label: AppLocalizations.of(
                       context,
-                    )!.additionalContractConditions,
-                    hintText: AppLocalizations.of(context)!.conditions,
+                    ).additionalContractConditions,
+                    hintText: AppLocalizations.of(context).conditions,
                     maxLines: 15,
                     showScrollbar: true,
                     scrollController: _scrollController,

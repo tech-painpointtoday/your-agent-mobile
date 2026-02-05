@@ -31,7 +31,7 @@ class PropertyTypeStep extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
-                  AppLocalizations.of(context)!.propertyTypeLabel,
+                  AppLocalizations.of(context).propertyTypeLabel,
                   style: GoogleFonts.anuphan(
                     color: AppColors.primary,
                     fontSize: 14,

@@ -61,7 +61,7 @@ class _AttachmentStepState extends State<AttachmentStep> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppBadge(
-                        label: AppLocalizations.of(context)!.contractFile,
+                        label: AppLocalizations.of(context).contractFile,
                         fontSize: 16,
                         color: BadgeColor.blue,
                       ),
@@ -107,11 +107,18 @@ class _AttachmentStepState extends State<AttachmentStep> {
                                 attachment.isRemote) {
                               AppConfirmationBottomSheet.show(
                                 context: context,
-                                title: AppLocalizations.of(context)!.deleteItemQuestion,
-                                description:
-                                    AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
-                                confirmLabel: AppLocalizations.of(context)!.delete,
-                                cancelLabel: AppLocalizations.of(context)!.statusCancelled,
+                                title: AppLocalizations.of(
+                                  context,
+                                ).deleteItemQuestion,
+                                description: AppLocalizations.of(
+                                  context,
+                                ).deleteAllImagesConfirmMessage,
+                                confirmLabel: AppLocalizations.of(
+                                  context,
+                                ).delete,
+                                cancelLabel: AppLocalizations.of(
+                                  context,
+                                ).statusCancelled,
                                 style: ConfirmationStyle.destructive,
                                 onConfirm: performDelete,
                               );
@@ -176,7 +183,7 @@ class _AttachmentStepState extends State<AttachmentStep> {
               ),
               const SizedBox(width: 8),
               Text(
-                AppLocalizations.of(context)!.add_item,
+                AppLocalizations.of(context).add_item,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseDarkGrey,
                   fontSize: 16,
@@ -248,7 +255,7 @@ class _AttachmentItemCard extends StatelessWidget {
         // Manual Label for Name
         RichText(
           text: TextSpan(
-            text: AppLocalizations.of(context)!.nameFile,
+            text: AppLocalizations.of(context).nameFile,
             style: GoogleFonts.anuphan(
               color: AppColors.baseBlack,
               fontSize: 14,
@@ -274,7 +281,7 @@ class _AttachmentItemCard extends StatelessWidget {
               child: AppTextField(
                 label: '',
                 isRequired: false,
-                hintText: AppLocalizations.of(context)!.fileNameHint,
+                hintText: AppLocalizations.of(context).fileNameHint,
                 controller: TextEditingController(text: attachment.name)
                   ..selection = TextSelection.fromPosition(
                     TextPosition(offset: attachment.name.length),
@@ -316,7 +323,7 @@ class _AttachmentItemCard extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          AppLocalizations.of(context)!.uploadFile,
+          AppLocalizations.of(context).uploadFile,
           style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
         ),
         if (attachment.filePath != null || attachment.fileUrl != null) ...[

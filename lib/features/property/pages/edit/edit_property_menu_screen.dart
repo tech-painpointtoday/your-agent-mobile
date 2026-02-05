@@ -18,7 +18,7 @@ class EditPropertyMenuScreen extends StatelessWidget {
       backgroundColor: AppColors.primary,
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.editDataTitle,
+          AppLocalizations.of(context).editDataTitle,
           style: GoogleFonts.anuphan(
             color: Colors.white,
             fontSize: 18,
@@ -52,8 +52,8 @@ class EditPropertyMenuScreen extends StatelessWidget {
             children: [
               _buildMenuItem(
                 context,
-                title: AppLocalizations.of(context)!.general_information,
-                subtitle: AppLocalizations.of(context)!.generalInfoSubtitle,
+                title: AppLocalizations.of(context).general_information,
+                subtitle: AppLocalizations.of(context).generalInfoSubtitle,
                 iconPath: 'assets/icons/info.svg',
                 iconColor: AppColors.brandBlue,
                 bgColor: AppColors.supportBlueLight,
@@ -63,7 +63,7 @@ class EditPropertyMenuScreen extends StatelessWidget {
                     extra: {
                       'property': property,
                       'stepType': EditPropertyStepType.generalInfo,
-                      'title': AppLocalizations.of(context)!.general_information,
+                      'title': AppLocalizations.of(context).general_information,
                     },
                   );
                 },
@@ -90,8 +90,8 @@ class EditPropertyMenuScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _buildMenuItem(
                 context,
-                title: AppLocalizations.of(context)!.property_details_section,
-                subtitle: AppLocalizations.of(context)!.propertyDetailSubtitle,
+                title: AppLocalizations.of(context).property_details_section,
+                subtitle: AppLocalizations.of(context).propertyDetailSubtitle,
                 iconPath: 'assets/icons/menu.svg',
                 iconColor: const Color(0xFF7F56D9), // Purple
                 bgColor: const Color(0xFFF9F5FF), // Light Purple
@@ -101,7 +101,9 @@ class EditPropertyMenuScreen extends StatelessWidget {
                     extra: {
                       'property': property,
                       'stepType': EditPropertyStepType.propertyDetail,
-                      'title': AppLocalizations.of(context)!.property_details_section,
+                      'title': AppLocalizations.of(
+                        context,
+                      ).property_details_section,
                     },
                   );
                 },
@@ -109,8 +111,8 @@ class EditPropertyMenuScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _buildMenuItem(
                 context,
-                title: AppLocalizations.of(context)!.additional_details_section,
-                subtitle: AppLocalizations.of(context)!.additionalInfoSubtitle,
+                title: AppLocalizations.of(context).additional_details_section,
+                subtitle: AppLocalizations.of(context).additionalInfoSubtitle,
                 iconPath: 'assets/icons/star-moving.svg',
                 iconColor: const Color(0xFFE94A88), // Pink
                 bgColor: const Color(0xFFFDF2FA), // Light Pink
@@ -120,7 +122,9 @@ class EditPropertyMenuScreen extends StatelessWidget {
                     extra: {
                       'property': property,
                       'stepType': EditPropertyStepType.additionalInfo,
-                      'title': AppLocalizations.of(context)!.additional_details_section,
+                      'title': AppLocalizations.of(
+                        context,
+                      ).additional_details_section,
                     },
                   );
                 },
@@ -128,8 +132,8 @@ class EditPropertyMenuScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _buildMenuItem(
                 context,
-                title: AppLocalizations.of(context)!.propertyImagesLabel,
-                subtitle: AppLocalizations.of(context)!.propertyImagesSubtitle,
+                title: AppLocalizations.of(context).propertyImagesLabel,
+                subtitle: AppLocalizations.of(context).propertyImagesSubtitle,
                 iconPath: 'assets/icons/image.svg',
                 iconColor: AppColors.supportOrangeDark,
                 bgColor: AppColors.supportOrangeLight,
@@ -139,7 +143,7 @@ class EditPropertyMenuScreen extends StatelessWidget {
                     extra: {
                       'property': property,
                       'stepType': EditPropertyStepType.propertyImages,
-                      'title': AppLocalizations.of(context)!.propertyImagesLabel,
+                      'title': AppLocalizations.of(context).propertyImagesLabel,
                     },
                   );
                 },

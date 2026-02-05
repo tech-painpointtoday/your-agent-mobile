@@ -183,7 +183,7 @@ class _HomeHeaderState extends State<HomeHeader> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                AppLocalizations.of(context)!.welcome,
+                AppLocalizations.of(context).welcome,
                 style: TextStyle(
                   color: AppColors.white.withValues(alpha: 0.90),
                   fontSize: 12,
@@ -194,7 +194,7 @@ class _HomeHeaderState extends State<HomeHeader> {
               Text(
                 userName.isNotEmpty
                     ? userName
-                    : AppLocalizations.of(context)!.agencyUnknown,
+                    : AppLocalizations.of(context).agencyUnknown,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -313,7 +313,7 @@ class HomeSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppSearchBar(
-      hintText: AppLocalizations.of(context)!.searchProperty,
+      hintText: AppLocalizations.of(context).searchProperty,
       controller: controller,
     );
   }
@@ -341,7 +341,7 @@ class MenuGridCard extends StatelessWidget {
   const MenuGridCard({super.key});
 
   List<HomeMenuItem> _getItems(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return [
       HomeMenuItem(
         label: 'Property',
@@ -532,7 +532,7 @@ class _RecommendedSectionState extends State<RecommendedSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppLocalizations.of(context)!.recommendedForYou,
+          AppLocalizations.of(context).recommendedForYou,
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w800,
@@ -541,7 +541,7 @@ class _RecommendedSectionState extends State<RecommendedSection> {
         ),
         SizedBox(height: 2),
         Text(
-          AppLocalizations.of(context)!.curatedForYou,
+          AppLocalizations.of(context).curatedForYou,
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
@@ -633,7 +633,7 @@ class ActivitiesSection extends StatelessWidget {
   const ActivitiesSection({super.key});
 
   List<ActivityItem> _getActivities(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return [
       ActivityItem(
         title: l10n.sample,
@@ -677,7 +677,7 @@ class ActivitiesSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.activities,
+                    AppLocalizations.of(context).activities,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
@@ -686,7 +686,7 @@ class ActivitiesSection extends StatelessWidget {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    AppLocalizations.of(context)!.activitiesSubtitle,
+                    AppLocalizations.of(context).activitiesSubtitle,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
@@ -702,7 +702,7 @@ class ActivitiesSection extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 child: Text(
-                  AppLocalizations.of(context)!.viewAll,
+                  AppLocalizations.of(context).viewAll,
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,

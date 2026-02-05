@@ -385,7 +385,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      AppLocalizations.of(context)!.general_information,
+                      AppLocalizations.of(context).general_information,
                       style: GoogleFonts.anuphan(
                         color: AppColors.primary,
                         fontSize: 14,
@@ -404,14 +404,14 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
               // Title
               AppTextFormField(
-                label: AppLocalizations.of(context)!.propertyNameHint,
+                label: AppLocalizations.of(context).propertyNameHint,
                 controller: _nameController,
                 isRequired: true,
-                hintText: AppLocalizations.of(context)!.propertyNameHint,
+                hintText: AppLocalizations.of(context).propertyNameHint,
               ),
               const SizedBox(height: 8),
               Text(
-                AppLocalizations.of(context)!.propertyNameDescription,
+                AppLocalizations.of(context).propertyNameDescription,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseGrey,
                   fontSize: 12,
@@ -422,14 +422,14 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               if (!isCondoOrApt) ...[
                 // Developer
                 AppTextFormField(
-                  label: AppLocalizations.of(context)!.developerHint,
+                  label: AppLocalizations.of(context).developerHint,
                   controller: _developerController,
-                  hintText: AppLocalizations.of(context)!.developerHint,
+                  hintText: AppLocalizations.of(context).developerHint,
                 ),
                 const SizedBox(height: 8),
                 AppButton(
                   width: double.infinity,
-                  text: AppLocalizations.of(context)!.addDeveloperTitle,
+                  text: AppLocalizations.of(context).addDeveloperTitle,
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
@@ -441,14 +441,14 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
                 // Project Name
                 AppTextFormField(
-                  label: AppLocalizations.of(context)!.projectNameHint,
+                  label: AppLocalizations.of(context).projectNameHint,
                   controller: _projectController,
-                  hintText: AppLocalizations.of(context)!.projectNameHint,
+                  hintText: AppLocalizations.of(context).projectNameHint,
                 ),
                 const SizedBox(height: 8),
                 AppButton(
                   width: double.infinity,
-                  text: AppLocalizations.of(context)!.addProjectNameTitle,
+                  text: AppLocalizations.of(context).addProjectNameTitle,
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
@@ -467,12 +467,12 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       controller: _developerController,
                       builder: (context, controller, focusNode) =>
                           AppTextFormField(
-                            label: AppLocalizations.of(context)!.developerHint,
+                            label: AppLocalizations.of(context).developerHint,
                             controller: controller,
                             focusNode: focusNode,
                             hintText: AppLocalizations.of(
                               context,
-                            )!.searchDeveloper,
+                            ).searchDeveloper,
                             isRequired: isCondoOrApt,
                             suffix: Padding(
                               padding: const EdgeInsets.all(16),
@@ -512,14 +512,14 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       },
                       emptyBuilder: (context) => Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Text(AppLocalizations.of(context)!.noDataFound),
+                        child: Text(AppLocalizations.of(context).noDataFound),
                       ),
                     );
                   },
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  AppLocalizations.of(context)!.searchDeveloperDescription,
+                  AppLocalizations.of(context).searchDeveloperDescription,
                   style: GoogleFonts.anuphan(
                     color: AppColors.baseGrey,
                     fontSize: 14,
@@ -528,7 +528,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 const SizedBox(height: 24),
                 AppButton(
                   width: double.infinity,
-                  text: AppLocalizations.of(context)!.addDeveloperTitle,
+                  text: AppLocalizations.of(context).addDeveloperTitle,
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
@@ -545,14 +545,12 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       controller: _projectController,
                       builder: (context, controller, focusNode) =>
                           AppTextFormField(
-                            label: AppLocalizations.of(
-                              context,
-                            )!.projectNameHint,
+                            label: AppLocalizations.of(context).projectNameHint,
                             controller: controller,
                             focusNode: focusNode,
                             hintText: AppLocalizations.of(
                               context,
-                            )!.projectNameHint,
+                            ).projectNameHint,
                             isRequired: isCondoOrApt,
                             suffix: Padding(
                               padding: const EdgeInsets.all(16),
@@ -613,14 +611,14 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       },
                       emptyBuilder: (context) => Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Text(AppLocalizations.of(context)!.noDataFound),
+                        child: Text(AppLocalizations.of(context).noDataFound),
                       ),
                     );
                   },
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  AppLocalizations.of(context)!.searchProjectDescription,
+                  AppLocalizations.of(context).searchProjectDescription,
                   style: GoogleFonts.anuphan(
                     color: AppColors.baseGrey,
                     fontSize: 14,
@@ -629,7 +627,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 const SizedBox(height: 24),
                 AppButton(
                   width: double.infinity,
-                  text: AppLocalizations.of(context)!.addProjectNameTitle,
+                  text: AppLocalizations.of(context).addProjectNameTitle,
                   style: AppButtonStyle.outline,
                   backgroundColor: AppColors.brandLightGreen,
                   textColor: AppColors.brandGreen,
@@ -641,22 +639,22 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
                 // Building Info
                 AppTextFormField(
-                  label: AppLocalizations.of(context)!.buildingHint,
+                  label: AppLocalizations.of(context).buildingHint,
                   controller: _buildingController,
-                  hintText: AppLocalizations.of(context)!.buildingHint,
+                  hintText: AppLocalizations.of(context).buildingHint,
                 ),
                 const SizedBox(height: 16),
                 AppTextFormField(
-                  label: AppLocalizations.of(context)!.floorUnit,
+                  label: AppLocalizations.of(context).floorUnit,
                   controller: _floorController,
-                  hintText: AppLocalizations.of(context)!.floorUnit,
+                  hintText: AppLocalizations.of(context).floorUnit,
                   isRequired: true,
                 ),
                 const SizedBox(height: 16),
                 AppTextFormField(
-                  label: AppLocalizations.of(context)!.roomNoHint,
+                  label: AppLocalizations.of(context).roomNoHint,
                   controller: _roomNoController,
-                  hintText: AppLocalizations.of(context)!.roomNoHint,
+                  hintText: AppLocalizations.of(context).roomNoHint,
                   isRequired: true,
                 ),
                 const SizedBox(height: 16),
@@ -665,18 +663,18 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               // Address
               if (!isCondoOrApt)
                 AppTextFormField(
-                  label: AppLocalizations.of(context)!.houseNoHint,
+                  label: AppLocalizations.of(context).houseNoHint,
                   controller: _houseNoController,
                   isRequired: true,
-                  hintText: AppLocalizations.of(context)!.houseNoHint,
+                  hintText: AppLocalizations.of(context).houseNoHint,
                 ),
               const SizedBox(height: 16),
 
               // Location Section
               AppTextFormField(
-                label: AppLocalizations.of(context)!.locationTitle,
+                label: AppLocalizations.of(context).locationTitle,
                 controller: _addressController,
-                hintText: AppLocalizations.of(context)!.locationTitle,
+                hintText: AppLocalizations.of(context).locationTitle,
                 isRequired: true,
                 readOnly: false,
                 showCursor: false,
@@ -696,7 +694,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
               ),
               const SizedBox(height: 8),
               Text(
-                AppLocalizations.of(context)!.locationDescription,
+                AppLocalizations.of(context).locationDescription,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseGrey,
                   fontSize: 12,
@@ -738,7 +736,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                     child: AppButton(
                       text: AppLocalizations.of(
                         context,
-                      )!.useCurrentLocationLabel,
+                      ).useCurrentLocationLabel,
                       style: AppButtonStyle.primary,
                       onPressed: _useCurrentLocation,
                       backgroundColor: AppColors.brandLightGreen,
@@ -750,7 +748,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                   Expanded(
                     flex: 2,
                     child: AppButton(
-                      text: AppLocalizations.of(context)!.clearLocationLabel,
+                      text: AppLocalizations.of(context).clearLocationLabel,
                       style: AppButtonStyle.outline,
                       onPressed: _clearLocation,
                     ),

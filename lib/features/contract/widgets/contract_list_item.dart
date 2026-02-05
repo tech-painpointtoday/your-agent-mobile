@@ -159,7 +159,7 @@ class _ContractListItemState extends State<ContractListItem> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        AppLocalizations.of(context)!.property,
+                                        AppLocalizations.of(context).property,
                                         style: GoogleFonts.anuphan(
                                           color: AppColors.baseDarkGrey,
                                           fontSize: 10,
@@ -177,13 +177,17 @@ class _ContractListItemState extends State<ContractListItem> {
                                       const SizedBox(height: 12),
                                       if (contract.sellerSignedAt != null)
                                         AppBadge(
-                                          label: AppLocalizations.of(context)!.signed,
+                                          label: AppLocalizations.of(
+                                            context,
+                                          ).signed,
                                           color: BadgeColor.green,
                                           style: BadgeStyle.done,
                                         )
                                       else
                                         AppBadge(
-                                          label: AppLocalizations.of(context)!.notSigned,
+                                          label: AppLocalizations.of(
+                                            context,
+                                          ).notSigned,
                                           color: BadgeColor.default_,
                                           style: BadgeStyle.plain,
                                         ),
@@ -197,7 +201,7 @@ class _ContractListItemState extends State<ContractListItem> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        AppLocalizations.of(context)!.buyer,
+                                        AppLocalizations.of(context).buyer,
                                         style: GoogleFonts.anuphan(
                                           color: AppColors.baseDarkGrey,
                                           fontSize: 10,
@@ -215,13 +219,17 @@ class _ContractListItemState extends State<ContractListItem> {
                                       const SizedBox(height: 12),
                                       if (contract.buyerSignedAt != null)
                                         AppBadge(
-                                          label: AppLocalizations.of(context)!.signed,
+                                          label: AppLocalizations.of(
+                                            context,
+                                          ).signed,
                                           color: BadgeColor.green,
                                           style: BadgeStyle.done,
                                         )
                                       else
                                         AppBadge(
-                                          label: AppLocalizations.of(context)!.notSigned,
+                                          label: AppLocalizations.of(
+                                            context,
+                                          ).notSigned,
                                           color: BadgeColor.default_,
                                           style: BadgeStyle.plain,
                                         ),
@@ -285,7 +293,7 @@ class _ContractListItemState extends State<ContractListItem> {
                           PopupMenuItem(
                             enabled: false,
                             child: Text(
-                              AppLocalizations.of(context)!.dataPhoneCall,
+                              AppLocalizations.of(context).dataPhoneCall,
                               style: GoogleFonts.anuphan(fontSize: 14),
                             ),
                           ),
@@ -300,7 +308,7 @@ class _ContractListItemState extends State<ContractListItem> {
                   Expanded(
                     child: AppButton(
                       padding: EdgeInsets.zero,
-                      text: AppLocalizations.of(context)!.shareDocument,
+                      text: AppLocalizations.of(context).shareDocument,
                       style: AppButtonStyle.outline,
                       height: 32,
                       textStyle: GoogleFonts.anuphan(
@@ -316,7 +324,7 @@ class _ContractListItemState extends State<ContractListItem> {
                   // Edit Button
                   Expanded(
                     child: AppButton(
-                      text: AppLocalizations.of(context)!.edit,
+                      text: AppLocalizations.of(context).edit,
                       style: AppButtonStyle.primary,
                       height: 32,
                       textStyle: GoogleFonts.anuphan(

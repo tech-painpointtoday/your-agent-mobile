@@ -55,7 +55,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     final canSubmit =
         _selectedBusinessType != null &&
@@ -174,6 +174,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 24),
           AppButton(
+            width: double.infinity,
             text: l10n.register_button,
             style: AppButtonStyle.primary,
             height: 52,
@@ -206,7 +207,7 @@ class _RegisterFormState extends State<RegisterForm> {
     required String linkText,
     required VoidCallback onLinkTap,
   }) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
         Checkbox(

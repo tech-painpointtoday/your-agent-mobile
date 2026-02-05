@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (state is AuthError) {
-      final l10n = AppLocalizations.of(context)!;
+      final l10n = AppLocalizations.of(context);
       StatusDialog.showError(
         context: context,
         title: l10n.login_error,
@@ -101,14 +101,15 @@ class _LoginScreenState extends State<LoginScreen> {
       if (state.forgotPasswordStatus == ForgotPasswordStatus.success) {
         StatusDialog.showSuccess(
           context: context,
-          title: AppLocalizations.of(context)!.submitEmailSuccess,
-          message: AppLocalizations.of(context)!.emailPassword,
+          title: AppLocalizations.of(context).submitEmailSuccess,
+          message: AppLocalizations.of(context).emailPassword,
         );
       } else if (state.forgotPasswordStatus == ForgotPasswordStatus.failure) {
         StatusDialog.showError(
           context: context,
-          title: AppLocalizations.of(context)!.errorOccurredTitle,
-          message: state.errorMessage ?? AppLocalizations.of(context)!.submitEmail,
+          title: AppLocalizations.of(context).errorOccurredTitle,
+          message:
+              state.errorMessage ?? AppLocalizations.of(context).submitEmail,
         );
       }
     }
@@ -134,12 +135,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String get _title {
     // Match screenshot title (same for both roles)
-    return AppLocalizations.of(context)!.login_now;
+    return AppLocalizations.of(context).login_now;
   }
 
   String get _subtitle {
     // From screenshot
-    return AppLocalizations.of(context)!.welcomeAgentManual;
+    return AppLocalizations.of(context).welcomeAgentManual;
   }
 
   Widget _roleSegment(AppLocalizations l10n) {
@@ -175,7 +176,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(width: 8),
                 Flexible(
                   child: Text(
-                    role == UserRole.agent ? AppLocalizations.of(context)!.forAgent : AppLocalizations.of(context)!.forAgency,
+                    role == UserRole.agent
+                        ? AppLocalizations.of(context).forAgent
+                        : AppLocalizations.of(context).forAgency,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 16,
@@ -231,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return BlocListener<AuthBloc, AuthState>(
       listener: _listener,
@@ -247,9 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Illustration (placeholder using existing asset)
                 Center(
                   child: Image.asset(
-                    _role == UserRole.agent
-                        ? 'assets/images/auth/login_agent.png'
-                        : 'assets/images/auth/login_agency.png',
+                    'assets/images/sign_in/YA_Illustration_SignIn_Agent.png',
                     width: 180,
                     height: 180,
                   ),
@@ -268,10 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text(
                   _subtitle,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.baseGrey,
-                  ),
+                  style: TextStyle(fontSize: 14, color: AppColors.baseGrey),
                 ),
                 SizedBox(height: 20),
                 _roleSegment(l10n),
@@ -396,9 +394,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () => context.push('/forgot-password'),
                               child: Text(
                                 l10n.forgot_password,
-                                style: TextStyle(
-                                  color: AppColors.baseGrey,
-                                ),
+                                style: TextStyle(color: AppColors.baseGrey),
                               ),
                             ),
                           ],

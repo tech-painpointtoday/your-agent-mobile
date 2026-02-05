@@ -93,7 +93,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
     return SilverAppBarScreen(
       onRefresh: _loadProperties,
       hasFilter: true,
-      title: AppLocalizations.of(context)!.propertiesTitle,
+      title: AppLocalizations.of(context).propertiesTitle,
       actionWidget: InkWell(
         onTap: () async {
           context.push('/property/create').then((_) => _loadProperties());
@@ -179,7 +179,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context)!.myProperties,
+            AppLocalizations.of(context).myProperties,
             style: GoogleFonts.anuphan(
               color: AppColors.primary,
               fontSize: 16,
@@ -208,7 +208,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                   );
                 },
                 child: Text(
-                  AppLocalizations.of(context)!.viewAll,
+                  AppLocalizations.of(context).viewAll,
                   style: GoogleFonts.anuphan(
                     color: AppColors.baseGrey,
                     fontSize: 12,
@@ -225,7 +225,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(32),
                     child: Text(
-                      AppLocalizations.of(context)!.noPropertiesFoundSearch,
+                      AppLocalizations.of(context).noPropertiesFoundSearch,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseGrey,
                         fontSize: 14,

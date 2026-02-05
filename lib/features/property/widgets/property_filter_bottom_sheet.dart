@@ -38,9 +38,9 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         setState(() {
-          selectedApprovalStatus = AppLocalizations.of(context)!.all;
-          selectedPropertyType = AppLocalizations.of(context)!.all;
-          selectedListingType = AppLocalizations.of(context)!.all;
+          selectedApprovalStatus = AppLocalizations.of(context).all;
+          selectedPropertyType = AppLocalizations.of(context).all;
+          selectedListingType = AppLocalizations.of(context).all;
         });
       }
     });
@@ -100,13 +100,13 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppBadge(
-                    label: AppLocalizations.of(context)!.searchFilterLabel,
+                    label: AppLocalizations.of(context).searchFilterLabel,
                     color: BadgeColor.blue,
                   ),
                   const SizedBox(height: 16),
                   // สถานะการอนุมัติ
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.approvalStatusTitle,
+                    title: AppLocalizations.of(context).approvalStatusTitle,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -114,47 +114,47 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildChip(
-                          AppLocalizations.of(context)!.all,
+                          AppLocalizations.of(context).all,
                           isSelected:
                               selectedApprovalStatus ==
-                              AppLocalizations.of(context)!.all,
+                              AppLocalizations.of(context).all,
                           onTap: () => setState(
                             () => selectedApprovalStatus = AppLocalizations.of(
                               context,
-                            )!.all,
+                            ).all,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.pendingAt,
+                          AppLocalizations.of(context).pendingAt,
                           isSelected:
                               selectedApprovalStatus ==
-                              AppLocalizations.of(context)!.pendingAt,
+                              AppLocalizations.of(context).pendingAt,
                           onTap: () => setState(
                             () => selectedApprovalStatus = AppLocalizations.of(
                               context,
-                            )!.pendingAt,
+                            ).pendingAt,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.approvedAt,
+                          AppLocalizations.of(context).approvedAt,
                           isSelected:
                               selectedApprovalStatus ==
-                              AppLocalizations.of(context)!.approvedAt,
+                              AppLocalizations.of(context).approvedAt,
                           onTap: () => setState(
                             () => selectedApprovalStatus = AppLocalizations.of(
                               context,
-                            )!.approvedAt,
+                            ).approvedAt,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.disapprovedAt,
+                          AppLocalizations.of(context).disapprovedAt,
                           isSelected:
                               selectedApprovalStatus ==
-                              AppLocalizations.of(context)!.disapprovedAt,
+                              AppLocalizations.of(context).disapprovedAt,
                           onTap: () => setState(
                             () => selectedApprovalStatus = AppLocalizations.of(
                               context,
-                            )!.disapprovedAt,
+                            ).disapprovedAt,
                           ),
                         ),
                       ],
@@ -164,7 +164,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // ประเภททรัพย์
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.propertyTypeLabel,
+                    title: AppLocalizations.of(context).propertyTypeLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -172,69 +172,69 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildChip(
-                          AppLocalizations.of(context)!.all,
+                          AppLocalizations.of(context).all,
                           isSelected:
                               selectedPropertyType ==
-                              AppLocalizations.of(context)!.all,
+                              AppLocalizations.of(context).all,
                           onTap: () => setState(
                             () => selectedPropertyType = AppLocalizations.of(
                               context,
-                            )!.all,
+                            ).all,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.houseType,
+                          AppLocalizations.of(context).houseType,
                           isSelected:
                               selectedPropertyType ==
-                              AppLocalizations.of(context)!.houseType,
+                              AppLocalizations.of(context).houseType,
                           onTap: () => setState(
                             () => selectedPropertyType = AppLocalizations.of(
                               context,
-                            )!.houseType,
+                            ).houseType,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.condoType,
+                          AppLocalizations.of(context).condoType,
                           isSelected:
                               selectedPropertyType ==
-                              AppLocalizations.of(context)!.condoType,
+                              AppLocalizations.of(context).condoType,
                           onTap: () => setState(
                             () => selectedPropertyType = AppLocalizations.of(
                               context,
-                            )!.condoType,
+                            ).condoType,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.townhomeType,
+                          AppLocalizations.of(context).townhomeType,
                           isSelected:
                               selectedPropertyType ==
-                              AppLocalizations.of(context)!.townhomeType,
+                              AppLocalizations.of(context).townhomeType,
                           onTap: () => setState(
                             () => selectedPropertyType = AppLocalizations.of(
                               context,
-                            )!.townhomeType,
+                            ).townhomeType,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.apartmentType,
+                          AppLocalizations.of(context).apartmentType,
                           isSelected:
                               selectedPropertyType ==
-                              AppLocalizations.of(context)!.apartmentType,
+                              AppLocalizations.of(context).apartmentType,
                           onTap: () => setState(
                             () => selectedPropertyType = AppLocalizations.of(
                               context,
-                            )!.apartmentType,
+                            ).apartmentType,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.poolVillaType,
+                          AppLocalizations.of(context).poolVillaType,
                           isSelected:
                               selectedPropertyType ==
-                              AppLocalizations.of(context)!.poolVillaType,
+                              AppLocalizations.of(context).poolVillaType,
                           onTap: () => setState(
                             () => selectedPropertyType = AppLocalizations.of(
                               context,
-                            )!.poolVillaType,
+                            ).poolVillaType,
                           ),
                         ),
                       ],
@@ -244,7 +244,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // ประเภทประกาศ
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.listingTypeLabel,
+                    title: AppLocalizations.of(context).listingTypeLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -252,55 +252,51 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildChip(
-                          AppLocalizations.of(context)!.all,
+                          AppLocalizations.of(context).all,
                           isSelected:
                               selectedListingType ==
-                              AppLocalizations.of(context)!.all,
+                              AppLocalizations.of(context).all,
                           onTap: () => setState(
                             () => selectedListingType = AppLocalizations.of(
                               context,
-                            )!.all,
+                            ).all,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.listingTypeValueSale,
+                          AppLocalizations.of(context).listingTypeValueSale,
                           isSelected:
                               selectedListingType ==
-                              AppLocalizations.of(
-                                context,
-                              )!.listingTypeValueSale,
+                              AppLocalizations.of(context).listingTypeValueSale,
                           onTap: () => setState(
                             () => selectedListingType = AppLocalizations.of(
                               context,
-                            )!.listingTypeValueSale,
+                            ).listingTypeValueSale,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.listingTypeValueRent,
+                          AppLocalizations.of(context).listingTypeValueRent,
                           isSelected:
                               selectedListingType ==
-                              AppLocalizations.of(
-                                context,
-                              )!.listingTypeValueRent,
+                              AppLocalizations.of(context).listingTypeValueRent,
                           onTap: () => setState(
                             () => selectedListingType = AppLocalizations.of(
                               context,
-                            )!.listingTypeValueRent,
+                            ).listingTypeValueRent,
                           ),
                         ),
                         _buildChip(
                           AppLocalizations.of(
                             context,
-                          )!.listingTypeValueSaleAndRent,
+                          ).listingTypeValueSaleAndRent,
                           isSelected:
                               selectedListingType ==
                               AppLocalizations.of(
                                 context,
-                              )!.listingTypeValueSaleAndRent,
+                              ).listingTypeValueSaleAndRent,
                           onTap: () => setState(
                             () => selectedListingType = AppLocalizations.of(
                               context,
-                            )!.listingTypeValueSaleAndRent,
+                            ).listingTypeValueSaleAndRent,
                           ),
                         ),
                       ],
@@ -310,7 +306,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // สถานะ
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.occupancyStatusLabel,
+                    title: AppLocalizations.of(context).occupancyStatusLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -318,29 +314,27 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildChip(
-                          AppLocalizations.of(context)!.statusValueAvailable,
+                          AppLocalizations.of(context).statusValueAvailable,
                           isSelected:
                               selectedStatus ==
-                              AppLocalizations.of(
-                                context,
-                              )!.statusValueAvailable,
+                              AppLocalizations.of(context).statusValueAvailable,
                           onTap: () => setState(
                             () => selectedStatus = AppLocalizations.of(
                               context,
-                            )!.statusValueAvailable,
+                            ).statusValueAvailable,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.statusValueNotAvailable,
+                          AppLocalizations.of(context).statusValueNotAvailable,
                           isSelected:
                               selectedStatus ==
                               AppLocalizations.of(
                                 context,
-                              )!.statusValueNotAvailable,
+                              ).statusValueNotAvailable,
                           onTap: () => setState(
                             () => selectedStatus = AppLocalizations.of(
                               context,
-                            )!.statusValueNotAvailable,
+                            ).statusValueNotAvailable,
                           ),
                         ),
                       ],
@@ -350,7 +344,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // สีทรัพย์
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.propertyColor,
+                    title: AppLocalizations.of(context).propertyColor,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -358,146 +352,146 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildChip(
-                          AppLocalizations.of(context)!.colorWhite,
+                          AppLocalizations.of(context).colorWhite,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorWhite,
+                              AppLocalizations.of(context).colorWhite,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorWhite,
+                            ).colorWhite,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorGrey,
+                          AppLocalizations.of(context).colorGrey,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorGrey,
+                              AppLocalizations.of(context).colorGrey,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorGrey,
+                            ).colorGrey,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorBlack,
+                          AppLocalizations.of(context).colorBlack,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorBlack,
+                              AppLocalizations.of(context).colorBlack,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorBlack,
+                            ).colorBlack,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorCream,
+                          AppLocalizations.of(context).colorCream,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorCream,
+                              AppLocalizations.of(context).colorCream,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorCream,
+                            ).colorCream,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorBrown,
+                          AppLocalizations.of(context).colorBrown,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorBrown,
+                              AppLocalizations.of(context).colorBrown,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorBrown,
+                            ).colorBrown,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.color_blue,
+                          AppLocalizations.of(context).color_blue,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.color_blue,
+                              AppLocalizations.of(context).color_blue,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.color_blue,
+                            ).color_blue,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorCyan,
+                          AppLocalizations.of(context).colorCyan,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorCyan,
+                              AppLocalizations.of(context).colorCyan,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorCyan,
+                            ).colorCyan,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorPink,
+                          AppLocalizations.of(context).colorPink,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorPink,
+                              AppLocalizations.of(context).colorPink,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorPink,
+                            ).colorPink,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorGreen,
+                          AppLocalizations.of(context).colorGreen,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorGreen,
+                              AppLocalizations.of(context).colorGreen,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorGreen,
+                            ).colorGreen,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorYellow,
+                          AppLocalizations.of(context).colorYellow,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorYellow,
+                              AppLocalizations.of(context).colorYellow,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorYellow,
+                            ).colorYellow,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorRed,
+                          AppLocalizations.of(context).colorRed,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorRed,
+                              AppLocalizations.of(context).colorRed,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorRed,
+                            ).colorRed,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorOrange,
+                          AppLocalizations.of(context).colorOrange,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorOrange,
+                              AppLocalizations.of(context).colorOrange,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorOrange,
+                            ).colorOrange,
                           ),
                         ),
                         _buildChip(
-                          AppLocalizations.of(context)!.colorPurple,
+                          AppLocalizations.of(context).colorPurple,
                           isSelected:
                               selectedColor ==
-                              AppLocalizations.of(context)!.colorPurple,
+                              AppLocalizations.of(context).colorPurple,
                           onTap: () => setState(
                             () => selectedColor = AppLocalizations.of(
                               context,
-                            )!.colorPurple,
+                            ).colorPurple,
                           ),
                         ),
                       ],
@@ -510,14 +504,14 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                     children: [
                       Expanded(
                         child: _buildPriceInput(
-                          label: AppLocalizations.of(context)!.startingPrice,
+                          label: AppLocalizations.of(context).startingPrice,
                           controller: _minPriceController,
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: _buildPriceInput(
-                          label: AppLocalizations.of(context)!.maxPrice,
+                          label: AppLocalizations.of(context).maxPrice,
                           controller: _maxPriceController,
                         ),
                       ),
@@ -527,7 +521,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // จำนวนชั้น
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.totalFloorsLabel,
+                    title: AppLocalizations.of(context).totalFloorsLabel,
                     child: Row(
                       children: [
                         for (int i = 1; i <= 5; i++)
@@ -548,7 +542,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // จำนวนห้องนอน
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.bedroomsLabel,
+                    title: AppLocalizations.of(context).bedroomsLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -573,7 +567,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // จำนวนห้องน้ำ
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.bathroomsLabel,
+                    title: AppLocalizations.of(context).bathroomsLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -598,7 +592,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // จำนวนที่จอดรถ
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.parkingLabel,
+                    title: AppLocalizations.of(context).parkingLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -622,17 +616,17 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                     children: [
                       Expanded(
                         child: _buildSizeInput(
-                          label: AppLocalizations.of(context)!.landSizeLabel,
+                          label: AppLocalizations.of(context).landSizeLabel,
                           controller: _landSizeController,
-                          unit: AppLocalizations.of(context)!.sqWahUnit,
+                          unit: AppLocalizations.of(context).sqWahUnit,
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: _buildSizeInput(
-                          label: AppLocalizations.of(context)!.usableAreaSize,
+                          label: AppLocalizations.of(context).usableAreaSize,
                           controller: _usableAreaController,
-                          unit: AppLocalizations.of(context)!.sqmUnit,
+                          unit: AppLocalizations.of(context).sqmUnit,
                         ),
                       ),
                     ],
@@ -641,7 +635,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // สไตล์ทรัพย์
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.propertyStyleLabel,
+                    title: AppLocalizations.of(context).propertyStyleLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -649,235 +643,231 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.luxury,
+                          AppLocalizations.of(context).luxury,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.luxury,
+                            AppLocalizations.of(context).luxury,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.luxury,
+                                AppLocalizations.of(context).luxury,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(context)!.luxury,
+                                  AppLocalizations.of(context).luxury,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(context)!.luxury,
+                                  AppLocalizations.of(context).luxury,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.classicStyle,
+                          AppLocalizations.of(context).classicStyle,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.classicStyle,
+                            AppLocalizations.of(context).classicStyle,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.classicStyle,
+                                AppLocalizations.of(context).classicStyle,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(context)!.classicStyle,
+                                  AppLocalizations.of(context).classicStyle,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(context)!.classicStyle,
+                                  AppLocalizations.of(context).classicStyle,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.modern,
+                          AppLocalizations.of(context).modern,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.modern,
+                            AppLocalizations.of(context).modern,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.modern,
+                                AppLocalizations.of(context).modern,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(context)!.modern,
+                                  AppLocalizations.of(context).modern,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(context)!.modern,
+                                  AppLocalizations.of(context).modern,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.natural,
+                          AppLocalizations.of(context).natural,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.natural,
+                            AppLocalizations.of(context).natural,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.natural,
+                                AppLocalizations.of(context).natural,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(context)!.natural,
+                                  AppLocalizations.of(context).natural,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(context)!.natural,
+                                  AppLocalizations.of(context).natural,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.loft,
+                          AppLocalizations.of(context).loft,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.loft,
+                            AppLocalizations.of(context).loft,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.loft,
+                                AppLocalizations.of(context).loft,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(context)!.loft,
+                                  AppLocalizations.of(context).loft,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(context)!.loft,
+                                  AppLocalizations.of(context).loft,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.minimal,
+                          AppLocalizations.of(context).minimal,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.minimal,
+                            AppLocalizations.of(context).minimal,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.minimal,
+                                AppLocalizations.of(context).minimal,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(context)!.minimal,
+                                  AppLocalizations.of(context).minimal,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(context)!.minimal,
+                                  AppLocalizations.of(context).minimal,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.vintage,
+                          AppLocalizations.of(context).vintage,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.vintage,
+                            AppLocalizations.of(context).vintage,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.vintage,
+                                AppLocalizations.of(context).vintage,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(context)!.vintage,
+                                  AppLocalizations.of(context).vintage,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(context)!.vintage,
+                                  AppLocalizations.of(context).vintage,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.contemporary,
+                          AppLocalizations.of(context).contemporary,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.contemporary,
+                            AppLocalizations.of(context).contemporary,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.contemporary,
+                                AppLocalizations.of(context).contemporary,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(context)!.contemporary,
+                                  AppLocalizations.of(context).contemporary,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(context)!.contemporary,
+                                  AppLocalizations.of(context).contemporary,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.colonialStyle,
+                          AppLocalizations.of(context).colonialStyle,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.colonialStyle,
+                            AppLocalizations.of(context).colonialStyle,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.colonialStyle,
+                                AppLocalizations.of(context).colonialStyle,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(context)!.colonialStyle,
+                                  AppLocalizations.of(context).colonialStyle,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(context)!.colonialStyle,
+                                  AppLocalizations.of(context).colonialStyle,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.thaiContemporary,
+                          AppLocalizations.of(context).thaiContemporary,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.thaiContemporary,
+                            AppLocalizations.of(context).thaiContemporary,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.thaiContemporary,
+                                AppLocalizations.of(context).thaiContemporary,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.thaiContemporary,
+                                  AppLocalizations.of(context).thaiContemporary,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.thaiContemporary,
+                                  AppLocalizations.of(context).thaiContemporary,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.nordicStyle,
+                          AppLocalizations.of(context).nordicStyle,
                           isSelected: selectedPropertyStyles.contains(
-                            AppLocalizations.of(context)!.nordicStyle,
+                            AppLocalizations.of(context).nordicStyle,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyStyles.contains(
-                                AppLocalizations.of(context)!.nordicStyle,
+                                AppLocalizations.of(context).nordicStyle,
                               )) {
                                 selectedPropertyStyles.remove(
-                                  AppLocalizations.of(context)!.nordicStyle,
+                                  AppLocalizations.of(context).nordicStyle,
                                 );
                               } else {
                                 selectedPropertyStyles.add(
-                                  AppLocalizations.of(context)!.nordicStyle,
+                                  AppLocalizations.of(context).nordicStyle,
                                 );
                               }
                             });
@@ -890,7 +880,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // จุดเด่นทรัพย์
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.propertyHighlightsLabel,
+                    title: AppLocalizations.of(context).propertyHighlightsLabel,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -938,84 +928,84 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.nearExpressway,
+                          AppLocalizations.of(context).nearExpressway,
                           isSelected: selectedPropertyHighlights.contains(
-                            AppLocalizations.of(context)!.nearExpressway,
+                            AppLocalizations.of(context).nearExpressway,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyHighlights.contains(
-                                AppLocalizations.of(context)!.nearExpressway,
+                                AppLocalizations.of(context).nearExpressway,
                               )) {
                                 selectedPropertyHighlights.remove(
-                                  AppLocalizations.of(context)!.nearExpressway,
+                                  AppLocalizations.of(context).nearExpressway,
                                 );
                               } else {
                                 selectedPropertyHighlights.add(
-                                  AppLocalizations.of(context)!.nearExpressway,
+                                  AppLocalizations.of(context).nearExpressway,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.nearStation,
+                          AppLocalizations.of(context).nearStation,
                           isSelected: selectedPropertyHighlights.contains(
-                            AppLocalizations.of(context)!.nearStation,
+                            AppLocalizations.of(context).nearStation,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyHighlights.contains(
-                                AppLocalizations.of(context)!.nearStation,
+                                AppLocalizations.of(context).nearStation,
                               )) {
                                 selectedPropertyHighlights.remove(
-                                  AppLocalizations.of(context)!.nearStation,
+                                  AppLocalizations.of(context).nearStation,
                                 );
                               } else {
                                 selectedPropertyHighlights.add(
-                                  AppLocalizations.of(context)!.nearStation,
+                                  AppLocalizations.of(context).nearStation,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.nearHospital,
+                          AppLocalizations.of(context).nearHospital,
                           isSelected: selectedPropertyHighlights.contains(
-                            AppLocalizations.of(context)!.nearHospital,
+                            AppLocalizations.of(context).nearHospital,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyHighlights.contains(
-                                AppLocalizations.of(context)!.nearHospital,
+                                AppLocalizations.of(context).nearHospital,
                               )) {
                                 selectedPropertyHighlights.remove(
-                                  AppLocalizations.of(context)!.nearHospital,
+                                  AppLocalizations.of(context).nearHospital,
                                 );
                               } else {
                                 selectedPropertyHighlights.add(
-                                  AppLocalizations.of(context)!.nearHospital,
+                                  AppLocalizations.of(context).nearHospital,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.newProject,
+                          AppLocalizations.of(context).newProject,
                           isSelected: selectedPropertyHighlights.contains(
-                            AppLocalizations.of(context)!.newProject,
+                            AppLocalizations.of(context).newProject,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedPropertyHighlights.contains(
-                                AppLocalizations.of(context)!.newProject,
+                                AppLocalizations.of(context).newProject,
                               )) {
                                 selectedPropertyHighlights.remove(
-                                  AppLocalizations.of(context)!.newProject,
+                                  AppLocalizations.of(context).newProject,
                                 );
                               } else {
                                 selectedPropertyHighlights.add(
-                                  AppLocalizations.of(context)!.newProject,
+                                  AppLocalizations.of(context).newProject,
                                 );
                               }
                             });
@@ -1028,7 +1018,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
                   // ส่วนกลาง
                   _buildFilterSection(
-                    title: AppLocalizations.of(context)!.commonFacilities,
+                    title: AppLocalizations.of(context).commonFacilities,
                     child: Wrap(
                       alignment: WrapAlignment.start,
                       runAlignment: WrapAlignment.center,
@@ -1036,63 +1026,63 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                       runSpacing: 8,
                       children: [
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.fitness,
+                          AppLocalizations.of(context).fitness,
                           isSelected: selectedCommonFacilities.contains(
-                            AppLocalizations.of(context)!.fitness,
+                            AppLocalizations.of(context).fitness,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedCommonFacilities.contains(
-                                AppLocalizations.of(context)!.fitness,
+                                AppLocalizations.of(context).fitness,
                               )) {
                                 selectedCommonFacilities.remove(
-                                  AppLocalizations.of(context)!.fitness,
+                                  AppLocalizations.of(context).fitness,
                                 );
                               } else {
                                 selectedCommonFacilities.add(
-                                  AppLocalizations.of(context)!.fitness,
+                                  AppLocalizations.of(context).fitness,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.swimmingPool,
+                          AppLocalizations.of(context).swimmingPool,
                           isSelected: selectedCommonFacilities.contains(
-                            AppLocalizations.of(context)!.swimmingPool,
+                            AppLocalizations.of(context).swimmingPool,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedCommonFacilities.contains(
-                                AppLocalizations.of(context)!.swimmingPool,
+                                AppLocalizations.of(context).swimmingPool,
                               )) {
                                 selectedCommonFacilities.remove(
-                                  AppLocalizations.of(context)!.swimmingPool,
+                                  AppLocalizations.of(context).swimmingPool,
                                 );
                               } else {
                                 selectedCommonFacilities.add(
-                                  AppLocalizations.of(context)!.swimmingPool,
+                                  AppLocalizations.of(context).swimmingPool,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.garden,
+                          AppLocalizations.of(context).garden,
                           isSelected: selectedCommonFacilities.contains(
-                            AppLocalizations.of(context)!.garden,
+                            AppLocalizations.of(context).garden,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedCommonFacilities.contains(
-                                AppLocalizations.of(context)!.garden,
+                                AppLocalizations.of(context).garden,
                               )) {
                                 selectedCommonFacilities.remove(
-                                  AppLocalizations.of(context)!.garden,
+                                  AppLocalizations.of(context).garden,
                                 );
                               } else {
                                 selectedCommonFacilities.add(
-                                  AppLocalizations.of(context)!.garden,
+                                  AppLocalizations.of(context).garden,
                                 );
                               }
                             });
@@ -1120,63 +1110,67 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.playground,
+                          AppLocalizations.of(context).playground,
                           isSelected: selectedCommonFacilities.contains(
-                            AppLocalizations.of(context)!.playground,
+                            AppLocalizations.of(context).playground,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedCommonFacilities.contains(
-                                AppLocalizations.of(context)!.playground,
+                                AppLocalizations.of(context).playground,
                               )) {
                                 selectedCommonFacilities.remove(
-                                  AppLocalizations.of(context)!.playground,
+                                  AppLocalizations.of(context).playground,
                                 );
                               } else {
                                 selectedCommonFacilities.add(
-                                  AppLocalizations.of(context)!.playground,
+                                  AppLocalizations.of(context).playground,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.sportsField,
+                          AppLocalizations.of(context).sportsField,
                           isSelected: selectedCommonFacilities.contains(
-                            AppLocalizations.of(context)!.sportsField,
+                            AppLocalizations.of(context).sportsField,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedCommonFacilities.contains(
-                                AppLocalizations.of(context)!.sportsField,
+                                AppLocalizations.of(context).sportsField,
                               )) {
                                 selectedCommonFacilities.remove(
-                                  AppLocalizations.of(context)!.sportsField,
+                                  AppLocalizations.of(context).sportsField,
                                 );
                               } else {
                                 selectedCommonFacilities.add(
-                                  AppLocalizations.of(context)!.sportsField,
+                                  AppLocalizations.of(context).sportsField,
                                 );
                               }
                             });
                           },
                         ),
                         _buildMultiSelectChip(
-                          AppLocalizations.of(context)!.securityGuardLabel,
+                          AppLocalizations.of(context).securityGuardLabel,
                           isSelected: selectedCommonFacilities.contains(
-                            AppLocalizations.of(context)!.securityGuardLabel,
+                            AppLocalizations.of(context).securityGuardLabel,
                           ),
                           onTap: () {
                             setState(() {
                               if (selectedCommonFacilities.contains(
-                                AppLocalizations.of(context)!.securityGuardLabel,
+                                AppLocalizations.of(context).securityGuardLabel,
                               )) {
                                 selectedCommonFacilities.remove(
-                                  AppLocalizations.of(context)!.securityGuardLabel,
+                                  AppLocalizations.of(
+                                    context,
+                                  ).securityGuardLabel,
                                 );
                               } else {
                                 selectedCommonFacilities.add(
-                                  AppLocalizations.of(context)!.securityGuardLabel,
+                                  AppLocalizations.of(
+                                    context,
+                                  ).securityGuardLabel,
                                 );
                               }
                             });
@@ -1215,7 +1209,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                 Expanded(
                   flex: 2,
                   child: AppButton(
-                    text: AppLocalizations.of(context)!.clearFiltersButton,
+                    text: AppLocalizations.of(context).clearFiltersButton,
                     style: AppButtonStyle.outline,
                     onPressed: _clearFilters,
                   ),
@@ -1380,7 +1374,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
               ),
               const SizedBox(width: 8),
               Text(
-                AppLocalizations.of(context)!.currencyUnit,
+                AppLocalizations.of(context).currencyUnit,
                 textAlign: TextAlign.right,
                 style: GoogleFonts.anuphan(
                   color: const Color(0xFFA4A7AE),
@@ -1530,9 +1524,9 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
 
   void _clearFilters() {
     setState(() {
-      selectedApprovalStatus = AppLocalizations.of(context)!.all;
-      selectedPropertyType = AppLocalizations.of(context)!.all;
-      selectedListingType = AppLocalizations.of(context)!.all;
+      selectedApprovalStatus = AppLocalizations.of(context).all;
+      selectedPropertyType = AppLocalizations.of(context).all;
+      selectedListingType = AppLocalizations.of(context).all;
       selectedStatus = null;
       selectedColor = null;
       _minPriceController.clear();

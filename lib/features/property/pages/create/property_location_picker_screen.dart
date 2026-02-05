@@ -60,8 +60,8 @@ class _PropertyLocationPickerScreenState
         _currentResult!.formattedAddressTh.trim().isEmpty) {
       StatusDialog.showWarning(
         context: context,
-        title: AppLocalizations.of(context)!.selectLocationTitle,
-        message: AppLocalizations.of(context)!.selectLocationMessage,
+        title: AppLocalizations.of(context).selectLocationTitle,
+        message: AppLocalizations.of(context).selectLocationMessage,
       );
       return;
     }
@@ -76,10 +76,10 @@ class _PropertyLocationPickerScreenState
 
     await AppConfirmationBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context)!.saveLocation,
-      description: AppLocalizations.of(context)!.confirmLocationPropertySelect,
-      confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
-      cancelLabel: AppLocalizations.of(context)!.statusCancelled,
+      title: AppLocalizations.of(context).saveLocation,
+      description: AppLocalizations.of(context).confirmLocationPropertySelect,
+      confirmLabel: AppLocalizations.of(context).confirmSaveLabel,
+      cancelLabel: AppLocalizations.of(context).statusCancelled,
       style: ConfirmationStyle.normal,
       onConfirm: () {
         if (mounted) Navigator.of(context).pop(pickerResult);
@@ -130,7 +130,7 @@ class _PropertyLocationPickerScreenState
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.mapAddressLabel,
+                    AppLocalizations.of(context).mapAddressLabel,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseBlack,
                       fontSize: 14,
@@ -141,7 +141,7 @@ class _PropertyLocationPickerScreenState
                   Text(
                     _currentResult?.formattedAddressTh.isNotEmpty == true
                         ? _currentResult!.formattedAddressTh
-                        : AppLocalizations.of(context)!.searchAddress,
+                        : AppLocalizations.of(context).searchAddress,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseDarkGrey,
                       fontSize: 12,
@@ -161,7 +161,7 @@ class _PropertyLocationPickerScreenState
                   ),
                   const SizedBox(height: 12),
                   AppButton(
-                    text: AppLocalizations.of(context)!.confirmSaveLabel,
+                    text: AppLocalizations.of(context).confirmSaveLabel,
                     style: AppButtonStyle.primary,
                     onPressed: _onSave,
                   ),

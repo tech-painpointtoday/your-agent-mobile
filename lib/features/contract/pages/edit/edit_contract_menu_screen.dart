@@ -28,7 +28,7 @@ class EditContractMenuScreen extends StatelessWidget {
         backgroundColor: AppColors.primary,
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context)!.editContract,
+            AppLocalizations.of(context).editContract,
             style: GoogleFonts.anuphan(
               color: Colors.white,
               fontSize: 18,
@@ -65,8 +65,8 @@ class EditContractMenuScreen extends StatelessWidget {
               children: [
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context)!.dataProperty,
-                  subtitle: AppLocalizations.of(context)!.dataAddress,
+                  title: AppLocalizations.of(context).dataProperty,
+                  subtitle: AppLocalizations.of(context).dataAddress,
                   iconPath:
                       'assets/icons/home.svg', // Using home icon as placeholder for property owner
                   iconColor: AppColors.brandGreen,
@@ -77,7 +77,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.ownerInfo,
-                        'title': AppLocalizations.of(context)!.dataProperty,
+                        'title': AppLocalizations.of(context).dataProperty,
                         'bloc': bloc,
                       },
                     );
@@ -86,8 +86,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context)!.buyerInfo,
-                  subtitle: AppLocalizations.of(context)!.dataAddress,
+                  title: AppLocalizations.of(context).buyerInfo,
+                  subtitle: AppLocalizations.of(context).dataAddress,
                   iconPath: 'assets/icons/user.svg', // Using user icon
                   iconColor: const Color(0xFF7F56D9), // Purple
                   bgColor: const Color(0xFFF9F5FF), // Light Purple
@@ -97,7 +97,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.buyerInfo,
-                        'title': AppLocalizations.of(context)!.buyerInfo,
+                        'title': AppLocalizations.of(context).buyerInfo,
                         'bloc': bloc,
                       },
                     );
@@ -106,8 +106,10 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context)!.electrical_appliances_photos,
-                  subtitle: AppLocalizations.of(context)!.addDetails,
+                  title: AppLocalizations.of(
+                    context,
+                  ).electrical_appliances_photos,
+                  subtitle: AppLocalizations.of(context).addDetails,
                   iconPath: 'assets/icons/television.svg',
                   iconColor: AppColors.supportOrangeDark,
                   bgColor: AppColors.supportOrangeLight,
@@ -117,7 +119,9 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.appliances,
-                        'title': AppLocalizations.of(context)!.electrical_appliances_photos,
+                        'title': AppLocalizations.of(
+                          context,
+                        ).electrical_appliances_photos,
                         'bloc': bloc,
                       },
                     );
@@ -126,8 +130,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context)!.furniture_photos,
-                  subtitle: AppLocalizations.of(context)!.addFurnitureDetails,
+                  title: AppLocalizations.of(context).furniture_photos,
+                  subtitle: AppLocalizations.of(context).addFurnitureDetails,
                   iconPath: 'assets/icons/sofa.svg',
                   iconColor: AppColors.supportRedDark,
                   bgColor: AppColors.supportRedLight,
@@ -137,7 +141,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.furniture,
-                        'title': AppLocalizations.of(context)!.furniture_photos,
+                        'title': AppLocalizations.of(context).furniture_photos,
                         'bloc': bloc,
                       },
                     );
@@ -146,8 +150,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context)!.payment,
-                  subtitle: AppLocalizations.of(context)!.paymentMethods,
+                  title: AppLocalizations.of(context).payment,
+                  subtitle: AppLocalizations.of(context).paymentMethods,
                   iconPath: 'assets/icons/dollar.svg',
                   iconColor: AppColors.supportGreenDark,
                   bgColor: AppColors.supportGreenLight,
@@ -157,7 +161,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.payment,
-                        'title': AppLocalizations.of(context)!.payment,
+                        'title': AppLocalizations.of(context).payment,
                         'bloc': bloc,
                       },
                     );
@@ -166,8 +170,10 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context)!.additional_conditions,
-                  subtitle: AppLocalizations.of(context)!.addContractConditionsAdditional,
+                  title: AppLocalizations.of(context).additional_conditions,
+                  subtitle: AppLocalizations.of(
+                    context,
+                  ).addContractConditionsAdditional,
                   iconPath: 'assets/icons/star-moving.svg',
                   iconColor: AppColors.supportPinkDark,
                   bgColor: AppColors.supportPinkLight,
@@ -177,7 +183,9 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.additionalConditions,
-                        'title': AppLocalizations.of(context)!.additional_conditions,
+                        'title': AppLocalizations.of(
+                          context,
+                        ).additional_conditions,
                         'bloc': bloc,
                       },
                     );
@@ -186,8 +194,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context)!.contractFile,
-                  subtitle: AppLocalizations.of(context)!.editAddContractFile,
+                  title: AppLocalizations.of(context).contractFile,
+                  subtitle: AppLocalizations.of(context).editAddContractFile,
                   iconPath: 'assets/icons/file.svg',
                   iconColor: AppColors.primary,
                   bgColor: AppColors.primary.withValues(alpha: 0.1),
@@ -197,7 +205,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.attachments,
-                        'title': AppLocalizations.of(context)!.contractFile,
+                        'title': AppLocalizations.of(context).contractFile,
                         'bloc': bloc,
                       },
                     );

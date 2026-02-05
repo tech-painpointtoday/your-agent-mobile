@@ -64,7 +64,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AppBadge(
-                      label: AppLocalizations.of(context)!.general_information,
+                      label: AppLocalizations.of(context).general_information,
                       fontSize: 16,
                       color: BadgeColor.blue,
                     ),
@@ -82,11 +82,11 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   controller: _propertyNameController,
                   hideOnEmpty: false,
                   builder: (context, controller, focusNode) => AppTextField(
-                    label: AppLocalizations.of(context)!.propertyNameHint,
+                    label: AppLocalizations.of(context).propertyNameHint,
                     controller: controller,
                     focusNode: focusNode,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context)!.search_property_name,
+                    hintText: AppLocalizations.of(context).search_property_name,
                     onChanged: (value) {
                       context.read<ContractFormBloc>().add(
                         ContractFormPropertyNameUpdated(value),
@@ -169,14 +169,14 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   emptyBuilder: (context) => Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
-                      AppLocalizations.of(context)!.propertyDataNotFound,
+                      AppLocalizations.of(context).propertyDataNotFound,
                       style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                     ),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  AppLocalizations.of(context)!.searchDataName,
+                  AppLocalizations.of(context).searchDataName,
                   style: GoogleFonts.anuphan(
                     color: AppColors.baseGrey,
                     fontSize: 12,
@@ -187,7 +187,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
 
                 // Contract Date Field
                 AppTextField(
-                  label: AppLocalizations.of(context)!.contract_date,
+                  label: AppLocalizations.of(context).contract_date,
                   isRequired: true,
                   readOnly: false,
                   controller: TextEditingController(
@@ -195,7 +195,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                         ? '${state.contractDate!.day}/${state.contractDate!.month}/${state.contractDate!.year + 543}'
                         : '',
                   ),
-                  hintText: AppLocalizations.of(context)!.contractSelect,
+                  hintText: AppLocalizations.of(context).contractSelect,
                   onTap: () async {
                     final date = await showDatePicker(
                       context: context,
@@ -239,12 +239,18 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
 
                 // Contract Type Selection
                 AppChipSelection<ContractType>(
-                  label: AppLocalizations.of(context)!.contractTypeTitle,
+                  label: AppLocalizations.of(context).contractTypeTitle,
                   isRequired: true,
                   value: state.contractType,
                   options: [
-                    AppChipOption(label: AppLocalizations.of(context)!.saleContractType, value: ContractType.buy),
-                    AppChipOption(label: AppLocalizations.of(context)!.rentContractType, value: ContractType.rent),
+                    AppChipOption(
+                      label: AppLocalizations.of(context).saleContractType,
+                      value: ContractType.buy,
+                    ),
+                    AppChipOption(
+                      label: AppLocalizations.of(context).rentContractType,
+                      value: ContractType.rent,
+                    ),
                   ],
                   onChanged: (type) => context.read<ContractFormBloc>().add(
                     ContractFormTypeUpdated(type),
@@ -254,16 +260,24 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                 if (state.contractType == ContractType.rent) ...[
                   const SizedBox(height: 24),
                   AppChipSelection<String>(
-                    label: AppLocalizations.of(context)!.contractFormat,
+                    label: AppLocalizations.of(context).contractFormat,
                     value: state.leaseFormat.isEmpty ? null : state.leaseFormat,
                     options: [
                       AppChipOption(
-                        label: AppLocalizations.of(context)!.sixMonthLeaseContract,
-                        value: AppLocalizations.of(context)!.sixMonthLeaseContract,
+                        label: AppLocalizations.of(
+                          context,
+                        ).sixMonthLeaseContract,
+                        value: AppLocalizations.of(
+                          context,
+                        ).sixMonthLeaseContract,
                       ),
                       AppChipOption(
-                        label: AppLocalizations.of(context)!.twelveMonthLeaseContract,
-                        value: AppLocalizations.of(context)!.twelveMonthLeaseContract,
+                        label: AppLocalizations.of(
+                          context,
+                        ).twelveMonthLeaseContract,
+                        value: AppLocalizations.of(
+                          context,
+                        ).twelveMonthLeaseContract,
                       ),
                     ],
                     onChanged: (format) {
@@ -274,14 +288,16 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   ),
                   const SizedBox(height: 24),
                   AppTextField(
-                    label: AppLocalizations.of(context)!.contract_start_date,
+                    label: AppLocalizations.of(context).contract_start_date,
                     isRequired: true,
                     controller: TextEditingController(
                       text: state.leaseStartDate != null
                           ? '${state.leaseStartDate!.day}/${state.leaseStartDate!.month}/${state.leaseStartDate!.year + 543}'
                           : '',
                     ),
-                    hintText: AppLocalizations.of(context)!.selectContractStartDate,
+                    hintText: AppLocalizations.of(
+                      context,
+                    ).selectContractStartDate,
                     onTap: () async {
                       final date = await showDatePicker(
                         context: context,
@@ -299,7 +315,9 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   ),
                   const SizedBox(height: 24),
                   AppTextField(
-                    label: AppLocalizations.of(context)!.twelveMonthLeaseContract,
+                    label: AppLocalizations.of(
+                      context,
+                    ).twelveMonthLeaseContract,
                     isRequired: true,
                     readOnly: state.leaseFormat.isNotEmpty,
                     controller: TextEditingController(
@@ -307,7 +325,9 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                           ? '${state.leaseEndDate!.day}/${state.leaseEndDate!.month}/${state.leaseEndDate!.year + 543}'
                           : '',
                     ),
-                    hintText: AppLocalizations.of(context)!.selectContractEndDate,
+                    hintText: AppLocalizations.of(
+                      context,
+                    ).selectContractEndDate,
                     onTap: state.leaseFormat.isNotEmpty
                         ? null
                         : () async {
@@ -332,7 +352,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                   ),
                   const SizedBox(height: 24),
                   AppTextField(
-                    label: AppLocalizations.of(context)!.totalLeasePeriod,
+                    label: AppLocalizations.of(context).totalLeasePeriod,
                     readOnly: true,
                     controller: TextEditingController(
                       text: _formatDuration(state.leaseDuration),

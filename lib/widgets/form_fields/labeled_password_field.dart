@@ -100,11 +100,11 @@ class _LabeledPasswordFieldState extends State<LabeledPasswordField> {
   String? _defaultValidator(String? value) {
     final l10n = AppLocalizations.of(context);
     if (value == null || value.isEmpty) {
-      return l10n?.enter_password ?? 'กรุณากรอก${widget.label}';
+      return l10n.enter_password ?? 'กรุณากรอก${widget.label}';
     }
     if (widget.compareController != null &&
         value != widget.compareController!.text) {
-      return l10n?.passwords_do_not_match ?? 'รหัสผ่านไม่ตรงกัน';
+      return l10n.passwords_do_not_match ?? 'รหัสผ่านไม่ตรงกัน';
     }
     return null;
   }

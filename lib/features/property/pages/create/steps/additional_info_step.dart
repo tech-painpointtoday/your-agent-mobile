@@ -69,7 +69,7 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      AppLocalizations.of(context)!.additional_info_section,
+                      AppLocalizations.of(context).additional_info_section,
                       style: GoogleFonts.anuphan(
                         color: AppColors.primary,
                         fontSize: 14,
@@ -88,53 +88,53 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
 
               // Property Style
               AppSelectableGrid<PropertyStyle>(
-                label: AppLocalizations.of(context)!.propertyStyleLabel,
+                label: AppLocalizations.of(context).propertyStyleLabel,
                 value: state.propertyStyle,
                 isRequired: true,
                 items: [
                   GridItem(
-                    label: AppLocalizations.of(context)!.colonialStyle,
+                    label: AppLocalizations.of(context).colonialStyle,
                     value: PropertyStyle.colonial,
                     imagePath: 'assets/images/property_styles/colonial.jpg',
                   ),
                   GridItem(
-                    label: AppLocalizations.of(context)!.contemporary,
+                    label: AppLocalizations.of(context).contemporary,
                     value: PropertyStyle.contemporary,
                     imagePath: 'assets/images/property_styles/contemporary.jpg',
                   ),
                   GridItem(
-                    label: AppLocalizations.of(context)!.loft,
+                    label: AppLocalizations.of(context).loft,
                     value: PropertyStyle.loft,
                     imagePath: 'assets/images/property_styles/loft.jpg',
                   ),
                   GridItem(
-                    label: AppLocalizations.of(context)!.minimal,
+                    label: AppLocalizations.of(context).minimal,
                     value: PropertyStyle.minimal,
                     imagePath: 'assets/images/property_styles/minimal.jpg',
                   ),
                   GridItem(
-                    label: AppLocalizations.of(context)!.natural,
+                    label: AppLocalizations.of(context).natural,
                     value: PropertyStyle.natural,
                     imagePath: 'assets/images/property_styles/natural.jpg',
                   ),
                   GridItem(
-                    label: AppLocalizations.of(context)!.nordicStyle,
+                    label: AppLocalizations.of(context).nordicStyle,
                     value: PropertyStyle.nordic,
                     imagePath: 'assets/images/property_styles/nordic.jpg',
                   ),
                   GridItem(
-                    label: AppLocalizations.of(context)!.thaiContemporary,
+                    label: AppLocalizations.of(context).thaiContemporary,
                     value: PropertyStyle.thaiContemporary,
                     imagePath:
                         'assets/images/property_styles/thai_contemporary.jpg',
                   ),
                   GridItem(
-                    label: AppLocalizations.of(context)!.vintage,
+                    label: AppLocalizations.of(context).vintage,
                     value: PropertyStyle.vintage,
                     imagePath: 'assets/images/property_styles/vintage.jpg',
                   ),
                   GridItem(
-                    label: AppLocalizations.of(context)!.styleOther,
+                    label: AppLocalizations.of(context).styleOther,
                     value: PropertyStyle.other,
                     imagePath: 'assets/images/property_styles/other.jpg',
                   ),
@@ -169,7 +169,7 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
 
               // Description
               AppTextFormField(
-                label: AppLocalizations.of(context)!.additional_details_section,
+                label: AppLocalizations.of(context).additional_details_section,
                 controller: _descriptionController,
                 maxLines: 5,
                 isRequired: true,

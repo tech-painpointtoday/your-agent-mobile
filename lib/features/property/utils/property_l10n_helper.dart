@@ -4,7 +4,7 @@ import 'package:youragent/l10n/app_localizations.dart';
 
 class PropertyL10n {
   static String getPropertyTypeLabel(BuildContext context, PropertyType type) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return switch (type) {
       PropertyType.house => l10n.houseType,
       PropertyType.condo => l10n.condoType,
@@ -19,7 +19,7 @@ class PropertyL10n {
     BuildContext context,
     PropertyStyle style,
   ) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return switch (style) {
       PropertyStyle.colonial => l10n.styleColonial,
       PropertyStyle.contemporary => l10n.styleContemporary,
@@ -37,7 +37,7 @@ class PropertyL10n {
     BuildContext context,
     PropertyColor color,
   ) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return switch (color) {
       PropertyColor.white => l10n.colorWhite,
       PropertyColor.cream => l10n.colorCream,
@@ -58,7 +58,7 @@ class PropertyL10n {
     BuildContext context,
     PropertyDirection direction,
   ) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return switch (direction) {
       PropertyDirection.north => l10n.dirNorth,
       PropertyDirection.south => l10n.dirSouth,

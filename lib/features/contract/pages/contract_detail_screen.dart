@@ -86,19 +86,19 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           } else if (state is ContractDetailError) {
             StatusDialog.showError(
               context: context,
-              title: AppLocalizations.of(context)!.errorOccurredTitle,
+              title: AppLocalizations.of(context).errorOccurredTitle,
               message: state.message,
             );
           } else if (state is ContractDeletedSuccess) {
             StatusDialog.showSuccessDialog(
               context: context,
-              title: AppLocalizations.of(context)!.contract_deleted_success,
+              title: AppLocalizations.of(context).contract_deleted_success,
               onOk: () => Navigator.pop(context, true),
             );
           } else if (state is ContractActionSuccess) {
             StatusDialog.showSuccess(
               context: context,
-              title: AppLocalizations.of(context)!.successTitle,
+              title: AppLocalizations.of(context).successTitle,
               message: state.message,
             );
           }
@@ -169,7 +169,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
   Widget _buildHeader(BuildContext context, ContractDetailState state) {
     String contractNumber = '-';
-    String propertyName = AppLocalizations.of(context)!.loading;
+    String propertyName = AppLocalizations.of(context).loading;
 
     if (state is ContractDetailLoadedWithoutPdf ||
         state is ContractDetailPdfLoading ||
@@ -227,7 +227,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
     if (hasSellerSigned && hasBuyerSigned) {
       return AppBadge(
-        label: AppLocalizations.of(context)!.signedByBoth,
+        label: AppLocalizations.of(context).signedByBoth,
         color: BadgeColor.blue,
         style: BadgeStyle.dot,
         fontSize: 12,
@@ -235,14 +235,14 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     }
     if (hasSellerSigned) {
       return AppBadge(
-        label: AppLocalizations.of(context)!.signedByLessor,
+        label: AppLocalizations.of(context).signedByLessor,
         color: BadgeColor.default_,
         style: BadgeStyle.done,
         fontSize: 12,
       );
     } else if (hasBuyerSigned) {
       return AppBadge(
-        label: AppLocalizations.of(context)!.signedByLessee,
+        label: AppLocalizations.of(context).signedByLessee,
         color: BadgeColor.default_,
         style: BadgeStyle.done,
         fontSize: 12,
@@ -250,7 +250,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     }
 
     return AppBadge(
-      label: AppLocalizations.of(context)!.notSignedYet,
+      label: AppLocalizations.of(context).notSignedYet,
       color: BadgeColor.default_,
       fontSize: 12,
     );
@@ -264,14 +264,14 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         children: [
           Flexible(
             child: _buildDocumentActionButton(
-              label: AppLocalizations.of(context)!.downloadPdf,
+              label: AppLocalizations.of(context).downloadPdf,
               onTap: state is ContractDetailLoaded && state.pdfPath != null
                   ? () => _downloadPdf(context, state)
                   : () {
                       StatusDialog.showWarning(
                         context: context,
-                        title: AppLocalizations.of(context)!.pleaseWait,
-                        message: AppLocalizations.of(context)!.document,
+                        title: AppLocalizations.of(context).pleaseWait,
+                        message: AppLocalizations.of(context).document,
                       );
                     },
             ),
@@ -279,7 +279,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           const SizedBox(width: 12),
           Flexible(
             child: _buildDocumentActionButton(
-              label: AppLocalizations.of(context)!.shareDocument,
+              label: AppLocalizations.of(context).shareDocument,
               iconPath: 'assets/icons/arrow-up-right.svg',
               onTap: () {
                 if (state is ContractDetailLoaded) {
@@ -328,7 +328,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                 _buildResendOrSendAction(
                   context: context,
                   bottomSheetContext: bottomSheetContext,
-                  label: AppLocalizations.of(context)!.property,
+                  label: AppLocalizations.of(context).property,
                   email: sellerEmail,
                   isSigned: contract.sellerSignedAt != null,
                   onSend: () {
@@ -341,7 +341,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                 _buildResendOrSendAction(
                   context: context,
                   bottomSheetContext: bottomSheetContext,
-                  label: AppLocalizations.of(context)!.lessee,
+                  label: AppLocalizations.of(context).lessee,
                   email: buyerEmail,
                   isSigned: contract.buyerSignedAt != null,
                   onSend: () {
@@ -353,7 +353,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                 if (pdfPath != null) ...[
                   const SizedBox(height: 12),
                   AppButton(
-                    text: AppLocalizations.of(context)!.file,
+                    text: AppLocalizations.of(context).file,
                     style: AppButtonStyle.outline,
                     onPressed: () {
                       Navigator.pop(bottomSheetContext);
@@ -363,7 +363,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                 ],
                 const SizedBox(height: 12),
                 AppButton(
-                  text: AppLocalizations.of(context)!.statusCancelled,
+                  text: AppLocalizations.of(context).statusCancelled,
                   style: AppButtonStyle.ghost,
                   textColor: AppColors.supportRedDeep,
                   onPressed: () => Navigator.pop(bottomSheetContext),
@@ -441,7 +441,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
               ),
             ),
             AppButton(
-              text: AppLocalizations.of(context)!.submit,
+              text: AppLocalizations.of(context).submit,
               style: AppButtonStyle.outline,
               height: 36,
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -451,13 +451,13 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                       Navigator.pop(bottomSheetContext);
                       AppConfirmationBottomSheet.show(
                         context: context,
-                        title: AppLocalizations.of(context)!.submitDocument,
+                        title: AppLocalizations.of(context).submitDocument,
                         description:
                             'คุณต้องการส่งเอกสารไปยัง$label ($email) อีกครั้งใช่หรือไม่?',
-                        confirmLabel: AppLocalizations.of(context)!.submit,
+                        confirmLabel: AppLocalizations.of(context).submit,
                         cancelLabel: AppLocalizations.of(
                           context,
-                        )!.statusCancelled,
+                        ).statusCancelled,
                         style: ConfirmationStyle.normal,
                         onConfirm: onSend,
                       );
@@ -477,11 +477,11 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
               Navigator.pop(bottomSheetContext);
               AppConfirmationBottomSheet.show(
                 context: context,
-                title: AppLocalizations.of(context)!.submitDocumentQuestion,
+                title: AppLocalizations.of(context).submitDocumentQuestion,
                 description:
                     'คุณต้องการส่งเอกสารไปยัง$label ($email) ใช่หรือไม่?',
-                confirmLabel: AppLocalizations.of(context)!.submit,
-                cancelLabel: AppLocalizations.of(context)!.statusCancelled,
+                confirmLabel: AppLocalizations.of(context).submit,
+                cancelLabel: AppLocalizations.of(context).statusCancelled,
                 style: ConfirmationStyle.normal,
                 onConfirm: onSend,
               );
@@ -559,7 +559,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)!.loadingPdf,
+              AppLocalizations.of(context).loadingPdf,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
                 color: AppColors.baseGrey,
@@ -579,7 +579,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)!.preparingPdf,
+              AppLocalizations.of(context).preparingPdf,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
                 color: AppColors.baseGrey,
@@ -634,7 +634,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
     final contract = _getContract(state);
 
-    final buttonText = AppLocalizations.of(context)!.editContract;
+    final buttonText = AppLocalizations.of(context).editContract;
 
     final isCompleted =
         contract.status == ContractStatus.signed ||
@@ -677,10 +677,10 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             onTap: () {
               AppConfirmationBottomSheet.show(
                 context: context,
-                title: AppLocalizations.of(context)!.deleteContract,
-                description: AppLocalizations.of(context)!.deleteBackContract,
-                confirmLabel: AppLocalizations.of(context)!.delete,
-                cancelLabel: AppLocalizations.of(context)!.statusCancelled,
+                title: AppLocalizations.of(context).deleteContract,
+                description: AppLocalizations.of(context).deleteBackContract,
+                confirmLabel: AppLocalizations.of(context).delete,
+                cancelLabel: AppLocalizations.of(context).statusCancelled,
                 style: ConfirmationStyle.destructive,
                 onConfirm: () {
                   context.read<ContractDetailBloc>().add(

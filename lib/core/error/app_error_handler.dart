@@ -28,10 +28,10 @@ class AppErrorHandler {
         final message = error.toString();
         StatusDialog.showErrorDialog(
           context: context,
-          title: AppLocalizations.of(context)!.errorOccurredTitle,
+          title: AppLocalizations.of(context).errorOccurredTitle,
           message: message.isNotEmpty
               ? message
-              : AppLocalizations.of(context)!.unexpectedErrorTryAgain,
+              : AppLocalizations.of(context).unexpectedErrorTryAgain,
         );
       }
 

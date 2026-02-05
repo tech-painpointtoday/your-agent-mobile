@@ -39,7 +39,7 @@ class PropertyImagesStep extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      AppLocalizations.of(context)!.propertyImagesLabel,
+                      AppLocalizations.of(context).propertyImagesLabel,
                       style: GoogleFonts.anuphan(
                         color: AppColors.primary,
                         fontSize: 14,
@@ -85,7 +85,7 @@ class PropertyImagesStep extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              AppLocalizations.of(context)!.uploadImagesButton,
+                              AppLocalizations.of(context).uploadImagesButton,
                               style: GoogleFonts.anuphan(
                                 color: AppColors.baseDarkGrey,
                                 fontSize: 16,
@@ -117,7 +117,7 @@ class PropertyImagesStep extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.imageSampleLabel,
+                      AppLocalizations.of(context).imageSampleLabel,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseBlack,
                         fontSize: 16,
@@ -139,7 +139,7 @@ class PropertyImagesStep extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            AppLocalizations.of(context)!.deleteAllImagesButton,
+                            AppLocalizations.of(context).deleteAllImagesButton,
                             style: GoogleFonts.anuphan(
                               color: AppColors.error,
                               fontSize: 14,
@@ -338,7 +338,7 @@ class PropertyImagesStep extends StatelessWidget {
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 24),
                 title: Text(
-                  AppLocalizations.of(context)!.takePhotoButton,
+                  AppLocalizations.of(context).takePhotoButton,
                   style: GoogleFonts.anuphan(fontSize: 16),
                 ),
                 trailing: SvgPicture.asset(
@@ -369,7 +369,7 @@ class PropertyImagesStep extends StatelessWidget {
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 24),
                 title: Text(
-                  AppLocalizations.of(context)!.selectFromAlbumButton,
+                  AppLocalizations.of(context).selectFromAlbumButton,
                   style: GoogleFonts.anuphan(fontSize: 16),
                 ),
                 trailing: SvgPicture.asset(
@@ -408,10 +408,10 @@ class PropertyImagesStep extends StatelessWidget {
   void _showDeleteConfirmation(BuildContext context) {
     AppConfirmationBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context)!.deleteAllImagesConfirmTitle,
-      description: AppLocalizations.of(context)!.deleteAllImagesConfirmMessage,
-      confirmLabel: AppLocalizations.of(context)!.deleteAllConfirmLabel,
-      cancelLabel: AppLocalizations.of(context)!.statusCancelled,
+      title: AppLocalizations.of(context).deleteAllImagesConfirmTitle,
+      description: AppLocalizations.of(context).deleteAllImagesConfirmMessage,
+      confirmLabel: AppLocalizations.of(context).deleteAllConfirmLabel,
+      cancelLabel: AppLocalizations.of(context).statusCancelled,
       icon: 'assets/icons/trash.svg',
       style: ConfirmationStyle.destructive,
       onConfirm: () {
@@ -420,8 +420,8 @@ class PropertyImagesStep extends StatelessWidget {
         );
         StatusDialog.showSuccess(
           context: context,
-          title: AppLocalizations.of(context)!.successTitle,
-          message: AppLocalizations.of(context)!.imagesDeletedMessage,
+          title: AppLocalizations.of(context).successTitle,
+          message: AppLocalizations.of(context).imagesDeletedMessage,
         );
       },
     );

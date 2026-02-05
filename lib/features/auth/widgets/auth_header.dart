@@ -47,7 +47,7 @@ class _AuthHeaderState extends State<AuthHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final isInLoginFlow = widget.onRoleChanged != null;
 
     return SafeArea(
@@ -56,7 +56,9 @@ class _AuthHeaderState extends State<AuthHeader> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: const BoxDecoration(
           color: AppColors.white,
-          border: Border(bottom: BorderSide(color: Color(0xFFE5E5E5), width: 1)),
+          border: Border(
+            bottom: BorderSide(color: Color(0xFFE5E5E5), width: 1),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,7 +68,11 @@ class _AuthHeaderState extends State<AuthHeader> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SvgPicture.asset('assets/icons/logo.svg', width: 24, height: 24),
+                  SvgPicture.asset(
+                    'assets/icons/logo.svg',
+                    width: 24,
+                    height: 24,
+                  ),
                   const SizedBox(width: 8),
                   SvgPicture.asset('assets/icons/youragent.svg', height: 16),
                 ],
@@ -147,4 +153,3 @@ class _AuthHeaderState extends State<AuthHeader> {
     );
   }
 }
-

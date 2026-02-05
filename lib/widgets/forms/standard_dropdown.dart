@@ -41,7 +41,7 @@ class StandardDropdown<T> extends StatelessWidget {
               validator ??
               (value) {
                 if (isRequired && value == null) {
-                  return AppLocalizations.of(context)?.field_required;
+                  return AppLocalizations.of(context).field_required;
                 }
                 return null;
               },

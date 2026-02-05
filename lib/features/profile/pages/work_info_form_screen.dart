@@ -136,9 +136,9 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
 
     AppConfirmationBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context)!.saveWorkInfoTitle,
-      description: AppLocalizations.of(context)!.saveWorkInfoMessage,
-      confirmLabel: AppLocalizations.of(context)!.confirmSaveLabel,
+      title: AppLocalizations.of(context).saveWorkInfoTitle,
+      description: AppLocalizations.of(context).saveWorkInfoMessage,
+      confirmLabel: AppLocalizations.of(context).confirmSaveLabel,
       onConfirm: () {
         context.read<ProfileBloc>().add(UpdateWorkInfo(data));
       },
@@ -157,7 +157,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
           } else if (state is ProfileError) {
             StatusDialog.showError(
               context: context,
-              title: AppLocalizations.of(context)!.errorOccurredTitle,
+              title: AppLocalizations.of(context).errorOccurredTitle,
               message: state.message,
             );
           }
@@ -180,20 +180,24 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppBadge(
-                          label: AppLocalizations.of(context)!.workInfoLabel,
+                          label: AppLocalizations.of(context).workInfoLabel,
                           color: BadgeColor.blue,
                           style: BadgeStyle.plain,
                         ),
                         SizedBox(height: 24),
                         AppTextField(
-                          label: AppLocalizations.of(context)!.companyNameHint,
-                          hintText: AppLocalizations.of(context)!.companyNameHint,
+                          label: AppLocalizations.of(context).companyNameHint,
+                          hintText: AppLocalizations.of(
+                            context,
+                          ).companyNameHint,
                           controller: _companyController,
                         ),
                         SizedBox(height: 16),
                         AppTextField(
-                          label: AppLocalizations.of(context)!.licenseNumberHint,
-                          hintText: AppLocalizations.of(context)!.licenseNumberHint,
+                          label: AppLocalizations.of(context).licenseNumberHint,
+                          hintText: AppLocalizations.of(
+                            context,
+                          ).licenseNumberHint,
                           controller: _licenseController,
                         ),
                         SizedBox(height: 16),
@@ -205,7 +209,9 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                         ),
                         SizedBox(height: 24),
                         _buildDynamicSection(
-                          title: AppLocalizations.of(context)!.languageProficiencyLabel,
+                          title: AppLocalizations.of(
+                            context,
+                          ).languageProficiencyLabel,
                           items: _languages,
                           keyHint: 'ภาษา (เช่น ไทย)',
                           valueHint: 'ระดับ (เช่น Beginner)',
@@ -230,10 +236,10 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                         ),
                         SizedBox(height: 24),
                         _buildDynamicSection(
-                          title: AppLocalizations.of(context)!.socialLinks,
+                          title: AppLocalizations.of(context).socialLinks,
                           items: _socialLinks,
                           keyHint: 'แพลตฟอร์ม (เช่น Facebook)',
-                          valueHint: AppLocalizations.of(context)!.linkOrIdHint,
+                          valueHint: AppLocalizations.of(context).linkOrIdHint,
                           onAdd: () {
                             setState(() {
                               _socialLinks.add(
@@ -280,7 +286,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
         onPressed: () => context.pop(),
       ),
       title: Text(
-        AppLocalizations.of(context)!.addWorkInfoTitle,
+        AppLocalizations.of(context).addWorkInfoTitle,
         style: GoogleFonts.anuphan(
           color: Colors.white,
           fontSize: 18,
@@ -313,7 +319,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
         children: [
           Expanded(
             child: AppButton(
-              text: AppLocalizations.of(context)!.statusCancelled,
+              text: AppLocalizations.of(context).statusCancelled,
               style: AppButtonStyle.outline,
               onPressed: () => context.pop(),
             ),
@@ -323,7 +329,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
             child: BlocBuilder<ProfileBloc, ProfileState>(
               builder: (context, state) {
                 return AppButton(
-                  text: AppLocalizations.of(context)!.confirmSaveLabel,
+                  text: AppLocalizations.of(context).confirmSaveLabel,
                   style: AppButtonStyle.primary,
                   isLoading: state is ProfileUpdateLoading,
                   onPressed: _onSave,
@@ -369,7 +375,7 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
                   ),
                   SizedBox(width: 4),
                   Text(
-                    AppLocalizations.of(context)!.addLabel,
+                    AppLocalizations.of(context).addLabel,
                     style: GoogleFonts.anuphan(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,

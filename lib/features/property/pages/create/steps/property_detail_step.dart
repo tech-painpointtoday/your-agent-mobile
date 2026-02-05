@@ -96,7 +96,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      AppLocalizations.of(context)!.property_details_section,
+                      AppLocalizations.of(context).property_details_section,
                       style: GoogleFonts.anuphan(
                         color: AppColors.primary,
                         fontSize: 14,
@@ -115,25 +115,25 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Listing Type
               AppSelectionPills<String>(
-                label: AppLocalizations.of(context)!.listingTypeLabel,
+                label: AppLocalizations.of(context).listingTypeLabel,
                 value: state.listingType,
                 isRequired: true,
                 options: [
                   SelectionPillOption(
-                    label: AppLocalizations.of(context)!.listingTypeValueSale,
-                    value: AppLocalizations.of(context)!.listingTypeValueSale,
+                    label: AppLocalizations.of(context).listingTypeValueSale,
+                    value: AppLocalizations.of(context).listingTypeValueSale,
                   ),
                   SelectionPillOption(
-                    label: AppLocalizations.of(context)!.listingTypeValueRent,
-                    value: AppLocalizations.of(context)!.listingTypeValueRent,
+                    label: AppLocalizations.of(context).listingTypeValueRent,
+                    value: AppLocalizations.of(context).listingTypeValueRent,
                   ),
                   SelectionPillOption(
                     label: AppLocalizations.of(
                       context,
-                    )!.listingTypeValueSaleAndRent,
+                    ).listingTypeValueSaleAndRent,
                     value: AppLocalizations.of(
                       context,
-                    )!.listingTypeValueSaleAndRent,
+                    ).listingTypeValueSaleAndRent,
                   ),
                 ],
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
@@ -144,21 +144,17 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Occupancy Status
               AppSelectionPills<String>(
-                label: AppLocalizations.of(context)!.occupancyStatusLabel,
+                label: AppLocalizations.of(context).occupancyStatusLabel,
                 value: state.status,
                 isRequired: true,
                 options: [
                   SelectionPillOption(
-                    label: AppLocalizations.of(context)!.statusValueAvailable,
-                    value: AppLocalizations.of(context)!.statusValueAvailable,
+                    label: AppLocalizations.of(context).statusValueAvailable,
+                    value: AppLocalizations.of(context).statusValueAvailable,
                   ),
                   SelectionPillOption(
-                    label: AppLocalizations.of(
-                      context,
-                    )!.statusValueNotAvailable,
-                    value: AppLocalizations.of(
-                      context,
-                    )!.statusValueNotAvailable,
+                    label: AppLocalizations.of(context).statusValueNotAvailable,
+                    value: AppLocalizations.of(context).statusValueNotAvailable,
                   ),
                 ],
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
@@ -201,7 +197,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
               else ...[
                 // Fallback: Total Floors
                 AppSelectionPills<int>(
-                  label: AppLocalizations.of(context)!.totalFloorsLabel,
+                  label: AppLocalizations.of(context).totalFloorsLabel,
                   value: state.totalFloors,
                   isRequired: true,
                   options: List.generate(
@@ -216,7 +212,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
                 // Fallback: Bedrooms
                 AppSelectionPills<int>(
-                  label: AppLocalizations.of(context)!.bedroomsLabel,
+                  label: AppLocalizations.of(context).bedroomsLabel,
                   value: state.bedrooms,
                   isRequired: true,
                   options: [
@@ -235,7 +231,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
                 // Fallback: Bathrooms
                 AppSelectionPills<int>(
-                  label: AppLocalizations.of(context)!.bathroomsLabel,
+                  label: AppLocalizations.of(context).bathroomsLabel,
                   value: state.bathrooms,
                   isRequired: true,
                   options: List.generate(
@@ -250,7 +246,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
                 // Fallback: Parking
                 AppSelectionPills<int>(
-                  label: AppLocalizations.of(context)!.parkingLabel,
+                  label: AppLocalizations.of(context).parkingLabel,
                   value: state.garage,
                   isRequired: true,
                   options: List.generate(
@@ -266,12 +262,12 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Construction Date (Built)
               AppTextFormField(
-                label: AppLocalizations.of(context)!.builtLabel,
+                label: AppLocalizations.of(context).builtLabel,
                 controller: _builtController,
                 isRequired: true,
                 readOnly: false,
                 showCursor: false,
-                hintText: AppLocalizations.of(context)!.builtHint,
+                hintText: AppLocalizations.of(context).builtHint,
                 suffix: Padding(
                   padding: const EdgeInsets.all(16),
                   child: SvgPicture.asset(
@@ -305,10 +301,10 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Property Color (Asset Color) - Updated to use AppDropdownFormField
               AppDropdownFormField<PropertyColor>(
-                label: AppLocalizations.of(context)!.propertyColor,
+                label: AppLocalizations.of(context).propertyColor,
                 value: state.houseColor,
                 isRequired: true,
-                hint: AppLocalizations.of(context)!.propertyColorHint,
+                hint: AppLocalizations.of(context).propertyColorHint,
                 items: PropertyColor.values,
                 itemLabel: (color) => color.label,
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
@@ -319,13 +315,13 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Price
               AppTextFormField(
-                label: AppLocalizations.of(context)!.priceLabel,
+                label: AppLocalizations.of(context).priceLabel,
                 controller: _priceController,
                 inputFormatters: [CurrencyInputFormatter()],
                 isRequired: true,
                 hintText: '0',
                 suffix: Text(
-                  AppLocalizations.of(context)!.currencyUnit,
+                  AppLocalizations.of(context).currencyUnit,
                   style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                 ),
                 keyboardType: TextInputType.number,
@@ -343,7 +339,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   if (!isCondoOrApt) ...[
                     Expanded(
                       child: AppTextFormField(
-                        label: AppLocalizations.of(context)!.landSizeLabel,
+                        label: AppLocalizations.of(context).landSizeLabel,
                         controller: _landSizeController,
                         maxLength: 6,
                         inputFormatters: [
@@ -353,7 +349,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                         isRequired: true,
                         hintText: '0.00',
                         suffix: Text(
-                          AppLocalizations.of(context)!.sqWahUnit,
+                          AppLocalizations.of(context).sqWahUnit,
                           style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                         ),
                         keyboardType: const TextInputType.numberWithOptions(
@@ -372,7 +368,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   ],
                   Expanded(
                     child: AppTextFormField(
-                      label: AppLocalizations.of(context)!.usableAreaLabel,
+                      label: AppLocalizations.of(context).usableAreaLabel,
                       controller: _buildingSizeController,
                       maxLength: 6,
                       inputFormatters: [
@@ -382,7 +378,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                       isRequired: true,
                       hintText: '0.00',
                       suffix: Text(
-                        AppLocalizations.of(context)!.sqmUnit,
+                        AppLocalizations.of(context).sqmUnit,
                         style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                       ),
                       keyboardType: const TextInputType.numberWithOptions(
@@ -402,9 +398,9 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
               // Direction - Updated to use AppDropdownFormField
               AppDropdownFormField<PropertyDirection>(
-                label: AppLocalizations.of(context)!.propertyDirectionLabel,
+                label: AppLocalizations.of(context).propertyDirectionLabel,
                 value: state.direction,
-                hint: AppLocalizations.of(context)!.propertyDirectionHint,
+                hint: AppLocalizations.of(context).propertyDirectionHint,
                 items: PropertyDirection.values,
                 itemLabel: (dir) => dir.label,
                 onChanged: (val) => context.read<PropertyFormBloc>().add(

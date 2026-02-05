@@ -74,8 +74,8 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
     if (_newPasswordController.text != _confirmPasswordController.text) {
       StatusDialog.showError(
         context: context,
-        title: AppLocalizations.of(context)!.passwordMismatchTitle,
-        message: AppLocalizations.of(context)!.passwordMismatchMessage,
+        title: AppLocalizations.of(context).passwordMismatchTitle,
+        message: AppLocalizations.of(context).passwordMismatchMessage,
       );
       return;
     }
@@ -98,13 +98,13 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
           Navigator.pop(context);
           StatusDialog.showSuccess(
             context: context,
-            title: AppLocalizations.of(context)!.passwordChangeSuccessTitle,
-            message: AppLocalizations.of(context)!.passwordChangeSuccessMessage,
+            title: AppLocalizations.of(context).passwordChangeSuccessTitle,
+            message: AppLocalizations.of(context).passwordChangeSuccessMessage,
           );
         } else if (state is ProfileError) {
           StatusDialog.showError(
             context: context,
-            title: AppLocalizations.of(context)!.errorOccurredTitle,
+            title: AppLocalizations.of(context).errorOccurredTitle,
             message: state.message,
           );
         }
@@ -140,7 +140,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      AppLocalizations.of(context)!.changePasswordButton,
+                      AppLocalizations.of(context).changePasswordButton,
                       style: GoogleFonts.anuphan(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -149,7 +149,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      AppLocalizations.of(context)!.passwordRequirementNote,
+                      AppLocalizations.of(context).passwordRequirementNote,
                       style: GoogleFonts.anuphan(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -158,25 +158,31 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                     ),
                     const SizedBox(height: 24),
                     AppTextField(
-                      label: AppLocalizations.of(context)!.currentPasswordLabel,
+                      label: AppLocalizations.of(context).currentPasswordLabel,
                       controller: _currentPasswordController,
-                      hintText: AppLocalizations.of(context)!.currentPasswordHint,
+                      hintText: AppLocalizations.of(
+                        context,
+                      ).currentPasswordHint,
                       obscureText: true,
                       isRequired: true,
                     ),
                     const SizedBox(height: 24),
                     AppTextField(
-                      label: AppLocalizations.of(context)!.newPasswordLabel,
+                      label: AppLocalizations.of(context).newPasswordLabel,
                       controller: _newPasswordController,
-                      hintText: AppLocalizations.of(context)!.newPasswordHint,
+                      hintText: AppLocalizations.of(context).newPasswordHint,
                       obscureText: true,
                       isRequired: true,
                     ),
                     const SizedBox(height: 24),
                     AppTextField(
-                      label: AppLocalizations.of(context)!.confirmNewPasswordHint,
+                      label: AppLocalizations.of(
+                        context,
+                      ).confirmNewPasswordHint,
                       controller: _confirmPasswordController,
-                      hintText: AppLocalizations.of(context)!.confirmNewPasswordHint,
+                      hintText: AppLocalizations.of(
+                        context,
+                      ).confirmNewPasswordHint,
                       obscureText: true,
 
                       isRequired: true,
@@ -210,7 +216,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                         Expanded(
                           flex: 2,
                           child: AppButton(
-                            text: AppLocalizations.of(context)!.statusCancelled,
+                            text: AppLocalizations.of(context).statusCancelled,
                             style: AppButtonStyle.outline,
                             onPressed: () => Navigator.pop(context),
                           ),
@@ -219,7 +225,9 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                         Expanded(
                           flex: 4,
                           child: AppButton(
-                            text: AppLocalizations.of(context)!.changePasswordButton,
+                            text: AppLocalizations.of(
+                              context,
+                            ).changePasswordButton,
                             style: AppButtonStyle.primary,
                             isLoading: state is ProfileUpdateLoading,
                             enabled: _isFormValid,

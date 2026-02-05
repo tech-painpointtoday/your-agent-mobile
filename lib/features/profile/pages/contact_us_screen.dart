@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/map/fullscreen_map_screen.dart';

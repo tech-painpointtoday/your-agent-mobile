@@ -62,7 +62,7 @@ class _PaymentStepState extends State<PaymentStep> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppBadge(
-                        label: AppLocalizations.of(context)!.payment,
+                        label: AppLocalizations.of(context).payment,
                         fontSize: 16,
                         color: BadgeColor.blue,
                       ),
@@ -95,10 +95,10 @@ class _PaymentStepState extends State<PaymentStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppTextField(
-          label: AppLocalizations.of(context)!.sellingPrice,
+          label: AppLocalizations.of(context).sellingPrice,
           isRequired: true,
           hintText: '0',
-          suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
+          suffix: _buildSuffix(AppLocalizations.of(context).currencyUnit),
           keyboardType: TextInputType.number,
           inputFormatters: [_currencyFormatter],
           controller:
@@ -128,10 +128,10 @@ class _PaymentStepState extends State<PaymentStep> {
           children: [
             Expanded(
               child: AppTextField(
-                label: AppLocalizations.of(context)!.rentalPrice,
+                label: AppLocalizations.of(context).rentalPrice,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
+                suffix: _buildSuffix(AppLocalizations.of(context).currencyUnit),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -156,10 +156,10 @@ class _PaymentStepState extends State<PaymentStep> {
             const SizedBox(width: 16),
             Expanded(
               child: AppTextField(
-                label: AppLocalizations.of(context)!.common_fee,
+                label: AppLocalizations.of(context).common_fee,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
+                suffix: _buildSuffix(AppLocalizations.of(context).currencyUnit),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -189,10 +189,10 @@ class _PaymentStepState extends State<PaymentStep> {
           children: [
             Expanded(
               child: AppTextField(
-                label: AppLocalizations.of(context)!.other_service_fee,
+                label: AppLocalizations.of(context).other_service_fee,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
+                suffix: _buildSuffix(AppLocalizations.of(context).currencyUnit),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -217,10 +217,10 @@ class _PaymentStepState extends State<PaymentStep> {
             const SizedBox(width: 16),
             Expanded(
               child: AppTextField(
-                label: AppLocalizations.of(context)!.total_monthly_payment,
+                label: AppLocalizations.of(context).total_monthly_payment,
                 readOnly: true,
                 hintText: '0',
-                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
+                suffix: _buildSuffix(AppLocalizations.of(context).currencyUnit),
                 controller: TextEditingController(
                   text: state.totalMonthlyPayment > 0
                       ? _formatCurrency(state.totalMonthlyPayment)
@@ -236,10 +236,10 @@ class _PaymentStepState extends State<PaymentStep> {
           children: [
             Expanded(
               child: AppTextField(
-                label: AppLocalizations.of(context)!.advance_rental,
+                label: AppLocalizations.of(context).advance_rental,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
+                suffix: _buildSuffix(AppLocalizations.of(context).currencyUnit),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -264,10 +264,10 @@ class _PaymentStepState extends State<PaymentStep> {
             const SizedBox(width: 16),
             Expanded(
               child: AppTextField(
-                label: AppLocalizations.of(context)!.damage_deposit,
+                label: AppLocalizations.of(context).damage_deposit,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
+                suffix: _buildSuffix(AppLocalizations.of(context).currencyUnit),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -293,10 +293,10 @@ class _PaymentStepState extends State<PaymentStep> {
         ),
         const SizedBox(height: 20),
         AppTextField(
-          label: AppLocalizations.of(context)!.total_payment_before_move_in,
+          label: AppLocalizations.of(context).total_payment_before_move_in,
           readOnly: true,
           hintText: '0',
-          suffix: _buildSuffix(AppLocalizations.of(context)!.currencyUnit),
+          suffix: _buildSuffix(AppLocalizations.of(context).currencyUnit),
           controller: TextEditingController(
             text: state.totalUpfrontPayment > 0
                 ? _formatCurrency(state.totalUpfrontPayment)
@@ -309,10 +309,12 @@ class _PaymentStepState extends State<PaymentStep> {
           children: [
             Expanded(
               child: AppTextField(
-                label: AppLocalizations.of(context)!.paymentDueDateLabel,
+                label: AppLocalizations.of(context).paymentDueDateLabel,
                 isRequired: true,
-                hintText: AppLocalizations.of(context)!.enterDateRangeHint,
-                suffix: _buildSuffix(AppLocalizations.of(context)!.of_every_month),
+                hintText: AppLocalizations.of(context).enterDateRangeHint,
+                suffix: _buildSuffix(
+                  AppLocalizations.of(context).of_every_month,
+                ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
@@ -343,10 +345,10 @@ class _PaymentStepState extends State<PaymentStep> {
             const SizedBox(width: 16),
             Expanded(
               child: AppTextField(
-                label: AppLocalizations.of(context)!.latePaymentPenalty,
+                label: AppLocalizations.of(context).latePaymentPenalty,
                 isRequired: true,
                 hintText: '0',
-                suffix: _buildSuffix(AppLocalizations.of(context)!.bahtPerDay),
+                suffix: _buildSuffix(AppLocalizations.of(context).bahtPerDay),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_currencyFormatter],
                 controller:
@@ -384,11 +386,14 @@ class _PaymentStepState extends State<PaymentStep> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLabel(AppLocalizations.of(context)!.payment_channel, isRequired: true),
+        _buildLabel(
+          AppLocalizations.of(context).payment_channel,
+          isRequired: true,
+        ),
         const SizedBox(height: 8),
         AppDropdown<String>(
           value: state.paymentMethod.isEmpty ? null : state.paymentMethod,
-          hint: AppLocalizations.of(context)!.select_payment_channel,
+          hint: AppLocalizations.of(context).select_payment_channel,
           items: paymentMethods,
           onChanged: (val) {
             context.read<ContractFormBloc>().add(
@@ -403,11 +408,11 @@ class _PaymentStepState extends State<PaymentStep> {
           controller: _bankBranchController,
           hideOnEmpty: true,
           builder: (context, controller, focusNode) => AppTextField(
-            label: AppLocalizations.of(context)!.branch,
+            label: AppLocalizations.of(context).branch,
             controller: controller,
             focusNode: focusNode,
             isRequired: true,
-            hintText: AppLocalizations.of(context)!.enterBranchHint,
+            hintText: AppLocalizations.of(context).enterBranchHint,
             onChanged: (value) {
               context.read<ContractFormBloc>().add(
                 ContractFormBankBranchUpdated(value),
@@ -437,9 +442,9 @@ class _PaymentStepState extends State<PaymentStep> {
         ),
         const SizedBox(height: 20),
         AppTextField(
-          label: AppLocalizations.of(context)!.account_name,
+          label: AppLocalizations.of(context).account_name,
           isRequired: true,
-          hintText: AppLocalizations.of(context)!.enterAccountNameHint,
+          hintText: AppLocalizations.of(context).enterAccountNameHint,
           controller: TextEditingController(text: state.accountName)
             ..selection = TextSelection.fromPosition(
               TextPosition(offset: state.accountName.length),
@@ -450,9 +455,9 @@ class _PaymentStepState extends State<PaymentStep> {
         ),
         const SizedBox(height: 20),
         AppTextField(
-          label: AppLocalizations.of(context)!.account_number,
+          label: AppLocalizations.of(context).account_number,
           isRequired: true,
-          hintText: AppLocalizations.of(context)!.enterAccountNumberHint,
+          hintText: AppLocalizations.of(context).enterAccountNumberHint,
           controller: TextEditingController(text: state.accountNumber)
             ..selection = TextSelection.fromPosition(
               TextPosition(offset: state.accountNumber.length),

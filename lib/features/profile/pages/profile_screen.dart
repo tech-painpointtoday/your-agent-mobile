@@ -110,7 +110,7 @@ class ProfileView extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   AppButton(
-                    text: AppLocalizations.of(context)!.tryAgain,
+                    text: AppLocalizations.of(context).tryAgain,
                     style: AppButtonStyle.primary,
                     onPressed: () =>
                         context.read<ProfileBloc>().add(FetchProfile()),
@@ -125,13 +125,13 @@ class ProfileView extends StatelessWidget {
                 if (state is ProfileUpdateSuccess) {
                   StatusDialog.showSuccess(
                     context: context,
-                    title: AppLocalizations.of(context)!.successTitle,
-                    message: AppLocalizations.of(context)!.profilePhotoUpdated,
+                    title: AppLocalizations.of(context).successTitle,
+                    message: AppLocalizations.of(context).profilePhotoUpdated,
                   );
                 } else if (state is ProfileError) {
                   StatusDialog.showError(
                     context: context,
-                    title: AppLocalizations.of(context)!.errorOccurredTitle,
+                    title: AppLocalizations.of(context).errorOccurredTitle,
                     message: state.message,
                   );
                 }
@@ -214,7 +214,7 @@ class ProfileView extends StatelessWidget {
                   const SizedBox(height: 12),
                   if (profile.verificationStatus.emailVerified)
                     AppBadge(
-                      label: AppLocalizations.of(context)!.emailVerified,
+                      label: AppLocalizations.of(context).emailVerified,
                       color: BadgeColor.green,
                       style: BadgeStyle.done,
                       padding: const EdgeInsets.symmetric(
@@ -224,7 +224,7 @@ class ProfileView extends StatelessWidget {
                     )
                   else
                     AppBadge(
-                      label: AppLocalizations.of(context)!.emailNotVerifiedYet,
+                      label: AppLocalizations.of(context).emailNotVerifiedYet,
                       color: BadgeColor.orange,
                       style: BadgeStyle.done,
                       padding: const EdgeInsets.symmetric(
@@ -289,7 +289,7 @@ class ProfileView extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  AppLocalizations.of(context)!.yourProfile,
+                  AppLocalizations.of(context).yourProfile,
                   style: GoogleFonts.anuphan(
                     color: Colors.white,
                     fontSize: 20,
@@ -413,7 +413,7 @@ class ProfileView extends StatelessWidget {
         ),
         const Spacer(),
         AppButton(
-          text: AppLocalizations.of(context)!.changePasswordButton,
+          text: AppLocalizations.of(context).changePasswordButton,
           style: AppButtonStyle.outline,
           height: 36,
           iconPath: 'assets/icons/security-shield.svg',
@@ -449,7 +449,7 @@ class ProfileView extends StatelessWidget {
 
   Widget _buildPersonalInfoCard(BuildContext context, AgentDetails agent) {
     return _ProfileCard(
-      title: AppLocalizations.of(context)!.personalInfoLabel,
+      title: AppLocalizations.of(context).personalInfoLabel,
       onEdit: () => context.push('/profile/edit', extra: agent),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -460,16 +460,16 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 8),
           _buildInfoRow(
             'assets/icons/phone.svg',
-            agent.mobileNumber ?? AppLocalizations.of(context)!.notSpecified,
+            agent.mobileNumber ?? AppLocalizations.of(context).notSpecified,
           ),
           const SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.bioLabel,
+            AppLocalizations.of(context).bioLabel,
             style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
           ),
           const SizedBox(height: 4),
           Text(
-            agent.bio ?? AppLocalizations.of(context)!.notSpecified,
+            agent.bio ?? AppLocalizations.of(context).notSpecified,
             style: GoogleFonts.anuphan(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -483,13 +483,13 @@ class ProfileView extends StatelessWidget {
 
   Widget _buildConnectionCodeCard(BuildContext context, AgentDetails agent) {
     return _ProfileCard(
-      title: AppLocalizations.of(context)!.profile_agent_code,
+      title: AppLocalizations.of(context).profile_agent_code,
       onCopy: (BuildContext context) {
         Clipboard.setData(ClipboardData(text: agent.agentCredential));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              AppLocalizations.of(context)!.connectionCodeCopied,
+              AppLocalizations.of(context).connectionCodeCopied,
               style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.white),
             ),
           ),
@@ -514,7 +514,7 @@ class ProfileView extends StatelessWidget {
             ],
           ),
           Text(
-            AppLocalizations.of(context)!.notConnectedAgency,
+            AppLocalizations.of(context).notConnectedAgency,
             style: GoogleFonts.anuphan(fontSize: 12, color: AppColors.baseGrey),
           ),
         ],
@@ -528,16 +528,16 @@ class ProfileView extends StatelessWidget {
 
     if (!hasWorkInfo) {
       return _ProfileCard(
-        title: AppLocalizations.of(context)!.workInfoLabel,
+        title: AppLocalizations.of(context).workInfoLabel,
         child: DottedAddButton(
-          label: AppLocalizations.of(context)!.addInfo,
+          label: AppLocalizations.of(context).addInfo,
           onTap: () => context.push('/profile/work-info', extra: agent),
         ),
       );
     }
 
     return _ProfileCard(
-      title: AppLocalizations.of(context)!.workInfoLabel,
+      title: AppLocalizations.of(context).workInfoLabel,
       onEdit: () => context.push('/profile/work-info', extra: agent),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -546,7 +546,7 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 12),
           _buildWorkInfoRow(
             'assets/icons/file-check.svg',
-            'เลขที่ใบอนุญาต ${agent.licenseNumber ?? AppLocalizations.of(context)!.notSpecified}',
+            'เลขที่ใบอนุญาต ${agent.licenseNumber ?? AppLocalizations.of(context).notSpecified}',
           ),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
@@ -555,7 +555,7 @@ class ProfileView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.languageProficiency,
+            AppLocalizations.of(context).languageProficiency,
             style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
           ),
           const SizedBox(height: 8),
@@ -585,7 +585,7 @@ class ProfileView extends StatelessWidget {
             )
           else
             Text(
-              AppLocalizations.of(context)!.notSpecified,
+              AppLocalizations.of(context).notSpecified,
               style: GoogleFonts.anuphan(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
@@ -594,7 +594,7 @@ class ProfileView extends StatelessWidget {
             ),
           const SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.socialLinks,
+            AppLocalizations.of(context).socialLinks,
             style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
           ),
           const SizedBox(height: 8),
@@ -623,7 +623,7 @@ class ProfileView extends StatelessWidget {
             )
           else
             Text(
-              AppLocalizations.of(context)!.notSpecified,
+              AppLocalizations.of(context).notSpecified,
               style: GoogleFonts.anuphan(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
@@ -676,9 +676,9 @@ class ProfileView extends StatelessWidget {
 
     if (!hasServiceArea) {
       return _ProfileCard(
-        title: AppLocalizations.of(context)!.serviceAreaLabel,
+        title: AppLocalizations.of(context).serviceAreaLabel,
         child: DottedAddButton(
-          label: AppLocalizations.of(context)!.addInfo,
+          label: AppLocalizations.of(context).addInfo,
           onTap: () => context.push('/profile/service-area', extra: agent),
         ),
       );
@@ -688,7 +688,7 @@ class ProfileView extends StatelessWidget {
     final lng = double.tryParse(agent.serviceAreaCenterLng!);
 
     return _ProfileCard(
-      title: AppLocalizations.of(context)!.serviceAreaLabel,
+      title: AppLocalizations.of(context).serviceAreaLabel,
       onEdit: () => context.push('/profile/service-area', extra: agent),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -703,7 +703,7 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 16),
           _buildWorkInfoRow(
             'assets/icons/map-pin.svg',
-            agent.address ?? AppLocalizations.of(context)!.addressNotSpecified,
+            agent.address ?? AppLocalizations.of(context).addressNotSpecified,
           ),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
@@ -769,7 +769,7 @@ class ProfileView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              AppLocalizations.of(context)!.profileCompleteness,
+              AppLocalizations.of(context).profileCompleteness,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
                 fontWeight: FontWeight.w400,

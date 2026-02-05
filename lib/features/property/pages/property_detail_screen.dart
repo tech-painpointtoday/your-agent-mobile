@@ -98,7 +98,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
               SizedBox(
                 width: 200,
                 child: AppButton(
-                  text: AppLocalizations.of(context)!.retryButton,
+                  text: AppLocalizations.of(context).retryButton,
                   style: AppButtonStyle.outline,
                   onPressed: _fetchPropertyDetail,
                   height: 40,
@@ -172,7 +172,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: AppButton(
-                text: AppLocalizations.of(context)!.editDataTitle,
+                text: AppLocalizations.of(context).editDataTitle,
                 style: AppButtonStyle.primary,
                 onPressed: () {
                   if (_property != null) {

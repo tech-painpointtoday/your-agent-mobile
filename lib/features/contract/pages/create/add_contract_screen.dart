@@ -63,11 +63,10 @@ class _AddContractView extends StatelessWidget {
 
             AppConfirmationBottomSheet.show(
               context: context,
-              title: AppLocalizations.of(context)!.confirmCancelLabel,
-              description:
-                  AppLocalizations.of(context)!.confirmCancelMessage,
-              confirmLabel: AppLocalizations.of(context)!.confirmCancelLabel,
-              cancelLabel: AppLocalizations.of(context)!.continueEditingLabel,
+              title: AppLocalizations.of(context).confirmCancelLabel,
+              description: AppLocalizations.of(context).confirmCancelMessage,
+              confirmLabel: AppLocalizations.of(context).confirmCancelLabel,
+              cancelLabel: AppLocalizations.of(context).continueEditingLabel,
               style: ConfirmationStyle.destructive,
               onConfirm: () => Navigator.of(context).pop(),
             );
@@ -76,7 +75,7 @@ class _AddContractView extends StatelessWidget {
         titleSpacing: 0,
         title: BlocBuilder<ContractFormBloc, ContractFormState>(
           builder: (context, state) {
-            String title = AppLocalizations.of(context)!.createContractButton;
+            String title = AppLocalizations.of(context).createContractButton;
             return Text(
               title,
               style: GoogleFonts.anuphan(
@@ -109,7 +108,7 @@ class _AddContractView extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    AppLocalizations.of(context)!.saveDraftButton,
+                    AppLocalizations.of(context).saveDraftButton,
                     style: GoogleFonts.anuphan(
                       color: Colors.white,
                       fontSize: 14,
@@ -181,7 +180,7 @@ class _AddContractView extends StatelessWidget {
                 buildWhen: (prev, curr) => prev.step != curr.step,
                 builder: (context, state) {
                   return AppButton(
-                    text: AppLocalizations.of(context)!.backButton,
+                    text: AppLocalizations.of(context).backButton,
                     style: AppButtonStyle.outline,
                     onPressed: state.step > 1
                         ? () => context.read<ContractFormBloc>().add(
@@ -205,7 +204,9 @@ class _AddContractView extends StatelessWidget {
                       state.status == ContractFormStatus.submmitting;
 
                   return AppButton(
-                    text: isLastStep ? AppLocalizations.of(context)!.createContractButton : AppLocalizations.of(context)!.nextButton,
+                    text: isLastStep
+                        ? AppLocalizations.of(context).createContractButton
+                        : AppLocalizations.of(context).nextButton,
                     style: AppButtonStyle.primary,
                     onPressed: (state.isValid && !isLoading)
                         ? () {
