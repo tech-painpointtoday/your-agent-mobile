@@ -138,7 +138,10 @@ class AppRouter {
       ),
       GoRoute(
         path: '/property/create',
-        builder: (context, state) => const CreatePropertyScreen(),
+        builder: (context, state) {
+          final property = state.extra as Property?;
+          return CreatePropertyScreen(property: property);
+        },
       ),
       GoRoute(
         path: '/property/edit',

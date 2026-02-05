@@ -56,14 +56,14 @@ class PropertyFormState extends Equatable {
   final double? landSize;
   final double? buildingSize;
   final PropertyColor? houseColor;
-  final String? built;
+  final DateTime? built;
   final PropertyDirection? direction;
-  final String? availableFrom;
+  final DateTime? availableFrom;
   final List<PropertyFormImage> images;
 
   // New Step 3 Fields
-  final String? listingType; // 'ขาย', 'เช่า', 'ขายและเช่า'
-  final String? status; // 'ว่าง', 'ไม่ว่าง'
+  final PropertyListingType? listingType;
+  final PropertyAvailabilityStatus? status;
   final int? totalFloors; // For houses or generic floor count
 
   // New Step 4 Fields
@@ -295,6 +295,12 @@ class PropertyFormState extends Equatable {
 
       // Attempt to map specific fields from specs if available
       condoProjectId: safeInt(specs['condo_project_id']),
+      selectedCondoProjectId: safeInt(
+        specs['condo_project_id'],
+      ), // For dropdown selection
+      selectedDeveloperId: safeInt(
+        specs['developer_id'],
+      ), // For dropdown selection
       tower: specs['tower'] as String?,
       condoFloor: specs['floor'] as String?,
       unitNo: specs['unit_no'] as String?,
@@ -322,11 +328,11 @@ class PropertyFormState extends Equatable {
     'land_size': landSize,
     'building_size': buildingSize,
     'house_color': houseColor?.label,
-    'built': built,
+    'built': built?.toUtc().toIso8601String(),
     'direction': direction?.value,
     'available_from': availableFrom,
-    'listing_type': listingType,
-    'status': status,
+    'listing_type': listingType?.value,
+    'status': status?.value,
     'total_floors': totalFloors,
     'style': propertyStyle?.value,
     'location_set': latitude != null && longitude != null,
@@ -355,6 +361,10 @@ class PropertyFormState extends Equatable {
     'specifications': {
       ...specifications,
       if (propertyStyle != null) 'style': propertyStyle!.value,
+      if (selectedDeveloperId != null)
+        'developer_id': selectedDeveloperId.toString(),
+      if (selectedCondoProjectId != null)
+        'condo_project_id': selectedCondoProjectId.toString(),
     },
     'specification_values': specificationValues,
   };
@@ -421,9 +431,9 @@ class PropertyFormState extends Equatable {
     double? landSize,
     double? buildingSize,
     PropertyColor? houseColor,
-    String? built,
+    DateTime? built,
     PropertyDirection? direction,
-    String? availableFrom,
+    DateTime? availableFrom,
     List<PropertyFormImage>? images,
     String? number,
     String? city,
@@ -451,8 +461,8 @@ class PropertyFormState extends Equatable {
     List<CondoProject>? condoProjects,
     int? selectedDeveloperId,
     int? selectedCondoProjectId,
-    String? listingType,
-    String? status,
+    PropertyListingType? listingType,
+    PropertyAvailabilityStatus? status,
     int? totalFloors,
     PropertyStyle? propertyStyle,
     PropertySpecificationFilters? specificationFilters,

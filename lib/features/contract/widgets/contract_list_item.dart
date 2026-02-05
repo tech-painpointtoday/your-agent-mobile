@@ -7,6 +7,8 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'contract_status_badge.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'contract_share_bottom_sheet.dart';
 
 class ContractListItem extends StatefulWidget {
   final Contract contract;
@@ -31,8 +33,8 @@ class _ContractListItemState extends State<ContractListItem> {
 
   void _makeCall(String? phone) {
     if (phone == null || phone.isEmpty) return;
-    // Note: Implementation of actual call requires url_launcher
-    debugPrint('Calling $phone');
+    final url = Uri.parse('tel:$phone');
+    launchUrl(url);
   }
 
   @override
@@ -316,7 +318,15 @@ class _ContractListItemState extends State<ContractListItem> {
                         fontWeight: FontWeight.w500,
                         color: AppColors.baseDarkGrey,
                       ),
-                      onPressed: widget.onShare,
+                      onPressed: () {
+                        if (widget.onShare != null) {
+                          widget.onShare!();
+                        }
+                        ContractShareBottomSheet.show(
+                          context: context,
+                          contract: contract,
+                        );
+                      },
                       elevation: 0.1,
                     ),
                   ),

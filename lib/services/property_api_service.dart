@@ -175,7 +175,7 @@ class PropertyApiService {
         // Summary only - don't log all details for each property
         final firstProperty = properties.first;
         debugPrint(
-          'PropertyApiService: Summary - ID: ${firstProperty.id}, name: ${firstProperty.name}, location: ${firstProperty.address}, images: ${firstProperty.imageUrls.length ?? 0}',
+          'PropertyApiService: Summary - ID: ${firstProperty.id}, name: ${firstProperty.name}, location: ${firstProperty.address}, images: ${firstProperty.imageUrls.length}',
         );
       }
       return properties;
@@ -199,23 +199,18 @@ class PropertyApiService {
         '/$actualRole/properties/$propertyId/status',
       );
       final data = response.data as Map<String, dynamic>;
+      ApiResponse<Map<String, dynamic>> apiResponse = ApiResponse.fromJson(
+        data,
+        (data) => data as Map<String, dynamic>,
+      );
 
-      debugPrint('PropertyApiService: Response data keys: ${data.keys}');
-      if (data['property'] != null &&
-          data['property'] is Map<String, dynamic>) {
-        final propertyMap = data['property'] as Map<String, dynamic>;
-        debugPrint(
-          'PropertyApiService: Property ID in response: ${propertyMap['id']}',
+      if (apiResponse.data == null) {
+        throw Exception(
+          'Failed to get property status: ${apiResponse.message}',
         );
       }
 
-      final propertyData = data['property'] is Map<String, dynamic>
-          ? data['property'] as Map<String, dynamic>
-          : data['data'] is Map<String, dynamic>
-          ? data['data'] as Map<String, dynamic>
-          : data;
-
-      final property = Property.fromJson(propertyData);
+      final property = Property.fromJson(apiResponse.data!);
       debugPrint('PropertyApiService: Parsed property ID: ${property.id}');
       return property;
     } catch (e) {
@@ -423,8 +418,6 @@ class PropertyApiService {
     Map<String, List<String>>? specificationValues,
   }) async {
     try {
-      print("specifications: $specifications");
-      print("specificationValues: $specificationValues");
       final data = <String, dynamic>{'property_id': propertyId};
       if (bedrooms != null) data['bedrooms'] = bedrooms;
       if (bathrooms != null) data['bathrooms'] = bathrooms;
@@ -443,8 +436,6 @@ class PropertyApiService {
       if (specificationValues != null) {
         data['specification_values'] = specificationValues;
       }
-
-      print("data: ${data.toString()}");
 
       final response = await _apiClient.post(
         '/agent/properties/create/specs',

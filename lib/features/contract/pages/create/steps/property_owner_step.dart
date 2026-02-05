@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/person_type.dart';
-import 'package:youragent/domain/entities/property_owner.dart';
+import 'package:youragent/domain/entities/owner.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
@@ -122,7 +122,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                   const SizedBox(height: 24),
 
                   // Owner Name with TypeAhead
-                  TypeAheadField<PropertyOwner>(
+                  TypeAheadField<Owner>(
                     controller: _nameController,
                     builder: (context, controller, focusNode) => AppTextField(
                       label: AppLocalizations.of(context).full_name_or_company,

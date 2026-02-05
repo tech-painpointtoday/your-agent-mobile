@@ -11,10 +11,6 @@ import '../../../l10n/app_localizations.dart';
 import '../../../utils/image_url_helper.dart';
 import '../../../widgets/app_bars/silver_app_bar.dart';
 import '../../../widgets/app_search_bar.dart';
-import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
-import '../../auth/bloc/auth_bloc.dart';
-import '../../auth/bloc/auth_event.dart';
-import '../../auth/bloc/auth_state.dart';
 import '../../notifications/bloc/notification_bloc.dart';
 import '../../notifications/bloc/notification_event.dart';
 import '../../notifications/bloc/notification_state.dart';
@@ -42,16 +38,16 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: MenuGridCard(),
             ),
-            SizedBox(height: 18),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: RecommendedSection(),
-            ),
-            SizedBox(height: 18),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: ActivitiesSection(),
-            ),
+            // SizedBox(height: 18),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 16),
+            //   child: RecommendedSection(),
+            // ),
+            // SizedBox(height: 18),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 16),
+            //   child: ActivitiesSection(),
+            // ),
             SizedBox(height: 16),
           ],
         ),

@@ -196,7 +196,7 @@ class EditContractMenuScreen extends StatelessWidget {
                   context,
                   title: AppLocalizations.of(context).contractFile,
                   subtitle: AppLocalizations.of(context).editAddContractFile,
-                  iconPath: 'assets/icons/file.svg',
+                  iconPath: 'assets/icons/file-2.svg',
                   iconColor: AppColors.primary,
                   bgColor: AppColors.primary.withValues(alpha: 0.1),
                   onTap: (bloc) {

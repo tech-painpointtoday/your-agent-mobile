@@ -1571,6 +1571,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get propertyCreatedSuccess => 'Property Created Successfully';
 
   @override
+  String get propertyCreatedErrorMessage =>
+      'Failed to create property. Please try again.';
+
+  @override
   String get errorWithPrefix => 'Error: ';
 
   @override
@@ -2448,6 +2452,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get deleteAllImagesConfirmMessage =>
       'Once you delete, it cannot be undone';
+
+  @override
+  String get discardAllPropertyConfirmTitle =>
+      'Discard All Property Information Changes?';
+
+  @override
+  String get discardAllPropertyConfirmMessage =>
+      'Once you discard, it cannot be undone';
 
   @override
   String get imagesDeletedMessage => 'All images deleted successfully';

@@ -1572,6 +1572,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get propertyCreatedSuccess => 'สร้างทรัพย์สำเร็จ';
 
   @override
+  String get propertyCreatedErrorMessage =>
+      'เกิดข้อผิดพลาดในการสร้างทรัพย์ กรุณาลองใหม่อีกครั้ง';
+
+  @override
   String get errorWithPrefix => 'เกิดข้อผิดพลาด: ';
 
   @override
@@ -2449,6 +2453,13 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get deleteAllImagesConfirmMessage =>
       'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้';
+
+  @override
+  String get discardAllPropertyConfirmTitle => 'ละทิ้งการสร้างทรัพย์?';
+
+  @override
+  String get discardAllPropertyConfirmMessage =>
+      'หากคุณละทิ้งแล้ว จะไม่สามารถย้อนกลับได้';
 
   @override
   String get imagesDeletedMessage => 'ลบรูปภาพทั้งหมดเรียบร้อยแล้ว';

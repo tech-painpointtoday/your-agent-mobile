@@ -5,18 +5,31 @@ import 'package:youragent/data/models/api_response.dart';
 /// Handles standard API response parsing and error handling
 class ApiResponseService {
   /// Parse API response to ApiResponse model
-  static ApiResponse<T> parseResponse<T>(Response response, T Function(dynamic)? fromJson) {
+  static ApiResponse<T> parseResponse<T>(
+    Response response,
+    T Function(dynamic)? fromJson,
+  ) {
     try {
       final data = response.data;
 
-      if (data is Map<String, dynamic>) {
-        return ApiResponse.fromJson(data, fromJson);
+      if (data is Map) {
+        final Map<String, dynamic> map = Map<String, dynamic>.from(data);
+        return ApiResponse.fromJson(map, fromJson);
       } else {
         // If response is not a map, wrap it
-        return ApiResponse<T>(success: true, data: data as T?);
+        T? typedData;
+        if (data is T) {
+          typedData = data;
+        } else if (data is Map && T == Map<String, dynamic>) {
+          typedData = (Map<String, dynamic>.from(data) as dynamic) as T;
+        }
+        return ApiResponse<T>(success: true, data: typedData);
       }
     } catch (e) {
-      return ApiResponse<T>(success: false, message: 'Failed to parse response: $e');
+      return ApiResponse<T>(
+        success: false,
+        message: 'Failed to parse response: $e',
+      );
     }
   }
 
@@ -26,18 +39,25 @@ class ApiResponseService {
     try {
       final data = response.data;
 
-      if (data is Map<String, dynamic>) {
+      if (data is Map) {
+        final Map<String, dynamic> map = Map<String, dynamic>.from(data);
         // Check if it's a standard API response
-        if (data.containsKey('success') && data.containsKey('data')) {
-          final apiResponse = ApiResponse.fromJson(data, fromJson);
+        if (map.containsKey('success') && map.containsKey('data')) {
+          final apiResponse = ApiResponse.fromJson(map, fromJson);
           return apiResponse.data;
         } else {
           // Direct data response
-          return fromJson != null ? fromJson(data) : data as T?;
+          if (fromJson != null) return fromJson(map);
+          if (T == Map<String, dynamic>) {
+            return (Map<String, dynamic>.from(map) as dynamic) as T;
+          }
+          return null;
         }
       } else {
         // Direct data (not a map)
-        return fromJson != null ? fromJson(data) : data as T?;
+        if (fromJson != null) return fromJson(data);
+        if (data is T) return data;
+        return null;
       }
     } catch (e) {
       return null;
@@ -55,28 +75,30 @@ class ApiResponseService {
           error.type == DioExceptionType.sendTimeout) {
         return 'กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต';
       }
-      
+
       // Handle no internet connection
       if (error.type == DioExceptionType.connectionError) {
         return 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต';
       }
-      
+
       // Handle response errors with status codes
       if (error.response != null) {
         final data = error.response?.data;
         final statusCode = error.response?.statusCode;
-        
+
         // Extract message from response data
         String? apiMessage;
         if (data is Map<String, dynamic>) {
           // Try multiple possible message fields
-          apiMessage = data['message'] as String? ??
+          apiMessage =
+              data['message'] as String? ??
               data['error'] as String? ??
               (data['error'] is Map<String, dynamic>
-                  ? (data['error'] as Map<String, dynamic>)['message'] as String?
+                  ? (data['error'] as Map<String, dynamic>)['message']
+                        as String?
                   : null) ??
               data['msg'] as String?;
-          
+
           // For validation errors (422), extract field-specific errors
           if (statusCode == 422 && data['errors'] is Map<String, dynamic>) {
             final errors = data['errors'] as Map<String, dynamic>;
@@ -93,7 +115,7 @@ class ApiResponseService {
             }
           }
         }
-        
+
         // Context-aware messages based on status code
         if (statusCode == 400 || statusCode == 422) {
           // Bad Request / Validation Error: Show specific API message
@@ -104,7 +126,9 @@ class ApiResponseService {
           return 'คุณไม่มีสิทธิ์เข้าถึงข้อมูลนี้';
         } else if (statusCode == 404) {
           return 'ไม่พบข้อมูลที่ต้องการ';
-        } else if (statusCode == 500 || statusCode == 502 || statusCode == 503) {
+        } else if (statusCode == 500 ||
+            statusCode == 502 ||
+            statusCode == 503) {
           // Server Error: Show generic friendly message (don't show stack trace)
           return 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่อีกครั้ง';
         } else if (apiMessage != null && apiMessage.isNotEmpty) {
@@ -115,14 +139,14 @@ class ApiResponseService {
           return error.response?.statusMessage ?? 'เกิดข้อผิดพลาด กรุณาลองใหม่';
         }
       }
-      
+
       // Handle DioException without response
       return error.message ?? 'เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่';
     }
-    
+
     // Handle error strings (from BLoCs that convert errors to strings)
     final errorString = error.toString();
-    
+
     // Try to extract DioException information from string
     if (errorString.contains('DioException')) {
       // Check for timeout patterns
@@ -130,30 +154,31 @@ class ApiResponseService {
         return 'กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต';
       }
       // Check for connection error patterns
-      if (errorString.contains('connection') || errorString.contains('Connection')) {
+      if (errorString.contains('connection') ||
+          errorString.contains('Connection')) {
         return 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต';
       }
     }
-    
+
     // Remove "Exception: " prefix if present
     if (errorString.startsWith('Exception: ')) {
       final cleanMessage = errorString.substring(11).trim();
       // If the remaining message is still technical, provide a generic message
-      if (cleanMessage.contains('DioException') || 
+      if (cleanMessage.contains('DioException') ||
           cleanMessage.contains('SocketException') ||
           cleanMessage.startsWith('Failed')) {
         return 'เกิดข้อผิดพลาด กรุณาลองใหม่';
       }
       return cleanMessage;
     }
-    
+
     // For other error types, provide a generic message if it looks technical
-    if (errorString.contains('Exception') || 
+    if (errorString.contains('Exception') ||
         errorString.contains('Error') ||
         errorString.contains('Failed')) {
       return 'เกิดข้อผิดพลาด กรุณาลองใหม่';
     }
-    
+
     // Return the error string as-is if it looks user-friendly
     return errorString;
   }

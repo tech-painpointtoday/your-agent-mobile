@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:youragent/domain/entities/contract_type.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/person_type.dart';
-import 'package:youragent/domain/entities/property_owner.dart';
+import 'package:youragent/domain/entities/owner.dart';
 import 'package:youragent/domain/entities/buyer.dart';
 import 'package:youragent/domain/entities/appliance_item.dart';
 import 'package:youragent/domain/entities/furniture_item.dart';
@@ -38,8 +38,8 @@ class ContractFormState extends Equatable {
   final String ownerPhone;
   final String ownerEmail;
   final String ownerSignatory;
-  final List<PropertyOwner> owners;
-  final PropertyOwner? selectedOwner;
+  final List<Owner> owners;
+  final Owner? selectedOwner;
 
   // Step 3 Data
   final PersonType buyerType;
@@ -149,8 +149,8 @@ class ContractFormState extends Equatable {
     String? ownerPhone,
     String? ownerEmail,
     String? ownerSignatory,
-    List<PropertyOwner>? owners,
-    PropertyOwner? selectedOwner,
+    List<Owner>? owners,
+    Owner? selectedOwner,
     PersonType? buyerType,
     String? buyerName,
     String? buyerIdCard,

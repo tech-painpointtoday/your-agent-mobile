@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'property.dart';
-import 'property_owner.dart';
+import 'owner.dart';
 import 'property_image.dart';
 
 class ContractCreateData extends Equatable {
   final Property? property;
-  final PropertyOwner? owner;
+  final Owner? owner;
   final String? ownerType;
   final String? contractType;
   final List<PropertyImage> propertyImages;
@@ -32,7 +32,7 @@ class ContractCreateData extends Equatable {
           ? Property.fromJson(json['property'] as Map<String, dynamic>)
           : null,
       owner: json['owner'] != null
-          ? PropertyOwner.fromJson(json['owner'] as Map<String, dynamic>)
+          ? Owner.fromJson(json['owner'] as Map<String, dynamic>)
           : null,
       ownerType: json['owner_type']?.toString(),
       contractType: json['contract_type']?.toString(),

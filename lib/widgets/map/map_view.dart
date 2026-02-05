@@ -114,12 +114,16 @@ class _MapViewState extends State<MapView> {
 
     for (var i = 0; i < widget.properties.length; i++) {
       final property = widget.properties[i];
+      if (property.latitude == null || property.longitude == null) {
+        continue;
+      }
+
       final markerId =
           property.id?.toString() ?? property.code ?? 'property-$i';
       _markers.add(
         Marker(
           markerId: MarkerId(markerId),
-          position: LatLng(property.latitude, property.longitude),
+          position: LatLng(property.latitude!, property.longitude!),
           icon: _customMarkerIcon ?? BitmapDescriptor.defaultMarker,
           infoWindow: InfoWindow(
             title: property.title,

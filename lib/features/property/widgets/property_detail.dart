@@ -111,7 +111,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     children: [
                       if (property.id != null)
                         Text(
-                          'รหัส: ${AppUtils.generatePropertyCode(propertyId: property.id!, createdAt: property.createdAt)}',
+                          '${AppLocalizations.of(context).labelCode}: ${AppUtils.generatePropertyCode(propertyId: property.id!, createdAt: property.createdAt)}',
                           style: GoogleFonts.anuphan(
                             color: AppColors.baseGrey,
                             fontSize: 12,
@@ -122,7 +122,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                       Text(
                         property.title,
                         style: GoogleFonts.anuphan(
-                          color: const Color(0xFF181D27),
+                          color: AppColors.baseBlack,
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
@@ -133,7 +133,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                         Text(
                           property.address!,
                           style: GoogleFonts.anuphan(
-                            color: const Color(0xFF181D27),
+                            color: AppColors.baseBlack,
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                           ),
@@ -141,7 +141,10 @@ class _PropertyDetailState extends State<PropertyDetail> {
                       ],
 
                       const SizedBox(height: 12),
-                      PropertyStatusBadge(status: property.approvalStatus),
+                      PropertyStatusBadge(
+                        status: property.approvalStatus,
+                        isDraft: property.isDraft,
+                      ),
                     ],
                   ),
                 ),
@@ -175,26 +178,29 @@ class _PropertyDetailState extends State<PropertyDetail> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 16),
-                    MapView(
-                      properties: [property],
-                      height: 160,
-                      initialLocation: LatLng(
-                        property.latitude,
-                        property.longitude,
-                      ),
-                      onMaximizeTapped: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FullscreenMapScreen(
-                              showSearch: false,
-                              properties: [property],
+                    if (property.latitude != null &&
+                        property.longitude != null) ...[
+                      const SizedBox(height: 16),
+                      MapView(
+                        properties: [property],
+                        height: 160,
+                        initialLocation: LatLng(
+                          property.latitude!,
+                          property.longitude!,
+                        ),
+                        onMaximizeTapped: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FullscreenMapScreen(
+                                showSearch: false,
+                                properties: [property],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        },
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -213,33 +219,54 @@ class _PropertyDetailState extends State<PropertyDetail> {
                         label: AppLocalizations.of(context).propertyTypeLabel,
                         value: property.propertyType!.label,
                       ),
-                    if (property.listingType?.isNotEmpty == true)
+                    if (property.listingType != null)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).listingTypeLabel,
-                        value: property.listingType!,
+                        value: switch (property.listingType!) {
+                          PropertyListingType.sale => AppLocalizations.of(
+                            context,
+                          ).listingTypeValueSale,
+                          PropertyListingType.rent => AppLocalizations.of(
+                            context,
+                          ).listingTypeValueRent,
+                          PropertyListingType.saleAndRent =>
+                            AppLocalizations.of(
+                              context,
+                            ).listingTypeValueSaleAndRent,
+                        },
                       ),
-                    if (property.status?.isNotEmpty == true)
+                    if (property.status != null)
                       PropertyDetailRow(
                         label: AppLocalizations.of(
                           context,
                         ).occupancyStatusLabel,
-                        value: property.status!,
+                        value: switch (property.status!) {
+                          PropertyAvailabilityStatus.available =>
+                            AppLocalizations.of(context).statusValueAvailable,
+                          PropertyAvailabilityStatus.unavailable =>
+                            AppLocalizations.of(
+                              context,
+                            ).statusValueNotAvailable,
+                        },
                       ),
                     if (property.totalFloors != null &&
                         property.totalFloors! > 0)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).totalFloorsLabel,
-                        value: '${property.totalFloors} ชั้น',
+                        value:
+                            '${property.totalFloors} ${AppLocalizations.of(context).floorUnit}',
                       ),
                     if (property.bedrooms > 0)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).bedroomsLabel,
-                        value: '${property.bedrooms} ห้อง',
+                        value:
+                            '${property.bedrooms} ${AppLocalizations.of(context).roomUnit}',
                       ),
                     if (property.bathrooms > 0)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).bathroomsLabel,
-                        value: '${property.bathrooms} ห้อง',
+                        value:
+                            '${property.bathrooms} ${AppLocalizations.of(context).roomUnit}',
                       ),
                     if (property.garage != null && property.garage! > 0)
                       PropertyDetailRow(
@@ -267,12 +294,14 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     if (property.landSize != null && property.landSize! > 0)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).landSizeLabel,
-                        value: '${property.landSize} ตร.ว.',
+                        value:
+                            '${property.landSize} ${AppLocalizations.of(context).sq_wa}',
                       ),
                     if (property.area > 0)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).usableAreaSize,
-                        value: '${property.area} ตร.ม.',
+                        value:
+                            '${property.area} ${AppLocalizations.of(context).sq_m}',
                       ),
                     if (property.direction != null)
                       PropertyDetailRow(
@@ -286,96 +315,99 @@ class _PropertyDetailState extends State<PropertyDetail> {
               const SizedBox(height: 32),
 
               // 5. Additional Details Section (Updated Icon & Expandable Text)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(bottom: 8),
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            width: 1,
-                            color: AppColors.baseLightGrey,
+              if (property.specificationValues.isNotEmpty ||
+                  property.description.isNotEmpty) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(bottom: 8),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 1,
+                              color: AppColors.baseLightGrey,
+                            ),
                           ),
                         ),
-                      ),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/icons/star-moving.svg',
-                            width: 18,
-                            height: 18,
-                            colorFilter: const ColorFilter.mode(
-                              Color(0xFF181D27),
-                              BlendMode.srcIn,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/icons/star-moving.svg',
+                              width: 18,
+                              height: 18,
+                              colorFilter: const ColorFilter.mode(
+                                Color(0xFF181D27),
+                                BlendMode.srcIn,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            AppLocalizations.of(
+                            const SizedBox(width: 8),
+                            Text(
+                              AppLocalizations.of(
+                                context,
+                              ).additional_details_section,
+                              style: GoogleFonts.anuphan(
+                                color: const Color(0xFF181D27),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // // Property Style
+                      // if (property.propertyStyle != null) ...[
+                      //   const SizedBox(height: 24),
+                      //   Text(
+                      //     AppLocalizations.of(context)!.propertyStyleLabel,
+                      //     style: GoogleFonts.anuphan(
+                      //       color: AppColors.baseDarkGrey,
+                      //       fontSize: 16,
+                      //       fontWeight: FontWeight.w400,
+                      //     ),
+                      //   ),
+                      //   const SizedBox(height: 12),
+                      //   Wrap(
+                      //     spacing: 8,
+                      //     runSpacing: 8,
+                      //     children: [_buildTag(property.propertyStyle!.label)],
+                      //   ),
+                      // ],
+
+                      // Dynamic Specification Values (Highlights, Facilities, Furniture, AirCon, etc.)
+                      BlocBuilder<PropertyMetadataBloc, PropertyMetadataState>(
+                        builder: (context, state) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: _buildDynamicSpecs(
+                              property,
                               context,
-                            ).additional_details_section,
-                            style: GoogleFonts.anuphan(
-                              color: const Color(0xFF181D27),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                              state,
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    ),
-                    // // Property Style
-                    // if (property.propertyStyle != null) ...[
-                    //   const SizedBox(height: 24),
-                    //   Text(
-                    //     AppLocalizations.of(context)!.propertyStyleLabel,
-                    //     style: GoogleFonts.anuphan(
-                    //       color: AppColors.baseDarkGrey,
-                    //       fontSize: 16,
-                    //       fontWeight: FontWeight.w400,
-                    //     ),
-                    //   ),
-                    //   const SizedBox(height: 12),
-                    //   Wrap(
-                    //     spacing: 8,
-                    //     runSpacing: 8,
-                    //     children: [_buildTag(property.propertyStyle!.label)],
-                    //   ),
-                    // ],
 
-                    // Dynamic Specification Values (Highlights, Facilities, Furniture, AirCon, etc.)
-                    BlocBuilder<PropertyMetadataBloc, PropertyMetadataState>(
-                      builder: (context, state) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: _buildDynamicSpecs(
-                            property,
-                            context,
-                            state,
+                      if (property.description.isNotEmpty) ...[
+                        const SizedBox(height: 16),
+                        Text(
+                          AppLocalizations.of(context).descriptionLabel,
+                          style: GoogleFonts.anuphan(
+                            color: AppColors.baseDarkGrey,
+                            fontSize: 16,
                           ),
-                        );
-                      },
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    Text(
-                      AppLocalizations.of(context).descriptionLabel,
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.baseDarkGrey,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    // Expandable Description
-                    ExpandableDescription(text: property.description),
-                  ],
+                        ),
+                        const SizedBox(height: 12),
+                        // Expandable Description
+                        ExpandableDescription(text: property.description),
+                      ],
+                    ],
+                  ),
                 ),
-              ),
-
+              ],
               const SizedBox(height: 32),
             ],
           ),

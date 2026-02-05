@@ -3,7 +3,7 @@ import 'package:youragent/domain/entities/contract.dart';
 import 'package:youragent/domain/entities/contract_type.dart';
 import 'package:youragent/domain/entities/person_type.dart';
 import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/domain/entities/property_owner.dart';
+import 'package:youragent/domain/entities/owner.dart';
 import 'package:youragent/domain/entities/buyer.dart';
 import 'package:youragent/domain/entities/appliance_item.dart';
 import 'package:youragent/domain/entities/furniture_item.dart';
@@ -163,7 +163,7 @@ class ContractFormOwnersFetched extends ContractFormEvent {
 }
 
 class ContractFormOwnerSelected extends ContractFormEvent {
-  final PropertyOwner owner;
+  final Owner owner;
   const ContractFormOwnerSelected(this.owner);
   @override
   List<Object?> get props => [owner];

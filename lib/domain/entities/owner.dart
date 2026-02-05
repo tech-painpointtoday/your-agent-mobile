@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'person_type.dart';
 
-class PropertyOwner extends Equatable {
+class Owner extends Equatable {
   final int? id;
   final String name;
   final String? idCard;
@@ -12,7 +12,7 @@ class PropertyOwner extends Equatable {
   final PersonType type;
   final DateTime? createdAt;
 
-  const PropertyOwner({
+  const Owner({
     this.id,
     required this.name,
     this.idCard,
@@ -24,15 +24,15 @@ class PropertyOwner extends Equatable {
     this.createdAt,
   });
 
-  factory PropertyOwner.fromJson(Map<String, dynamic> json) {
-    return PropertyOwner(
+  factory Owner.fromJson(Map<String, dynamic> json) {
+    return Owner(
       id: json['id'] is int
           ? json['id']
           : int.tryParse(json['id']?.toString() ?? ''),
       name: (json['name'] ?? '').toString(),
       idCard: (json['id_card'] ?? json['national_id'])?.toString(),
       address: json['address']?.toString(),
-      phone: (json['phone'] ?? json['mobile_number'])?.toString(),
+      phone: json['mobile_number']?.toString(),
       email: json['email']?.toString(),
       signatory: json['signatory']?.toString(),
       type: json['type'] == 'juristic'

@@ -35,7 +35,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
     context.read<PropertyFormBloc>().add(const PropertyFormFiltersFetched());
     _builtController = TextEditingController(
       text: state.built != null
-          ? DateFormat('dd/MM/yyyy').format(DateTime.parse(state.built!))
+          ? DateFormat('dd/MM/yyyy').format(state.built!)
           : '',
     );
     _priceController = TextEditingController(
@@ -66,9 +66,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
       listenWhen: (previous, current) => previous.built != current.built,
       listener: (context, state) {
         if (state.built != null) {
-          final formatted = DateFormat(
-            'dd/MM/yyyy',
-          ).format(DateTime.parse(state.built!));
+          final formatted = DateFormat('dd/MM/yyyy').format(state.built!);
           if (_builtController.text != formatted) {
             _builtController.text = formatted;
           }
@@ -114,26 +112,24 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
               const SizedBox(height: 24),
 
               // Listing Type
-              AppSelectionPills<String>(
+              AppSelectionPills<PropertyListingType>(
                 label: AppLocalizations.of(context).listingTypeLabel,
                 value: state.listingType,
                 isRequired: true,
                 options: [
                   SelectionPillOption(
                     label: AppLocalizations.of(context).listingTypeValueSale,
-                    value: AppLocalizations.of(context).listingTypeValueSale,
+                    value: PropertyListingType.sale,
                   ),
                   SelectionPillOption(
                     label: AppLocalizations.of(context).listingTypeValueRent,
-                    value: AppLocalizations.of(context).listingTypeValueRent,
+                    value: PropertyListingType.rent,
                   ),
                   SelectionPillOption(
                     label: AppLocalizations.of(
                       context,
                     ).listingTypeValueSaleAndRent,
-                    value: AppLocalizations.of(
-                      context,
-                    ).listingTypeValueSaleAndRent,
+                    value: PropertyListingType.saleAndRent,
                   ),
                 ],
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
@@ -143,18 +139,18 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
               const SizedBox(height: 24),
 
               // Occupancy Status
-              AppSelectionPills<String>(
+              AppSelectionPills<PropertyAvailabilityStatus>(
                 label: AppLocalizations.of(context).occupancyStatusLabel,
                 value: state.status,
                 isRequired: true,
                 options: [
                   SelectionPillOption(
                     label: AppLocalizations.of(context).statusValueAvailable,
-                    value: AppLocalizations.of(context).statusValueAvailable,
+                    value: PropertyAvailabilityStatus.available,
                   ),
                   SelectionPillOption(
                     label: AppLocalizations.of(context).statusValueNotAvailable,
-                    value: AppLocalizations.of(context).statusValueNotAvailable,
+                    value: PropertyAvailabilityStatus.unavailable,
                   ),
                 ],
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
@@ -284,15 +280,13 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   final picked = await showDatePicker(
                     context: context,
                     initialDate: DateTime.now(),
-                    firstDate: DateTime(1980),
+                    firstDate: DateTime(1900),
                     lastDate: DateTime.now(),
                   );
                   if (picked != null) {
                     if (!context.mounted) return;
                     context.read<PropertyFormBloc>().add(
-                      PropertyFormAdditionalInfoUpdated(
-                        built: picked.toIso8601String(),
-                      ),
+                      PropertyFormAdditionalInfoUpdated(built: picked),
                     );
                   }
                 },

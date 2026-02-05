@@ -32,12 +32,14 @@ class ContractApiService {
       }
 
       final data = apiResponse.data!;
-      final List<dynamic> contractsJson = data['contracts'] is List
-          ? data['contracts']
-          : (data['data'] is List ? data['data'] : []);
+      final List<dynamic> contractsJson = data['data'] is List
+          ? data['data']
+          : [];
 
       return contractsJson
-          .map((json) => Contract.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => Contract.fromJson(Map<String, dynamic>.from(json as Map)),
+          )
           .toList();
     } catch (e) {
       if (e is DioException && e.response != null) {

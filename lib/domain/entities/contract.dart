@@ -6,7 +6,7 @@ import 'furniture_item.dart';
 import 'bank_account.dart';
 import 'property.dart';
 import 'buyer.dart';
-import 'property_owner.dart';
+import 'owner.dart';
 
 class Contract extends Equatable {
   final int? id;
@@ -46,7 +46,7 @@ class Contract extends Equatable {
   final List<BankAccount> bankAccounts;
   final Property? property;
   final Buyer? buyer;
-  final PropertyOwner? owner;
+  final Owner? owner;
 
   const Contract({
     required this.id,
@@ -88,10 +88,20 @@ class Contract extends Equatable {
   });
 
   factory Contract.fromJson(Map<String, dynamic> json) {
-    final propertyJson = json['property'] ?? {};
-    final specs = propertyJson['specs'] ?? {};
-    final buyerJson = json['buyer'] ?? {};
-    final owner = json['owner'] ?? json['seller'] ?? {};
+    final Map<String, dynamic>? propertyJson = json['property'] != null
+        ? Map<String, dynamic>.from(json['property'] as Map)
+        : null;
+    final Map<String, dynamic> specs =
+        propertyJson != null && propertyJson['specs'] != null
+        ? Map<String, dynamic>.from(propertyJson['specs'] as Map)
+        : {};
+    final Map<String, dynamic>? buyerJson = json['buyer'] != null
+        ? Map<String, dynamic>.from(json['buyer'] as Map)
+        : null;
+    final Map<String, dynamic>? ownerJson =
+        (json['owner'] ?? json['seller']) != null
+        ? Map<String, dynamic>.from((json['owner'] ?? json['seller']) as Map)
+        : null;
 
     // Format contract number as 11-digit string with leading zeros
     String formatContractNumber(dynamic id) {
@@ -110,14 +120,14 @@ class Contract extends Equatable {
       if (specs['address'] != null) {
         pName = specs['address'].toString();
       } else {
-        pName = 'Property #${json['property_id'] ?? propertyJson['id']}';
+        pName = 'Property #${json['property_id'] ?? propertyJson?['id']}';
       }
     }
 
     // Get lessor name
     String? lessorName;
-    if (owner['name'] != null) {
-      lessorName = owner['name'].toString();
+    if (ownerJson != null && ownerJson['name'] != null) {
+      lessorName = ownerJson['name'].toString();
     } else if (json['agent_id'] != null) {
       lessorName = 'Agent #${json['agent_id']}';
     }
@@ -129,7 +139,7 @@ class Contract extends Equatable {
       contractNumber: formatContractNumber(json['id']),
       propertyName: pName,
       lessor: lessorName ?? 'N/A',
-      lessee: buyerJson['name']?.toString() ?? 'N/A',
+      lessee: buyerJson?['name']?.toString() ?? 'N/A',
       status: ContractStatus.fromApiValueOrDefault(json['status']?.toString()),
       contractType: ContractType.fromApiValue(
         json['contract_type']?.toString(),
@@ -190,17 +200,11 @@ class Contract extends Equatable {
           )
           .toList(),
       bankAccounts: (json['bank_accounts'] as List? ?? [])
-          .map((e) => BankAccount.fromJson(e as Map<String, dynamic>))
+          .map((e) => BankAccount.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
-      property: json['property'] != null
-          ? Property.fromJson(json['property'] as Map<String, dynamic>)
-          : null,
-      buyer: json['buyer'] != null
-          ? Buyer.fromJson(json['buyer'] as Map<String, dynamic>)
-          : null,
-      owner: json['owner'] != null
-          ? PropertyOwner.fromJson(json['owner'] as Map<String, dynamic>)
-          : null,
+      property: propertyJson != null ? Property.fromJson(propertyJson) : null,
+      buyer: buyerJson != null ? Buyer.fromJson(buyerJson) : null,
+      owner: ownerJson != null ? Owner.fromJson(ownerJson) : null,
     );
   }
 

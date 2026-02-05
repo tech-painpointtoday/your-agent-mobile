@@ -52,7 +52,6 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       if (propertyIdInt == null) throw Exception('Invalid property ID');
 
       final property = await _propertyApiService.getPropertyById(propertyIdInt);
-
       if (property != null) {
         setState(() {
           _property = property;
@@ -172,12 +171,20 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: AppButton(
-                text: AppLocalizations.of(context).editDataTitle,
+                text: _property?.isDraft == true
+                    ? AppLocalizations.of(context).addInfo
+                    : AppLocalizations.of(context).editDataTitle,
                 style: AppButtonStyle.primary,
                 onPressed: () {
                   if (_property != null) {
+                    print("Start direction: ${_property!.direction}");
+                    // Draft properties: route to create flow to resume at correct step
+                    // Completed properties: route to edit menu
+                    final route = _property!.isDraft
+                        ? '/property/create'
+                        : '/property/edit';
                     context
-                        .push('/property/edit', extra: _property)
+                        .push(route, extra: _property)
                         .then((_) => _fetchPropertyDetail());
                   }
                 },

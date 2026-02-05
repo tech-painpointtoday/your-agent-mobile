@@ -34,13 +34,26 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
        _allCondoProjects = initialCondoProjects ?? const [],
        super(
          initialProperty != null
-             ? PropertyFormState.fromProperty(
-                 initialProperty,
-                 filters: initialFilters,
-               ).copyWith(
-                 developers: initialDevelopers,
-                 condoProjects: initialCondoProjects,
-               )
+             ? () {
+                 // Create state from property
+                 final state = PropertyFormState.fromProperty(
+                   initialProperty,
+                   filters: initialFilters,
+                 );
+                 // Filter condoProjects if developer is selected
+                 final filteredProjects = state.selectedDeveloperId != null
+                     ? (initialCondoProjects ?? const [])
+                           .where(
+                             (p) => p.developerId == state.selectedDeveloperId,
+                           )
+                           .toList()
+                     : (initialCondoProjects ?? const []);
+
+                 return state.copyWith(
+                   developers: initialDevelopers,
+                   condoProjects: filteredProjects,
+                 );
+               }()
              : PropertyFormState(
                  specificationFilters:
                      initialFilters ?? const PropertySpecificationFilters(),

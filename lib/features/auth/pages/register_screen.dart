@@ -10,7 +10,6 @@ import '../../../widgets/register_forms/register_form.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import 'package:youragent/l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   final Function(Locale) changeLocale;

@@ -226,7 +226,7 @@ class _ContractScreenState extends State<ContractScreen> {
                             color: BadgeColor.blue,
                           ),
                         )
-                      else if (!_isLoading && _error == null)
+                      else if (_allContracts.isEmpty)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                           child: AppBadges.plain(
@@ -384,11 +384,24 @@ class _ContractScreenState extends State<ContractScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.description_outlined,
-            size: 60,
-            color: AppColors.baseGrey,
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 140, maxHeight: 140),
+              child: Image.asset(
+                'assets/images/property/empty.png',
+                fit: BoxFit.fitWidth,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.image_not_supported,
+                    size: 60,
+                    color: AppColors.baseGrey,
+                  );
+                },
+              ),
+            ),
           ),
+
           const SizedBox(height: 24),
           Text(
             AppLocalizations.of(context).dataContract,

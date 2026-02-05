@@ -14,7 +14,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
   final String description;
   final String confirmLabel;
   final String cancelLabel;
-  final VoidCallback onConfirm;
+  final VoidCallback? onConfirm;
   final VoidCallback? onCancel;
   final ConfirmationStyle style;
   final String? icon;
@@ -25,7 +25,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
     required this.description,
     required this.confirmLabel,
     this.cancelLabel = 'ยกเลิก',
-    required this.onConfirm,
+    this.onConfirm,
     this.onCancel,
     this.style = ConfirmationStyle.normal,
     this.icon,
@@ -37,7 +37,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
     required String description,
     required String confirmLabel,
     String cancelLabel = 'ยกเลิก',
-    required VoidCallback onConfirm,
+    VoidCallback? onConfirm,
     String? icon,
     VoidCallback? onCancel,
     ConfirmationStyle style = ConfirmationStyle.normal,
@@ -136,7 +136,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
-                    onConfirm();
+                    onConfirm?.call();
                   },
                 ),
               ),

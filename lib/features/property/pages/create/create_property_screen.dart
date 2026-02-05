@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
+import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_bloc.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_event.dart';
@@ -18,7 +20,8 @@ import 'steps/property_type_step.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
 class CreatePropertyScreen extends StatelessWidget {
-  const CreatePropertyScreen({super.key});
+  final Property? property;
+  const CreatePropertyScreen({super.key, this.property});
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +35,18 @@ class CreatePropertyScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => PropertyFormBloc(
         initialFilters: filters,
+        initialProperty: property, // Pass the property to load draft data
         initialDevelopers: metadataState.developers,
         initialCondoProjects: metadataState.condoProjects,
       ),
-      child: const _CreatePropertyView(),
+      child: _CreatePropertyView(property: property),
     );
   }
 }
 
 class _CreatePropertyView extends StatelessWidget {
-  const _CreatePropertyView();
+  final Property? property;
+  const _CreatePropertyView({this.property});
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +72,17 @@ class _CreatePropertyView extends StatelessWidget {
 
             AppConfirmationBottomSheet.show(
               context: context,
-              title: AppLocalizations.of(context).confirmInfo,
-              description: AppLocalizations.of(
-                context,
-              ).deleteAllImagesConfirmMessage,
+              title: property?.isDraft == true
+                  ? AppLocalizations.of(context).discardAllPropertyConfirmTitle
+                  : AppLocalizations.of(context).confirmInfo,
+              description: property?.isDraft == true
+                  ? AppLocalizations.of(
+                      context,
+                    ).discardAllPropertyConfirmMessage
+                  : AppLocalizations.of(context).deleteAllImagesConfirmMessage,
               confirmLabel: AppLocalizations.of(context).deleteAllConfirmLabel,
               cancelLabel: AppLocalizations.of(context).statusCancelled,
-              icon: 'assets/images/dialog/confirmation_clear.png',
+              icon: 'assets/images/dialog/YA_Illustration_ConfirmDiscard.png',
               style: ConfirmationStyle.destructive,
               onConfirm: () {
                 Navigator.of(context).pop();
@@ -198,62 +207,30 @@ class _CreatePropertyView extends StatelessWidget {
           else if (state.propertyFormStatus ==
               PropertyFormStatus.submissionSuccess) {
             // Show Success Dialog then pop
-            showDialog(
+
+            AppConfirmationBottomSheet.show(
               context: context,
-              builder: (ctx) => AlertDialog(
-                title: const Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
-                  size: 48,
-                ),
-                content: Text(
-                  state.isDraft
-                      ? AppLocalizations.of(context).propertyPublishedSuccess
-                      : AppLocalizations.of(context).propertyCreatedSuccess,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.anuphan(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                actions: [
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(ctx).pop(); // Close dialog
-                        Navigator.of(context).pop(); // Close create screen
-                        // TODO: Navigate to Detail Screen
-                      },
-                      child: Text(
-                        AppLocalizations.of(context).ok,
-                        style: GoogleFonts.anuphan(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              title: AppLocalizations.of(context).successTitle,
+              description: state.isDraft
+                  ? AppLocalizations.of(context).propertyPublishedSuccess
+                  : AppLocalizations.of(context).propertyCreatedSuccess,
+              confirmLabel: AppLocalizations.of(context).ok,
+              style: ConfirmationStyle.normal,
+              onConfirm: () {
+                context.pop();
+                context.push('/property/${state.propertyId}');
+              },
             );
           } else if (state.propertyFormStatus ==
               PropertyFormStatus.submissionFailure) {
-            showDialog(
+            AppConfirmationBottomSheet.show(
               context: context,
-              builder: (ctx) => AlertDialog(
-                title: const Icon(Icons.error, color: Colors.red, size: 48),
-                content: Text(
-                  'เกิดข้อผิดพลาด: ${state.errorMessage}',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.anuphan(),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(ctx).pop(),
-                    child: Text(
-                      AppLocalizations.of(context).ok,
-                      style: GoogleFonts.anuphan(color: AppColors.primary),
-                    ),
-                  ),
-                ],
-              ),
+              title: AppLocalizations.of(context).errorLabel,
+              description:
+                  state.errorMessage ??
+                  AppLocalizations.of(context).propertyCreatedErrorMessage,
+              confirmLabel: AppLocalizations.of(context).ok,
+              style: ConfirmationStyle.destructive,
             );
           }
         },
@@ -285,9 +262,7 @@ class _CreatePropertyView extends StatelessWidget {
                   case 6:
                     return PropertyConfirmationStep();
                   default:
-                    return Center(
-                      child: Text('Step ${state.step} Coming Soon'),
-                    );
+                    return Center(child: Text('Step ${state.step} Unknown'));
                 }
               },
             ),
@@ -320,15 +295,16 @@ class _CreatePropertyView extends StatelessWidget {
                 builder: (context, state) {
                   return AppButton(
                     text: AppLocalizations.of(context).backButton,
-                    style: AppButtonStyle
-                        .outline, // Assuming outline style exists, or use ghost
+                    style: AppButtonStyle.outline,
                     onPressed: state.step > 1
                         ? () {
                             context.read<PropertyFormBloc>().add(
                               PropertyFormStepChanged(state.step - 1),
                             );
                           }
-                        : null, // Disable if on step 1
+                        : () {
+                            context.pop();
+                          },
                   );
                 },
               ),
@@ -341,7 +317,7 @@ class _CreatePropertyView extends StatelessWidget {
                     prev.step != curr.step ||
                     prev.propertyFormStatus != curr.propertyFormStatus,
                 builder: (context, state) {
-                  final isLastStep = state.step == 6; // Confirmation step
+                  final isLastStep = state.step == 6;
                   return AppButton(
                     text: isLastStep
                         ? (state.isDraft
@@ -349,17 +325,12 @@ class _CreatePropertyView extends StatelessWidget {
                               : AppLocalizations.of(context).createLabel)
                         : AppLocalizations.of(context).nextButton,
                     style: AppButtonStyle.primary,
-                    // If creating, check validation AND not currently submitting
                     onPressed:
                         (state.isValid &&
                             state.propertyFormStatus !=
                                 PropertyFormStatus.submissionInProgress)
                         ? () {
                             if (isLastStep) {
-                              // Confirmation Dialog
-                              // We need access to helper.
-                              // Since we can't await inside build easily without callback,
-                              // we can refactor this into a method.
                               _onNextPressed(context, state);
                             } else {
                               context.read<PropertyFormBloc>().add(

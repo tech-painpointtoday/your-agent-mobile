@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/person_type.dart';
-import 'package:youragent/domain/entities/property_owner.dart';
+import 'package:youragent/domain/entities/owner.dart';
 import 'package:youragent/domain/entities/buyer.dart';
 import 'package:youragent/domain/entities/appliance_item.dart';
 import 'package:youragent/domain/entities/furniture_item.dart';
@@ -634,7 +634,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   ) async {
     try {
       final owners = [
-        const PropertyOwner(
+        const Owner(
           id: 1,
           name: 'สมชาย ใจดี',
           idCard: '1234567890123',

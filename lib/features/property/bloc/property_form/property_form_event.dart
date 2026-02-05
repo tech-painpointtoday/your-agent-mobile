@@ -117,9 +117,9 @@ class PropertyFormDetailsUpdated extends PropertyFormEvent {
 }
 
 class PropertyFormAdditionalInfoUpdated extends PropertyFormEvent {
-  final String? built;
+  final DateTime? built;
   final PropertyDirection? direction;
-  final String? availableFrom;
+  final DateTime? availableFrom;
 
   const PropertyFormAdditionalInfoUpdated({
     this.built,
@@ -176,7 +176,7 @@ class PropertyFormCondoProjectChanged extends PropertyFormEvent {
 }
 
 class PropertyFormListingTypeChanged extends PropertyFormEvent {
-  final String listingType;
+  final PropertyListingType listingType;
   const PropertyFormListingTypeChanged(this.listingType);
 
   @override
@@ -184,7 +184,7 @@ class PropertyFormListingTypeChanged extends PropertyFormEvent {
 }
 
 class PropertyFormStatusChanged extends PropertyFormEvent {
-  final String status;
+  final PropertyAvailabilityStatus status;
   const PropertyFormStatusChanged(this.status);
 
   @override

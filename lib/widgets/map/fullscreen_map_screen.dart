@@ -91,10 +91,13 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
     }
 
     for (final property in widget.properties) {
+      if (property.latitude == null || property.longitude == null) {
+        continue;
+      }
       _markers.add(
         Marker(
           markerId: MarkerId(property.id?.toString() ?? property.code!),
-          position: LatLng(property.latitude, property.longitude),
+          position: LatLng(property.latitude!, property.longitude!),
           icon: _customMarkerIcon ?? BitmapDescriptor.defaultMarker,
           infoWindow: InfoWindow(
             title: property.title,

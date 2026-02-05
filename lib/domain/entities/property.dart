@@ -38,6 +38,21 @@ enum PropertyColor {
     orange => 'ส้ม',
   };
 
+  String get value => switch (this) {
+    white => 'white',
+    cream => 'cream',
+    grey => 'grey',
+    black => 'black',
+    brown => 'brown',
+    red => 'red',
+    yellow => 'yellow',
+    green => 'green',
+    blue => 'blue',
+    pink => 'pink',
+    purple => 'purple',
+    orange => 'orange',
+  };
+
   static PropertyColor? fromLabel(String? label) {
     if (label == null) return null;
     try {
@@ -80,10 +95,10 @@ enum PropertyDirection {
     southWest => 'SW',
   };
 
-  static PropertyDirection? fromLabel(String? label) {
-    if (label == null) return null;
+  static PropertyDirection? fromLabel(String? val) {
+    if (val == null) return null;
     try {
-      return PropertyDirection.values.firstWhere((e) => e.label == label);
+      return PropertyDirection.values.firstWhere((e) => e.value == val);
     } catch (_) {
       return null;
     }
@@ -108,12 +123,12 @@ enum PropertyType {
   };
 
   String get value => switch (this) {
-    house => 'House',
-    condo => 'Condo',
-    townhome => 'Townhome',
-    apartment => 'Apartment',
-    homeOffice => 'HomeOffice',
-    poolVilla => 'PoolVilla',
+    house => 'house',
+    condo => 'condo',
+    townhome => 'townhome',
+    apartment => 'apartment',
+    homeOffice => 'home_office',
+    poolVilla => 'pool_villa',
   };
 
   static PropertyType? fromLabel(String? label) {
@@ -166,6 +181,44 @@ enum PropertyStyle {
   }
 }
 
+enum PropertyListingType {
+  sale,
+  rent,
+  saleAndRent;
+
+  String get value => switch (this) {
+    sale => 'sale',
+    rent => 'rent',
+    saleAndRent => 'sale_rent',
+  };
+
+  static PropertyListingType? fromValue(String? value) {
+    if (value == null) return null;
+    return PropertyListingType.values.firstWhere(
+      (e) => e.value == value || e.name == value,
+      orElse: () => sale,
+    );
+  }
+}
+
+enum PropertyAvailabilityStatus {
+  available,
+  unavailable;
+
+  String get value => switch (this) {
+    available => 'available',
+    unavailable => 'unavailable',
+  };
+
+  static PropertyAvailabilityStatus? fromValue(String? value) {
+    if (value == null) return null;
+    return PropertyAvailabilityStatus.values.firstWhere(
+      (e) => e.value == value || e.name == value,
+      orElse: () => available,
+    );
+  }
+}
+
 class Property extends Equatable {
   final int? id;
   final String? code;
@@ -175,8 +228,8 @@ class Property extends Equatable {
 
   // Location
   final String? address;
-  final double latitude;
-  final double longitude;
+  final double? latitude;
+  final double? longitude;
   final bool locationSet;
   final String? number;
   final String? city;
@@ -194,9 +247,9 @@ class Property extends Equatable {
   // Pricing & Status
   final double price;
   final PropertyApprovalStatus approvalStatus;
-  final String? listingType; // sale, rent
-  final String? status; // available, sold, rented
-  final String? availableFrom;
+  final PropertyListingType? listingType;
+  final PropertyAvailabilityStatus? status;
+  final DateTime? availableFrom;
 
   // Specifications
   final int bedrooms;
@@ -209,7 +262,7 @@ class Property extends Equatable {
   final PropertyStyle? propertyStyle;
   final int? totalFloors; // Total floors of the property
   final PropertyColor? houseColor;
-  final String? built; // Year/Date built
+  final DateTime? built; // Year/Date built
   final PropertyDirection? direction;
 
   // Dynamic / Collections
@@ -234,8 +287,8 @@ class Property extends Equatable {
     this.name,
     this.description = '',
     this.address,
-    this.latitude = 0,
-    this.longitude = 0,
+    this.latitude,
+    this.longitude,
     this.locationSet = false,
     this.number,
     this.city,
@@ -279,23 +332,24 @@ class Property extends Equatable {
   /// Factory: Parses Nested API Response (Smart Parser)
   factory Property.fromJson(Map<String, dynamic> json) {
     // 1. Extract Core Data Wrapper
-    final data = json.containsKey('data')
-        ? json['data'] as Map<String, dynamic>
+    final Map<String, dynamic> data =
+        json.containsKey('data') && json['data'] is Map
+        ? Map<String, dynamic>.from(json['data'] as Map)
         : json;
 
     // 2. Extract Nested Objects (Safely)
-    final specs = data['specs'] is Map<String, dynamic>
-        ? data['specs'] as Map<String, dynamic>
-        : {};
-    final location = data['location'] is Map<String, dynamic>
-        ? data['location'] as Map<String, dynamic>
-        : {};
-    final specValues = specs['specification_values'] is Map<String, dynamic>
-        ? specs['specification_values'] as Map<String, dynamic>
-        : {};
-    final rawSpecs = specs['specifications'] is Map<String, dynamic>
-        ? specs['specifications'] as Map<String, dynamic>
-        : {};
+    final Map<String, dynamic> specs = data['specs'] is Map
+        ? Map<String, dynamic>.from(data['specs'] as Map)
+        : <String, dynamic>{};
+    final Map<String, dynamic> location = data['location'] is Map
+        ? Map<String, dynamic>.from(data['location'] as Map)
+        : <String, dynamic>{};
+    final Map<String, dynamic> specValues = specs['specification_values'] is Map
+        ? Map<String, dynamic>.from(specs['specification_values'] as Map)
+        : <String, dynamic>{};
+    final Map<String, dynamic> rawSpecs = specs['specifications'] is Map
+        ? Map<String, dynamic>.from(specs['specifications'] as Map)
+        : <String, dynamic>{};
 
     // 3. Helper Parsers
     double parseDouble(dynamic val) {
@@ -310,11 +364,6 @@ class Property extends Equatable {
       if (val is num) return val.toInt();
       if (val is String) return int.tryParse(val) ?? 0;
       return 0;
-    }
-
-    List<String> parseList(dynamic list) {
-      if (list is List) return list.map((e) => e.toString()).toList();
-      return [];
     }
 
     String? parseString(dynamic val) {
@@ -360,19 +409,27 @@ class Property extends Equatable {
       // Status & Price
       approvalStatus: parseStatus(data['approval_status']?.toString()),
       price: parseDouble(specs['price'] ?? data['price']),
-      listingType: parseString(data['listing_type']),
+      listingType: PropertyListingType.fromValue(
+        parseString(data['listing_type']),
+      ),
       // Ensure we don't pick up the complex 'status' object as the string status
-      status: parseString(specs['status']),
-      availableFrom:
-          parseString(specs['available_from']) ??
-          parseString(data['available_from']),
+      status: PropertyAvailabilityStatus.fromValue(
+        parseString(specs['status']),
+      ),
+      availableFrom: DateTime.tryParse(
+        specs['available_from']?.toString() ?? '',
+      ),
 
       // Location (Priority: Specs -> Location Object)
       address:
           parseString(specs['address']) ??
           parseString(location['formatted_address_th']),
-      latitude: parseDouble(location['latitude']),
-      longitude: parseDouble(location['longitude']),
+      latitude: location['latitude'] == null
+          ? null
+          : parseDouble(location['latitude']),
+      longitude: location['longitude'] == null
+          ? null
+          : parseDouble(location['longitude']),
       locationSet: location.isNotEmpty,
       number: location['number'] is Map
           ? location['number']['original']?.toString()
@@ -405,8 +462,8 @@ class Property extends Equatable {
             parseString(data['property_style']),
       ),
       houseColor: PropertyColor.fromLabel(parseString(specs['house_color'])),
-      built: parseString(data['built']),
-      direction: PropertyDirection.fromLabel(parseString(specs['direction'])),
+      built: DateTime.tryParse(data['built']?.toString() ?? ''),
+      direction: PropertyDirection.fromLabel(location['direction']),
       totalFloors: parseInt(
         specs['total_floors'] ?? rawSpecs['floors'],
       ), // Try spec object then raw map
@@ -431,16 +488,16 @@ class Property extends Equatable {
   Map<String, dynamic> toCreatePayload() {
     return {
       'name': title, // API expects 'name'
-      'type': propertyType?.label,
+      'type': propertyType?.value,
       'price': price,
       'description': description,
-      'listing_type': listingType,
-      'status': status,
+      'listing_type': listingType?.value,
+      'status': status?.value,
       'property_style': propertyStyle?.value,
-      'built': built,
+      'built': built?.toUtc().toIso8601String(),
       'available_from': availableFrom,
-      'house_color': houseColor?.label,
-      'direction': direction?.label,
+      'house_color': houseColor?.value,
+      'direction': direction?.value,
 
       // Main Stats
       'bedrooms': bedrooms,

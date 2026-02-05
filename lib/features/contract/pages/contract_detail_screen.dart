@@ -15,6 +15,7 @@ import '../../../widgets/dialogs/status_dialog.dart';
 import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/contract_detail_bloc.dart';
 import '../widgets/contract_status_badge.dart';
+import '../widgets/contract_share_bottom_sheet.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
 class ContractDetailScreen extends StatefulWidget {
@@ -295,197 +296,23 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
   void _showShareBottomSheet(BuildContext context, ContractDetailLoaded state) {
     final contract = state.contract;
-    final sellerEmail = contract.owner?.email;
-    final buyerEmail = contract.buyer?.email;
     final pdfPath = state.pdfPath;
 
-    showModalBottomSheet(
+    ContractShareBottomSheet.show(
       context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (bottomSheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Drag Handle
-                Center(
-                  child: Container(
-                    width: 48,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE9EAEB),
-                      borderRadius: BorderRadius.circular(2.5),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                _buildResendOrSendAction(
-                  context: context,
-                  bottomSheetContext: bottomSheetContext,
-                  label: AppLocalizations.of(context).property,
-                  email: sellerEmail,
-                  isSigned: contract.sellerSignedAt != null,
-                  onSend: () {
-                    context.read<ContractDetailBloc>().add(
-                      SendContractToSeller(contract.id!),
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-                _buildResendOrSendAction(
-                  context: context,
-                  bottomSheetContext: bottomSheetContext,
-                  label: AppLocalizations.of(context).lessee,
-                  email: buyerEmail,
-                  isSigned: contract.buyerSignedAt != null,
-                  onSend: () {
-                    context.read<ContractDetailBloc>().add(
-                      SendContractToBuyer(contract.id!),
-                    );
-                  },
-                ),
-                if (pdfPath != null) ...[
-                  const SizedBox(height: 12),
-                  AppButton(
-                    text: AppLocalizations.of(context).file,
-                    style: AppButtonStyle.outline,
-                    onPressed: () {
-                      Navigator.pop(bottomSheetContext);
-                      _downloadPdf(context, state);
-                    },
-                  ),
-                ],
-                const SizedBox(height: 12),
-                AppButton(
-                  text: AppLocalizations.of(context).statusCancelled,
-                  style: AppButtonStyle.ghost,
-                  textColor: AppColors.supportRedDeep,
-                  onPressed: () => Navigator.pop(bottomSheetContext),
-                ),
-                const SizedBox(height: 8),
-              ],
-            ),
-          ),
+      contract: contract,
+      pdfPath: pdfPath,
+      onDownloadPdf: () => _downloadPdf(context, state),
+      onSendToSeller: () {
+        context.read<ContractDetailBloc>().add(
+          SendContractToSeller(contract.id!),
         );
       },
-    );
-  }
-
-  Widget _buildResendOrSendAction({
-    required BuildContext context,
-    required BuildContext bottomSheetContext,
-    required String label,
-    required String? email,
-    required bool isSigned,
-    required VoidCallback onSend,
-  }) {
-    final bool emailExists = email != null && email.isNotEmpty;
-
-    if (isSigned) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: AppColors.supportGreenLight,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColors.supportGreenDark.withValues(alpha: 0.1),
-          ),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/plus.svg',
-                        width: 16,
-                        height: 16,
-                        fit: BoxFit.scaleDown,
-                        colorFilter: ColorFilter.mode(
-                          AppColors.supportGreenDark,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '$labelลงนามแล้ว',
-                        style: GoogleFonts.anuphan(
-                          color: AppColors.supportGreenDark,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (emailExists)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 24),
-                      child: Text(
-                        email,
-                        style: GoogleFonts.anuphan(
-                          color: AppColors.baseGrey,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            AppButton(
-              text: AppLocalizations.of(context).submit,
-              style: AppButtonStyle.outline,
-              height: 36,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              onPressed: !emailExists
-                  ? null
-                  : () {
-                      Navigator.pop(bottomSheetContext);
-                      AppConfirmationBottomSheet.show(
-                        context: context,
-                        title: AppLocalizations.of(context).submitDocument,
-                        description:
-                            'คุณต้องการส่งเอกสารไปยัง$label ($email) อีกครั้งใช่หรือไม่?',
-                        confirmLabel: AppLocalizations.of(context).submit,
-                        cancelLabel: AppLocalizations.of(
-                          context,
-                        ).statusCancelled,
-                        style: ConfirmationStyle.normal,
-                        onConfirm: onSend,
-                      );
-                    },
-            ),
-          ],
-        ),
-      );
-    }
-
-    return AppButton(
-      text: 'ส่งเอกสารไปยัง $label',
-      style: AppButtonStyle.primary,
-      onPressed: !emailExists
-          ? null
-          : () {
-              Navigator.pop(bottomSheetContext);
-              AppConfirmationBottomSheet.show(
-                context: context,
-                title: AppLocalizations.of(context).submitDocumentQuestion,
-                description:
-                    'คุณต้องการส่งเอกสารไปยัง$label ($email) ใช่หรือไม่?',
-                confirmLabel: AppLocalizations.of(context).submit,
-                cancelLabel: AppLocalizations.of(context).statusCancelled,
-                style: ConfirmationStyle.normal,
-                onConfirm: onSend,
-              );
-            },
+      onSendToBuyer: () {
+        context.read<ContractDetailBloc>().add(
+          SendContractToBuyer(contract.id!),
+        );
+      },
     );
   }
 

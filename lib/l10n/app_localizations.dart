@@ -3164,6 +3164,12 @@ abstract class AppLocalizations {
   /// **'Property Created Successfully'**
   String get propertyCreatedSuccess;
 
+  /// No description provided for @propertyCreatedErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create property. Please try again.'**
+  String get propertyCreatedErrorMessage;
+
   /// No description provided for @errorWithPrefix.
   ///
   /// In en, this message translates to:
@@ -4879,6 +4885,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Once you delete, it cannot be undone'**
   String get deleteAllImagesConfirmMessage;
+
+  /// No description provided for @discardAllPropertyConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard All Property Information Changes?'**
+  String get discardAllPropertyConfirmTitle;
+
+  /// No description provided for @discardAllPropertyConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Once you discard, it cannot be undone'**
+  String get discardAllPropertyConfirmMessage;
 
   /// No description provided for @imagesDeletedMessage.
   ///

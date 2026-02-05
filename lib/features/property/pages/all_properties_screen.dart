@@ -349,8 +349,8 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 140, maxHeight: 140),
               child: Image.asset(
-                'assets/images/property/empty_state.png',
-                fit: BoxFit.contain,
+                'assets/images/property/empty.png',
+                fit: BoxFit.fitWidth,
                 errorBuilder: (context, error, stackTrace) {
                   return const Icon(
                     Icons.image_not_supported,

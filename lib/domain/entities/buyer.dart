@@ -30,7 +30,7 @@ class Buyer extends Equatable {
       name: (json['name'] ?? '').toString(),
       idCard: json['id_card']?.toString(),
       address: json['address']?.toString(),
-      phone: json['phone']?.toString(),
+      phone: json['mobile_number']?.toString(),
       email: json['email']?.toString(),
       type: json['type'] == 'juristic'
           ? PersonType.juristic
