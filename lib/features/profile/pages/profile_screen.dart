@@ -13,7 +13,6 @@ import '../../../app/router.dart';
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../utils/image_url_helper.dart';
-import '../../../widgets/backgrounds/blue_wave_background.dart';
 import '../../../widgets/badges/app_badge.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../bloc/profile_bloc.dart';
@@ -22,6 +21,7 @@ import '../widgets/change_password_bottom_sheet.dart';
 import '../../../widgets/modals/app_image_picker_bottom_sheet.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import '../../../widgets/app_bars/silver_app_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -81,17 +81,19 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.baseOffWhite,
-      body: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
-          if (state is ProfileLoading) {
-            return const Center(
+    final l10n = AppLocalizations.of(context);
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        if (state is ProfileLoading) {
+          return const Scaffold(
+            body: Center(
               child: CircularProgressIndicator(color: AppColors.primary),
-            );
-          }
-          if (state is ProfileError) {
-            return Center(
+            ),
+          );
+        }
+        if (state is ProfileError) {
+          return Scaffold(
+            body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -110,42 +112,98 @@ class ProfileView extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   AppButton(
-                    text: AppLocalizations.of(context).tryAgain,
+                    text: l10n.tryAgain,
                     style: AppButtonStyle.primary,
                     onPressed: () =>
                         context.read<ProfileBloc>().add(FetchProfile()),
                   ),
                 ],
               ),
-            );
-          }
-          if (state is ProfileLoaded) {
-            return BlocListener<ProfileBloc, ProfileState>(
-              listener: (context, state) {
-                if (state is ProfileUpdateSuccess) {
-                  StatusDialog.showSuccess(
-                    context: context,
-                    title: AppLocalizations.of(context).successTitle,
-                    message: AppLocalizations.of(context).profilePhotoUpdated,
-                  );
-                } else if (state is ProfileError) {
-                  StatusDialog.showError(
-                    context: context,
-                    title: AppLocalizations.of(context).errorOccurredTitle,
-                    message: state.message,
-                  );
-                }
+            ),
+          );
+        }
+        if (state is ProfileLoaded) {
+          return BlocListener<ProfileBloc, ProfileState>(
+            listener: (context, state) {
+              if (state is ProfileUpdateSuccess) {
+                StatusDialog.showSuccess(
+                  context: context,
+                  title: l10n.successTitle,
+                  message: l10n.profilePhotoUpdated,
+                );
+              } else if (state is ProfileError) {
+                StatusDialog.showError(
+                  context: context,
+                  title: l10n.errorOccurredTitle,
+                  message: state.message,
+                );
+              }
+            },
+            child: SilverAppBarScreen(
+              title: l10n.yourProfile,
+              backgroundHeight: 160,
+              preferredHeight: 120,
+              onRefresh: () async {
+                context.read<ProfileBloc>().add(FetchProfile());
               },
+              leading: IconButton(
+                onPressed: () => context.pop(),
+                icon: Container(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 36,
+                    minHeight: 36,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/icons/chevron-left.svg',
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                    fit: BoxFit.scaleDown,
+                    width: 20,
+                    height: 20,
+                  ),
+                ),
+              ),
+              actionWidget: IconButton(
+                onPressed: () => context.push('/profile/settings'),
+                icon: Container(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 36,
+                    minHeight: 36,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/icons/dots.svg',
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                    fit: BoxFit.scaleDown,
+                    width: 20,
+                    height: 20,
+                  ),
+                ),
+              ),
               child: _buildContent(
                 context,
                 state.profile,
                 context.read<ProfileBloc>(),
               ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+            ),
+          );
+        }
+        return const Scaffold(body: SizedBox.shrink());
+      },
     );
   }
 
@@ -156,175 +214,108 @@ class ProfileView extends StatelessWidget {
   ) {
     final agent = profile.agent;
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        await Future.delayed(const Duration(seconds: 1));
-        profileBloc.add(FetchProfile());
-      },
-      color: AppColors.baseWhite,
-      backgroundColor: AppColors.primary,
-      child: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(parent: BouncingScrollPhysics()),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height:
-                  (120 + MediaQuery.of(context).padding.top) +
-                  (MediaQuery.of(context).size.width * (80 / 360) * 0.4),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  _buildHeader(context),
-                  Positioned(
-                    bottom: 0,
-                    left: 16,
-                    right: 16,
-                    child: _buildProfileHeader(
-                      context,
-                      agent,
-                      profile.verificationStatus,
-                      profileBloc,
-                    ),
-                  ),
-                ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Overlapping Section
+        Container(
+          height: 60, // Total height of the overlap area
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Profile Picture Overlap
+              Positioned(
+                top:
+                    -40, // Half of the circle overlapping (assuming radius is ~60)
+                left: 0,
+                child: _buildProfileHeader(
+                  context,
+                  agent,
+                  profile.verificationStatus,
+                  profileBloc,
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    agent.name,
-                    style: GoogleFonts.anuphan(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.baseBlack,
-                    ),
+              // Change Password Button Overlap
+              Positioned(
+                top: -18, // Adjusted to match the overlap in the image
+                right: 0,
+                child: AppButton(
+                  text: AppLocalizations.of(context).changePasswordButton,
+                  style: AppButtonStyle.outline,
+                  height: 36,
+                  iconPath: 'assets/icons/security-shield.svg',
+                  iconSize: 12,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  textStyle: GoogleFonts.anuphan(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.baseDarkGrey,
                   ),
-                  Text(
-                    agent.email,
-                    style: GoogleFonts.anuphan(
-                      fontSize: 16,
-                      color: AppColors.baseGrey,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  if (profile.verificationStatus.emailVerified)
-                    AppBadge(
-                      label: AppLocalizations.of(context).emailVerified,
-                      color: BadgeColor.green,
-                      style: BadgeStyle.done,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                    )
-                  else
-                    AppBadge(
-                      label: AppLocalizations.of(context).emailNotVerifiedYet,
-                      color: BadgeColor.orange,
-                      style: BadgeStyle.done,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                    ),
-                  const SizedBox(height: 24),
-                  _buildProfileCompletenessWidget(context, agent),
-                  const SizedBox(height: 24),
-                  _buildPersonalInfoCard(context, agent),
-                  const SizedBox(height: 16),
-                  _buildConnectionCodeCard(context, agent),
-                  const SizedBox(height: 16),
-                  _buildWorkInfoCard(context, agent),
-                  const SizedBox(height: 16),
-                  _buildServiceAreaCard(context, agent),
-                  const SizedBox(height: 64),
-                ],
+                  textColor: AppColors.baseDarkGrey,
+                  onPressed: () =>
+                      ChangePasswordBottomSheet.show(context, profileBloc),
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return SizedBox(
-      height: 100 + MediaQuery.of(context).padding.top,
-      child: BlueWaveBackground(
-        child: SafeArea(
-          top: false,
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () => context.pop(),
-                  icon: Container(
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                      minWidth: 36,
-                      minHeight: 36,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/icons/chevron-left.svg',
-                      colorFilter: const ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.srcIn,
-                      ),
-                      fit: BoxFit.scaleDown,
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
-                ),
-                Text(
-                  AppLocalizations.of(context).yourProfile,
-                  style: GoogleFonts.anuphan(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => context.push('/profile/settings'),
-                  icon: Container(
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                      minWidth: 36,
-                      minHeight: 36,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/icons/dots.svg',
-                      colorFilter: const ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.srcIn,
-                      ),
-                      fit: BoxFit.scaleDown,
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            ],
           ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                agent.name,
+                style: GoogleFonts.anuphan(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.baseBlack,
+                ),
+              ),
+              Text(
+                agent.email,
+                style: GoogleFonts.anuphan(
+                  fontSize: 16,
+                  color: AppColors.baseGrey,
+                ),
+              ),
+              const SizedBox(height: 12),
+              if (profile.verificationStatus.emailVerified)
+                AppBadge(
+                  label: AppLocalizations.of(context).emailVerified,
+                  color: BadgeColor.green,
+                  style: BadgeStyle.done,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                )
+              else
+                AppBadge(
+                  label: AppLocalizations.of(context).emailNotVerifiedYet,
+                  color: BadgeColor.orange,
+                  style: BadgeStyle.done,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                ),
+              const SizedBox(height: 24),
+              _buildProfileCompletenessWidget(context, agent),
+              const SizedBox(height: 24),
+              _buildPersonalInfoCard(context, agent),
+              const SizedBox(height: 16),
+              _buildConnectionCodeCard(context, agent),
+              const SizedBox(height: 16),
+              _buildWorkInfoCard(context, agent),
+              const SizedBox(height: 16),
+              _buildServiceAreaCard(context, agent),
+              const SizedBox(height: 64),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -339,93 +330,72 @@ class ProfileView extends StatelessWidget {
     );
     final initial = agent.name.isNotEmpty ? agent.name[0].toUpperCase() : '?';
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+    return Stack(
       children: [
-        Stack(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * (80 / 360),
-              height: MediaQuery.of(context).size.width * (80 / 360),
+        Container(
+          width: MediaQuery.of(context).size.width * (80 / 360),
+          height: MediaQuery.of(context).size.width * (80 / 360),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 4),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: ClipOval(
+            child: profilePhotoUrl != null
+                ? CachedNetworkImage(
+                    imageUrl: profilePhotoUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => _buildDefaultAvatar(initial),
+                    errorWidget: (context, url, error) =>
+                        _buildDefaultAvatar(initial),
+                  )
+                : _buildDefaultAvatar(initial),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          bottom: 0,
+          child: InkWell(
+            onTap: () {
+              AppImagePickerBottomSheet.show(
+                context: context,
+                onImagesPicked: (paths) {
+                  if (paths.isNotEmpty) {
+                    profileBloc.add(UpdateProfilePhoto(paths.first));
+                  }
+                },
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
+                color: AppColors.basePaleGrey,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 4),
+                border: Border.all(color: Colors.white, width: 2),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    blurRadius: 4,
                   ),
                 ],
               ),
-              child: ClipOval(
-                child: profilePhotoUrl != null
-                    ? CachedNetworkImage(
-                        imageUrl: profilePhotoUrl,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) =>
-                            _buildDefaultAvatar(initial),
-                        errorWidget: (context, url, error) =>
-                            _buildDefaultAvatar(initial),
-                      )
-                    : _buildDefaultAvatar(initial),
-              ),
-            ),
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: InkWell(
-                onTap: () {
-                  AppImagePickerBottomSheet.show(
-                    context: context,
-                    onImagesPicked: (paths) {
-                      if (paths.isNotEmpty) {
-                        profileBloc.add(UpdateProfilePhoto(paths.first));
-                      }
-                    },
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: SvgPicture.asset(
-                    'assets/icons/edit.svg',
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.baseGrey,
-                      BlendMode.srcIn,
-                    ),
-                    width: 16,
-                    height: 16,
-                  ),
+              child: SvgPicture.asset(
+                'assets/icons/edit.svg',
+                colorFilter: const ColorFilter.mode(
+                  AppColors.baseGrey,
+                  BlendMode.srcIn,
                 ),
+                width: MediaQuery.of(context).size.width * (14 / 360),
+                height: MediaQuery.of(context).size.width * (14 / 360),
               ),
             ),
-          ],
-        ),
-        const Spacer(),
-        AppButton(
-          text: AppLocalizations.of(context).changePasswordButton,
-          style: AppButtonStyle.outline,
-          height: 36,
-          iconPath: 'assets/icons/security-shield.svg',
-          iconSize: 12,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          textStyle: GoogleFonts.anuphan(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: AppColors.baseDarkGrey,
           ),
-          textColor: AppColors.baseDarkGrey,
-          onPressed: () => ChangePasswordBottomSheet.show(context, profileBloc),
         ),
       ],
     );

@@ -7,6 +7,7 @@ import '../backgrounds/blue_wave_background.dart';
 class SilverAppBarWidget extends StatefulWidget {
   final String? title;
   final Widget? titleWidget;
+  final Widget? leading;
   final Widget? actionWidget;
   final Widget? searchBar;
   final double fadeThreshold;
@@ -17,6 +18,7 @@ class SilverAppBarWidget extends StatefulWidget {
     super.key,
     this.title,
     this.titleWidget,
+    this.leading,
     this.actionWidget,
     this.searchBar,
     this.fadeThreshold = 100.0,
@@ -107,7 +109,12 @@ class _SilverAppBarWidgetState extends State<SilverAppBarWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Spacer(),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: widget.leading ?? const SizedBox.shrink(),
+            ),
+          ),
           Expanded(
             flex: 3,
             child: widget.title != null
@@ -117,7 +124,7 @@ class _SilverAppBarWidgetState extends State<SilverAppBarWidget> {
                     style: GoogleFonts.anuphan(
                       color: Colors.white,
                       fontSize: 18,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                     ),
                   )
                 : const SizedBox.shrink(),
@@ -138,6 +145,7 @@ class _SilverAppBarWidgetState extends State<SilverAppBarWidget> {
 class SilverAppBarScreen extends StatefulWidget {
   final String? title;
   final Widget? titleWidget;
+  final Widget? leading;
   final Widget? actionWidget;
   final Widget? searchBar;
   final Widget child;
@@ -150,6 +158,7 @@ class SilverAppBarScreen extends StatefulWidget {
     super.key,
     this.title,
     this.titleWidget,
+    this.leading,
     this.actionWidget,
     this.searchBar,
     required this.child,
@@ -254,6 +263,7 @@ class _SilverAppBarScreenState extends State<SilverAppBarScreen> {
           key: _appBarKey,
           title: widget.title,
           titleWidget: widget.titleWidget,
+          leading: widget.leading,
           actionWidget: widget.actionWidget,
           searchBar: widget.searchBar,
           preferredHeight: widget.preferredHeight,
