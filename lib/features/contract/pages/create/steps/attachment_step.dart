@@ -91,13 +91,13 @@ class _AttachmentStepState extends State<AttachmentStep> {
                                 context.read<ContractFormBloc>().add(
                                   ContractFormRemoteAttachmentDeleted(
                                     contractId: state.contractId!,
-                                    documentId: attachment.remoteId!,
-                                    attachmentId: attachment.id,
+                                    documentId: attachment.id!,
+                                    attachmentId: attachment.key,
                                   ),
                                 );
                               } else {
                                 context.read<ContractFormBloc>().add(
-                                  ContractFormAttachmentRemoved(attachment.id),
+                                  ContractFormAttachmentRemoved(attachment.key),
                                 );
                               }
                             }
@@ -129,11 +129,11 @@ class _AttachmentStepState extends State<AttachmentStep> {
                           onNameChanged: (val) =>
                               context.read<ContractFormBloc>().add(
                                 ContractFormAttachmentNameUpdated(
-                                  attachment.id,
+                                  attachment.key,
                                   val,
                                 ),
                               ),
-                          onPickFile: () => _pickFile(attachment.id),
+                          onPickFile: () => _pickFile(attachment.key),
                         ),
                         if (index < state.attachments.length - 1)
                           const SizedBox(height: 24),
@@ -391,7 +391,7 @@ class _AttachmentItemCard extends StatelessWidget {
                       : () {
                           context.read<ContractFormBloc>().add(
                             ContractFormAttachmentFileUpdated(
-                              id: attachment.id,
+                              id: attachment.key,
                               filePath: null,
                               fileSize: null,
                             ),

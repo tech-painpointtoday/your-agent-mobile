@@ -83,6 +83,10 @@ class ContractFormSubmitted extends ContractFormEvent {
   const ContractFormSubmitted();
 }
 
+class ContractFormDraftSubmitted extends ContractFormEvent {
+  const ContractFormDraftSubmitted();
+}
+
 // Step 1 Refinement Events
 class ContractFormLeaseFormatUpdated extends ContractFormEvent {
   final String format;

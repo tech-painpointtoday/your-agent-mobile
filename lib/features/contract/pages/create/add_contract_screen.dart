@@ -8,6 +8,7 @@ import 'package:youragent/features/contract/bloc/contract_form/contract_form_eve
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:youragent/widgets/modals/app_status_bottom_sheet.dart';
 import 'steps/basic_info_step.dart';
 import 'steps/property_owner_step.dart';
 import 'steps/buyer_info_step.dart';
@@ -41,121 +42,162 @@ class _AddContractView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primary,
-      appBar: AppBar(
+    return BlocListener<ContractFormBloc, ContractFormState>(
+      listenWhen: (prev, curr) =>
+          prev.status != curr.status || prev.errorMessage != curr.errorMessage,
+      listener: (context, state) {
+        if (state.status == ContractFormStatus.failure &&
+            state.errorMessage == 'no_approved_properties') {
+          AppStatusBottomSheet.showWarning(
+            context: context,
+            title: AppLocalizations.of(context).noApprovedPropertiesTitle,
+            message: AppLocalizations.of(context).noApprovedPropertiesMessage,
+            onOk: () => Navigator.of(context).pop(),
+          );
+        } else if (state.status == ContractFormStatus.success) {
+          Navigator.of(context).pop(true);
+        }
+      },
+      child: Scaffold(
         backgroundColor: AppColors.primary,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/icons/x.svg',
-            height: 24,
-            width: 24,
-            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-          ),
-          onPressed: () {
-            final step = context.read<ContractFormBloc>().state.step;
-            if (step == 1) {
-              Navigator.of(context).pop();
-              return;
-            }
-
-            AppConfirmationBottomSheet.show(
-              context: context,
-              title: AppLocalizations.of(context).confirmCancelLabel,
-              description: AppLocalizations.of(context).confirmCancelMessage,
-              confirmLabel: AppLocalizations.of(context).confirmCancelLabel,
-              cancelLabel: AppLocalizations.of(context).continueEditingLabel,
-              style: ConfirmationStyle.destructive,
-              onConfirm: () => Navigator.of(context).pop(),
-            );
-          },
-        ),
-        titleSpacing: 0,
-        title: BlocBuilder<ContractFormBloc, ContractFormState>(
-          builder: (context, state) {
-            String title = AppLocalizations.of(context).createContractButton;
-            return Text(
-              title,
-              style: GoogleFonts.anuphan(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            );
-          },
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.supportBlueDeep,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/file.svg',
-                    height: 16,
-                    width: 16,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    AppLocalizations.of(context).saveDraftButton,
-                    style: GoogleFonts.anuphan(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
+        appBar: AppBar(
+          backgroundColor: AppColors.primary,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: SvgPicture.asset(
+              'assets/icons/x.svg',
+              height: 24,
+              width: 24,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
               ),
             ),
+            onPressed: () {
+              final step = context.read<ContractFormBloc>().state.step;
+              if (step == 1) {
+                Navigator.of(context).pop();
+                return;
+              }
+
+              AppConfirmationBottomSheet.show(
+                context: context,
+                title: AppLocalizations.of(context).confirmCancelLabel,
+                description: AppLocalizations.of(context).confirmCancelMessage,
+                confirmLabel: AppLocalizations.of(context).confirmCancelLabel,
+                cancelLabel: AppLocalizations.of(context).continueEditingLabel,
+                style: ConfirmationStyle.destructive,
+                onConfirm: () => Navigator.of(context).pop(),
+              );
+            },
           ),
-        ],
-      ),
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
+          titleSpacing: 0,
+          title: BlocBuilder<ContractFormBloc, ContractFormState>(
+            builder: (context, state) {
+              String title = AppLocalizations.of(context).createContractButton;
+              return Text(
+                title,
+                style: GoogleFonts.anuphan(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              );
+            },
+          ),
+          actions: [
+            BlocBuilder<ContractFormBloc, ContractFormState>(
+              builder: (context, state) {
+                final isPropertySelected = state.selectedProperty != null;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 16,
+                  ),
+                  child: InkWell(
+                    onTap: isPropertySelected
+                        ? () => context.read<ContractFormBloc>().add(
+                            const ContractFormDraftSubmitted(),
+                          )
+                        : null,
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isPropertySelected
+                            ? AppColors.supportBlueDeep
+                            : AppColors.supportBlueDeep.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/file.svg',
+                            height: 16,
+                            width: 16,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            AppLocalizations.of(context).saveDraftButton,
+                            style: GoogleFonts.anuphan(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        body: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          ),
+          child: BlocBuilder<ContractFormBloc, ContractFormState>(
+            builder: (context, state) {
+              switch (state.step) {
+                case 1:
+                  return const BasicInfoStep();
+                case 2:
+                  return const PropertyOwnerStep();
+                case 3:
+                  return const BuyerInfoStep();
+                case 4:
+                  return const ApplianceStep();
+                case 5:
+                  return const FurnitureStep();
+                case 6:
+                  return const PaymentStep();
+                case 7:
+                  return const AdditionalConditionsStep();
+                case 8:
+                  return const AttachmentStep();
+                default:
+                  return const Center(child: Text('Unknown Step'));
+              }
+            },
           ),
         ),
-        child: BlocBuilder<ContractFormBloc, ContractFormState>(
-          builder: (context, state) {
-            switch (state.step) {
-              case 1:
-                return const BasicInfoStep();
-              case 2:
-                return const PropertyOwnerStep();
-              case 3:
-                return const BuyerInfoStep();
-              case 4:
-                return const ApplianceStep();
-              case 5:
-                return const FurnitureStep();
-              case 6:
-                return const PaymentStep();
-              case 7:
-                return const AdditionalConditionsStep();
-              case 8:
-                return const AttachmentStep();
-              default:
-                return const Center(child: Text('Unknown Step'));
-            }
-          },
-        ),
+        bottomNavigationBar: _buildBottomBar(context),
       ),
-      bottomNavigationBar: _buildBottomBar(context),
     );
   }
 
@@ -163,7 +205,7 @@ class _AddContractView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),

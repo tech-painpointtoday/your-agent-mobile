@@ -6523,6 +6523,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to publish this property?'**
   String get publishPropertyConfirmation;
+
+  /// No description provided for @noApprovedPropertiesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Approved Properties'**
+  String get noApprovedPropertiesTitle;
+
+  /// No description provided for @noApprovedPropertiesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have any approved properties in your list. Please complete property information and wait for approval before creating a contract.'**
+  String get noApprovedPropertiesMessage;
 }
 
 class _AppLocalizationsDelegate

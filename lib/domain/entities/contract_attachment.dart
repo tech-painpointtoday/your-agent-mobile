@@ -1,23 +1,23 @@
 import 'package:equatable/equatable.dart';
 
 class ContractAttachment extends Equatable {
-  final String id;
-  final int? remoteId;
+  final int? id;
+  final String key;
   final String name;
   final String? filePath;
   final String? fileUrl;
   final int? fileSize;
 
   const ContractAttachment({
-    required this.id,
-    this.remoteId,
+    this.id,
+    required this.key,
     this.name = '',
     this.filePath,
     this.fileUrl,
     this.fileSize,
   });
 
-  bool get isRemote => remoteId != null;
+  bool get isRemote => id != null;
 
   ContractAttachment copyWith({
     String? name,
@@ -29,7 +29,7 @@ class ContractAttachment extends Equatable {
   }) {
     return ContractAttachment(
       id: id,
-      remoteId: remoteId,
+      key: key,
       name: name ?? this.name,
       filePath: clearFilePath ? null : (filePath ?? this.filePath),
       fileUrl: fileUrl ?? this.fileUrl,
@@ -38,9 +38,10 @@ class ContractAttachment extends Equatable {
   }
 
   factory ContractAttachment.fromJson(Map<String, dynamic> json) {
+    final serverId = json['id'];
     return ContractAttachment(
-      id: 'remote_${json['id']}',
-      remoteId: json['id'],
+      id: serverId is int ? serverId : int.tryParse(serverId.toString()),
+      key: 'remote_$serverId',
       name: json['name'] ?? '',
       fileUrl: json['validated_url'] ?? json['file_url'],
       fileSize: json['file_size'],
@@ -48,5 +49,5 @@ class ContractAttachment extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, remoteId, name, filePath, fileUrl, fileSize];
+  List<Object?> get props => [id, key, name, filePath, fileUrl, fileSize];
 }

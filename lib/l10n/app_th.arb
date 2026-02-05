@@ -1070,5 +1070,7 @@
   "draftSaveErrorMessage": "ไม่สามารถบันทึกฉบับร่างได้ กรุณาลองอีกครั้ง",
   "propertyPublishedSuccess": "เผยแพร่ทรัพย์สินเรียบร้อยแล้ว",
   "publishButton": "เผยแพร่",
-  "publishPropertyConfirmation": "คุณต้องการเผยแพร่ทรัพย์สินนี้หรือไม่?"
+  "publishPropertyConfirmation": "คุณต้องการเผยแพร่ทรัพย์สินนี้หรือไม่?",
+  "noApprovedPropertiesTitle": "ไม่พบอสังหาริมทรัพย์ที่อนุมัติแล้ว",
+  "noApprovedPropertiesMessage": "คุณยังไม่มีอสังหาริมทรัพย์ที่ได้รับการอนุมัติในรายการของคุณ กรุณากรอกข้อมูลอสังหาริมทรัพย์ให้ครบถ้วนและรอการอนุมัติก่อนสร้างสัญญา"
 }

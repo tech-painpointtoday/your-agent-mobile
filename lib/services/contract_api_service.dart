@@ -209,7 +209,10 @@ class ContractApiService {
     required Map<String, dynamic> data,
   }) async {
     try {
-      final response = await _apiClient.put('/agent/contracts/$id', data: data);
+      final response = await _apiClient.post(
+        '/agent/contracts/$id',
+        data: data,
+      );
 
       final apiResponse = ApiResponseService.parseResponse<void>(
         response,

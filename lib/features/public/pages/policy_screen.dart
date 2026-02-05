@@ -116,48 +116,34 @@ class _PolicyScreenState extends State<PolicyScreen> {
                     // Header Section
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _title(),
-                                  style: GoogleFonts.anuphan(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.baseBlack,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'บริษัท ยัวร์โฮม แพลตฟอร์ม จำกัด',
-                                  style: GoogleFonts.anuphan(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'อัปเดตล่าสุด 24 ธ.ค. 2568, 12:00 น.',
-                                  style: GoogleFonts.anuphan(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.baseGrey,
-                                  ),
-                                ),
-                              ],
+                          Text(
+                            _title(),
+                            style: GoogleFonts.anuphan(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.baseBlack,
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Image.asset(
-                            'assets/images/auth/policy.png',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.contain,
+                          const SizedBox(height: 4),
+                          Text(
+                            'บริษัท ยัวร์โฮม แพลตฟอร์ม จำกัด',
+                            style: GoogleFonts.anuphan(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'อัปเดตล่าสุด 24 ธ.ค. 2568, 12:00 น.',
+                            style: GoogleFonts.anuphan(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.baseGrey,
+                            ),
                           ),
                         ],
                       ),

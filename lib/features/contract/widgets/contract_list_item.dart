@@ -7,8 +7,8 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'contract_status_badge.dart';
 import 'package:youragent/l10n/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'contract_share_bottom_sheet.dart';
+import 'contract_call_bottom_sheet.dart';
 
 class ContractListItem extends StatefulWidget {
   final Contract contract;
@@ -30,12 +30,6 @@ class ContractListItem extends StatefulWidget {
 
 class _ContractListItemState extends State<ContractListItem> {
   bool _isExpanded = false;
-
-  void _makeCall(String? phone) {
-    if (phone == null || phone.isEmpty) return;
-    final url = Uri.parse('tel:$phone');
-    launchUrl(url);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -262,47 +256,12 @@ class _ContractListItemState extends State<ContractListItem> {
                   ),
                   const SizedBox(width: 8),
                   // Phone Button with Pop-up Menu
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      hoverColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                    ),
-                    child: PopupMenuButton<String>(
-                      offset: const Offset(0, 40),
-                      onSelected: _makeCall,
-                      itemBuilder: (context) => [
-                        if (contract.owner != null &&
-                            contract.owner!.phone != null)
-                          PopupMenuItem(
-                            value: contract.owner!.phone,
-                            child: Text(
-                              'โทรหาเจ้าของทรัพย์: ${contract.owner!.phone}',
-                              style: GoogleFonts.anuphan(fontSize: 14),
-                            ),
-                          ),
-                        if (contract.buyer != null &&
-                            contract.buyer!.phone != null)
-                          PopupMenuItem(
-                            value: contract.buyer!.phone,
-                            child: Text(
-                              'โทรหาผู้ซื้อ: ${contract.buyer!.phone}',
-                              style: GoogleFonts.anuphan(fontSize: 14),
-                            ),
-                          ),
-                        if ((contract.owner?.phone == null) &&
-                            (contract.buyer?.phone == null))
-                          PopupMenuItem(
-                            enabled: false,
-                            child: Text(
-                              AppLocalizations.of(context).dataPhoneCall,
-                              style: GoogleFonts.anuphan(fontSize: 14),
-                            ),
-                          ),
-                      ],
-                      child: const _SmallActionButton(
-                        iconPath: 'assets/icons/phone.svg',
-                      ),
+                  // Phone Button
+                  _SmallActionButton(
+                    iconPath: 'assets/icons/phone.svg',
+                    onTap: () => ContractCallBottomSheet.show(
+                      context: context,
+                      contract: contract,
                     ),
                   ),
                   const SizedBox(width: 8),

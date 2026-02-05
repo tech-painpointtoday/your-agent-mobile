@@ -122,6 +122,10 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                     }).toList();
                   },
                   itemBuilder: (context, property) {
+                    if (property.approvalStatus !=
+                        PropertyApprovalStatus.approved) {
+                      return const SizedBox.shrink();
+                    }
                     return ListTile(
                       title: RichText(
                         text: TextSpan(

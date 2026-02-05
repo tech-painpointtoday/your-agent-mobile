@@ -3302,4 +3302,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get publishPropertyConfirmation =>
       'Are you sure you want to publish this property?';
+
+  @override
+  String get noApprovedPropertiesTitle => 'No Approved Properties';
+
+  @override
+  String get noApprovedPropertiesMessage =>
+      'You don\'t have any approved properties in your list. Please complete property information and wait for approval before creating a contract.';
 }

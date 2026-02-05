@@ -3317,4 +3317,11 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get publishPropertyConfirmation =>
       'คุณต้องการเผยแพร่ทรัพย์สินนี้หรือไม่?';
+
+  @override
+  String get noApprovedPropertiesTitle => 'ไม่พบอสังหาริมทรัพย์ที่อนุมัติแล้ว';
+
+  @override
+  String get noApprovedPropertiesMessage =>
+      'คุณยังไม่มีอสังหาริมทรัพย์ที่ได้รับการอนุมัติในรายการของคุณ กรุณากรอกข้อมูลอสังหาริมทรัพย์ให้ครบถ้วนและรอการอนุมัติก่อนสร้างสัญญา';
 }

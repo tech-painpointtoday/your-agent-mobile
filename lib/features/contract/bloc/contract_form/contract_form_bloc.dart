@@ -101,6 +101,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormAttachmentNameUpdated>(_onAttachmentNameUpdated);
     on<ContractFormAttachmentFileUpdated>(_onAttachmentFileUpdated);
     on<ContractFormRemoteAttachmentDeleted>(_onRemoteAttachmentDeleted);
+    on<ContractFormDraftSubmitted>(_onDraftSubmitted);
   }
 
   Future<void> _onEditStarted(
@@ -332,7 +333,21 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         return nameA.compareTo(nameB);
       });
 
-      emit(state.copyWith(properties: filtered));
+      final hasApprovedProperty = filtered.any(
+        (p) => p.approvalStatus == PropertyApprovalStatus.approved,
+      );
+
+      if (!hasApprovedProperty && event.query.isEmpty) {
+        emit(
+          state.copyWith(
+            status: ContractFormStatus.failure,
+            errorMessage: 'no_approved_properties',
+            properties: filtered,
+          ),
+        );
+      } else {
+        emit(state.copyWith(properties: filtered));
+      }
     } catch (e) {
       // Just log and ignore for now in search
     }
@@ -1291,7 +1306,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     Emitter<ContractFormState> emit,
   ) {
     final newItem = ContractAttachment(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      key: 'YA_${DateTime.now().millisecondsSinceEpoch}',
     );
     final newList = List<ContractAttachment>.from(state.attachments)
       ..add(newItem);
@@ -1303,7 +1318,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     ContractFormAttachmentRemoved event,
     Emitter<ContractFormState> emit,
   ) {
-    final newList = state.attachments.where((a) => a.id != event.id).toList();
+    final newList = state.attachments.where((a) => a.key != event.id).toList();
     emit(state.copyWith(attachments: newList));
     _validateCurrentStep(emit);
   }
@@ -1313,7 +1328,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     Emitter<ContractFormState> emit,
   ) {
     final newList = state.attachments.map((a) {
-      return a.id == event.id ? a.copyWith(name: event.name) : a;
+      return a.key == event.id ? a.copyWith(name: event.name) : a;
     }).toList();
     emit(state.copyWith(attachments: newList));
     _validateCurrentStep(emit);
@@ -1324,7 +1339,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     Emitter<ContractFormState> emit,
   ) {
     final newList = state.attachments.map((a) {
-      return a.id == event.id
+      return a.key == event.id
           ? a.copyWith(
               filePath: event.filePath,
               fileSize: event.fileSize,
@@ -1347,7 +1362,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         event.documentId,
       );
       final newList = state.attachments
-          .where((a) => a.id != event.attachmentId)
+          .where((a) => a.key != event.attachmentId)
           .toList();
       emit(state.copyWith(attachments: newList));
       _validateCurrentStep(emit);
@@ -1361,8 +1376,46 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     }
   }
 
+  Future<void> _onDraftSubmitted(
+    ContractFormDraftSubmitted event,
+    Emitter<ContractFormState> emit,
+  ) async {
+    emit(state.copyWith(status: ContractFormStatus.submmitting));
+    try {
+      final contractData = _collectContractData();
+      // Set draft status if possible, or just use the same API for now
+      // Assuming draft is handled by the backend or by partial data
+
+      if (state.contractId != null) {
+        await _contractApiService.updateContract(
+          id: state.contractId!,
+          data: contractData,
+        );
+        await _uploadAttachments(state.contractId!);
+      } else {
+        final newContractId = await _contractApiService.createContract(
+          data: contractData,
+        );
+        await _uploadAttachments(newContractId);
+      }
+
+      emit(state.copyWith(status: ContractFormStatus.success));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: ContractFormStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
   Future<void> _uploadAttachments(int contractId) async {
     for (final attachment in state.attachments) {
+      if (attachment.id != null) {
+        continue;
+      }
+
       if (attachment.filePath != null && !attachment.isRemote) {
         await _contractApiService.uploadContractDocument(
           contractId: contractId,

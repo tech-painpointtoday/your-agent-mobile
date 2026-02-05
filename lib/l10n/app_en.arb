@@ -1070,5 +1070,7 @@
   "draftSaveErrorMessage": "Failed to save draft. Please try again.",
   "propertyPublishedSuccess": "Property published successfully",
   "publishButton": "Publish",
-  "publishPropertyConfirmation": "Are you sure you want to publish this property?"
+  "publishPropertyConfirmation": "Are you sure you want to publish this property?",
+  "noApprovedPropertiesTitle": "No Approved Properties",
+  "noApprovedPropertiesMessage": "You don't have any approved properties in your list. Please complete property information and wait for approval before creating a contract."
 }
