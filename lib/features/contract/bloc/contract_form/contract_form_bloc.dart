@@ -1182,7 +1182,13 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     ContractFormBankBranchUpdated event,
     Emitter<ContractFormState> emit,
   ) {
-    emit(state.copyWith(bankBranch: event.branch));
+    emit(
+      state.copyWith(
+        bankBranch: event.branch,
+        bankCode: event.bankCode,
+        clearBankCode: event.bankCode == null,
+      ),
+    );
     _validateCurrentStep(emit);
   }
 

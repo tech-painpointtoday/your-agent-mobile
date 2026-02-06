@@ -13,6 +13,7 @@ class AppStatusBottomSheet extends StatelessWidget {
   final String buttonText;
   final VoidCallback? onOk;
   final DialogType type;
+  final String? iconPath;
 
   const AppStatusBottomSheet({
     super.key,
@@ -20,6 +21,7 @@ class AppStatusBottomSheet extends StatelessWidget {
     this.message,
     this.buttonText = 'OK',
     this.onOk,
+    this.iconPath,
     required this.type,
   });
 
@@ -64,6 +66,7 @@ class AppStatusBottomSheet extends StatelessWidget {
     required BuildContext context,
     required String title,
     String? message,
+    String? iconPath,
     String buttonText = 'OK',
     VoidCallback? onOk,
   }) {
@@ -72,6 +75,7 @@ class AppStatusBottomSheet extends StatelessWidget {
       title: title,
       message: message,
       buttonText: buttonText,
+      iconPath: iconPath,
       onOk: onOk,
       type: DialogType.warning,
     );
@@ -118,6 +122,7 @@ class AppStatusBottomSheet extends StatelessWidget {
     required BuildContext context,
     required String title,
     String? message,
+    String? iconPath,
     String buttonText = 'OK',
     VoidCallback? onOk,
     required DialogType type,
@@ -130,6 +135,7 @@ class AppStatusBottomSheet extends StatelessWidget {
         title: title,
         message: message,
         buttonText: buttonText,
+        iconPath: iconPath,
         onOk: onOk,
         type: type,
       ),

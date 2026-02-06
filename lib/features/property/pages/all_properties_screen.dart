@@ -347,9 +347,9 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 140, maxHeight: 140),
+              constraints: const BoxConstraints(maxWidth: 180, maxHeight: 180),
               child: Image.asset(
-                'assets/images/property/empty.png',
+                'assets/images/property/YA_Illustration_EmptyState_NoProperty.png',
                 fit: BoxFit.fitWidth,
                 errorBuilder: (context, error, stackTrace) {
                   return const Icon(

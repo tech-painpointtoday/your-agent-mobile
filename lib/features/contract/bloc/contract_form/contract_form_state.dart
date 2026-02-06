@@ -182,6 +182,7 @@ class ContractFormState extends Equatable {
     String? accountName,
     String? accountNumber,
     List<ContractAttachment>? attachments,
+    bool clearBankCode = false,
   }) {
     return ContractFormState(
       step: step ?? this.step,
@@ -229,7 +230,7 @@ class ContractFormState extends Equatable {
       dueDate: dueDate ?? this.dueDate,
       lateFee: lateFee ?? this.lateFee,
       paymentMethod: paymentMethod ?? this.paymentMethod,
-      bankCode: bankCode ?? this.bankCode,
+      bankCode: clearBankCode ? null : (bankCode ?? this.bankCode),
       bankBranch: bankBranch ?? this.bankBranch,
       accountName: accountName ?? this.accountName,
       accountNumber: accountNumber ?? this.accountNumber,

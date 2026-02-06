@@ -11,6 +11,8 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/features/contract/pages/create/add_contract_screen.dart';
 import 'package:youragent/features/contract/pages/contract_detail_screen.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/widgets/modals/app_status_bottom_sheet.dart';
+import 'package:youragent/domain/entities/property.dart';
 
 /// Screen showing all contract documents in a list
 class ContractScreen extends StatefulWidget {
@@ -23,6 +25,7 @@ class ContractScreen extends StatefulWidget {
 class _ContractScreenState extends State<ContractScreen> {
   final TextEditingController _searchController = TextEditingController();
   final _contractApiService = DependencyInjection.contractApiService;
+  final _propertyApiService = DependencyInjection.propertyApiService;
 
   List<Contract> _allContracts = [];
   List<Contract> _filteredContracts = [];
@@ -121,6 +124,60 @@ class _ContractScreenState extends State<ContractScreen> {
     );
   }
 
+  Future<void> _handleCreateContract() async {
+    try {
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      final properties = await _propertyApiService.getProperties();
+
+      if (!mounted) return;
+      Navigator.of(context).pop();
+
+      final approvedProperties = properties
+          .where((p) => p.approvalStatus == PropertyApprovalStatus.approved)
+          .toList();
+
+      if (!mounted) return;
+
+      if (approvedProperties.isEmpty) {
+        AppStatusBottomSheet.showWarning(
+          context: context,
+          iconPath: 'assets/images/contract/YA_Illustration_ConfirmWarning.png',
+          title: 'ไม่สามารถสร้างสัญญาได้',
+          message:
+              'คุณต้องมีทรัพย์ที่ผ่านการอนุมัติแล้วในระบบก่อน\nจึงจะสามารถสร้างเอกสารสัญญาได้',
+          onOk: () => Navigator.of(context).pop(),
+        );
+      } else {
+        Navigator.of(context)
+            .push(
+              MaterialPageRoute(
+                builder: (context) => const AddContractScreen(),
+              ),
+            )
+            .then((result) {
+              if (result == true) {
+                _loadContracts();
+              }
+            });
+      }
+    } catch (e) {
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to check properties: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double bottomPadding = MediaQuery.of(context).padding.bottom > 0
@@ -167,13 +224,7 @@ class _ContractScreenState extends State<ContractScreen> {
                   const Spacer(),
                   // Add Button
                   InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const AddContractScreen(),
-                        ),
-                      );
-                    },
+                    onTap: _handleCreateContract,
                     borderRadius: BorderRadius.circular(100),
                     child: Container(
                       width: 36,
@@ -387,9 +438,9 @@ class _ContractScreenState extends State<ContractScreen> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 140, maxHeight: 140),
+              constraints: const BoxConstraints(maxWidth: 180, maxHeight: 180),
               child: Image.asset(
-                'assets/images/property/empty.png',
+                'assets/images/contract/YA_Illustration_EmptyState_NoContract.png',
                 fit: BoxFit.fitWidth,
                 errorBuilder: (context, error, stackTrace) {
                   return const Icon(

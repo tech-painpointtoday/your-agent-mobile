@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/contract.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';

@@ -15,7 +15,12 @@ class NotificationEmptyState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Placeholder for empty state icon - you can add an SVG asset later
-            Image.asset('assets/images/noti_empty.png', fit: BoxFit.contain),
+            Image.asset(
+              'assets/images/home/YA_Illustration_EmptyState_NoNotification.png',
+              fit: BoxFit.contain,
+              width: 180,
+              height: 180,
+            ),
             const SizedBox(height: 24),
 
             Text(

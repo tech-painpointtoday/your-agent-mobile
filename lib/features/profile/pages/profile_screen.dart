@@ -238,7 +238,7 @@ class ProfileView extends StatelessWidget {
               ),
               // Change Password Button Overlap
               Positioned(
-                top: -18, // Adjusted to match the overlap in the image
+                top: 8, // Adjusted to match the overlap in the image
                 right: 0,
                 child: AppButton(
                   text: AppLocalizations.of(context).changePasswordButton,

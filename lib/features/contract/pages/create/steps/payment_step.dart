@@ -52,7 +52,7 @@ class _PaymentStepState extends State<PaymentStep> {
         return SizedBox(
           height: double.infinity,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -415,7 +415,7 @@ class _PaymentStepState extends State<PaymentStep> {
             hintText: AppLocalizations.of(context).enterBranchHint,
             onChanged: (value) {
               context.read<ContractFormBloc>().add(
-                ContractFormBankBranchUpdated(value),
+                ContractFormBankBranchUpdated(value, null),
               );
             },
           ),
@@ -434,7 +434,7 @@ class _PaymentStepState extends State<PaymentStep> {
           onSelected: (suggestion) {
             _bankBranchController.text = suggestion.name;
             context.read<ContractFormBloc>().add(
-              ContractFormBankBranchUpdated(suggestion.name),
+              ContractFormBankBranchUpdated(suggestion.name, suggestion.code),
             );
 
             FocusScope.of(context).unfocus();

@@ -274,7 +274,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                   AppTextField(
                     label: AppLocalizations.of(context).authorized_signatory,
                     controller: _signatoryController,
-                    isRequired: true,
+                    isRequired: false,
                     hintText: AppLocalizations.of(context).authorized_signatory,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerSignatoryUpdated(value),

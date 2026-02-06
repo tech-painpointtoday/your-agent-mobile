@@ -165,7 +165,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppBadge(
-                        color: BadgeColor.default_,
+                        color: BadgeColor.blue,
                         label: AppLocalizations.of(context).furniture_photos,
                         fontSize: 16,
                       ),

@@ -284,7 +284,6 @@ class AuthApiService {
   }
 
   /// Reset Password
-  /// NOTE: This path matches `old_lib/` exactly.
   Future<void> resetPassword({
     required String token,
     required String email,
@@ -312,7 +311,6 @@ class AuthApiService {
   }
 
   /// Resend Verification Email (Public)
-  /// NOTE: This path matches `old_lib/` exactly.
   Future<void> resendVerificationEmailPublic(String email) async {
     try {
       await _apiClient.post(
@@ -330,7 +328,6 @@ class AuthApiService {
   }
 
   /// Resend Verification Email (Authenticated)
-  /// NOTE: This path matches `old_lib/` exactly.
   Future<void> resendVerificationAuthenticated() async {
     try {
       await _apiClient.post('/api/agent/email/verification-notification');
@@ -352,7 +349,7 @@ class AuthApiService {
   Future<Map<String, dynamic>> updateAgentProfile(
     Map<String, dynamic> data,
   ) async {
-    final response = await _apiClient.post('/agent/profile', data: data);
+    final response = await _apiClient.put('/agent/profile', data: data);
     return response.data as Map<String, dynamic>;
   }
 

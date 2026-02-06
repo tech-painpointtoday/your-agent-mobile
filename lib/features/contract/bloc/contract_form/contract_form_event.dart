@@ -407,10 +407,11 @@ class ContractFormBankCodeUpdated extends ContractFormEvent {
 }
 
 class ContractFormBankBranchUpdated extends ContractFormEvent {
-  final String branch;
-  const ContractFormBankBranchUpdated(this.branch);
+  final String? branch;
+  final String? bankCode;
+  const ContractFormBankBranchUpdated(this.branch, this.bankCode);
   @override
-  List<Object?> get props => [branch];
+  List<Object?> get props => [branch, bankCode];
 }
 
 class ContractFormAccountNameUpdated extends ContractFormEvent {

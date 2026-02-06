@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
@@ -8,7 +9,6 @@ import 'package:youragent/features/contract/bloc/contract_form/contract_form_eve
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
-import 'package:youragent/widgets/modals/app_status_bottom_sheet.dart';
 import 'steps/basic_info_step.dart';
 import 'steps/property_owner_step.dart';
 import 'steps/buyer_info_step.dart';
@@ -20,6 +20,7 @@ import 'steps/attachment_step.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 
 import 'package:youragent/features/contract/pages/create/steps/payment_step.dart';
+import 'package:youragent/features/contract/pages/preview/contract_pdf_preview_page.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
 class AddContractScreen extends StatelessWidget {
@@ -46,15 +47,7 @@ class _AddContractView extends StatelessWidget {
       listenWhen: (prev, curr) =>
           prev.status != curr.status || prev.errorMessage != curr.errorMessage,
       listener: (context, state) {
-        if (state.status == ContractFormStatus.failure &&
-            state.errorMessage == 'no_approved_properties') {
-          AppStatusBottomSheet.showWarning(
-            context: context,
-            title: AppLocalizations.of(context).noApprovedPropertiesTitle,
-            message: AppLocalizations.of(context).noApprovedPropertiesMessage,
-            onOk: () => Navigator.of(context).pop(),
-          );
-        } else if (state.status == ContractFormStatus.success) {
+        if (state.status == ContractFormStatus.success) {
           Navigator.of(context).pop(true);
         }
       },
@@ -228,7 +221,7 @@ class _AddContractView extends StatelessWidget {
                         ? () => context.read<ContractFormBloc>().add(
                             ContractFormStepChanged(state.step - 1),
                           )
-                        : null,
+                        : () => context.pop(),
                   );
                 },
               ),
@@ -247,15 +240,25 @@ class _AddContractView extends StatelessWidget {
 
                   return AppButton(
                     text: isLastStep
-                        ? AppLocalizations.of(context).createContractButton
+                        ? 'Preview Contract'
                         : AppLocalizations.of(context).nextButton,
                     style: AppButtonStyle.primary,
                     onPressed: (state.isValid && !isLoading)
                         ? () {
                             if (isLastStep) {
-                              context.read<ContractFormBloc>().add(
-                                const ContractFormSubmitted(),
-                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider.value(
+                                    value: context.read<ContractFormBloc>(),
+                                    child: ContractPdfPreviewPage(state: state),
+                                  ),
+                                ),
+                              ).then((result) {
+                                if (result == true && context.mounted) {
+                                  context.pop(true);
+                                }
+                              });
                             } else {
                               context.read<ContractFormBloc>().add(
                                 ContractFormStepChanged(state.step + 1),
