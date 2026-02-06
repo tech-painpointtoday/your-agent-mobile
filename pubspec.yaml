@@ -45,6 +45,7 @@ dependencies:
   dartz: ^0.10.1
   flutter_secure_storage: ^9.2.4
   http: ^1.6.0
+  app_links: ^6.3.2
 
   # UI
   google_fonts: ^6.3.0
@@ -110,6 +111,7 @@ flutter:
     - assets/icons/form/
     - assets/icons/profile/
     - assets/icons/sidebar/
+    - assets/icons/social/
     - assets/images/
     - assets/images/auth/
     - assets/images/home/

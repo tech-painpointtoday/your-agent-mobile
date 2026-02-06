@@ -33,12 +33,14 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       _isLoading = false; // Show content immediately
     }
 
-    if (widget.propertyId != null) {
+    if (widget.property != null || widget.propertyId != null) {
       _fetchPropertyDetail();
     }
   }
 
   Future<void> _fetchPropertyDetail() async {
+    final propertyIdInt = widget.propertyId ?? _property?.id;
+
     // If we don't have property yet, show loading
     if (_property == null) {
       setState(() {
@@ -48,7 +50,6 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     }
 
     try {
-      final propertyIdInt = widget.propertyId;
       if (propertyIdInt == null) throw Exception('Invalid property ID');
 
       final property = await _propertyApiService.getPropertyById(propertyIdInt);
@@ -113,7 +114,14 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          if (_property != null) PropertyDetail(property: _property!),
+          if (_property != null)
+            RefreshIndicator(
+              onRefresh: _fetchPropertyDetail,
+              child: PropertyDetail(
+                key: ObjectKey(_property!),
+                property: _property!,
+              ),
+            ),
           _buildBottomBar(),
         ],
       ),
@@ -177,7 +185,6 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 style: AppButtonStyle.primary,
                 onPressed: () {
                   if (_property != null) {
-                    print("Start direction: ${_property!.direction}");
                     // Draft properties: route to create flow to resume at correct step
                     // Completed properties: route to edit menu
                     final route = _property!.isDraft

@@ -92,7 +92,7 @@ class ApiResponseService {
           // Try multiple possible message fields
           apiMessage =
               data['message'] as String? ??
-              data['error'] as String? ??
+              (data['error'] is String ? data['error'] as String : null) ??
               (data['error'] is Map<String, dynamic>
                   ? (data['error'] as Map<String, dynamic>)['message']
                         as String?
@@ -100,10 +100,21 @@ class ApiResponseService {
               data['msg'] as String?;
 
           // For validation errors (422), extract field-specific errors
-          if (statusCode == 422 && data['errors'] is Map<String, dynamic>) {
-            final errors = data['errors'] as Map<String, dynamic>;
+          // Handle structure: data['errors'] or data['error']['details']
+          final Map<String, dynamic>? validationErrors =
+              (data['errors'] is Map<String, dynamic>
+                  ? data['errors'] as Map<String, dynamic>
+                  : null) ??
+              (data['error'] is Map<String, dynamic> &&
+                      (data['error'] as Map<String, dynamic>)['details']
+                          is Map<String, dynamic>
+                  ? (data['error'] as Map<String, dynamic>)['details']
+                        as Map<String, dynamic>
+                  : null);
+
+          if (statusCode == 422 && validationErrors != null) {
             final errorMessages = <String>[];
-            errors.forEach((field, messages) {
+            validationErrors.forEach((field, messages) {
               if (messages is List) {
                 errorMessages.addAll(messages.map((m) => m.toString()));
               } else if (messages is String) {

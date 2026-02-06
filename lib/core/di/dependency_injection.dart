@@ -19,6 +19,8 @@ import 'package:youragent/services/auth_api_service.dart';
 import 'package:youragent/services/contract_api_service.dart';
 import 'package:youragent/services/address_lookup_service.dart';
 import 'package:youragent/services/google_places_service.dart';
+import 'package:youragent/services/settings_api_service.dart';
+import 'package:youragent/core/services/deep_link_service.dart';
 import 'package:youragent/core/config/app_config.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -76,9 +78,16 @@ class DependencyInjection {
     apiKey: AppConfig.googleMapsApiKey,
   );
 
+  static final SettingsApiService _settingsApiService = SettingsApiService(
+    _apiClient,
+  );
+
+  static final DeepLinkService _deepLinkService = DeepLinkService();
+
   static void init(BuildContext context) {
     // This function can be called during app startup to register dependencies
     _addressLookupService.loadData();
+    _deepLinkService.init();
   }
 
   // Factory methods for dependencies - all return singleton instances
@@ -95,6 +104,10 @@ class DependencyInjection {
   static AddressLookupService get addressLookupService => _addressLookupService;
 
   static GooglePlacesService get googlePlacesService => _googlePlacesService;
+
+  static SettingsApiService get settingsApiService => _settingsApiService;
+
+  static DeepLinkService get deepLinkService => _deepLinkService;
 
   // Auth dependencies - singleton
   static AuthRepository get authRepository => _authRepository;

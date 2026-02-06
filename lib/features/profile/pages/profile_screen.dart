@@ -526,30 +526,24 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context).languageProficiency,
-            style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
+            style: GoogleFonts.anuphan(
+              fontSize: 14,
+              color: AppColors.baseGrey,
+              fontWeight: FontWeight.w400,
+            ),
           ),
           const SizedBox(height: 8),
           if (agent.languages?.isNotEmpty == true)
             ...agent.languages!.entries.map(
               (e) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.language,
-                      size: 16,
-                      color: AppColors.primary,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '${e.key}: ${e.value}',
-                      style: GoogleFonts.anuphan(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.baseBlack,
-                      ),
-                    ),
-                  ],
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  '${e.key} : ${e.value}',
+                  style: GoogleFonts.anuphan(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.baseBlack,
+                  ),
                 ),
               ),
             )
@@ -565,20 +559,53 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             AppLocalizations.of(context).socialLinks,
-            style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
+            style: GoogleFonts.anuphan(
+              fontSize: 14,
+              color: AppColors.baseGrey,
+              fontWeight: FontWeight.w400,
+            ),
           ),
           const SizedBox(height: 8),
           if (agent.socialLinks?.isNotEmpty == true)
-            ...agent.socialLinks!.entries.map(
-              (e) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
+            ...agent.socialLinks!.entries.map((e) {
+              String iconPath = '';
+              final key = e.key.toLowerCase();
+              if (key.contains('facebook')) {
+                iconPath = 'assets/icons/social/facebook-square.png';
+              } else if (key.contains('instagram')) {
+                iconPath = 'assets/icons/social/instagram-square.png';
+              } else if (key.contains('line')) {
+                iconPath = 'assets/icons/social/line.png';
+              } else if (key.contains('linkedin')) {
+                iconPath = 'assets/icons/social/linkedin.png';
+              }
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
-                    const Icon(Icons.link, size: 16, color: AppColors.primary),
-                    const SizedBox(width: 8),
+                    if (iconPath.isNotEmpty) ...[
+                      Image.asset(iconPath, width: 24, height: 24),
+                      const SizedBox(width: 12),
+                    ] else ...[
+                      const Icon(
+                        Icons.link,
+                        size: 24,
+                        color: AppColors.primary,
+                      ),
+                      const SizedBox(width: 12),
+                    ],
                     Expanded(
                       child: Text(
-                        '${e.key}: ${e.value}',
+                        e.value
+                            .toString()
+                            .replaceFirst(RegExp(r'^https?://'), '')
+                            .replaceFirst(RegExp(r'^www\.'), '')
+                            .split('/')
+                            .lastWhere(
+                              (part) => part.isNotEmpty,
+                              orElse: () => '',
+                            ),
                         style: GoogleFonts.anuphan(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
@@ -589,14 +616,14 @@ class ProfileView extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            )
+              );
+            })
           else
             Text(
               AppLocalizations.of(context).notSpecified,
               style: GoogleFonts.anuphan(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
                 color: AppColors.baseBlack,
               ),
             ),

@@ -4,6 +4,7 @@ import '../../../../services/property_api_service.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../data/models/property_specification_filters.dart';
 import '../../../../services/address_lookup_service.dart';
+import '../../../../services/api_response_service.dart';
 
 import '../../../../domain/entities/property.dart';
 import '../../../../data/models/developer_model.dart';
@@ -281,9 +282,32 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     );
 
     try {
-      // Check if publishing a draft
+      // Check if publishing a draft - Update it first
       if (state.isDraft && state.propertyId != null) {
-        // Publishing a draft property
+        final roleName = state.selectedDeveloperId != null ? 'agency' : 'agent';
+
+        // 1. Update with latest fields
+        await _propertyApiService.updateProperty(
+          role: roleName,
+          propertyId: state.propertyId!,
+          data: state.data,
+        );
+
+        // 2. Upload photos if any before publishing (Draft might have new local photos)
+        final localImages = state.images
+            .where((img) => img.isFile)
+            .map((img) => img.file!)
+            .toList();
+        if (localImages.isNotEmpty) {
+          await _propertyApiService.uploadPhotosProperty(
+            role: roleName,
+            propertyId: state.propertyId!,
+            photos: localImages,
+            tag: 'gallery',
+          );
+        }
+
+        // 3. Publishing a draft property
         await _propertyApiService.publishProperty(
           propertyId: state.propertyId!,
         );
@@ -348,10 +372,19 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       // 3. Build Payload (Unified)
       final payload = currentState.data;
 
-      final responseProperty = await _propertyApiService.saveProperty(
-        role: roleName,
-        data: payload,
-      );
+      Property responseProperty;
+      if (currentState.propertyId != null) {
+        responseProperty = await _propertyApiService.updateProperty(
+          role: roleName,
+          propertyId: currentState.propertyId!,
+          data: payload,
+        );
+      } else {
+        responseProperty = await _propertyApiService.saveProperty(
+          role: roleName,
+          data: payload,
+        );
+      }
 
       final propertyId = responseProperty.id;
 
@@ -361,7 +394,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
           .map((img) => img.file!)
           .toList();
       if (localImages.isNotEmpty && propertyId != null) {
-        await _propertyApiService.uploadPhotosSimple(
+        await _propertyApiService.uploadPhotosProperty(
           role: roleName,
           propertyId: propertyId,
           photos: localImages,
@@ -379,7 +412,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       emit(
         state.copyWith(
           propertyFormStatus: PropertyFormStatus.submissionFailure,
-          errorMessage: e.toString(),
+          errorMessage: ApiResponseService.getErrorMessage(e),
         ),
       );
     }
@@ -399,9 +432,19 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       // No validation required - save partial data as-is
       final draftData = state.data;
 
-      // Call API to save draft
-      final response = await _propertyApiService.saveDraft(data: draftData);
-      final propertyId = response['data']?['id'] as int?;
+      int? propertyId;
+      if (state.propertyId != null) {
+        // Update existing property/draft
+        final response = await _propertyApiService.updateProperty(
+          propertyId: state.propertyId!,
+          data: draftData,
+        );
+        propertyId = response.id;
+      } else {
+        // Call API to save draft for the first time
+        final response = await _propertyApiService.saveDraft(data: draftData);
+        propertyId = response['data']?['id'] as int?;
+      }
 
       emit(
         state.copyWith(
@@ -415,7 +458,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       emit(
         state.copyWith(
           propertyFormStatus: PropertyFormStatus.draftSaveFailure,
-          errorMessage: e.toString(),
+          errorMessage: ApiResponseService.getErrorMessage(e),
         ),
       );
     }

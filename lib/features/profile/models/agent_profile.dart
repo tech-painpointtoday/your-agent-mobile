@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class AgentProfile {
   final AgentDetails agent;
   final ProfileVerificationStatus verificationStatus;
@@ -88,10 +90,14 @@ class AgentDetails {
       profilePhoto: json['profile_photo'],
       socialLinks: json['social_links'] is Map<String, dynamic>
           ? json['social_links'] as Map<String, dynamic>
-          : null,
+          : (json['social_links'] is String
+                ? jsonDecode(json['social_links']) as Map<String, dynamic>
+                : null),
       languages: json['languages'] is Map<String, dynamic>
           ? json['languages'] as Map<String, dynamic>
-          : null,
+          : (json['languages'] is String
+                ? jsonDecode(json['languages']) as Map<String, dynamic>
+                : null),
       yearsOfExperience: json['years_of_experience'],
       companyName: json['company_name'],
       licenseNumber: json['license_number'],

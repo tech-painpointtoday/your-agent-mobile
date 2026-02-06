@@ -269,8 +269,8 @@ class PropertyApiService {
   }) async {
     try {
       final actualRole = role ?? _currentRole;
-      final response = await _apiClient.put(
-        '/$actualRole/properties/$propertyId',
+      final response = await _apiClient.post(
+        '/$actualRole/properties/$propertyId/update',
         data: data,
       );
       final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
@@ -559,7 +559,7 @@ class PropertyApiService {
 
   /// Upload photos for a property (convenience method with simple XFile list)
   /// Automatically creates PhotoUploadData with default tag 'gallery'
-  Future<Map<String, dynamic>> uploadPhotosSimple({
+  Future<Map<String, dynamic>> uploadPhotosProperty({
     String? role,
     required int propertyId,
     required List<XFile> photos,

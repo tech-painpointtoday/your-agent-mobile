@@ -36,18 +36,22 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
     _builtController = TextEditingController(
       text: state.built != null
           ? DateFormat('dd/MM/yyyy').format(state.built!)
-          : '',
+          : null,
     );
     _priceController = TextEditingController(
       text: state.price != null
           ? NumberFormat.decimalPattern('en_US').format(state.price)
-          : '',
+          : null,
     );
     _landSizeController = TextEditingController(
-      text: state.landSize?.toString() ?? '',
+      text: (state.landSize != null && state.landSize! > 0)
+          ? NumberFormat.decimalPattern('en_US').format(state.landSize)
+          : null,
     );
     _buildingSizeController = TextEditingController(
-      text: state.buildingSize?.toString() ?? '',
+      text: (state.buildingSize != null && state.buildingSize! > 0)
+          ? NumberFormat.decimalPattern('en_US').format(state.buildingSize)
+          : null,
     );
   }
 
@@ -337,8 +341,9 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                         controller: _landSizeController,
                         maxLength: 6,
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                          FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d*\.?\d{0,2}'),
+                          ),
                         ],
                         isRequired: true,
                         hintText: '0.00',
@@ -366,8 +371,9 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                       controller: _buildingSizeController,
                       maxLength: 6,
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                        FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d*\.?\d{0,2}'),
+                        ),
                       ],
                       isRequired: true,
                       hintText: '0.00',

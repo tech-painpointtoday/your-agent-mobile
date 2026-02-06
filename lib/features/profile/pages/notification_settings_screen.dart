@@ -1,9 +1,15 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:youragent/core/di/dependency_injection.dart';
+import 'package:youragent/core/services/deep_link_service.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -18,7 +24,132 @@ class _NotificationSettingsScreenState
   bool _lineNotifications = false;
   bool _emailNotifications = true;
   bool _pushNotifications = false;
-  final bool _isLineConnected = false;
+  bool _isLineConnected = false;
+  bool _isLoading = false;
+  StreamSubscription<DeepLinkStatus>? _deepLinkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinkListener();
+    _fetchLineStatus();
+  }
+
+  Future<void> _fetchLineStatus() async {
+    final isSubscribed = await DependencyInjection.settingsApiService
+        .getLineStatus();
+    if (mounted) {
+      setState(() {
+        _isLineConnected = isSubscribed;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _deepLinkSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _initDeepLinkListener() {
+    _deepLinkSubscription = DependencyInjection.deepLinkService.statusStream
+        .listen((status) {
+          if (!mounted) return;
+
+          if (status == DeepLinkStatus.success) {
+            setState(() {
+              _isLineConnected = true;
+            });
+            StatusDialog.showSuccess(
+              context: context,
+              title: AppLocalizations.of(context).success,
+              message: 'เชื่อมต่อบัญชี LINE เรียบร้อยแล้ว',
+            );
+          } else if (status == DeepLinkStatus.failure) {
+            StatusDialog.showError(
+              context: context,
+              title: 'การเชื่อมต่อล้มเหลว',
+              message: 'ไม่สามารถเชื่อมต่อบัญชี LINE ได้ในขณะนี้',
+            );
+          }
+        });
+  }
+
+  Future<void> _handleConnectLine() async {
+    if (_isLoading) return;
+
+    if (_isLineConnected) {
+      _handleDisconnectLine();
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final urlString = await DependencyInjection.settingsApiService
+          .getLineAuthorizationUrl();
+      final url = Uri.parse(urlString);
+
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        throw Exception('Could not launch $urlString');
+      }
+    } catch (e) {
+      if (mounted) {
+        StatusDialog.showError(
+          context: context,
+          title: 'เกิดข้อผิดพลาด',
+          message: e.toString(),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _handleDisconnectLine() async {
+    AppConfirmationBottomSheet.show(
+      context: context,
+      title: 'ยกเลิกการเชื่อมต่อ LINE?',
+      description:
+          'คุณต้องการยกเลิกการเชื่อมต่อบัญชี LINE หรือไม่? คุณจะไม่ได้รับการแจ้งเตือนผ่านช่องทางนี้',
+      confirmLabel: 'ยกเลิกการเชื่อมต่อ',
+      cancelLabel: 'ปิด',
+      style: ConfirmationStyle.destructive,
+      onConfirm: () async {
+        setState(() => _isLoading = true);
+        try {
+          final success = await DependencyInjection.settingsApiService
+              .unsubscribeLine();
+          if (success && mounted) {
+            setState(() {
+              _isLineConnected = false;
+            });
+            StatusDialog.showSuccess(
+              context: context,
+              title: 'สำเร็จ',
+              message: 'ยกเลิกการเชื่อมต่อ LINE เรียบร้อยแล้ว',
+            );
+          }
+        } catch (e) {
+          if (mounted) {
+            StatusDialog.showError(
+              context: context,
+              title: 'เกิดข้อผิดพลาด',
+              message: e.toString(),
+            );
+          }
+        } finally {
+          if (mounted) {
+            setState(() => _isLoading = false);
+          }
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,49 +259,73 @@ class _NotificationSettingsScreenState
                 style: GoogleFonts.anuphan(
                   fontSize: 10,
                   fontWeight: FontWeight.w400,
-                  color: const Color(0xFF717680),
+                  color: _isLineConnected
+                      ? AppColors.success
+                      : const Color(0xFF717680),
                 ),
               ),
             ],
           ),
         ),
-        Container(
-          height: 32,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE9EAEB)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 2,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgPicture.asset(
-                'assets/icons/attachment.svg',
-                width: 12,
-                height: 12,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFF717680),
-                  BlendMode.srcIn,
+        GestureDetector(
+          onTap: _handleConnectLine,
+          child: Container(
+            height: 32,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE9EAEB)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                l10n.connectButton,
-                style: GoogleFonts.anuphan(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFF717680),
-                ),
-              ),
-            ],
+              ],
+            ),
+            child: _isLoading
+                ? const Center(
+                    child: SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/attachment.svg',
+                        width: 12,
+                        height: 12,
+                        colorFilter: ColorFilter.mode(
+                          _isLineConnected
+                              ? AppColors.success
+                              : const Color(0xFF717680),
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        _isLineConnected
+                            ? 'ยกเลิกการเชื่อมต่อ'
+                            : l10n.connectButton,
+                        style: GoogleFonts.anuphan(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: _isLineConnected
+                              ? AppColors.error
+                              : const Color(0xFF717680),
+                        ),
+                      ),
+                    ],
+                  ),
           ),
         ),
       ],

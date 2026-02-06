@@ -34,12 +34,34 @@ class _PropertyImageCarouselState extends State<PropertyImageCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    _updateTotalImages();
+  }
 
-    if (widget.imageUrls?.isNotEmpty ?? false) {
-      _totalImages = widget.imageUrls!.length;
-    } else if (widget.imageFiles?.isNotEmpty ?? false) {
-      _totalImages = widget.imageFiles!.length;
+  @override
+  void didUpdateWidget(PropertyImageCarousel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.imageUrls != oldWidget.imageUrls ||
+        widget.imageFiles != oldWidget.imageFiles) {
+      _updateTotalImages();
     }
+  }
+
+  void _updateTotalImages() {
+    setState(() {
+      if (widget.imageUrls?.isNotEmpty ?? false) {
+        _totalImages = widget.imageUrls!.length;
+      } else if (widget.imageFiles?.isNotEmpty ?? false) {
+        _totalImages = widget.imageFiles!.length;
+      } else {
+        _totalImages = 0;
+      }
+
+      // Reset current page if it's out of bounds
+      if (_currentPage >= _totalImages && _totalImages > 0) {
+        _currentPage = 0;
+        _pageController.jumpToPage(0);
+      }
+    });
   }
 
   @override

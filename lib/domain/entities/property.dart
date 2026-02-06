@@ -131,10 +131,10 @@ enum PropertyType {
     poolVilla => 'pool_villa',
   };
 
-  static PropertyType? fromLabel(String? label) {
-    if (label == null) return null;
+  static PropertyType? fromValue(String? value) {
+    if (value == null) return null;
     try {
-      return PropertyType.values.firstWhere((e) => e.label == label);
+      return PropertyType.values.firstWhere((e) => e.value == value);
     } catch (_) {
       return null;
     }
@@ -448,7 +448,7 @@ class Property extends Equatable {
       formattedAddressEn: parseString(location['formatted_address_en']),
 
       // Details
-      propertyType: PropertyType.fromLabel(
+      propertyType: PropertyType.fromValue(
         parseString(specs['type']) ?? parseString(data['property_type']),
       ),
       bedrooms: parseInt(specs['bedrooms']),
@@ -535,6 +535,183 @@ class Property extends Equatable {
       // Dynamic Values Map (Multi-selects)
       'specification_values': specificationValues,
     };
+  }
+
+  Property copyWith({
+    int? id,
+    String? code,
+    String? title,
+    String? name,
+    String? description,
+    String? address,
+    double? latitude,
+    double? longitude,
+    bool? locationSet,
+    String? number,
+    String? city,
+    String? state,
+    String? province,
+    String? country,
+    String? postalCode,
+    String? subdistrict,
+    String? district,
+    String? road,
+    String? soi,
+    String? formattedAddressEn,
+    String? formattedAddressTh,
+    double? price,
+    PropertyApprovalStatus? approvalStatus,
+    PropertyListingType? listingType,
+    PropertyAvailabilityStatus? status,
+    DateTime? availableFrom,
+    int? bedrooms,
+    int? bathrooms,
+    int? garage,
+    double? area,
+    double? landSize,
+    double? buildingSize,
+    PropertyType? propertyType,
+    PropertyStyle? propertyStyle,
+    int? totalFloors,
+    PropertyColor? houseColor,
+    DateTime? built,
+    PropertyDirection? direction,
+    Map<String, dynamic>? specifications,
+    Map<String, dynamic>? specificationValues,
+    String? imageUrl,
+    List<String>? imageUrls,
+    List<XFile>? imageFiles,
+    DateTime? createdAt,
+    int? viewCount,
+    bool? isDraft,
+  }) {
+    return Property(
+      id: id ?? this.id,
+      code: code ?? this.code,
+      title: title ?? this.title,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      address: address ?? this.address,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      locationSet: locationSet ?? this.locationSet,
+      number: number ?? this.number,
+      city: city ?? this.city,
+      state: state ?? this.state,
+      province: province ?? this.province,
+      country: country ?? this.country,
+      postalCode: postalCode ?? this.postalCode,
+      subdistrict: subdistrict ?? this.subdistrict,
+      district: district ?? this.district,
+      road: road ?? this.road,
+      soi: soi ?? this.soi,
+      formattedAddressEn: formattedAddressEn ?? this.formattedAddressEn,
+      formattedAddressTh: formattedAddressTh ?? this.formattedAddressTh,
+      price: price ?? this.price,
+      approvalStatus: approvalStatus ?? this.approvalStatus,
+      listingType: listingType ?? this.listingType,
+      status: status ?? this.status,
+      availableFrom: availableFrom ?? this.availableFrom,
+      bedrooms: bedrooms ?? this.bedrooms,
+      bathrooms: bathrooms ?? this.bathrooms,
+      garage: garage ?? this.garage,
+      area: area ?? this.area,
+      landSize: landSize ?? this.landSize,
+      buildingSize: buildingSize ?? this.buildingSize,
+      propertyType: propertyType ?? this.propertyType,
+      propertyStyle: propertyStyle ?? this.propertyStyle,
+      totalFloors: totalFloors ?? this.totalFloors,
+      houseColor: houseColor ?? this.houseColor,
+      built: built ?? this.built,
+      direction: direction ?? this.direction,
+      specifications: specifications ?? this.specifications,
+      specificationValues: specificationValues ?? this.specificationValues,
+      imageUrl: imageUrl ?? this.imageUrl,
+      imageUrls: imageUrls ?? this.imageUrls,
+      imageFiles: imageFiles ?? this.imageFiles,
+      createdAt: createdAt ?? this.createdAt,
+      viewCount: viewCount ?? this.viewCount,
+      isDraft: isDraft ?? this.isDraft,
+    );
+  }
+
+  Property get cleaned {
+    dynamic clean(dynamic val) {
+      if (val == null) return null;
+      if (val is List) {
+        final cleanedList = val
+            .map((e) => clean(e))
+            .where((e) => e != null)
+            .toList();
+        return cleanedList.isEmpty ? null : cleanedList;
+      }
+      if (val is Map) {
+        final cleanedMap = <String, dynamic>{};
+        val.forEach((key, value) {
+          final cleanedValue = clean(value);
+          if (cleanedValue != null) cleanedMap[key.toString()] = cleanedValue;
+        });
+        return cleanedMap.isEmpty ? null : cleanedMap;
+      }
+      final str = val.toString().trim();
+      if (str.toUpperCase() == 'N/A' || str.isEmpty) return null;
+      return val;
+    }
+
+    // Special clean for non-nullable title/description
+    String cleanStr(String val) => clean(val) ?? '';
+    String cleanTitle(String val) => clean(val) ?? 'New Property';
+
+    return Property(
+      id: id,
+      code: clean(code),
+      title: cleanTitle(title),
+      name: clean(name),
+      description: cleanStr(description),
+      address: clean(address),
+      latitude: latitude,
+      longitude: longitude,
+      locationSet: locationSet,
+      number: clean(number),
+      city: clean(city),
+      state: clean(state),
+      province: clean(province),
+      country: clean(country),
+      postalCode: clean(postalCode),
+      subdistrict: clean(subdistrict),
+      district: clean(district),
+      road: clean(road),
+      soi: clean(soi),
+      formattedAddressEn: clean(formattedAddressEn),
+      formattedAddressTh: clean(formattedAddressTh),
+      price: price,
+      approvalStatus: approvalStatus,
+      listingType: listingType,
+      status: status,
+      availableFrom: availableFrom,
+      bedrooms: bedrooms,
+      bathrooms: bathrooms,
+      garage: garage,
+      area: area,
+      landSize: landSize,
+      buildingSize: buildingSize,
+      propertyType: propertyType,
+      propertyStyle: propertyStyle,
+      totalFloors: totalFloors,
+      houseColor: houseColor,
+      built: built,
+      direction: direction,
+      specifications:
+          (clean(specifications) as Map?)?.cast<String, dynamic>() ?? {},
+      specificationValues:
+          (clean(specificationValues) as Map?)?.cast<String, dynamic>() ?? {},
+      imageUrl: clean(imageUrl),
+      imageUrls: (clean(imageUrls) as List?)?.cast<String>() ?? [],
+      imageFiles: imageFiles,
+      createdAt: createdAt,
+      viewCount: viewCount,
+      isDraft: isDraft,
+    );
   }
 
   @override

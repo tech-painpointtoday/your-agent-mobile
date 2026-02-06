@@ -206,21 +206,21 @@ class _CreatePropertyView extends StatelessWidget {
           // Property submission success
           else if (state.propertyFormStatus ==
               PropertyFormStatus.submissionSuccess) {
-            // Show Success Dialog then pop
-
-            AppConfirmationBottomSheet.show(
+            StatusDialog.showSuccess(
               context: context,
               title: AppLocalizations.of(context).successTitle,
-              description: state.isDraft
+              message: state.isDraft
                   ? AppLocalizations.of(context).propertyPublishedSuccess
                   : AppLocalizations.of(context).propertyCreatedSuccess,
-              confirmLabel: AppLocalizations.of(context).ok,
-              style: ConfirmationStyle.normal,
-              onConfirm: () {
+            );
+
+            // Wait then redirect
+            Future.delayed(const Duration(seconds: 1), () {
+              if (context.mounted) {
                 context.pop();
                 context.push('/property/${state.propertyId}');
-              },
-            );
+              }
+            });
           } else if (state.propertyFormStatus ==
               PropertyFormStatus.submissionFailure) {
             AppConfirmationBottomSheet.show(

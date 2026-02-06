@@ -175,12 +175,41 @@ class PropertyFormState extends Equatable {
     // Step 1: Property Type
     if (property.propertyType == null) return 1;
 
+    // Helper to safe parse int/num
+    num? safeNum(dynamic val) {
+      if (val == null) return null;
+      if (val is num) return val;
+      if (val is String) return num.tryParse(val);
+      return null;
+    }
+
+    final specs = property.specifications;
+
     // Step 2: General Info (name, location, developer/project for condos)
-    if (property.name == null ||
-        property.name!.isEmpty ||
-        property.formattedAddressTh == null ||
-        property.formattedAddressTh!.isEmpty) {
-      return 2;
+    final bool isCondoOrApt =
+        property.propertyType == PropertyType.condo ||
+        property.propertyType == PropertyType.apartment;
+
+    final baseValid =
+        property.number != null &&
+        property.name != null &&
+        property.address != null &&
+        property.formattedAddressTh != null;
+
+    if (!baseValid) return 2;
+
+    if (isCondoOrApt) {
+      final developerId = safeNum(specs['developer_id']);
+      final condoProjectId = safeNum(specs['condo_project_id']);
+      final floor = specs['floor']?.toString();
+      final unitNo = specs['unit_no']?.toString();
+
+      if (developerId == null ||
+          condoProjectId == null ||
+          floor == null ||
+          unitNo == null) {
+        return 2;
+      }
     }
 
     // Step 3: Property Details (price, bedrooms, bathrooms, etc.)
@@ -189,7 +218,15 @@ class PropertyFormState extends Equatable {
         property.status == null ||
         property.totalFloors == null ||
         property.bedrooms == 0 ||
-        property.bathrooms == 0) {
+        property.bathrooms == 0 ||
+        property.garage == null ||
+        property.built == null ||
+        property.houseColor == null ||
+        property.landSize == null ||
+        property.landSize == 0 ||
+        property.buildingSize == null ||
+        property.buildingSize == 0 ||
+        property.direction == null) {
       return 3;
     }
 
@@ -209,6 +246,10 @@ class PropertyFormState extends Equatable {
     Property property, {
     PropertySpecificationFilters? filters,
   }) {
+    // 1. Clean if draft
+    final p = property.isDraft ? property.cleaned : property;
+    print('p: ${p.isDraft}');
+    print('p: ${p.number}');
     // Helper to safe parse int
     int? safeInt(dynamic val) {
       if (val == null) return null;
@@ -218,8 +259,8 @@ class PropertyFormState extends Equatable {
     }
 
     // Map specs: single-select -> specifications, multi-select (lists) -> specificationValues
-    final specs = property.specifications;
-    final specValues = property.specificationValues;
+    final specs = p.specifications;
+    final specValues = p.specificationValues;
 
     final specsMap = <String, String>{};
     final specValuesMap = <String, List<String>>{};
@@ -240,54 +281,52 @@ class PropertyFormState extends Equatable {
     });
 
     // Detect if this is a draft
-    final isDraft = property.isDraft;
+    final isDraft = p.isDraft;
 
     // Calculate initial step for draft resume
-    final initialStep = isDraft ? _calculateResumeStep(property) : 1;
+    final initialStep = isDraft ? _calculateResumeStep(p) : 1;
 
     return PropertyFormState(
       step: initialStep,
       isDraft: isDraft,
-      propertyId: property.id,
-      selectedPropertyType: property.propertyType,
-      name: property.name,
-      price: property.price,
-      description: property.description,
-      address: property.address,
-      latitude: property.latitude,
-      longitude: property.longitude,
-      bedrooms: property.bedrooms,
-      bathrooms: property.bathrooms,
-      garage: property.garage,
-      landSize: property.landSize,
-      buildingSize: property.buildingSize,
-      houseColor: property.houseColor,
-      built: property.built,
-      direction: property.direction,
-      availableFrom: property.availableFrom,
-      images: property.imageUrls
-          .map((url) => PropertyFormImage.fromUrl(url))
-          .toList(),
+      propertyId: p.id,
+      selectedPropertyType: p.propertyType,
+      name: p.name,
+      price: p.price,
+      description: p.description,
+      address: p.address,
+      latitude: p.latitude,
+      longitude: p.longitude,
+      bedrooms: p.bedrooms,
+      bathrooms: p.bathrooms,
+      garage: p.garage,
+      landSize: p.landSize,
+      buildingSize: p.buildingSize,
+      houseColor: p.houseColor,
+      built: p.built,
+      direction: p.direction,
+      availableFrom: p.availableFrom,
+      images: p.imageUrls.map((url) => PropertyFormImage.fromUrl(url)).toList(),
 
       // Location
-      number: property.number,
-      city: property.city,
-      state: property.state,
-      country: property.country,
-      postalCode: property.postalCode,
-      subdistrict: property.subdistrict,
-      district: property.district,
-      province: property.state, // Map state to province
-      road: property.road,
-      soi: property.soi,
-      formattedAddressEn: property.formattedAddressEn,
-      formattedAddressTh: property.formattedAddressTh,
+      number: p.number,
+      city: p.city,
+      state: p.state,
+      country: p.country,
+      postalCode: p.postalCode,
+      subdistrict: p.subdistrict,
+      district: p.district,
+      province: p.state, // Map state to province
+      road: p.road,
+      soi: p.soi,
+      formattedAddressEn: p.formattedAddressEn,
+      formattedAddressTh: p.formattedAddressTh,
 
       // Enum/Strings
-      listingType: property.listingType,
-      status: property.status,
-      totalFloors: property.totalFloors,
-      propertyStyle: property.propertyStyle,
+      listingType: p.listingType,
+      status: p.status,
+      totalFloors: p.totalFloors,
+      propertyStyle: p.propertyStyle,
 
       specificationFilters: filters ?? const PropertySpecificationFilters(),
       specifications: specsMap,
@@ -313,67 +352,107 @@ class PropertyFormState extends Equatable {
     );
   }
 
-  Map<String, dynamic> get data => {
-    'selectedPropertyType': selectedPropertyType?.label,
-    'name': name,
-    'type': selectedPropertyType?.value,
-    'price': price,
-    'description': description,
-    'address': address,
-    'latitude': latitude,
-    'longitude': longitude,
-    'bedrooms': bedrooms,
-    'bathrooms': bathrooms,
-    'garage': garage,
-    'land_size': landSize,
-    'building_size': buildingSize,
-    'house_color': houseColor?.label,
-    'built': built?.toUtc().toIso8601String(),
-    'direction': direction?.value,
-    'available_from': availableFrom,
-    'listing_type': listingType?.value,
-    'status': status?.value,
-    'total_floors': totalFloors,
-    'style': propertyStyle?.value,
-    'location_set': latitude != null && longitude != null,
-    'number': number,
-    'city': city,
-    'state': state,
-    'country': country,
-    'postal_code': postalCode,
-    'subdistrict': subdistrict,
-    'district': district,
-    'province': province,
-    'road': road,
-    'soi': soi,
-    'formatted_address_en': formattedAddressEn,
-    'formatted_address_th': formattedAddressTh,
-    'condoProjectId': condoProjectId,
-    'tower': tower,
-    'condoFloor': condoFloor,
-    'unitNo': unitNo,
-    'village_name': villageName,
-    'moo': moo,
-    'house_subtype': houseSubtype,
-    'parking_type': parkingType,
-    'is_corner_plot': isCornerPlot,
-    'house_notes': houseNotes,
-    'specifications': {
-      ...specifications,
-      if (propertyStyle != null) 'style': propertyStyle!.value,
+  Map<String, dynamic> get data {
+    final rawData = {
+      'selectedPropertyType': selectedPropertyType?.label,
+      'name': name,
+      'type': selectedPropertyType?.value,
+      'price': price,
+      'description': description,
+      'address': address,
+      'latitude': latitude,
+      'longitude': longitude,
+      'bedrooms': bedrooms,
+      'bathrooms': bathrooms,
+      'garage': garage,
+      'land_size': landSize,
+      'building_size': buildingSize,
+      'house_color': houseColor?.label,
+      'built': built?.toUtc().toIso8601String(),
+      'direction': direction?.value,
+      'available_from': availableFrom,
+      'listing_type': listingType?.value,
+      'status': status?.value,
+      'total_floors': totalFloors,
+      'style': propertyStyle?.value,
+      'location_set': latitude != null && longitude != null,
+      'number': number,
+      'city': city,
+      'state': state,
+      'country': country,
+      'postal_code': postalCode,
+      'subdistrict': subdistrict,
+      'district': district,
+      'province': province,
+      'road': road,
+      'soi': soi,
+      'formatted_address_en': formattedAddressEn,
+      'formatted_address_th': formattedAddressTh,
+      'condoProjectId': condoProjectId,
+      'tower': tower,
+      'condoFloor': condoFloor,
+      'unitNo': unitNo,
+      'village_name': villageName,
+      'moo': moo,
+      'house_subtype': houseSubtype,
+      'parking_type': parkingType,
+      'is_corner_plot': isCornerPlot,
+      'house_notes': houseNotes,
       if (selectedDeveloperId != null)
         'developer_id': selectedDeveloperId.toString(),
       if (selectedCondoProjectId != null)
         'condo_project_id': selectedCondoProjectId.toString(),
-    },
-    'specification_values': specificationValues,
-  };
+      'specifications': {
+        ...specifications,
+        if (propertyStyle != null) 'style': propertyStyle!.value,
+      },
+      'specification_values': specificationValues,
+    };
+
+    return _filterNulls(rawData);
+  }
+
+  /// Recursively removes null, empty strings, zero values, and empty collections from a Map
+  Map<String, dynamic> _filterNulls(Map<String, dynamic> map) {
+    final result = <String, dynamic>{};
+    map.forEach((key, value) {
+      if (value == null) return;
+
+      // Skip empty strings
+      if (value is String && value.trim().isEmpty) return;
+
+      // Skip zero values (int/double)
+      if (value is num && value == 0) return;
+
+      if (value is Map<String, dynamic>) {
+        final filteredMap = _filterNulls(value);
+        if (filteredMap.isNotEmpty) {
+          result[key] = filteredMap;
+        }
+      } else if (value is Map) {
+        final filteredMap = _filterNulls(Map<String, dynamic>.from(value));
+        if (filteredMap.isNotEmpty) {
+          result[key] = filteredMap;
+        }
+      } else if (value is List) {
+        // Skip empty lists or lists containing only nulls/empty values could be complex,
+        // but for now let's just skip empty lists.
+        if (value.isNotEmpty) {
+          result[key] = value;
+        }
+      } else {
+        result[key] = value;
+      }
+    });
+    return result;
+  }
 
   bool get isValid {
     if (step == 1) return selectedPropertyType != null;
     if (step == 2) {
       final baseValid =
           (name?.isNotEmpty == true) &&
+          (number?.isNotEmpty == true) &&
           (address?.isNotEmpty == true) &&
           (formattedAddressTh?.isNotEmpty == true);
 

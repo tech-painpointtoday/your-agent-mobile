@@ -38,10 +38,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.youragent.dev</string>
+			<string>com.youragent.oauth</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.1043784667090-tjn2q0asovn1g67qapthbh9s13cdos3i</string>
+				<string>youragent</string>
 			</array>
 		</dict>
 	</array>
@@ -84,6 +84,7 @@
 		<string>sms</string>
 		<string>http</string>
 		<string>https</string>
+		<string>youragent</string>
 	</array>
 </dict>
 </plist>

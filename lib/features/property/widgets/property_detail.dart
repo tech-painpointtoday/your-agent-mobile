@@ -38,17 +38,13 @@ class PropertyDetail extends StatefulWidget {
 }
 
 class _PropertyDetailState extends State<PropertyDetail> {
-  late final Property property;
-  late final List<String>? imageUrls;
-  late final List<XFile>? imageFiles;
+  Property get property => widget.property;
+  List<String>? get imageUrls => property.imageUrls;
+  List<XFile>? get imageFiles => property.imageFiles;
 
   @override
   void initState() {
     super.initState();
-    property = widget.property;
-    imageUrls = property.imageUrls;
-    imageFiles = property.imageFiles;
-
     // Ensure metadata is loaded/loading
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -60,7 +56,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: const ClampingScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 100),
       child: Stack(
         children: [
