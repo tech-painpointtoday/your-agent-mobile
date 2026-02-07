@@ -146,18 +146,18 @@ class Contract extends Equatable {
       ),
       propertyType: _mapPropertyType(specs['type']?.toString()),
       createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'].toString())
+          ? DateTime.parse(json['created_at'].toString()).toLocal()
           : null,
       updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'].toString())
+          ? DateTime.parse(json['updated_at'].toString()).toLocal()
           : null,
       sellerSignedContractUrl: json['seller_signed_contract_url']?.toString(),
       sellerSignedAt: json['seller_signed_at'] != null
-          ? DateTime.parse(json['seller_signed_at'].toString())
+          ? DateTime.parse(json['seller_signed_at'].toString()).toLocal()
           : null,
       buyerSignedContractUrl: json['buyer_signed_contract_url']?.toString(),
       buyerSignedAt: json['buyer_signed_at'] != null
-          ? DateTime.parse(json['buyer_signed_at'].toString())
+          ? DateTime.parse(json['buyer_signed_at'].toString()).toLocal()
           : null,
       monthlyRentalCost: json['monthly_rental_cost']?.toString(),
       upfrontFee: json['upfront_fee']?.toString(),
@@ -166,7 +166,7 @@ class Contract extends Equatable {
           : int.tryParse(json['rental_payment_date']?.toString() ?? ''),
       signingPlace: json['signing_place']?.toString(),
       contractDate: json['contract_date'] != null
-          ? DateTime.parse(json['contract_date'].toString())
+          ? DateTime.parse(json['contract_date'].toString()).toLocal()
           : null,
       propertyUnitNo: json['property_unit_no']?.toString(),
       propertyFloor: json['property_floor']?.toString(),
@@ -186,6 +186,13 @@ class Contract extends Equatable {
               name: e['name'].toString(),
               description: e['description']?.toString(),
               existingPhotoUrl: e['photo_url']?.toString(),
+              validatedPhotoUrl: e['validated_photo_url']?.toString(),
+              existingPhotoUrls: (e['validated_photo_urls'] as List? ?? [])
+                  .map((url) => url.toString())
+                  .toList(),
+              photos: (e['photos'] as List? ?? [])
+                  .map((p) => Map<String, dynamic>.from(p as Map))
+                  .toList(),
             ),
           )
           .toList(),
@@ -196,6 +203,13 @@ class Contract extends Equatable {
               name: e['name'].toString(),
               description: e['description']?.toString(),
               existingPhotoUrl: e['photo_url']?.toString(),
+              validatedPhotoUrl: e['validated_photo_url']?.toString(),
+              existingPhotoUrls: (e['validated_photo_urls'] as List? ?? [])
+                  .map((url) => url.toString())
+                  .toList(),
+              photos: (e['photos'] as List? ?? [])
+                  .map((p) => Map<String, dynamic>.from(p as Map))
+                  .toList(),
             ),
           )
           .toList(),

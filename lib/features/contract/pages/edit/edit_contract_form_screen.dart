@@ -119,17 +119,21 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        body: Container(
-          margin: const EdgeInsets.only(top: 16),
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.translucent,
+          child: Container(
+            margin: const EdgeInsets.only(top: 16),
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
             ),
+            child: _buildBody(context),
           ),
-          child: _buildBody(context),
         ),
         bottomNavigationBar: _buildBottomBar(context),
       ),
@@ -206,7 +210,7 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
                 builder: (context, state) {
                   final isValid = state.isValid;
                   final isLoading =
-                      state.status == ContractFormStatus.submmitting;
+                      state.status == ContractFormStatus.submitting;
 
                   return AppButton(
                     text: AppLocalizations.of(context).confirmSaveLabel,
@@ -230,9 +234,6 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
                           context.read<ContractFormBloc>().add(
                             const ContractFormSubmitted(), // Currently mocks API in BLoC
                           );
-                          Navigator.of(
-                            context,
-                          ).pop(); // Close confirmation sheet
                         },
                       );
                     },

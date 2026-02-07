@@ -23,6 +23,9 @@ class AppTextField extends StatelessWidget {
   final ScrollController? scrollController;
   final bool showScrollbar;
 
+  final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
+
   const AppTextField({
     super.key,
     required this.label,
@@ -43,6 +46,8 @@ class AppTextField extends StatelessWidget {
     this.obscureText = false,
     this.scrollController,
     this.showScrollbar = false,
+    this.validator,
+    this.autovalidateMode,
   });
 
   @override
@@ -88,6 +93,8 @@ class AppTextField extends StatelessWidget {
           showCursor: readOnly ? false : showCursor,
           enabled: !readOnly,
           inputFormatters: inputFormatters,
+          validator: validator,
+          autovalidateMode: autovalidateMode,
           scrollController: scrollController,
           style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseBlack),
           decoration: InputDecoration(
@@ -127,6 +134,21 @@ class AppTextField extends StatelessWidget {
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppColors.baseLightGrey),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.supportRedDeep),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(
+                color: AppColors.supportRedDeep,
+                width: 1.5,
+              ),
+            ),
+            errorStyle: GoogleFonts.anuphan(
+              color: AppColors.supportRedDeep,
+              fontSize: 12,
             ),
             filled: true,
             fillColor: readOnly ? AppColors.baseOffWhite : AppColors.baseWhite,

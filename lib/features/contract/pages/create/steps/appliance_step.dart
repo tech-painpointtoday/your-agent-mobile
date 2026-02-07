@@ -543,18 +543,28 @@ class _ApplianceItemCard extends StatelessWidget {
               childAspectRatio: 1.3,
             ),
             itemCount:
-                item.images.length + (item.existingPhotoUrl != null ? 1 : 0),
+                item.images.length +
+                item.existingPhotoUrls.length +
+                (item.existingPhotoUrl != null &&
+                        !item.existingPhotoUrls.contains(item.existingPhotoUrl)
+                    ? 1
+                    : 0),
             itemBuilder: (context, imgIndex) {
-              final hasExisting = item.existingPhotoUrl != null;
-              final isExisting = hasExisting && imgIndex == 0;
-              final path = isExisting
-                  ? item.existingPhotoUrl!
-                  : item.images[imgIndex - (hasExisting ? 1 : 0)];
+              final networkUrls = [...item.existingPhotoUrls];
+              if (item.existingPhotoUrl != null &&
+                  !networkUrls.contains(item.existingPhotoUrl)) {
+                networkUrls.add(item.existingPhotoUrl!);
+              }
 
-              final isNetwork =
-                  path.startsWith('http') || path.startsWith('https');
-              final fileName = isExisting
-                  ? AppLocalizations.of(context).propertyPhotos
+              final isNetwork = imgIndex < networkUrls.length;
+              final path = isNetwork
+                  ? networkUrls[imgIndex]
+                  : item.images[imgIndex - networkUrls.length];
+
+              final fileName = isNetwork
+                  ? (item.existingPhotoUrls.contains(path)
+                        ? 'รูปภาพสัญญา'
+                        : AppLocalizations.of(context).propertyPhotos)
                   : path.split('/').last;
 
               return Stack(

@@ -7,11 +7,15 @@ import 'package:youragent/domain/entities/appliance_item.dart';
 import 'package:youragent/domain/entities/furniture_item.dart';
 import 'package:youragent/services/property_api_service.dart';
 import 'package:youragent/services/contract_api_service.dart';
+import 'package:youragent/utils/app_utils.dart';
 import 'contract_form_event.dart';
 import 'contract_form_state.dart';
 import 'package:youragent/domain/entities/contract_type.dart';
 import 'package:youragent/domain/entities/contract_edit_data.dart';
 import 'package:youragent/domain/entities/contract_attachment.dart';
+import 'package:youragent/domain/entities/contract_status.dart';
+import 'package:dio/dio.dart' as dio;
+import 'dart:io';
 
 class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   final PropertyApiService _propertyApiService;
@@ -94,6 +98,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormAdditionalConditionsUpdated>(_onAdditionalConditionsUpdated);
     on<ContractFormInitialized>(_onInitialized);
     on<ContractFormEditStarted>(_onEditStarted);
+    on<ContractFormDraftSubmitted>(_onDraftSubmitted);
 
     // Step 8: Attachments
     on<ContractFormAttachmentAdded>(_onAttachmentAdded);
@@ -101,7 +106,6 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormAttachmentNameUpdated>(_onAttachmentNameUpdated);
     on<ContractFormAttachmentFileUpdated>(_onAttachmentFileUpdated);
     on<ContractFormRemoteAttachmentDeleted>(_onRemoteAttachmentDeleted);
-    on<ContractFormDraftSubmitted>(_onDraftSubmitted);
   }
 
   Future<void> _onEditStarted(
@@ -125,12 +129,28 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         return double.tryParse(val.replaceAll(',', '')) ?? 0.0;
       }
 
+      // Format property name if selected property is available and approved
+      String effectivePropertyName = contract.propertyName;
+      Property? effectiveProperty = contract.property;
+
+      if (contract.property != null) {
+        if (contract.property!.approvalStatus ==
+            PropertyApprovalStatus.approved) {
+          effectivePropertyName =
+              '${contract.property!.name ?? contract.property!.title} (${AppUtils.generatePropertyCode(propertyId: contract.property!.id!, createdAt: contract.property!.createdAt)})';
+        } else {
+          effectivePropertyName = '';
+          effectiveProperty = null;
+        }
+      }
+
       emit(
         state.copyWith(
           // Basic Info
           contractId: contract.id,
-          selectedProperty: contract.property,
-          propertyName: contract.propertyName,
+          contractStatus: contract.status,
+          selectedProperty: effectiveProperty,
+          propertyName: effectivePropertyName,
           contractDate: contract.contractDate,
           contractType: contract.contractType,
           leaseFormat: contract.commonTerms ?? '',
@@ -196,7 +216,26 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         emit(state.copyWith(attachments: documents));
       } catch (e) {
         // Log error but don't fail the whole edit start
-        print('Error fetching documents: $e');
+        // print('Error fetching documents: $e');
+      }
+
+      // Capture baseline data for partial updates
+      if (state.contractId != null) {
+        final initialPayload = _collectContractData();
+        emit(
+          state.copyWith(
+            status: ContractFormStatus.initial,
+            errorMessage: null,
+            initialData: initialPayload,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            status: ContractFormStatus.initial,
+            errorMessage: null,
+          ),
+        );
       }
     } catch (e) {
       emit(
@@ -227,6 +266,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
       state.copyWith(
         // Basic Info
         contractId: c.id,
+        contractStatus: c.status,
         selectedProperty: c.property,
         propertyName: c.propertyName,
         contractDate: c.contractDate,
@@ -360,7 +400,8 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     emit(
       state.copyWith(
         selectedProperty: event.property,
-        propertyName: event.property.name ?? event.property.title,
+        propertyName:
+            '${event.property.name ?? event.property.title} (${AppUtils.generatePropertyCode(propertyId: event.property.id!, createdAt: event.property.createdAt)})',
       ),
     );
     _validateCurrentStep(emit);
@@ -844,8 +885,21 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   ) {
     final newList = state.applianceItems.map((item) {
       if (item.id == event.id) {
+        final isPropertyImage = item.existingPhotoUrl == event.imagePath;
+
         return item.copyWith(
           images: item.images.where((img) => img != event.imagePath).toList(),
+          existingPhotoUrls: item.existingPhotoUrls
+              .where((url) => url != event.imagePath)
+              .toList(),
+          photos: item.photos
+              .where(
+                (p) =>
+                    p['validated_photo_url'] != event.imagePath &&
+                    p['photo_url'] != event.imagePath,
+              )
+              .toList(),
+          clearPropertyImage: isPropertyImage,
         );
       }
       return item;
@@ -858,25 +912,33 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     ContractFormSubmitted event,
     Emitter<ContractFormState> emit,
   ) async {
-    emit(state.copyWith(status: ContractFormStatus.submmitting));
+    emit(state.copyWith(status: ContractFormStatus.submitting));
     try {
       final contractData = _collectContractData();
+      final filteredData = state.contractId != null
+          ? _removeEmptyValues(contractData)
+          : contractData;
+      final payload = await _convertToFormData(filteredData);
 
       if (state.contractId != null) {
-        // Update existing contract
         await _contractApiService.updateContract(
           id: state.contractId!,
-          data: contractData,
+          data: payload,
         );
 
         // Upload attachments
         await _uploadAttachments(state.contractId!);
 
+        // If it's a draft, publish it. Otherwise, normal update.
+        if (state.contractStatus == ContractStatus.draft) {
+          await _contractApiService.publishContract(id: state.contractId!);
+        }
+
         emit(state.copyWith(status: ContractFormStatus.success));
       } else {
         // Create new contract
         final newContractId = await _contractApiService.createContract(
-          data: contractData,
+          data: payload,
         );
 
         // Upload attachments
@@ -894,11 +956,54 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     }
   }
 
+  Future<void> _onDraftSubmitted(
+    ContractFormDraftSubmitted event,
+    Emitter<ContractFormState> emit,
+  ) async {
+    emit(state.copyWith(status: ContractFormStatus.submitting));
+
+    try {
+      final contractData = _collectContractData();
+      final filteredData = state.contractId != null
+          ? _removeEmptyValues(contractData)
+          : contractData;
+      final payload = await _convertToFormData(filteredData);
+
+      if (state.contractId != null) {
+        await _contractApiService.updateContractDraft(
+          id: state.contractId!,
+          data: payload,
+        );
+
+        // Also upload attachments for drafts
+        await _uploadAttachments(state.contractId!);
+      } else {
+        final id = await _contractApiService.createContractDraft(data: payload);
+
+        // Also upload attachments for drafts
+        await _uploadAttachments(id);
+
+        emit(
+          state.copyWith(contractId: id, contractStatus: ContractStatus.draft),
+        );
+      }
+
+      emit(state.copyWith(status: ContractFormStatus.draftSaveSuccess));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: ContractFormStatus.draftSaveFailure,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
   Map<String, dynamic> _collectContractData() {
-    return {
+    final rawData = {
       if (state.contractId != null) 'id': state.contractId,
       'property_id': state.selectedProperty?.id,
-      'contract_date': state.contractDate?.toIso8601String(),
+      'contract_date': state.contractDate?.toUtc().toIso8601String(),
       'contract_type': state.contractType == ContractType.buy ? 'buy' : 'rent',
 
       // Step 2: Owner
@@ -927,26 +1032,51 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         'email': state.buyerEmail,
       },
 
-      // Step 4: Appliances
-      'appliances': state.applianceItems.map((item) {
+      'appliances': state.applianceItems.asMap().entries.map((entry) {
+        final index = entry.key;
+        final item = entry.value;
+        final imagePaths = item.images;
+
         return {
           'id': item.id,
           'name': item.name,
           'description': item.description,
           'property_image_id': item.propertyImageId,
-          'existing_photo_url': item.existingPhotoUrl,
-          // 'images': item.images,
+          'photo_url': item.existingPhotoUrl,
+          'validated_photo_url': item.validatedPhotoUrl,
+          'order': index,
+          if (imagePaths.isNotEmpty)
+            'photo': imagePaths.first
+          else if (item.existingPhotoUrl != null)
+            'photo': item.existingPhotoUrl,
+          'photos': [
+            ...imagePaths,
+            ...item.photos.map((p) => p['photo_url']?.toString() ?? ''),
+          ].where((url) => url.isNotEmpty).toList(),
         };
       }).toList(),
 
-      // Step 5: Furniture
-      'furniture': state.furnitureItems.map((item) {
+      'furniture': state.furnitureItems.asMap().entries.map((entry) {
+        final index = entry.key;
+        final item = entry.value;
+        final imagePaths = item.images;
+
         return {
           'id': item.id,
           'name': item.name,
           'description': item.description,
           'property_image_id': item.propertyImageId,
-          'existing_photo_url': item.existingPhotoUrl,
+          'photo_url': item.existingPhotoUrl,
+          'validated_photo_url': item.validatedPhotoUrl,
+          'order': index,
+          if (imagePaths.isNotEmpty)
+            'photo': imagePaths.first
+          else if (item.existingPhotoUrl != null)
+            'photo': item.existingPhotoUrl,
+          'photos': [
+            ...imagePaths,
+            ...item.photos.map((p) => p['photo_url']?.toString() ?? ''),
+          ].where((url) => url.isNotEmpty).toList(),
         };
       }).toList(),
 
@@ -975,9 +1105,72 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
       'flexible_terms': state.additionalConditions,
 
       // Dates
-      'lease_start_date': state.leaseStartDate?.toIso8601String(),
-      'lease_end_date': state.leaseEndDate?.toIso8601String(),
+      'lease_start_date': state.leaseStartDate?.toUtc().toIso8601String(),
+      'lease_end_date': state.leaseEndDate?.toUtc().toIso8601String(),
     };
+
+    if (state.contractId != null && state.initialData != null) {
+      return _getChangedData(rawData, state.initialData!);
+    }
+
+    return rawData;
+  }
+
+  Map<String, dynamic> _getChangedData(
+    Map<String, dynamic> current,
+    Map<String, dynamic> initial,
+  ) {
+    final Map<String, dynamic> changedData = {};
+
+    current.forEach((key, value) {
+      final initialValue = initial[key];
+
+      // Always include ID if it's the top level
+      if (key == 'id') {
+        changedData[key] = value;
+        return;
+      }
+
+      if (value is Map<String, dynamic> &&
+          initialValue is Map<String, dynamic>) {
+        final nestedChanged = _getChangedData(value, initialValue);
+        if (nestedChanged.isNotEmpty) {
+          changedData[key] = nestedChanged;
+        }
+      } else if (value is List && initialValue is List) {
+        // Deep comparison for lists of maps (like appliances/furniture)
+        if (!_isListEqual(value, initialValue)) {
+          changedData[key] = value;
+        }
+      } else if (value != initialValue) {
+        changedData[key] = value;
+      }
+    });
+
+    return changedData;
+  }
+
+  bool _isListEqual(List a, List b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      final valA = a[i];
+      final valB = b[i];
+      if (valA is Map && valB is Map) {
+        if (!_isMapEqual(valA, valB)) return false;
+      } else if (valA != valB) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool _isMapEqual(Map a, Map b) {
+    if (a.length != b.length) return false;
+    for (final key in a.keys) {
+      if (!b.containsKey(key)) return false;
+      if (a[key] != b[key]) return false;
+    }
+    return true;
   }
 
   void _onAppliancePropertyImageSelected(
@@ -1057,8 +1250,21 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   ) {
     final newList = state.furnitureItems.map((item) {
       if (item.id == event.id) {
+        final isPropertyImage = item.existingPhotoUrl == event.imagePath;
+
         return item.copyWith(
           images: item.images.where((img) => img != event.imagePath).toList(),
+          existingPhotoUrls: item.existingPhotoUrls
+              .where((url) => url != event.imagePath)
+              .toList(),
+          photos: item.photos
+              .where(
+                (p) =>
+                    p['validated_photo_url'] != event.imagePath &&
+                    p['photo_url'] != event.imagePath,
+              )
+              .toList(),
+          clearPropertyImage: isPropertyImage,
         );
       }
       return item;
@@ -1382,40 +1588,6 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     }
   }
 
-  Future<void> _onDraftSubmitted(
-    ContractFormDraftSubmitted event,
-    Emitter<ContractFormState> emit,
-  ) async {
-    emit(state.copyWith(status: ContractFormStatus.submmitting));
-    try {
-      final contractData = _collectContractData();
-      // Set draft status if possible, or just use the same API for now
-      // Assuming draft is handled by the backend or by partial data
-
-      if (state.contractId != null) {
-        await _contractApiService.updateContract(
-          id: state.contractId!,
-          data: contractData,
-        );
-        await _uploadAttachments(state.contractId!);
-      } else {
-        final newContractId = await _contractApiService.createContract(
-          data: contractData,
-        );
-        await _uploadAttachments(newContractId);
-      }
-
-      emit(state.copyWith(status: ContractFormStatus.success));
-    } catch (e) {
-      emit(
-        state.copyWith(
-          status: ContractFormStatus.failure,
-          errorMessage: e.toString(),
-        ),
-      );
-    }
-  }
-
   Future<void> _uploadAttachments(int contractId) async {
     for (final attachment in state.attachments) {
       if (attachment.id != null) {
@@ -1430,5 +1602,101 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         );
       }
     }
+  }
+
+  Future<dio.FormData> _convertToFormData(Map<String, dynamic> data) async {
+    final Map<String, dynamic> processedData = {};
+
+    await _processMap(data, processedData);
+
+    return dio.FormData.fromMap(processedData, dio.ListFormat.multiCompatible);
+  }
+
+  Future<void> _processMap(
+    Map<String, dynamic> source,
+    Map<String, dynamic> destination,
+  ) async {
+    for (final entry in source.entries) {
+      final key = entry.key;
+      final value = entry.value;
+
+      if (value is Map<String, dynamic>) {
+        final Map<String, dynamic> nested = {};
+        await _processMap(value, nested);
+        destination[key] = nested;
+      } else if (value is List) {
+        final List<dynamic> processedList = [];
+        for (final item in value) {
+          if (item is Map<String, dynamic>) {
+            final Map<String, dynamic> nestedItem = {};
+            await _processMap(item, nestedItem);
+            processedList.add(nestedItem);
+          } else if (item is String && _isLocalFilePath(item)) {
+            processedList.add(
+              await dio.MultipartFile.fromFile(
+                item,
+                filename: item.split('/').last,
+              ),
+            );
+          } else {
+            processedList.add(item);
+          }
+        }
+        destination[key] = processedList;
+      } else if (value is String && _isLocalFilePath(value)) {
+        destination[key] = await dio.MultipartFile.fromFile(
+          value,
+          filename: value.split('/').last,
+        );
+      } else {
+        destination[key] = value;
+      }
+    }
+  }
+
+  bool _isLocalFilePath(String value) {
+    if (value.isEmpty) return false;
+    if (value.startsWith('http')) return false;
+    final file = File(value);
+    return file.existsSync();
+  }
+
+  Map<String, dynamic> _removeEmptyValues(Map<String, dynamic> map) {
+    final Map<String, dynamic> output = {};
+    for (var entry in map.entries) {
+      final key = entry.key;
+      final value = entry.value;
+
+      if (value == null || value == '' || value == 0 || value == 0.0) {
+        continue;
+      }
+
+      if (value is Map<String, dynamic>) {
+        final nested = _removeEmptyValues(value);
+        if (nested.isNotEmpty) {
+          output[key] = nested;
+        }
+      } else if (value is List) {
+        final filteredList = [];
+        for (var item in value) {
+          if (item is Map<String, dynamic>) {
+            final nestedItem = _removeEmptyValues(item);
+            if (nestedItem.isNotEmpty) {
+              filteredList.add(nestedItem);
+            }
+          } else {
+            if (item != null && item != '' && item != 0 && item != 0.0) {
+              filteredList.add(item);
+            }
+          }
+        }
+        if (filteredList.isNotEmpty) {
+          output[key] = filteredList;
+        }
+      } else {
+        output[key] = value;
+      }
+    }
+    return output;
   }
 }

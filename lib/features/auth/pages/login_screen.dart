@@ -239,237 +239,242 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: _listener,
       child: Scaffold(
         backgroundColor: AppColors.white,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(height: 12),
-                // Illustration (placeholder using existing asset)
-                Center(
-                  child: Image.asset(
-                    'assets/images/sign_in/YA_Illustration_SignIn_Agent.png',
-                    width: 180,
-                    height: 180,
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.translucent,
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(height: 12),
+                  // Illustration (placeholder using existing asset)
+                  Center(
+                    child: Image.asset(
+                      'assets/images/sign_in/YA_Illustration_SignIn_Agent.png',
+                      width: 180,
+                      height: 180,
+                    ),
                   ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  _title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.baseBlack,
+                  SizedBox(height: 8),
+                  Text(
+                    _title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.baseBlack,
+                    ),
                   ),
-                ),
-                SizedBox(height: 6),
-                Text(
-                  _subtitle,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: AppColors.baseGrey),
-                ),
-                SizedBox(height: 20),
-                _roleSegment(l10n),
-                SizedBox(height: 18),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextFormField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: _inputDecoration(
-                          hint: l10n.email,
-                          prefix: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: SvgPicture.asset(
-                              'assets/icons/email.svg',
-                              width: 16,
-                              height: 16,
-                              colorFilter: const ColorFilter.mode(
-                                AppColors.primary,
-                                BlendMode.srcIn,
+                  SizedBox(height: 6),
+                  Text(
+                    _subtitle,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: AppColors.baseGrey),
+                  ),
+                  SizedBox(height: 20),
+                  _roleSegment(l10n),
+                  SizedBox(height: 18),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: _inputDecoration(
+                            hint: l10n.email,
+                            prefix: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: SvgPicture.asset(
+                                'assets/icons/email.svg',
+                                width: 16,
+                                height: 16,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.primary,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                             ),
                           ),
+                          validator: (v) {
+                            if (v == null || v.isEmpty) return l10n.enter_email;
+                            if (!v.contains('@')) return l10n.enter_valid_email;
+                            return null;
+                          },
                         ),
-                        validator: (v) {
-                          if (v == null || v.isEmpty) return l10n.enter_email;
-                          if (!v.contains('@')) return l10n.enter_valid_email;
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 12),
-                      TextFormField(
-                        controller: _passwordController,
-                        obscureText: _obscurePassword,
-                        decoration: _inputDecoration(
-                          hint: l10n.password,
-                          prefix: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: SvgPicture.asset(
-                              'assets/icons/security-shield.svg',
-                              width: 16,
-                              height: 16,
-                              colorFilter: const ColorFilter.mode(
-                                AppColors.primary,
-                                BlendMode.srcIn,
+                        SizedBox(height: 12),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: _obscurePassword,
+                          decoration: _inputDecoration(
+                            hint: l10n.password,
+                            prefix: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: SvgPicture.asset(
+                                'assets/icons/security-shield.svg',
+                                width: 16,
+                                height: 16,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.primary,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                            suffix: IconButton(
+                              onPressed: () => setState(
+                                () => _obscurePassword = !_obscurePassword,
+                              ),
+                              icon: SvgPicture.asset(
+                                _obscurePassword
+                                    ? 'assets/icons/form/eye-off.svg'
+                                    : 'assets/icons/form/eye.svg',
+                                width: 16,
+                                height: 16,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.baseGrey,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                             ),
                           ),
-                          suffix: IconButton(
-                            onPressed: () => setState(
-                              () => _obscurePassword = !_obscurePassword,
-                            ),
-                            icon: SvgPicture.asset(
-                              _obscurePassword
-                                  ? 'assets/icons/form/eye-off.svg'
-                                  : 'assets/icons/form/eye.svg',
-                              width: 16,
-                              height: 16,
-                              colorFilter: const ColorFilter.mode(
-                                AppColors.baseGrey,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
+                          validator: (v) {
+                            if (v == null || v.isEmpty) {
+                              return l10n.enter_password;
+                            }
+                            if (v.length < 6) return l10n.password_length_error;
+                            return null;
+                          },
                         ),
-                        validator: (v) {
-                          if (v == null || v.isEmpty) {
-                            return l10n.enter_password;
-                          }
-                          if (v.length < 6) return l10n.password_length_error;
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 4),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() => _rememberMe = !_rememberMe);
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    visualDensity: const VisualDensity(
-                                      horizontal: VisualDensity.minimumDensity,
-                                      vertical: VisualDensity.minimumDensity,
-                                    ),
-
-                                    value: _rememberMe,
-                                    onChanged: (v) => setState(
-                                      () => _rememberMe = v ?? false,
-                                    ),
-                                    side: const BorderSide(
-                                      color: AppColors.baseGrey,
-                                    ),
-                                    activeColor: AppColors.primary,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Flexible(
-                                    child: Text(
-                                      l10n.remember_me,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: AppColors.baseDarkGrey,
+                        SizedBox(height: 4),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() => _rememberMe = !_rememberMe);
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Checkbox(
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      visualDensity: const VisualDensity(
+                                        horizontal:
+                                            VisualDensity.minimumDensity,
+                                        vertical: VisualDensity.minimumDensity,
+                                      ),
+                                      value: _rememberMe,
+                                      onChanged: (v) => setState(
+                                        () => _rememberMe = v ?? false,
+                                      ),
+                                      side: const BorderSide(
+                                        color: AppColors.baseGrey,
+                                      ),
+                                      activeColor: AppColors.primary,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(4),
                                       ),
                                     ),
+                                    SizedBox(width: 8),
+                                    Flexible(
+                                      child: Text(
+                                        l10n.remember_me,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: AppColors.baseDarkGrey,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    context.push('/forgot-password'),
+                                child: Text(
+                                  l10n.forgot_password,
+                                  style: TextStyle(color: AppColors.baseGrey),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        BlocBuilder<AuthBloc, AuthState>(
+                          builder: (context, state) {
+                            final loading = state is AuthLoading;
+                            return SizedBox(
+                              width: double.infinity,
+                              height: 52,
+                              child: ElevatedButton(
+                                onPressed: loading ? null : _submit,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  disabledBackgroundColor: AppColors.disabledBg,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                ],
+                                  elevation: 0,
+                                ),
+                                child: loading
+                                    ? SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                AppColors.white,
+                                              ),
+                                        ),
+                                      )
+                                    : Text(
+                                        l10n.login_button,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.white,
+                                        ),
+                                      ),
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(height: 18),
+                        SocialLoginSection(role: _role),
+                        SizedBox(height: 14),
+                        SizedBox(height: 14),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              l10n.don_t_have_account,
+                              style: TextStyle(
+                                color: AppColors.baseGrey,
+                                fontSize: 14,
                               ),
                             ),
                             TextButton(
-                              onPressed: () => context.push('/forgot-password'),
+                              onPressed: () => context.go('/register'),
                               child: Text(
-                                l10n.forgot_password,
-                                style: TextStyle(color: AppColors.baseGrey),
+                                l10n.register_now,
+                                style: TextStyle(
+                                  color: AppColors.primary,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      SizedBox(height: 8),
-                      BlocBuilder<AuthBloc, AuthState>(
-                        builder: (context, state) {
-                          final loading = state is AuthLoading;
-                          return SizedBox(
-                            width: double.infinity,
-                            height: 52,
-                            child: ElevatedButton(
-                              onPressed: loading ? null : _submit,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                disabledBackgroundColor: AppColors.disabledBg,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                elevation: 0,
-                              ),
-                              child: loading
-                                  ? SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              AppColors.white,
-                                            ),
-                                      ),
-                                    )
-                                  : Text(
-                                      l10n.login_button,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppColors.white,
-                                      ),
-                                    ),
-                            ),
-                          );
-                        },
-                      ),
-                      SizedBox(height: 18),
-                      SocialLoginSection(role: _role),
-                      SizedBox(height: 14),
-                      SizedBox(height: 14),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            l10n.don_t_have_account,
-                            style: TextStyle(
-                              color: AppColors.baseGrey,
-                              fontSize: 14,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () => context.go('/register'),
-                            child: Text(
-                              l10n.register_now,
-                              style: TextStyle(
-                                color: AppColors.primary,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

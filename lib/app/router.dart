@@ -6,6 +6,7 @@ import 'package:youragent/domain/entities/contract.dart';
 import 'package:youragent/features/contract/pages/edit/edit_contract_form_screen.dart';
 import 'package:youragent/features/contract/pages/edit/edit_contract_menu_screen.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
+import 'package:youragent/features/contract/pages/create/add_contract_screen.dart';
 import 'package:youragent/features/property/pages/create/create_property_screen.dart';
 import 'package:youragent/features/property/pages/edit/edit_property_form_screen.dart';
 import 'package:youragent/features/property/pages/edit/edit_property_menu_screen.dart';
@@ -330,6 +331,13 @@ class AppRouter {
       GoRoute(
         path: '/contract',
         builder: (context, state) => const ContractScreen(),
+      ),
+      GoRoute(
+        path: '/contract/create',
+        builder: (context, state) {
+          final contract = state.extra as Contract?;
+          return AddContractScreen(contract: contract);
+        },
       ),
       GoRoute(
         path: '/contract/edit',

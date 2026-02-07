@@ -14,6 +14,8 @@ import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import '../../../widgets/user_registration_bottom_sheet.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/utils/thai_phone_input_formatter.dart';
+import 'package:youragent/utils/thai_id_input_formatter.dart';
 
 class PropertyOwnerStep extends StatefulWidget {
   final bool hideHeader;
@@ -225,7 +227,16 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     label: AppLocalizations.of(context).id_card_or_tax_id,
                     controller: _idCardController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context).id_card_or_tax_id,
+                    hintText: 'x-xxxx-xxxxx-xx-x',
+                    inputFormatters: [ThaiIdInputFormatter()],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return null;
+                      if (!ThaiIdInputFormatter.isValidThaiID(value)) {
+                        return AppLocalizations.of(context).invalidThaiIdError;
+                      }
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerIdCardUpdated(value),
                     ),
@@ -251,6 +262,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     isRequired: true,
                     hintText: AppLocalizations.of(context).phone_number,
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [ThaiPhoneInputFormatter()],
                     onChanged: (value) => context.read<ContractFormBloc>().add(
                       ContractFormOwnerPhoneUpdated(value),
                     ),

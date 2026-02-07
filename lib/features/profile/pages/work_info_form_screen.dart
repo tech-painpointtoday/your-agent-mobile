@@ -235,60 +235,66 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
         child: Scaffold(
           backgroundColor: AppColors.primary,
           appBar: _buildAppBar(context),
-          body: Container(
-            margin: const EdgeInsets.only(top: 16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppBadge(
-                          label: AppLocalizations.of(context).workInfoLabel,
-                          color: BadgeColor.blue,
-                          style: BadgeStyle.plain,
-                        ),
-                        SizedBox(height: 24),
-                        AppTextField(
-                          label: AppLocalizations.of(context).companyNameHint,
-                          hintText: AppLocalizations.of(
-                            context,
-                          ).companyNameHint,
-                          controller: _companyController,
-                        ),
-                        SizedBox(height: 16),
-                        AppTextField(
-                          label: AppLocalizations.of(context).licenseNumberHint,
-                          hintText: AppLocalizations.of(
-                            context,
-                          ).licenseNumberHint,
-                          controller: _licenseController,
-                        ),
-                        SizedBox(height: 16),
-                        AppTextField(
-                          label: 'ประสบการณ์ทำงาน (ปี)',
-                          hintText: '0',
-                          controller: _experienceController,
-                          keyboardType: TextInputType.number,
-                        ),
-                        SizedBox(height: 24),
-                        SizedBox(height: 24),
-                        _buildLanguageSection(),
-                        SizedBox(height: 24),
-                        _buildSocialSection(),
-                        SizedBox(height: 40),
-                      ],
+          body: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            behavior: HitTestBehavior.translucent,
+            child: Container(
+              margin: const EdgeInsets.only(top: 16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppBadge(
+                            label: AppLocalizations.of(context).workInfoLabel,
+                            color: BadgeColor.blue,
+                            style: BadgeStyle.plain,
+                          ),
+                          SizedBox(height: 24),
+                          AppTextField(
+                            label: AppLocalizations.of(context).companyNameHint,
+                            hintText: AppLocalizations.of(
+                              context,
+                            ).companyNameHint,
+                            controller: _companyController,
+                          ),
+                          SizedBox(height: 16),
+                          AppTextField(
+                            label: AppLocalizations.of(
+                              context,
+                            ).licenseNumberHint,
+                            hintText: AppLocalizations.of(
+                              context,
+                            ).licenseNumberHint,
+                            controller: _licenseController,
+                          ),
+                          SizedBox(height: 16),
+                          AppTextField(
+                            label: 'ประสบการณ์ทำงาน (ปี)',
+                            hintText: '0',
+                            controller: _experienceController,
+                            keyboardType: TextInputType.number,
+                          ),
+                          SizedBox(height: 24),
+                          SizedBox(height: 24),
+                          _buildLanguageSection(),
+                          SizedBox(height: 24),
+                          _buildSocialSection(),
+                          SizedBox(height: 40),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                _buildBottomButtons(context),
-              ],
+                  _buildBottomButtons(context),
+                ],
+              ),
             ),
           ),
         ),

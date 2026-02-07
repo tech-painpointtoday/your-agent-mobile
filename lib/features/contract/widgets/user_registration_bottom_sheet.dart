@@ -7,6 +7,7 @@ import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/utils/thai_phone_input_formatter.dart';
 
 enum RegistrationUserType { owner, buyer }
 
@@ -179,6 +180,7 @@ class _UserRegistrationBottomSheetState
                     isRequired: true,
                     hintText: AppLocalizations.of(context).phone_number,
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [ThaiPhoneInputFormatter()],
                   ),
                   const SizedBox(height: 20),
                   AppTextField(

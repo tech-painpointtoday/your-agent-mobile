@@ -8,14 +8,24 @@ import 'package:youragent/domain/entities/appliance_item.dart';
 import 'package:youragent/domain/entities/furniture_item.dart';
 import 'package:youragent/domain/entities/contract_create_data.dart';
 import 'package:youragent/domain/entities/contract_attachment.dart';
+import 'package:youragent/domain/entities/contract_status.dart';
 
-enum ContractFormStatus { initial, loading, success, failure, submmitting }
+enum ContractFormStatus {
+  initial,
+  loading,
+  success,
+  failure,
+  submitting,
+  draftSaveSuccess,
+  draftSaveFailure,
+}
 
 class ContractFormState extends Equatable {
   final int step;
   final ContractFormStatus status;
   final String? errorMessage;
   final bool isValid;
+  final ContractStatus? contractStatus;
 
   // Step 1 Data
   final int? contractId;
@@ -78,6 +88,8 @@ class ContractFormState extends Equatable {
   // Step 8: Attachments
   final List<ContractAttachment> attachments;
 
+  final Map<String, dynamic>? initialData;
+
   const ContractFormState({
     this.step = 1,
     this.contractId,
@@ -129,6 +141,8 @@ class ContractFormState extends Equatable {
     this.accountName = '',
     this.accountNumber = '',
     this.attachments = const [],
+    this.initialData,
+    this.contractStatus,
   });
 
   ContractFormState copyWith({
@@ -182,6 +196,8 @@ class ContractFormState extends Equatable {
     String? accountName,
     String? accountNumber,
     List<ContractAttachment>? attachments,
+    Map<String, dynamic>? initialData,
+    ContractStatus? contractStatus,
     bool clearBankCode = false,
   }) {
     return ContractFormState(
@@ -235,6 +251,8 @@ class ContractFormState extends Equatable {
       accountName: accountName ?? this.accountName,
       accountNumber: accountNumber ?? this.accountNumber,
       attachments: attachments ?? this.attachments,
+      initialData: initialData ?? this.initialData,
+      contractStatus: contractStatus ?? this.contractStatus,
     );
   }
 
@@ -290,5 +308,7 @@ class ContractFormState extends Equatable {
     accountName,
     accountNumber,
     attachments,
+    initialData,
+    contractStatus,
   ];
 }

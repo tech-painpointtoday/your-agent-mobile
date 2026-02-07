@@ -93,17 +93,21 @@ class EditPropertyFormScreen extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        body: Container(
-          margin: EdgeInsets.only(top: 16),
-          height: double.infinity,
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.translucent,
+          child: Container(
+            margin: EdgeInsets.only(top: 16),
+            height: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
             ),
+            child: _buildBody(context),
           ),
-          child: _buildBody(context),
         ),
         bottomNavigationBar: _buildBottomBar(context),
       ),

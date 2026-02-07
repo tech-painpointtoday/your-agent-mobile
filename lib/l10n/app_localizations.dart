@@ -3356,6 +3356,12 @@ abstract class AppLocalizations {
   /// **'Draft'**
   String get statusDraft;
 
+  /// No description provided for @continueAddingInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue adding information'**
+  String get continueAddingInfo;
+
   /// No description provided for @statusPending.
   ///
   /// In en, this message translates to:
@@ -6535,6 +6541,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You don\'t have any approved properties in your list. Please complete property information and wait for approval before creating a contract.'**
   String get noApprovedPropertiesMessage;
+
+  /// No description provided for @invalidThaiIdError.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Thai National ID'**
+  String get invalidThaiIdError;
+
+  /// No description provided for @contractCreatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract Created Successfully'**
+  String get contractCreatedSuccess;
+
+  /// No description provided for @contractPublishedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract Published Successfully'**
+  String get contractPublishedSuccess;
 }
 
 class _AppLocalizationsDelegate

@@ -1670,6 +1670,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get statusDraft => 'ฉบับร่าง';
 
   @override
+  String get continueAddingInfo => 'เพิ่มข้อมูลต่อ';
+
+  @override
   String get statusPending => 'รอการอนุมัติ';
 
   @override
@@ -3324,4 +3327,13 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get noApprovedPropertiesMessage =>
       'คุณยังไม่มีอสังหาริมทรัพย์ที่ได้รับการอนุมัติในรายการของคุณ กรุณากรอกข้อมูลอสังหาริมทรัพย์ให้ครบถ้วนและรอการอนุมัติก่อนสร้างสัญญา';
+
+  @override
+  String get invalidThaiIdError => 'เลขบัตรประชาชนไม่ถูกต้อง';
+
+  @override
+  String get contractCreatedSuccess => 'สร้างสัญญาเรียบร้อยแล้ว';
+
+  @override
+  String get contractPublishedSuccess => 'เผยแพร่สัญญาเรียบร้อยแล้ว';
 }

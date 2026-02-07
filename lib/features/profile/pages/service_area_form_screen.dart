@@ -123,147 +123,158 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
         child: Scaffold(
           backgroundColor: AppColors.primary,
           appBar: _buildAppBar(context),
-          body: Container(
-            margin: const EdgeInsets.only(top: 16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppBadge(
-                          label: AppLocalizations.of(context).serviceAreaLabel,
-                          color: BadgeColor.blue,
-                          style: BadgeStyle.plain,
-                        ),
-                        SizedBox(height: 24),
-                        // Location Section
-                        AppTextFormField(
-                          label: AppLocalizations.of(context).serviceAreaHint,
-                          controller: _addressController,
-                          hintText: AppLocalizations.of(
-                            context,
-                          ).serviceAreaHint,
-                          isRequired: true,
-                          readOnly: false,
-                          showCursor: false,
-                          maxLines: 2,
-                          onTap: () => _openLocationSearch(_selectedLocation),
-                          suffix: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: SvgPicture.asset(
-                              'assets/icons/search.svg',
-                              width: 16,
-                              height: 16,
-                              colorFilter: const ColorFilter.mode(
-                                AppColors.baseGrey,
-                                BlendMode.srcIn,
+          body: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            behavior: HitTestBehavior.translucent,
+            child: Container(
+              margin: const EdgeInsets.only(top: 16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppBadge(
+                            label: AppLocalizations.of(
+                              context,
+                            ).serviceAreaLabel,
+                            color: BadgeColor.blue,
+                            style: BadgeStyle.plain,
+                          ),
+                          SizedBox(height: 24),
+                          // Location Section
+                          AppTextFormField(
+                            label: AppLocalizations.of(context).serviceAreaHint,
+                            controller: _addressController,
+                            hintText: AppLocalizations.of(
+                              context,
+                            ).serviceAreaHint,
+                            isRequired: true,
+                            readOnly: false,
+                            showCursor: false,
+                            maxLines: 2,
+                            onTap: () => _openLocationSearch(_selectedLocation),
+                            suffix: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: SvgPicture.asset(
+                                'assets/icons/search.svg',
+                                width: 16,
+                                height: 16,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.baseGrey,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          AppLocalizations.of(context).serviceAreaDescription,
-                          style: GoogleFonts.anuphan(
-                            fontSize: 14,
-                            color: AppColors.baseGrey,
-                          ),
-                        ),
-                        SizedBox(height: 24),
-                        // Map
-                        Container(
-                          height: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppColors.baseLightGrey),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: MapView(
-                              key: const ValueKey('service_area_map'),
-                              properties: const [],
-                              height: 200,
-                              initialLocation: _selectedLocation,
-                              cameraTarget: _selectedLocation,
-                              showCenterMarker: true,
-                              onCameraIdle: _updateLocationFromLatLng,
-                              onMaximizeTapped: () {
-                                _openLocationSearch(_selectedLocation);
-                              },
+                          SizedBox(height: 8),
+                          Text(
+                            AppLocalizations.of(context).serviceAreaDescription,
+                            style: GoogleFonts.anuphan(
+                              fontSize: 14,
+                              color: AppColors.baseGrey,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        SizedBox(height: 12),
-
-                        // Action Buttons
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: AppButton(
-                                text: AppLocalizations.of(
-                                  context,
-                                ).useCurrentLocationLabel,
-                                style: AppButtonStyle.primary,
-                                onPressed: _useCurrentLocation,
-                                backgroundColor: AppColors.brandLightGreen,
-                                textColor: AppColors.brandGreen,
-                                iconPath: 'assets/icons/direction-up-right.svg',
+                          SizedBox(height: 24),
+                          // Map
+                          Container(
+                            height: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: AppColors.baseLightGrey,
                               ),
                             ),
-                            SizedBox(width: 12),
-                            Expanded(
-                              flex: 2,
-                              child: AppButton(
-                                text: AppLocalizations.of(
-                                  context,
-                                ).clearLocationLabel,
-                                style: AppButtonStyle.outline,
-                                onPressed: () {
-                                  setState(() {
-                                    _selectedLocation = null;
-                                    _addressController.text = '';
-                                  });
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: MapView(
+                                key: const ValueKey('service_area_map'),
+                                properties: const [],
+                                height: 200,
+                                initialLocation: _selectedLocation,
+                                cameraTarget: _selectedLocation,
+                                showCenterMarker: true,
+                                onCameraIdle: _updateLocationFromLatLng,
+                                onMaximizeTapped: () {
+                                  _openLocationSearch(_selectedLocation);
                                 },
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(height: 8),
+                          SizedBox(height: 12),
 
-                        SizedBox(height: 24),
-                        AppTextField(
-                          label: AppLocalizations.of(context).serviceRadiusHint,
-                          hintText: AppLocalizations.of(
-                            context,
-                          ).serviceRadiusHint,
-                          controller: _radiusController,
-                          keyboardType: TextInputType.number,
-                          suffix: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Text(
-                              AppLocalizations.of(context).serviceRadiusUnit,
-                              style: GoogleFonts.anuphan(
-                                color: AppColors.baseGrey,
-                                fontSize: 16,
+                          // Action Buttons
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: AppButton(
+                                  text: AppLocalizations.of(
+                                    context,
+                                  ).useCurrentLocationLabel,
+                                  style: AppButtonStyle.primary,
+                                  onPressed: _useCurrentLocation,
+                                  backgroundColor: AppColors.brandLightGreen,
+                                  textColor: AppColors.brandGreen,
+                                  iconPath:
+                                      'assets/icons/direction-up-right.svg',
+                                ),
+                              ),
+                              SizedBox(width: 12),
+                              Expanded(
+                                flex: 2,
+                                child: AppButton(
+                                  text: AppLocalizations.of(
+                                    context,
+                                  ).clearLocationLabel,
+                                  style: AppButtonStyle.outline,
+                                  onPressed: () {
+                                    setState(() {
+                                      _selectedLocation = null;
+                                      _addressController.text = '';
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 24),
+                          AppTextField(
+                            label: AppLocalizations.of(
+                              context,
+                            ).serviceRadiusHint,
+                            hintText: AppLocalizations.of(
+                              context,
+                            ).serviceRadiusHint,
+                            controller: _radiusController,
+                            keyboardType: TextInputType.number,
+                            suffix: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Text(
+                                AppLocalizations.of(context).serviceRadiusUnit,
+                                style: GoogleFonts.anuphan(
+                                  color: AppColors.baseGrey,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 40),
-                      ],
+                          SizedBox(height: 40),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                _buildBottomButtons(context),
-              ],
+                  _buildBottomButtons(context),
+                ],
+              ),
             ),
           ),
         ),

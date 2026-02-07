@@ -1669,6 +1669,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusDraft => 'Draft';
 
   @override
+  String get continueAddingInfo => 'Continue adding information';
+
+  @override
   String get statusPending => 'Pending Approval';
 
   @override
@@ -3309,4 +3312,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noApprovedPropertiesMessage =>
       'You don\'t have any approved properties in your list. Please complete property information and wait for approval before creating a contract.';
+
+  @override
+  String get invalidThaiIdError => 'Invalid Thai National ID';
+
+  @override
+  String get contractCreatedSuccess => 'Contract Created Successfully';
+
+  @override
+  String get contractPublishedSuccess => 'Contract Published Successfully';
 }

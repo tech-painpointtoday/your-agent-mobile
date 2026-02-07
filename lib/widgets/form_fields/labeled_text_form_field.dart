@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
@@ -15,6 +16,7 @@ class LabeledTextFormField extends StatelessWidget {
   final bool obscureText;
   final Widget? suffixIcon;
   final int? maxLines;
+  final List<TextInputFormatter>? inputFormatters;
 
   const LabeledTextFormField({
     super.key,
@@ -28,6 +30,7 @@ class LabeledTextFormField extends StatelessWidget {
     this.obscureText = false,
     this.suffixIcon,
     this.maxLines = 1,
+    this.inputFormatters,
   });
 
   @override
@@ -42,6 +45,7 @@ class LabeledTextFormField extends StatelessWidget {
           maxLines: maxLines,
           decoration: _buildInputDecoration(),
           validator: validator,
+          inputFormatters: inputFormatters,
         ),
         const SizedBox(height: 16),
       ],

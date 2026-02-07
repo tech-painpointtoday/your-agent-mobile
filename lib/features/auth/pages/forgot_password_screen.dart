@@ -60,122 +60,130 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       },
       child: Scaffold(
         backgroundColor: AppColors.white,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    onPressed: () => context.pop(),
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Center(
-                  child: Image.asset(
-                    'assets/images/sign_in/YA_Illustration_ForgotPassword.png',
-                    width: 160,
-                    height: 160,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  AppLocalizations.of(context).forgot_password,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.baseDarkGrey,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  AppLocalizations.of(context).enterRegisteredEmailHint,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: AppColors.baseGrey),
-                ),
-                const SizedBox(height: 20),
-                Form(
-                  key: _formKey,
-                  child: TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      hintText: l10n.email,
-                      prefixIcon: const Icon(
-                        Icons.email_outlined,
-                        color: AppColors.baseGrey,
-                      ),
-                      filled: true,
-                      fillColor: AppColors.white,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppColors.baseGrey),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppColors.baseGrey),
-                      ),
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.translucent,
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      onPressed: () => context.pop(),
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
                     ),
-                    validator: (v) {
-                      if (v == null || v.isEmpty) return l10n.enter_email;
-                      if (!v.contains('@')) return l10n.enter_valid_email;
-                      return null;
-                    },
                   ),
-                ),
-                const SizedBox(height: 16),
-                BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    final loading =
-                        state is AuthOperationState &&
-                        state.forgotPasswordStatus ==
-                            ForgotPasswordStatus.loading;
-                    return SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: loading ? null : _submit,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 0,
+                  const SizedBox(height: 8),
+                  Center(
+                    child: Image.asset(
+                      'assets/images/sign_in/YA_Illustration_ForgotPassword.png',
+                      width: 160,
+                      height: 160,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppLocalizations.of(context).forgot_password,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.baseDarkGrey,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    AppLocalizations.of(context).enterRegisteredEmailHint,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: AppColors.baseGrey),
+                  ),
+                  const SizedBox(height: 20),
+                  Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        hintText: l10n.email,
+                        prefixIcon: const Icon(
+                          Icons.email_outlined,
+                          color: AppColors.baseGrey,
                         ),
-                        child: loading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    AppColors.white,
+                        filled: true,
+                        fillColor: AppColors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: AppColors.baseGrey,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: AppColors.baseGrey,
+                          ),
+                        ),
+                      ),
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return l10n.enter_email;
+                        if (!v.contains('@')) return l10n.enter_valid_email;
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      final loading =
+                          state is AuthOperationState &&
+                          state.forgotPasswordStatus ==
+                              ForgotPasswordStatus.loading;
+                      return SizedBox(
+                        width: double.infinity,
+                        height: 52,
+                        child: ElevatedButton(
+                          onPressed: loading ? null : _submit,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: loading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColors.white,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  ).sendResetPasswordLink,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.white,
                                   ),
                                 ),
-                              )
-                            : Text(
-                                AppLocalizations.of(
-                                  context,
-                                ).sendResetPasswordLink,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.white,
-                                ),
-                              ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -6,6 +6,7 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/utils/thai_phone_input_formatter.dart';
 
 class AccountActionSheets {
   static Future<void> showChangeEmail(BuildContext context) {
@@ -136,6 +137,7 @@ class _PhoneChangeSheetState extends State<_PhoneChangeSheet> {
             ),
           ),
         ),
+        inputFormatters: [ThaiPhoneInputFormatter()],
         keyboardType: TextInputType.phone,
       ),
     );

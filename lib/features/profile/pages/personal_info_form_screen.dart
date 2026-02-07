@@ -13,6 +13,8 @@ import '../bloc/profile_bloc.dart';
 import '../models/agent_profile.dart';
 import 'profile_screen.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import '../../../utils/thai_phone_input_formatter.dart';
+import '../../../utils/thai_id_input_formatter.dart';
 
 class PersonalInfoFormScreen extends StatefulWidget {
   final AgentDetails? agent;
@@ -97,83 +99,100 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
       child: Scaffold(
         backgroundColor: AppColors.primary,
         appBar: _buildAppBar(context),
-        body: Container(
-          margin: const EdgeInsets.only(top: 16),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppBadge(
-                          label: AppLocalizations.of(context).personalInfoLabel,
-                          color: BadgeColor.blue,
-                          style: BadgeStyle.plain,
-                        ),
-                        SizedBox(height: 24),
-                        AppTextField(
-                          label: AppLocalizations.of(context).nameLabel,
-                          controller: _nameController,
-                          hintText: AppLocalizations.of(context).nameHintText,
-                          isRequired: true,
-                        ),
-                        SizedBox(height: 16),
-                        AppTextField(
-                          label: AppLocalizations.of(context).email,
-                          controller: _emailController,
-                          hintText: 'example@email.com',
-                          isRequired: true,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        SizedBox(height: 16),
-                        AppTextField(
-                          label: AppLocalizations.of(context).phone_number,
-                          controller: _phoneController,
-                          hintText: '0xx-xxx-xxxx',
-                          isRequired: true,
-                          keyboardType: TextInputType.phone,
-                        ),
-                        SizedBox(height: 16),
-                        AppTextField(
-                          label: AppLocalizations.of(context).bioLabel,
-                          controller: _bioController,
-                          hintText: AppLocalizations.of(context).bioHintText,
-                          maxLines: 5,
-                        ),
-                        SizedBox(height: 16),
-                        AppTextField(
-                          label: AppLocalizations.of(context).nationalIdLabel,
-                          controller: _nationalIdController,
-                          hintText: AppLocalizations.of(
-                            context,
-                          ).nationalIdHintText,
-                          keyboardType: TextInputType.number,
-                        ),
-                        SizedBox(height: 16),
-                        AppTextField(
-                          label: AppLocalizations.of(context).address,
-                          controller: _addressController,
-                          hintText: AppLocalizations.of(
-                            context,
-                          ).addressHintText,
-                          maxLines: 3,
-                        ),
-                        SizedBox(height: 40),
-                      ],
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.translucent,
+          child: Container(
+            margin: const EdgeInsets.only(top: 16),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppBadge(
+                            label: AppLocalizations.of(
+                              context,
+                            ).personalInfoLabel,
+                            color: BadgeColor.blue,
+                            style: BadgeStyle.plain,
+                          ),
+                          SizedBox(height: 24),
+                          AppTextField(
+                            label: AppLocalizations.of(context).nameLabel,
+                            controller: _nameController,
+                            hintText: AppLocalizations.of(context).nameHintText,
+                            isRequired: true,
+                          ),
+                          SizedBox(height: 16),
+                          AppTextField(
+                            label: AppLocalizations.of(context).email,
+                            controller: _emailController,
+                            hintText: 'example@email.com',
+                            isRequired: true,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          SizedBox(height: 16),
+                          AppTextField(
+                            label: AppLocalizations.of(context).phone_number,
+                            controller: _phoneController,
+                            hintText: '0xx-xxx-xxxx',
+                            isRequired: true,
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: [ThaiPhoneInputFormatter()],
+                          ),
+                          SizedBox(height: 16),
+                          AppTextField(
+                            label: AppLocalizations.of(context).bioLabel,
+                            controller: _bioController,
+                            hintText: AppLocalizations.of(context).bioHintText,
+                            maxLines: 5,
+                          ),
+                          SizedBox(height: 16),
+                          AppTextField(
+                            label: AppLocalizations.of(context).nationalIdLabel,
+                            controller: _nationalIdController,
+                            hintText: 'x-xxxx-xxxxx-xx-x',
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [ThaiIdInputFormatter()],
+                            validator: (value) {
+                              if (value == null || value.isEmpty) return null;
+                              if (!ThaiIdInputFormatter.isValidThaiID(value)) {
+                                return AppLocalizations.of(
+                                  context,
+                                ).invalidThaiIdError;
+                              }
+                              return null;
+                            },
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                          ),
+                          SizedBox(height: 16),
+                          AppTextField(
+                            label: AppLocalizations.of(context).address,
+                            controller: _addressController,
+                            hintText: AppLocalizations.of(
+                              context,
+                            ).addressHintText,
+                            maxLines: 3,
+                          ),
+                          SizedBox(height: 40),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              _buildBottomButtons(context),
-            ],
+                _buildBottomButtons(context),
+              ],
+            ),
           ),
         ),
       ),

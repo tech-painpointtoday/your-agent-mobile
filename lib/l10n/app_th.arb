@@ -556,6 +556,7 @@
   "homeOfficeType": "โฮมออฟฟิศ",
   "poolVillaType": "พูลวิลล่า",
   "statusDraft": "ฉบับร่าง",
+  "continueAddingInfo": "เพิ่มข้อมูลต่อ",
   "statusPending": "รอการอนุมัติ",
   "statusApproved": "อนุมัติแล้ว",
   "statusRejected": "ไม่อนุมัติ",
@@ -1072,5 +1073,8 @@
   "publishButton": "เผยแพร่",
   "publishPropertyConfirmation": "คุณต้องการเผยแพร่ทรัพย์สินนี้หรือไม่?",
   "noApprovedPropertiesTitle": "ไม่พบอสังหาริมทรัพย์ที่อนุมัติแล้ว",
-  "noApprovedPropertiesMessage": "คุณยังไม่มีอสังหาริมทรัพย์ที่ได้รับการอนุมัติในรายการของคุณ กรุณากรอกข้อมูลอสังหาริมทรัพย์ให้ครบถ้วนและรอการอนุมัติก่อนสร้างสัญญา"
+  "noApprovedPropertiesMessage": "คุณยังไม่มีอสังหาริมทรัพย์ที่ได้รับการอนุมัติในรายการของคุณ กรุณากรอกข้อมูลอสังหาริมทรัพย์ให้ครบถ้วนและรอการอนุมัติก่อนสร้างสัญญา",
+  "invalidThaiIdError": "เลขบัตรประชาชนไม่ถูกต้อง",
+  "contractCreatedSuccess": "สร้างสัญญาเรียบร้อยแล้ว",
+  "contractPublishedSuccess": "เผยแพร่สัญญาเรียบร้อยแล้ว"
 }

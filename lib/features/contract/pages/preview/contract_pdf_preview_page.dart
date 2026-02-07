@@ -10,6 +10,8 @@ import 'package:youragent/features/contract/bloc/contract_form/contract_form_sta
 import 'package:youragent/features/contract/services/contract_pdf_service.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/domain/entities/contract_status.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
 class ContractPdfPreviewPage extends StatelessWidget {
@@ -25,10 +27,42 @@ class ContractPdfPreviewPage extends StatelessWidget {
       listenWhen: (prev, curr) => prev.status != curr.status,
       listener: (context, state) {
         if (state.status == ContractFormStatus.success) {
-          context.pop(true);
+          StatusDialog.showSuccess(
+            context: context,
+            title: AppLocalizations.of(context).successTitle,
+            message: state.contractStatus == ContractStatus.draft
+                ? AppLocalizations.of(context).contractPublishedSuccess
+                : AppLocalizations.of(context).contractCreatedSuccess,
+          );
+          Future.delayed(const Duration(seconds: 1), () {
+            if (context.mounted) {
+              context.pop(true);
+            }
+          });
         } else if (state.status == ContractFormStatus.failure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage ?? 'Error')),
+          StatusDialog.showError(
+            context: context,
+            title: AppLocalizations.of(context).errorLabel,
+            message: state.errorMessage ?? 'Error',
+          );
+        } else if (state.status == ContractFormStatus.draftSaveSuccess) {
+          StatusDialog.showSuccess(
+            context: context,
+            title: AppLocalizations.of(context).successTitle,
+            message: AppLocalizations.of(context).draftSavedMessage,
+          );
+          Future.delayed(const Duration(seconds: 1), () {
+            if (context.mounted) {
+              context.pop(true);
+            }
+          });
+        } else if (state.status == ContractFormStatus.draftSaveFailure) {
+          StatusDialog.showError(
+            context: context,
+            title: AppLocalizations.of(context).errorLabel,
+            message:
+                state.errorMessage ??
+                AppLocalizations.of(context).draftSaveErrorMessage,
           );
         }
       },
@@ -68,7 +102,7 @@ class ContractPdfPreviewPage extends StatelessWidget {
                     horizontal: 16,
                   ),
                   child: InkWell(
-                    onTap: state.status == ContractFormStatus.submmitting
+                    onTap: state.status == ContractFormStatus.submitting
                         ? null
                         : () {
                             context.read<ContractFormBloc>().add(
@@ -203,7 +237,7 @@ class ContractPdfPreviewPage extends StatelessWidget {
                 return AppButton(
                   text: 'สร้าง',
                   style: AppButtonStyle.primary,
-                  isLoading: state.status == ContractFormStatus.submmitting,
+                  isLoading: state.status == ContractFormStatus.submitting,
                   onPressed: () {
                     context.read<ContractFormBloc>().add(
                       const ContractFormSubmitted(),

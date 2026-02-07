@@ -6,6 +6,7 @@ import 'package:youragent/domain/entities/contract.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'contract_status_badge.dart';
+import 'package:youragent/domain/entities/contract_status.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'contract_share_bottom_sheet.dart';
 import 'contract_call_bottom_sheet.dart';
@@ -293,7 +294,9 @@ class _ContractListItemState extends State<ContractListItem> {
                   // Edit Button
                   Expanded(
                     child: AppButton(
-                      text: AppLocalizations.of(context).edit,
+                      text: contract.status == ContractStatus.draft
+                          ? AppLocalizations.of(context).continueAddingInfo
+                          : AppLocalizations.of(context).edit,
                       style: AppButtonStyle.primary,
                       height: 32,
                       textStyle: GoogleFonts.anuphan(

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../domain/entities/user.dart';
+import '../../utils/thai_phone_input_formatter.dart';
 import '../../l10n/app_localizations.dart';
 import '../buttons/app_button.dart';
 import '../form_fields/labeled_dropdown_field.dart';
@@ -88,6 +89,7 @@ class _RegisterFormState extends State<RegisterForm> {
             controller: widget.phoneController,
             prefixIconSvg: 'assets/icons/phone.svg',
             keyboardType: TextInputType.phone,
+            inputFormatters: [ThaiPhoneInputFormatter()],
             validator: (v) => (v == null || v.isEmpty)
                 ? 'กรุณากรอก${l10n.phone_number}'
                 : null,

@@ -8,11 +8,11 @@ import 'package:youragent/features/contract/widgets/contract_list_item.dart';
 import 'package:youragent/features/contract/widgets/contract_filter_bottom_sheet.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/features/contract/pages/create/add_contract_screen.dart';
 import 'package:youragent/features/contract/pages/contract_detail_screen.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/widgets/modals/app_status_bottom_sheet.dart';
 import 'package:youragent/domain/entities/property.dart';
+import 'package:youragent/domain/entities/contract_status.dart';
 
 /// Screen showing all contract documents in a list
 class ContractScreen extends StatefulWidget {
@@ -154,17 +154,11 @@ class _ContractScreenState extends State<ContractScreen> {
           onOk: () => Navigator.of(context).pop(),
         );
       } else {
-        Navigator.of(context)
-            .push(
-              MaterialPageRoute(
-                builder: (context) => const AddContractScreen(),
-              ),
-            )
-            .then((result) {
-              if (result == true) {
-                _loadContracts();
-              }
-            });
+        context.push('/contract/create').then((result) {
+          if (result == true) {
+            _loadContracts();
+          }
+        });
       }
     } catch (e) {
       if (mounted && Navigator.canPop(context)) {
@@ -420,7 +414,17 @@ class _ContractScreenState extends State<ContractScreen> {
             }
           },
           onEdit: () {
-            context.push('/contract/edit', extra: contract);
+            if (contract.status == ContractStatus.draft) {
+              context.push('/contract/create', extra: contract).then((result) {
+                if (result == true) {
+                  _loadContracts();
+                }
+              });
+            } else {
+              context.push('/contract/edit', extra: contract).then((result) {
+                _loadContracts();
+              });
+            }
           },
           onShare: () {
             // Placeholder for share action

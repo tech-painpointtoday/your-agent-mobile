@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youragent/domain/entities/contract.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
@@ -21,18 +22,27 @@ import 'package:youragent/core/di/dependency_injection.dart';
 
 import 'package:youragent/features/contract/pages/create/steps/payment_step.dart';
 import 'package:youragent/features/contract/pages/preview/contract_pdf_preview_page.dart';
+import 'package:youragent/domain/entities/contract_status.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
 class AddContractScreen extends StatelessWidget {
-  const AddContractScreen({super.key});
+  final Contract? contract;
+  const AddContractScreen({super.key, this.contract});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ContractFormBloc(
-        propertyApiService: DependencyInjection.propertyApiService,
-        contractApiService: DependencyInjection.contractApiService,
-      ),
+      create: (context) {
+        final bloc = ContractFormBloc(
+          propertyApiService: DependencyInjection.propertyApiService,
+          contractApiService: DependencyInjection.contractApiService,
+        );
+        if (contract != null) {
+          bloc.add(ContractFormEditStarted(contract!.id!));
+        }
+        return bloc;
+      },
       child: const _AddContractView(),
     );
   }
@@ -103,17 +113,32 @@ class _AddContractView extends StatelessWidget {
             BlocBuilder<ContractFormBloc, ContractFormState>(
               builder: (context, state) {
                 final isPropertySelected = state.selectedProperty != null;
+
+                if (!isPropertySelected) return const SizedBox.shrink();
+
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 10,
                     horizontal: 16,
                   ),
                   child: InkWell(
-                    onTap: isPropertySelected
-                        ? () => context.read<ContractFormBloc>().add(
+                    onTap: () {
+                      AppConfirmationBottomSheet.show(
+                        context: context,
+                        title: AppLocalizations.of(context).saveDraftButton,
+                        description: AppLocalizations.of(
+                          context,
+                        ).saveChangesConfirmation,
+                        confirmLabel: AppLocalizations.of(context).confirm,
+                        cancelLabel: AppLocalizations.of(context).cancel,
+                        style: ConfirmationStyle.normal,
+                        onConfirm: () {
+                          context.read<ContractFormBloc>().add(
                             const ContractFormDraftSubmitted(),
-                          )
-                        : null,
+                          );
+                        },
+                      );
+                    },
                     borderRadius: BorderRadius.circular(16),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -155,43 +180,101 @@ class _AddContractView extends StatelessWidget {
             ),
           ],
         ),
-        body: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
-          ),
-          child: BlocBuilder<ContractFormBloc, ContractFormState>(
-            builder: (context, state) {
-              switch (state.step) {
-                case 1:
-                  return const BasicInfoStep();
-                case 2:
-                  return const PropertyOwnerStep();
-                case 3:
-                  return const BuyerInfoStep();
-                case 4:
-                  return const ApplianceStep();
-                case 5:
-                  return const FurnitureStep();
-                case 6:
-                  return const PaymentStep();
-                case 7:
-                  return const AdditionalConditionsStep();
-                case 8:
-                  return const AttachmentStep();
-                default:
-                  return const Center(child: Text('Unknown Step'));
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.translucent,
+          child: BlocListener<ContractFormBloc, ContractFormState>(
+            listenWhen: (prev, curr) => prev.status != curr.status,
+            listener: (context, state) {
+              if (state.status == ContractFormStatus.success) {
+                StatusDialog.showSuccess(
+                  context: context,
+                  title: AppLocalizations.of(context).successTitle,
+                  message: state.contractStatus == ContractStatus.draft
+                      ? AppLocalizations.of(context).contractPublishedSuccess
+                      : AppLocalizations.of(context).contractCreatedSuccess,
+                );
+                Future.delayed(const Duration(seconds: 1), () {
+                  if (context.mounted) {
+                    context.pop(true);
+                  }
+                });
+              } else if (state.status == ContractFormStatus.failure) {
+                StatusDialog.showError(
+                  context: context,
+                  title: AppLocalizations.of(context).errorLabel,
+                  message: state.errorMessage ?? 'Error',
+                );
+              } else if (state.status == ContractFormStatus.draftSaveSuccess) {
+                StatusDialog.showSuccess(
+                  context: context,
+                  title: AppLocalizations.of(context).successTitle,
+                  message: AppLocalizations.of(context).draftSavedMessage,
+                );
+                Future.delayed(const Duration(seconds: 1), () {
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                });
+              } else if (state.status == ContractFormStatus.draftSaveFailure) {
+                StatusDialog.showError(
+                  context: context,
+                  title: AppLocalizations.of(context).errorLabel,
+                  message:
+                      state.errorMessage ??
+                      AppLocalizations.of(context).draftSaveErrorMessage,
+                );
               }
             },
+            child: Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+              ),
+              child: BlocBuilder<ContractFormBloc, ContractFormState>(
+                builder: (context, state) {
+                  return Stack(
+                    children: [
+                      _buildStepBody(state.step),
+                      if (state.status == ContractFormStatus.loading)
+                        const Center(child: CircularProgressIndicator()),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
         ),
         bottomNavigationBar: _buildBottomBar(context),
       ),
     );
+  }
+
+  Widget _buildStepBody(int step) {
+    switch (step) {
+      case 1:
+        return const BasicInfoStep();
+      case 2:
+        return const PropertyOwnerStep();
+      case 3:
+        return const BuyerInfoStep();
+      case 4:
+        return const ApplianceStep();
+      case 5:
+        return const FurnitureStep();
+      case 6:
+        return const PaymentStep();
+      case 7:
+        return const AdditionalConditionsStep();
+      case 8:
+        return const AttachmentStep();
+      default:
+        return const Center(child: Text('Unknown Step'));
+    }
   }
 
   Widget _buildBottomBar(BuildContext context) {
@@ -236,7 +319,7 @@ class _AddContractView extends StatelessWidget {
                 builder: (context, state) {
                   final isLastStep = state.step == 8;
                   final isLoading =
-                      state.status == ContractFormStatus.submmitting;
+                      state.status == ContractFormStatus.submitting;
 
                   return AppButton(
                     text: isLastStep

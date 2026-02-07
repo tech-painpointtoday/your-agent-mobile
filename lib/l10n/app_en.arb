@@ -543,6 +543,7 @@
   "homeOfficeType": "Home Office",
   "poolVillaType": "Pool Villa",
   "statusDraft": "Draft",
+  "continueAddingInfo": "Continue adding information",
   "statusPending": "Pending Approval",
   "statusApproved": "Approved",
   "statusRejected": "Rejected",
@@ -1072,5 +1073,8 @@
   "publishButton": "Publish",
   "publishPropertyConfirmation": "Are you sure you want to publish this property?",
   "noApprovedPropertiesTitle": "No Approved Properties",
-  "noApprovedPropertiesMessage": "You don't have any approved properties in your list. Please complete property information and wait for approval before creating a contract."
+  "noApprovedPropertiesMessage": "You don't have any approved properties in your list. Please complete property information and wait for approval before creating a contract.",
+  "invalidThaiIdError": "Invalid Thai National ID",
+  "contractCreatedSuccess": "Contract Created Successfully",
+  "contractPublishedSuccess": "Contract Published Successfully"
 }

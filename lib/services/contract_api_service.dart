@@ -204,10 +204,7 @@ class ContractApiService {
     }
   }
 
-  Future<void> updateContract({
-    required int id,
-    required Map<String, dynamic> data,
-  }) async {
+  Future<void> updateContract({required int id, required dynamic data}) async {
     try {
       final response = await _apiClient.post(
         '/agent/contracts/$id',
@@ -231,7 +228,7 @@ class ContractApiService {
     }
   }
 
-  Future<int> createContract({required Map<String, dynamic> data}) async {
+  Future<int> createContract({required dynamic data}) async {
     try {
       final response = await _apiClient.post('/agent/contracts', data: data);
 
@@ -257,6 +254,92 @@ class ContractApiService {
         throw Exception(errorMessage);
       }
       throw Exception('Failed to create contract: $e');
+    }
+  }
+
+  /// Save contract as draft
+  /// POST /agent/contracts/draft
+  Future<int> createContractDraft({required dynamic data}) async {
+    try {
+      final response = await _apiClient.post(
+        '/agent/contracts/draft',
+        data: data,
+      );
+
+      final apiResponse =
+          ApiResponseService.parseResponse<Map<String, dynamic>>(
+            response,
+            (json) => json as Map<String, dynamic>,
+          );
+
+      if (!apiResponse.success || apiResponse.data == null) {
+        throw Exception(apiResponse.message ?? 'Failed to save draft');
+      }
+
+      final id = apiResponse.data!['id'] ?? apiResponse.data!['data']?['id'];
+      if (id == null) {
+        throw Exception('Contract ID not found in response');
+      }
+
+      return id is int ? id : int.parse(id.toString());
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to save draft: $e');
+    }
+  }
+
+  /// Update contract draft
+  /// PUT /agent/contracts/{id}/draft
+  Future<void> updateContractDraft({
+    required int id,
+    required dynamic data,
+  }) async {
+    try {
+      final response = await _apiClient.post(
+        '/agent/contracts/$id/draft',
+        data: data,
+      );
+
+      final apiResponse = ApiResponseService.parseResponse<void>(
+        response,
+        null,
+      );
+
+      if (!apiResponse.success) {
+        throw Exception(apiResponse.message ?? 'Failed to update draft');
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to update draft: $e');
+    }
+  }
+
+  /// Publish contract
+  /// POST /agent/contracts/{id}/publish
+  Future<void> publishContract({required int id}) async {
+    try {
+      final response = await _apiClient.post('/agent/contracts/$id/publish');
+
+      final apiResponse = ApiResponseService.parseResponse<void>(
+        response,
+        null,
+      );
+
+      if (!apiResponse.success) {
+        throw Exception(apiResponse.message ?? 'Failed to publish contract');
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to publish contract: $e');
     }
   }
 
