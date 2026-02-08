@@ -302,43 +302,6 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, User>> signInWithSocial({
-    required String provider,
-    required String token,
-    required UserRole role,
-  }) async {
-    try {
-      final raw = await _authApiService.socialLogin(
-        provider: provider,
-        token: token,
-        role: role == UserRole.agent ? 'agent' : 'agency',
-      );
-
-      final login = AgentLoginResponse.fromJson(raw);
-      final profile = login.user;
-
-      _currentUser = User(
-        id: profile.id.toString(),
-        email: profile.email,
-        displayName: profile.name,
-        photoUrl: profile.profilePhoto,
-        role: role,
-        provider: provider,
-      );
-
-      // Save profile to cache
-      await UserProfileStorageService().saveProfile(profile);
-
-      await SessionService().initializeSession();
-      notifyListeners();
-
-      return Right(_currentUser!);
-    } catch (e) {
-      return Left(ServerFailure(e.toString().replaceFirst('Exception: ', '')));
-    }
-  }
-
-  @override
   Future<Either<Failure, void>> signOut() async {
     try {
       try {

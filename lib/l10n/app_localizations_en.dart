@@ -360,6 +360,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get register_button => 'Register';
 
   @override
+  String get register_success => 'Registration Successful';
+
+  @override
+  String get register_success_message =>
+      'Your account has been created successfully. Please check your email for verification.';
+
+  @override
+  String get register_error => 'Registration Failed';
+
+  @override
+  String social_login_confirmation(String provider) {
+    return 'Do you want to continue with $provider?';
+  }
+
+  @override
   String get hero_subtitle => 'The right home for a better life';
 
   @override

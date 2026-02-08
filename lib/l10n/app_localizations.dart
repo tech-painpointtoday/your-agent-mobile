@@ -794,6 +794,30 @@ abstract class AppLocalizations {
   /// **'Register'**
   String get register_button;
 
+  /// No description provided for @register_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Successful'**
+  String get register_success;
+
+  /// No description provided for @register_success_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been created successfully. Please check your email for verification.'**
+  String get register_success_message;
+
+  /// No description provided for @register_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Failed'**
+  String get register_error;
+
+  /// No description provided for @social_login_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to continue with {provider}?'**
+  String social_login_confirmation(String provider);
+
   /// No description provided for @hero_subtitle.
   ///
   /// In en, this message translates to:

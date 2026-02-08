@@ -95,6 +95,17 @@
   "company_name": "ชื่อบริษัท",
   "company_name_hint": "ชื่อบริษัท",
   "register_button": "ลงทะเบียน",
+  "register_success": "ลงทะเบียนสำเร็จ",
+  "register_success_message": "สร้างบัญชีผู้ใช้งานของคุณสำเร็จแล้ว กรุณาตรวจสอบอีเมลเพื่อยืนยันการใช้งาน",
+  "register_error": "การลงทะเบียนไม่สำเร็จ",
+  "social_login_confirmation": "คุณต้องการเข้าใช้งานด้วย {provider} ต่อใช่หรือไม่?",
+  "@social_login_confirmation": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
   "register_agent_title": "ลงทะเบียนตัวแทน",
   "register_admin_title": "ลงทะเบียนผู้ดูแลระบบ",
   "register_agency_title": "ลงทะเบียนองค์กร",

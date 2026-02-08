@@ -300,6 +300,65 @@ class StatusDialog {
     );
   }
 
+  /// Confirmation Dialog (Two buttons)
+  static Future<bool?> confirm({
+    required BuildContext context,
+    required String title,
+    String? message,
+    String? confirmLabel,
+    String? cancelLabel,
+    VoidCallback? onConfirm,
+  }) async {
+    return await _enqueue<bool>(
+      context: context,
+      builder: () async {
+        final result = await _showAnimatedDialog<bool>(
+          context: context,
+          builder: (context) => BaseStatusDialog(
+            title: title,
+            message: message,
+            confirmText: confirmLabel ?? 'Confirm',
+            cancelText: cancelLabel ?? 'Cancel',
+            confirmColor: AppColors.primary,
+            type: DialogType.info,
+            onConfirm: onConfirm,
+          ),
+        );
+        return result ?? false;
+      },
+    );
+  }
+
+  /// Destructive/Delete Confirmation (Two buttons)
+  static Future<bool?> showDestructive({
+    required BuildContext context,
+    required String title,
+    String? message,
+    String? actionLabel,
+    String? cancelLabel,
+    VoidCallback? onAction,
+  }) async {
+    return await _enqueue<bool>(
+      context: context,
+      builder: () async {
+        final result = await _showAnimatedDialog<bool>(
+          context: context,
+          builder: (context) => BaseStatusDialog(
+            title: title,
+            message: message,
+            confirmText: actionLabel ?? 'Delete',
+            cancelText: cancelLabel ?? 'Cancel',
+            confirmColor: AppColors.supportRedDeep,
+            isDestructive: true,
+            type: DialogType.destructive,
+            onConfirm: onAction,
+          ),
+        );
+        return result ?? false;
+      },
+    );
+  }
+
   static Future<void> showLoading({
     required BuildContext context,
     String message = 'Loading...',

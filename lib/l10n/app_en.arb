@@ -116,6 +116,17 @@
   "company_name": "Company Name",
   "company_name_hint": "Company Name",
   "register_button": "Register",
+  "register_success": "Registration Successful",
+  "register_success_message": "Your account has been created successfully. Please check your email for verification.",
+  "register_error": "Registration Failed",
+  "social_login_confirmation": "Do you want to continue with {provider}?",
+  "@social_login_confirmation": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
   "hero_subtitle": "The right home for a better life",
   "create_property_title": "Create New Property",
   "create_property_subtitle": "Fill in the details below to create a new property listing",

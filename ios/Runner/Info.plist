@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>GIDClientID</key>
+	<string>$(G_CLIENT_ID)</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -31,7 +33,7 @@
 			<string>com.youragent</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.1043784667090-83fnmc464bt4ibj3pvoolpsq0nug8uhk</string>
+				<string>$(G_REVERSED_CLIENT_ID)</string>
 			</array>
 		</dict>
 		<dict>

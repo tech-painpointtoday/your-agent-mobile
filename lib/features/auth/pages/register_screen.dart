@@ -10,6 +10,7 @@ import '../../../widgets/register_forms/register_form.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import '../../../widgets/dialogs/status_dialog.dart';
 
 class RegisterScreen extends StatefulWidget {
   final Function(Locale) changeLocale;
@@ -72,10 +73,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _listener(BuildContext context, AuthState state) {
+    if (state is AuthError) {
+      StatusDialog.showError(
+        context: context,
+        title: AppLocalizations.of(context).register_error,
+        message: state.message,
+      );
+      return;
+    }
+
     if (state is Authenticated) {
-      final email = _emailController.text.trim();
-      context.go(
-        '/email-verification-pending?email=${Uri.encodeComponent(email)}',
+      // Show success dialog before redirecting
+      StatusDialog.showSuccess(
+        context: context,
+        title: AppLocalizations.of(context).register_success,
+        message: AppLocalizations.of(context).register_success_message,
+        onDismiss: () {
+          final email = _emailController.text.trim();
+          if (email.isNotEmpty) {
+            context.go(
+              '/email-verification-pending?email=${Uri.encodeComponent(email)}',
+            );
+          } else {
+            // Social login might not have email in controller
+            context.go('/'); // Or to home
+          }
+        },
       );
     }
   }

@@ -360,6 +360,21 @@ class AppLocalizationsTh extends AppLocalizations {
   String get register_button => 'ลงทะเบียน';
 
   @override
+  String get register_success => 'ลงทะเบียนสำเร็จ';
+
+  @override
+  String get register_success_message =>
+      'สร้างบัญชีผู้ใช้งานของคุณสำเร็จแล้ว กรุณาตรวจสอบอีเมลเพื่อยืนยันการใช้งาน';
+
+  @override
+  String get register_error => 'การลงทะเบียนไม่สำเร็จ';
+
+  @override
+  String social_login_confirmation(String provider) {
+    return 'คุณต้องการเข้าใช้งานด้วย $provider ต่อใช่หรือไม่?';
+  }
+
+  @override
   String get hero_subtitle =>
       'เพราะเราเชื่อว่าบ้านที่ใช่ จะช่วยให้ชีวิตเราดียิ่งขึ้น';
 

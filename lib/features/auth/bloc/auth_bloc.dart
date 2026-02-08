@@ -35,24 +35,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthResetPasswordRequested>(_onResetPassword);
 
     on<AuthResendVerificationPublicRequested>(_onResendVerificationPublic);
-    on<AuthSocialLoginRequested>(_onSocialLoginRequested);
-  }
-
-  Future<void> _onSocialLoginRequested(
-    AuthSocialLoginRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(const AuthLoading());
-    final result = await authRepository.signInWithSocial(
-      provider: event.provider,
-      token: event.token,
-      role: event.role,
-    );
-
-    result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (user) => emit(Authenticated(user)),
-    );
+    on<AuthSignInWithGoogleRequested>(_onSignInWithGoogle);
+    on<AuthSignInWithFacebookRequested>(_onSignInWithFacebook);
   }
 
   Future<void> _onSignInWithEmail(
@@ -222,5 +206,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     }
+  }
+
+  Future<void> _onSignInWithGoogle(
+    AuthSignInWithGoogleRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    final result = await signInWithGoogleUseCase(event.role);
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (user) => emit(Authenticated(user)),
+    );
+  }
+
+  Future<void> _onSignInWithFacebook(
+    AuthSignInWithFacebookRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    final result = await signInWithFacebookUseCase(event.role);
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (user) => emit(Authenticated(user)),
+    );
   }
 }

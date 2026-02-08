@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/auth/bloc/auth_bloc.dart';
 import '../../features/auth/bloc/auth_event.dart';
-import '../dialogs/status_dialog.dart';
 
 import '../../domain/entities/user.dart';
+import '../../l10n/app_localizations.dart';
+import '../dialogs/status_dialog.dart';
 
 /// Stubbed for mobile until social auth is wired.
 class SocialLoginSection extends StatelessWidget {
@@ -16,75 +15,31 @@ class SocialLoginSection extends StatelessWidget {
   const SocialLoginSection({super.key, required this.role});
 
   Future<void> _handleGoogleLogin(BuildContext context) async {
-    try {
-      final googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
-
-      // Force account selection
-      await googleSignIn.signOut();
-
-      final result = await googleSignIn.signIn();
-      if (result == null) return; // User canceled
-
-      final auth = await result.authentication;
-      final token = auth.accessToken ?? auth.idToken;
-
-      if (token != null && context.mounted) {
-        context.read<AuthBloc>().add(
-          AuthSocialLoginRequested(
-            provider: 'google',
-            token: token,
-            role: role,
-          ),
-        );
-      }
-    } catch (e) {
-      debugPrint('Google Signin Error: $e');
-      if (context.mounted) {
-        StatusDialog.showError(
-          context: context,
-          title: 'Google Login Failed',
-          message: e.toString(),
-        );
-      }
-    }
+    final l10n = AppLocalizations.of(context);
+    await StatusDialog.confirm(
+      context: context,
+      title: l10n.confirm,
+      message: l10n.social_login_confirmation('Google'),
+      confirmLabel: l10n.confirm,
+      onConfirm: () {
+        context.read<AuthBloc>().add(AuthSignInWithGoogleRequested(role: role));
+      },
+    );
   }
 
   Future<void> _handleFacebookLogin(BuildContext context) async {
-    try {
-      final result = await FacebookAuth.instance.login();
-
-      if (result.status == LoginStatus.success) {
-        final token = result.accessToken!.tokenString;
-        if (context.mounted) {
-          context.read<AuthBloc>().add(
-            AuthSocialLoginRequested(
-              provider: 'facebook',
-              token: token,
-              role: role,
-            ),
-          );
-        }
-      } else if (result.status == LoginStatus.cancelled) {
-        // do nothing
-      } else {
-        if (context.mounted) {
-          StatusDialog.showError(
-            context: context,
-            title: 'Facebook Login Failed',
-            message: result.message ?? 'Unknown error',
-          );
-        }
-      }
-    } catch (e) {
-      debugPrint('Facebook Signin Error: $e');
-      if (context.mounted) {
-        StatusDialog.showError(
-          context: context,
-          title: 'Facebook Login Failed',
-          message: e.toString(),
+    final l10n = AppLocalizations.of(context);
+    await StatusDialog.confirm(
+      context: context,
+      title: l10n.confirm,
+      message: l10n.social_login_confirmation('Facebook'),
+      confirmLabel: l10n.confirm,
+      onConfirm: () {
+        context.read<AuthBloc>().add(
+          AuthSignInWithFacebookRequested(role: role),
         );
-      }
-    }
+      },
+    );
   }
 
   @override

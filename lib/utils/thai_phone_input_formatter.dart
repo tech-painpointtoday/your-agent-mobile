@@ -53,10 +53,11 @@ class ThaiPhoneInputFormatter extends TextInputFormatter {
       if (cleanDigits.startsWith('00')) {
         int leadingZerosInOriginal = 0;
         for (int i = 0; i < cleanDigits.length; i++) {
-          if (cleanDigits[i] == '0')
+          if (cleanDigits[i] == '0') {
             leadingZerosInOriginal++;
-          else
+          } else {
             break;
+          }
         }
         cleanDigits = '0${cleanDigits.substring(leadingZerosInOriginal)}';
         removedCharsCount = leadingZerosInOriginal - 1;
@@ -70,7 +71,7 @@ class ThaiPhoneInputFormatter extends TextInputFormatter {
               firstTwo == '08' ||
               firstTwo == '09') {
             // 10 digits local formatting: 0x-xxxx-xxxx
-            formattedText = '$firstTwo';
+            formattedText = firstTwo;
             if (cleanDigits.length > 2) {
               formattedText +=
                   '-${cleanDigits.substring(2, cleanDigits.length > 6 ? 6 : cleanDigits.length)}';
@@ -82,7 +83,7 @@ class ThaiPhoneInputFormatter extends TextInputFormatter {
           } else {
             // Province landline: 0xx-xxxxxx (9 digits)
             if (cleanDigits.length >= 3) {
-              formattedText = '${cleanDigits.substring(0, 3)}';
+              formattedText = cleanDigits.substring(0, 3);
               if (cleanDigits.length > 3) {
                 formattedText +=
                     '-${cleanDigits.substring(3, cleanDigits.length > 9 ? 9 : cleanDigits.length)}';
@@ -123,8 +124,9 @@ class ThaiPhoneInputFormatter extends TextInputFormatter {
       digitAndPlusCountBeforeSelection -= removedCharsCount;
     }
 
-    if (digitAndPlusCountBeforeSelection < 0)
+    if (digitAndPlusCountBeforeSelection < 0) {
       digitAndPlusCountBeforeSelection = 0;
+    }
 
     int newSelectionIndex = 0;
     int currentCount = 0;

@@ -36,25 +36,58 @@ class AuthApiService {
 
       return data;
     } catch (e) {
-      // Preserve EMAIL_NOT_VERIFIED structured error by rethrowing DioException
-      if (e is DioException && e.response != null) {
-        final responseData = e.response?.data;
-        if (responseData is Map<String, dynamic>) {
+      if (e is DioException) {
+        // Preserve EMAIL_NOT_VERIFIED for Repository handling
+        if (e.response?.data is Map<String, dynamic>) {
+          final responseData = e.response!.data as Map<String, dynamic>;
           if (responseData['success'] == false &&
-              responseData['error'] != null) {
-            final errorMap = responseData['error'] as Map<String, dynamic>;
-            if (errorMap['code'] == 'EMAIL_NOT_VERIFIED') {
+              responseData['error'] is Map<String, dynamic>) {
+            final err = responseData['error'] as Map<String, dynamic>;
+            if (err['code'] == 'EMAIL_NOT_VERIFIED') {
               rethrow;
             }
           }
         }
-        final message = (e.response?.data is Map<String, dynamic>)
-            ? (e.response?.data['message']?.toString())
-            : null;
-        throw Exception(message ?? 'Login failed');
+        throw Exception(_extractErrorMessage(e));
       }
       throw Exception('Failed to login: $e');
     }
+  }
+
+  String _extractErrorMessage(DioException e) {
+    if (e.response?.data is Map<String, dynamic>) {
+      final data = e.response!.data as Map<String, dynamic>;
+
+      // Check for structured error object first
+      if (data['error'] is Map<String, dynamic>) {
+        final error = data['error'] as Map<String, dynamic>;
+
+        // Handle VALIDATION_ERROR specifically
+        if (error['code'] == 'VALIDATION_ERROR' &&
+            error['details'] is Map<String, dynamic>) {
+          final details = error['details'] as Map<String, dynamic>;
+          if (details.isNotEmpty) {
+            // Get the first error message from the first field
+            final firstFieldErrors = details.values.first;
+            if (firstFieldErrors is List && firstFieldErrors.isNotEmpty) {
+              return firstFieldErrors.first.toString();
+            }
+          }
+        }
+
+        // Fallback to error object message
+        if (error['message'] != null) {
+          return error['message'].toString();
+        }
+      }
+
+      // Top level message fallback
+      if (data['message'] != null) {
+        return data['message'].toString();
+      }
+    }
+
+    return e.message ?? 'Unknown error occurred';
   }
 
   Future<Map<String, dynamic>> sellerRegister({
@@ -94,11 +127,8 @@ class AuthApiService {
 
       return data;
     } catch (e) {
-      if (e is DioException && e.response != null) {
-        final message = (e.response?.data is Map<String, dynamic>)
-            ? (e.response?.data['message']?.toString())
-            : null;
-        throw Exception(message ?? 'Seller registration failed');
+      if (e is DioException) {
+        throw Exception(_extractErrorMessage(e));
       }
       throw Exception('Failed to register seller: $e');
     }
@@ -139,11 +169,8 @@ class AuthApiService {
 
       return data;
     } catch (e) {
-      if (e is DioException && e.response != null) {
-        final message = (e.response?.data is Map<String, dynamic>)
-            ? (e.response?.data['message']?.toString())
-            : null;
-        throw Exception(message ?? 'Buyer registration failed');
+      if (e is DioException) {
+        throw Exception(_extractErrorMessage(e));
       }
       throw Exception('Failed to register buyer: $e');
     }
@@ -184,11 +211,8 @@ class AuthApiService {
 
       return data;
     } catch (e) {
-      if (e is DioException && e.response != null) {
-        final message = (e.response?.data is Map<String, dynamic>)
-            ? (e.response?.data['message']?.toString())
-            : null;
-        throw Exception(message ?? 'Registration failed');
+      if (e is DioException) {
+        throw Exception(_extractErrorMessage(e));
       }
       throw Exception('Failed to register: $e');
     }
@@ -238,11 +262,8 @@ class AuthApiService {
 
       return data;
     } catch (e) {
-      if (e is DioException && e.response != null) {
-        final message = (e.response?.data is Map<String, dynamic>)
-            ? (e.response?.data['message']?.toString())
-            : null;
-        throw Exception(message ?? 'Social login failed');
+      if (e is DioException) {
+        throw Exception(_extractErrorMessage(e));
       }
       throw Exception('Failed to login with $provider: $e');
     }
@@ -274,10 +295,8 @@ class AuthApiService {
         data: {'email': email},
       );
     } catch (e) {
-      if (e is DioException && e.response != null) {
-        throw Exception(
-          e.response?.data['message'] ?? 'Failed to send reset password email',
-        );
+      if (e is DioException) {
+        throw Exception(_extractErrorMessage(e));
       }
       throw Exception('Failed to send reset password email: $e');
     }
@@ -301,10 +320,8 @@ class AuthApiService {
         },
       );
     } catch (e) {
-      if (e is DioException && e.response != null) {
-        throw Exception(
-          e.response?.data['message'] ?? 'Failed to reset password',
-        );
+      if (e is DioException) {
+        throw Exception(_extractErrorMessage(e));
       }
       throw Exception('Failed to reset password: $e');
     }
@@ -318,10 +335,8 @@ class AuthApiService {
         data: {'email': email},
       );
     } catch (e) {
-      if (e is DioException && e.response != null) {
-        throw Exception(
-          e.response?.data['message'] ?? 'Failed to resend verification email',
-        );
+      if (e is DioException) {
+        throw Exception(_extractErrorMessage(e));
       }
       throw Exception('Failed to resend verification email: $e');
     }
@@ -332,10 +347,8 @@ class AuthApiService {
     try {
       await _apiClient.post('/api/agent/email/verification-notification');
     } catch (e) {
-      if (e is DioException && e.response != null) {
-        throw Exception(
-          e.response?.data['message'] ?? 'Failed to resend verification email',
-        );
+      if (e is DioException) {
+        throw Exception(_extractErrorMessage(e));
       }
       throw Exception('Failed to resend verification email: $e');
     }

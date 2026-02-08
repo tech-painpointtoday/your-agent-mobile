@@ -33,13 +33,6 @@ abstract class AuthRepository {
   /// Sign in with Facebook
   Future<Either<Failure, User>> signInWithFacebook(UserRole role);
 
-  /// Unified social sign in
-  Future<Either<Failure, User>> signInWithSocial({
-    required String provider,
-    required String token,
-    required UserRole role,
-  });
-
   /// Sign out
   Future<Either<Failure, void>> signOut();
 
