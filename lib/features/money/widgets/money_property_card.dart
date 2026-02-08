@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class MoneyPropertyCard extends StatelessWidget {
+  final String? installment;
+  final String? tenantName;
   final String title;
-  final String location;
+  final String? location;
   final String price;
   final String dueDate;
   final String? imageUrl;
@@ -12,8 +14,10 @@ class MoneyPropertyCard extends StatelessWidget {
 
   const MoneyPropertyCard({
     super.key,
+    this.installment,
+    this.tenantName,
     required this.title,
-    required this.location,
+    this.location,
     required this.price,
     required this.dueDate,
     this.imageUrl,
@@ -23,143 +27,180 @@ class MoneyPropertyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 120,
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(width: 1, color: const Color(0xFFFAFAFA)),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0A000000),
-            blurRadius: 12,
+            blurRadius: 16,
             offset: Offset(0, 4),
           ),
         ],
       ),
-      clipBehavior: Clip.antiAlias,
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // Project Image
-          Container(
-            width: 95,
-            height: double.infinity,
-            color: AppColors.basePaleGrey,
-            child: imageUrl != null
-                ? Image.network(imageUrl!, fit: BoxFit.cover)
-                : const Icon(Icons.image, color: AppColors.baseGrey),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Property Image
+              Container(
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  image: imageUrl != null
+                      ? DecorationImage(
+                          image: NetworkImage(imageUrl!),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                  color: AppColors.basePaleGrey,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x28000000),
+                      blurRadius: 16,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: imageUrl == null
+                    ? const Icon(Icons.image, color: AppColors.baseGrey)
+                    : null,
+              ),
+              const SizedBox(width: 16),
+              // Property Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (installment != null)
+                                Text(
+                                  installment!,
+                                  style: const TextStyle(
+                                    color: Color(0xFF717680),
+                                    fontSize: 10,
+                                    fontFamily: 'Anuphan',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              if (tenantName != null)
+                                Text(
+                                  'ผู้เช่า: $tenantName',
+                                  style: const TextStyle(
+                                    color: Color(0xFF717680),
+                                    fontSize: 10,
+                                    fontFamily: 'Anuphan',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        // Call Button
+                        GestureDetector(
+                          onTap: onCall,
+                          child: SvgPicture.asset(
+                            'assets/icons/phone.svg',
+                            width: 24,
+                            height: 24,
+                            fit: BoxFit.scaleDown,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.baseGrey,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Color(0xFF181D27),
+                        fontSize: 14,
+                        fontFamily: 'Anuphan',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          // Details
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: 16),
+          // Separator
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: const Color(0xFFF5F5F5),
+          ),
+          const SizedBox(height: 16),
+          // Price and Due Date Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    '฿$price',
                     style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.black,
+                      color: Color(0xFFF04437),
+                      fontSize: 18,
                       fontFamily: 'Anuphan',
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    location,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.baseGrey,
+                  const SizedBox(width: 4),
+                  const Text(
+                    '/ เดือน',
+                    style: TextStyle(
+                      color: Color(0xFF717680),
+                      fontSize: 12,
                       fontFamily: 'Anuphan',
-                    ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Text(
-                        '฿$price',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFFE1393C),
-                          fontFamily: 'Anuphan',
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      const Text(
-                        '/ เดือน',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.baseGrey,
-                          fontFamily: 'Anuphan',
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF8F8F8),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      'กำหนดชำระ: $dueDate',
-                      style: const TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.baseGrey,
-                        fontFamily: 'Anuphan',
-                      ),
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-          // Call Button
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  visualDensity: VisualDensity.compact,
-                  onPressed: onCall,
-                  iconSize: 13,
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: const BorderSide(color: Color(0xFFF9F9F9)),
-                    ),
-                    elevation: 1,
-                    shadowColor: const Color(0x1A0A0C12),
-                  ),
-                  icon: SvgPicture.asset(
-                    'assets/icons/phone.svg',
-                    width: 12,
-                    height: 12,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.baseGrey,
-                      BlendMode.srcIn,
-                    ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: dueDate.contains('วันนี้')
+                      ? const Color(0xFFEFF8FF)
+                      : const Color(0xFFF5F5F5),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  'กำหนดชำระ : $dueDate',
+                  style: TextStyle(
+                    color: dueDate.contains('วันนี้')
+                        ? const Color(0xFF175CD3)
+                        : const Color(0xFF717680),
+                    fontSize: 12,
+                    fontFamily: 'Anuphan',
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),

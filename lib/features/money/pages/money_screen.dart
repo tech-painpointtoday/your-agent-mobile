@@ -1,52 +1,126 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
+import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/widgets/app_search_bar.dart';
+import 'package:youragent/widgets/badges/app_badge.dart';
+import 'package:youragent/widgets/backgrounds/blue_wave_background.dart';
 
-import '../../../widgets/app_bars/silver_app_bar.dart';
-import '../widgets/money_action_button.dart';
 import '../widgets/money_property_card.dart';
 
-class MoneyScreen extends StatelessWidget {
+class MoneyScreen extends StatefulWidget {
   const MoneyScreen({super.key});
 
   @override
+  State<MoneyScreen> createState() => _MoneyScreenState();
+}
+
+class _MoneyScreenState extends State<MoneyScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  late ScrollController _scrollController;
+  late TextEditingController _searchController;
+  double _appBarOpacity = 0.0;
+  final double _fadeThreshold = 100.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    final double newOpacity = (_scrollController.offset / _fadeThreshold).clamp(
+      0.0,
+      1.0,
+    );
+    if ((newOpacity - _appBarOpacity).abs() > 0.01) {
+      setState(() {
+        _appBarOpacity = newOpacity;
+      });
+    }
+  }
+
+  int _activeFilterIndex = 0;
+  final List<String> _filters = ['ทั้งหมด', 'วันนี้', 'พรุ่งนี้', 'สัปดาห์นี้'];
+
+  @override
   Widget build(BuildContext context) {
-    return SilverAppBarScreen(
-      preferredHeight: 200,
-      backgroundHeight: 248,
-      hasFilter: true,
-      titleWidget: Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: Column(
-          children: [
-            const Text(
-              'การเงิน',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontFamily: 'Anuphan',
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 24),
-            _buildCommissionSection(),
-          ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: CustomScrollView(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: ClampingScrollPhysics(),
+        ),
+        slivers: [
+          _buildSliverAppBar(),
+          SliverToBoxAdapter(child: _buildCollectionSection(context)),
+          const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSliverAppBar() {
+    return SliverAppBar(
+      pinned: true,
+      expandedHeight: 200,
+      collapsedHeight: 84,
+      backgroundColor: AppColors.primary,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      centerTitle: true,
+      title: const Text(
+        'การเงิน',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+          fontFamily: 'Anuphan',
+          fontWeight: FontWeight.w500,
         ),
       ),
-      child: Stack(
-        clipBehavior: Clip.none,
+      flexibleSpace: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 96, 16, 32),
-            child: _buildDueTodaySection(context),
-          ),
+          Positioned.fill(child: BlueWaveBackground(hasFilter: true)),
           Positioned(
-            top: -36,
-            left: 16,
-            right: 16,
-            child: _buildQuickActionCard(),
+            top: 100,
+            left: 0,
+            right: 0,
+            child: Opacity(
+              opacity: 1 - _appBarOpacity,
+              child: _buildCommissionSection(),
+            ),
           ),
         ],
+      ),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(36),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Column(
+              children: [
+                Container(height: 18, color: Colors.transparent),
+                Container(height: 18, color: Colors.white),
+              ],
+            ),
+            _buildQuickActionCard(),
+          ],
+        ),
       ),
     );
   }
@@ -100,7 +174,8 @@ class MoneyScreen extends StatelessWidget {
 
   Widget _buildQuickActionCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 0, left: 16, right: 16),
+      height: 36,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -112,47 +187,55 @@ class MoneyScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          MoneyActionButton(
-            label: 'รอบชำระวันนี้',
-            iconPath:
-                'assets/icons/calendar.svg', // Placeholder icons, need to check actual available
-            onTap: () {},
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: TabBar(
+          controller: _tabController,
+          indicator: BoxDecoration(
+            color: const Color(0xFF2E90FA),
+            borderRadius: BorderRadius.circular(8),
           ),
-          MoneyActionButton(
-            label: 'รอบชำระถัดไป',
-            iconPath: 'assets/icons/clock.svg',
-            onTap: () {},
+          labelColor: const Color(0xFFEFF8FF),
+          unselectedLabelColor: const Color(0xFF717680),
+          labelStyle: GoogleFonts.anuphan(
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
           ),
-          MoneyActionButton(
-            label: 'ประวัติการชำระ',
-            iconPath: 'assets/icons/clipboard-2.svg',
-            onTap: () {},
+          unselectedLabelStyle: GoogleFonts.anuphan(
+            fontSize: 10,
+            fontWeight: FontWeight.w400,
           ),
-          MoneyActionButton(
-            label: 'ค้างชำระ',
-            iconPath: 'assets/icons/alert-triangle.svg',
-            onTap: () {},
-          ),
-        ],
+          padding: EdgeInsets.zero,
+          indicatorPadding: EdgeInsets.zero,
+          labelPadding: EdgeInsets.zero,
+          dividerColor: Colors.transparent,
+          indicatorSize: TabBarIndicatorSize.tab,
+          tabs: const [
+            Tab(text: 'รายการเรียกเก็บ'),
+            Tab(text: 'รายการค้างชำระ'),
+            Tab(text: 'ประวัติการชำระ'),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildDueTodaySection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
+  Widget _buildCollectionSection(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.only(top: 16, bottom: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'รายการรอบชำระวันนี้',
+                  'รายการเรียกเก็บ',
                   style: TextStyle(
                     color: Color(0xFF1743C7),
                     fontSize: 16,
@@ -161,10 +244,10 @@ class MoneyScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  'การเช่าที่ครบกำหนดชำระวันนี้ 10 รายการ',
+                const Text(
+                  'รายการที่ต้องเรียกเก็บเงินทั้งหมด 5 รายการ',
                   style: TextStyle(
-                    color: Colors.grey[600],
+                    color: Color(0xFF737373),
                     fontSize: 12,
                     fontFamily: 'Anuphan',
                     fontWeight: FontWeight.w400,
@@ -172,68 +255,98 @@ class MoneyScreen extends StatelessWidget {
                 ),
               ],
             ),
-            TextButton(
-              onPressed: () {},
-              child: const Text(
-                'ดูทั้งหมด',
-                style: TextStyle(
-                  color: Color(0xFFA4A7AE),
-                  fontSize: 12,
-                  fontFamily: 'Anuphan',
-                  fontWeight: FontWeight.w400,
-                  decoration: TextDecoration.underline,
-                  decorationColor: AppColors.baseGrey,
-                ),
-              ),
+          ),
+          const SizedBox(height: 16),
+          // Filters
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: List.generate(_filters.length, (index) {
+                final isSelected = _activeFilterIndex == index;
+                return AppBadge(
+                  label: _filters[index],
+                  customBackgroundColor: isSelected
+                      ? AppColors.supportBlueDeep
+                      : AppColors.white,
+                  customTextColor: isSelected
+                      ? AppColors.supportBlueLight
+                      : AppColors.baseDarkGrey,
+                  hasBorder: !isSelected,
+                  borderColor: const Color(0xFFE9EAEB),
+                  onDismiss: () => setState(() => _activeFilterIndex = index),
+                );
+              }),
             ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        ListView.separated(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 3,
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            final mockData = [
-              {
-                'title': 'อสังหาริมทรัพย์ที่ 1',
-                'location': 'ปุณณวิถี, กรุงเทพมหานคร',
-                'price': '10,000',
-                'date': '5 ม.ค. 69',
-                'image':
-                    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
+          ),
+          const SizedBox(height: 16),
+          // Search Bar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: AppSearchBar(
+              controller: _searchController,
+              hintText: AppLocalizations.of(context).searchHint,
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Property List
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ListView.separated(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 3,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final mockData = [
+                  {
+                    'installment': 'งวดชำระที่ 7/12',
+                    'tenant': 'สมหญิง สงวนงาม',
+                    'title':
+                        'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
+                    'price': '10,000',
+                    'date': 'วันนี้',
+                    'image':
+                        'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
+                  },
+                  {
+                    'installment': 'งวดชำระที่ 7/12',
+                    'tenant': 'สมหญิง สงวนงาม',
+                    'title':
+                        'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
+                    'price': '10,000',
+                    'date': '25 ก.พ. 69',
+                    'image':
+                        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400',
+                  },
+                  {
+                    'installment': 'งวดชำระที่ 7/12',
+                    'tenant': 'สมหญิง สงวนงาม',
+                    'title':
+                        'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
+                    'price': '10,000',
+                    'date': '25 ก.พ. 69',
+                    'image':
+                        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400',
+                  },
+                ];
+                final item = mockData[index];
+                return MoneyPropertyCard(
+                  installment: item['installment'],
+                  tenantName: item['tenant'],
+                  title: item['title']!,
+                  price: item['price']!,
+                  dueDate: item['date']!,
+                  imageUrl: item['image'],
+                  onCall: () {},
+                );
               },
-              {
-                'title': 'อสังหาริมทรัพย์ที่ 2',
-                'location': 'อุดมสุข, กรุงเทพมหานคร',
-                'price': '5,000',
-                'date': '5 ม.ค. 69',
-                'image':
-                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400',
-              },
-              {
-                'title': 'อสังหาริมทรัพย์ที่ 3',
-                'location': 'สุขุมวิท, กรุงเทพมหานคร',
-                'price': '7,500',
-                'date': '5 ม.ค. 69',
-                'image':
-                    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400',
-              },
-            ];
-            final item = mockData[index];
-            return MoneyPropertyCard(
-              title: item['title']!,
-              location: item['location']!,
-              price: item['price']!,
-              dueDate: item['date']!,
-              imageUrl: item['image'],
-              onCall: () {},
-            );
-          },
-        ),
-      ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
