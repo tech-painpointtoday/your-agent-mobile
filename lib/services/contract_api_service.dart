@@ -228,9 +228,16 @@ class ContractApiService {
     }
   }
 
-  Future<int> createContract({required dynamic data}) async {
+  Future<int> createContract({
+    required dynamic data,
+    bool isFromProperty = true,
+  }) async {
     try {
-      final response = await _apiClient.post('/agent/contracts', data: data);
+      final String apiPath = isFromProperty
+          ? '/agent/contracts/from-property'
+          : '/agent/contracts';
+
+      final response = await _apiClient.post(apiPath, data: data);
 
       final apiResponse =
           ApiResponseService.parseResponse<Map<String, dynamic>>(

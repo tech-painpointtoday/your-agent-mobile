@@ -366,6 +366,8 @@
   "general_rental_contract": "สัญญาเช่าทั่วไป",
   "purchase_sale_contract": "สัญญาจะซื้อจะขาย",
   "contract_date": "วันที่ทำสัญญา",
+  "signing_place": "สถานที่ทำสัญญา",
+  "enter_signing_place": "ระบุสถานที่ทำสัญญา",
   "individual": "บุคคลธรรมดา",
   "full_name_or_company": "ชื่อ-นามสกุล / ชื่อบริษัท",
   "enter_full_name": "กรอกชื่อ-นามสกุล",

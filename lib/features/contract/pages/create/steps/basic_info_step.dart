@@ -24,6 +24,7 @@ class BasicInfoStep extends StatefulWidget {
 
 class _BasicInfoStepState extends State<BasicInfoStep> {
   late final TextEditingController _propertyNameController;
+  late final TextEditingController _signingPlaceController;
 
   @override
   void initState() {
@@ -31,6 +32,9 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
     final bloc = context.read<ContractFormBloc>();
     _propertyNameController = TextEditingController(
       text: bloc.state.propertyName,
+    );
+    _signingPlaceController = TextEditingController(
+      text: bloc.state.signingPlace,
     );
 
     // Initial fetch for properties to show suggestions on focus
@@ -42,16 +46,22 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
   @override
   void dispose() {
     _propertyNameController.dispose();
+    _signingPlaceController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<ContractFormBloc, ContractFormState>(
-      listenWhen: (prev, curr) => prev.propertyName != curr.propertyName,
+      listenWhen: (prev, curr) =>
+          prev.propertyName != curr.propertyName ||
+          prev.signingPlace != curr.signingPlace,
       listener: (context, state) {
         if (_propertyNameController.text != state.propertyName) {
           _propertyNameController.text = state.propertyName;
+        }
+        if (_signingPlaceController.text != state.signingPlace) {
+          _signingPlaceController.text = state.signingPlace;
         }
       },
       child: BlocBuilder<ContractFormBloc, ContractFormState>(
@@ -197,6 +207,20 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                     ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Signing Place Field
+                  AppTextField(
+                    label: AppLocalizations.of(context).signing_place,
+                    isRequired: true,
+                    controller: _signingPlaceController,
+                    hintText: AppLocalizations.of(context).enter_signing_place,
+                    onChanged: (value) {
+                      context.read<ContractFormBloc>().add(
+                        ContractFormSigningPlaceUpdated(value),
+                      );
+                    },
                   ),
                   const SizedBox(height: 24),
 

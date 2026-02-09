@@ -46,6 +46,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormOwnerSignatoryUpdated>(_onOwnerSignatoryUpdated);
     on<ContractFormOwnersFetched>(_onOwnersFetched);
     on<ContractFormOwnerSelected>(_onOwnerSelected);
+    on<ContractFormOwnerPasswordUpdated>(_onOwnerPasswordUpdated);
 
     // Step 3
     on<ContractFormBuyerTypeUpdated>(_onBuyerTypeUpdated);
@@ -56,6 +57,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormBuyerEmailUpdated>(_onBuyerEmailUpdated);
     on<ContractFormBuyersFetched>(_onBuyersFetched);
     on<ContractFormBuyerSelected>(_onBuyerSelected);
+    on<ContractFormBuyerPasswordUpdated>(_onBuyerPasswordUpdated);
 
     // Step 4
     on<ContractFormApplianceAdded>(_onApplianceAdded);
@@ -83,6 +85,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormOtherServiceFeeUpdated>(_onOtherServiceFeeUpdated);
     on<ContractFormAdvanceRentUpdated>(_onAdvanceRentUpdated);
     on<ContractFormSecurityDepositUpdated>(_onSecurityDepositUpdated);
+    on<ContractFormUpfrontFeeUpdated>(_onUpfrontFeeUpdated);
     on<ContractFormDueDateUpdated>(_onDueDateUpdated);
     on<ContractFormLateFeeUpdated>(_onLateFeeUpdated);
     on<ContractFormPaymentMethodUpdated>(_onPaymentMethodUpdated);
@@ -106,6 +109,14 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormAttachmentNameUpdated>(_onAttachmentNameUpdated);
     on<ContractFormAttachmentFileUpdated>(_onAttachmentFileUpdated);
     on<ContractFormRemoteAttachmentDeleted>(_onRemoteAttachmentDeleted);
+
+    // New Detail Handlers
+    on<ContractFormSigningPlaceUpdated>(_onSigningPlaceUpdated);
+    on<ContractFormPropertyUnitNoUpdated>(_onPropertyUnitNoUpdated);
+    on<ContractFormPropertyFloorUpdated>(_onPropertyFloorUpdated);
+    on<ContractFormPropertyBuildingUpdated>(_onPropertyBuildingUpdated);
+    on<ContractFormPropertyProjectNameUpdated>(_onPropertyProjectNameUpdated);
+    on<ContractFormPropertyAreaSqmUpdated>(_onPropertyAreaSqmUpdated);
   }
 
   Future<void> _onEditStarted(
@@ -178,6 +189,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
 
           // Payment
           price: parseDouble(contract.monthlyRentalCost),
+          upfrontFee: parseDouble(contract.upfrontFee),
           commonFee: parseDouble(contract.commonFee),
           advanceRent: parseDouble(contract.advanceRent),
           securityDeposit: parseDouble(contract.securityDeposit),
@@ -197,9 +209,18 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
           bankCode: contract.bankAccounts.isNotEmpty
               ? contract.bankAccounts.first.bankCode
               : '',
+          bankName: contract.bankAccounts.isNotEmpty
+              ? contract.bankAccounts.first.bankName
+              : '',
 
           // Additional
           additionalConditions: contract.flexibleTerms ?? '',
+          signingPlace: contract.signingPlace ?? '',
+          propertyUnitNo: contract.propertyUnitNo ?? '',
+          propertyFloor: contract.propertyFloor ?? '',
+          propertyBuilding: contract.propertyBuilding ?? '',
+          propertyProjectName: contract.propertyProjectName ?? '',
+          propertyAreaSqm: contract.propertyAreaSqm ?? '',
 
           // Config Data
           contractCreateData: createData,
@@ -299,6 +320,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
 
         // Payment
         price: parseDouble(c.monthlyRentalCost),
+        upfrontFee: parseDouble(c.upfrontFee),
         commonFee: parseDouble(c.commonFee),
         // otherServiceFee: not directly in entity unless mapped
         advanceRent: parseDouble(c.advanceRent),
@@ -310,19 +332,26 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         bankBranch: c.bankAccounts.isNotEmpty
             ? c.bankAccounts.first.branch ?? ''
             : '',
+        bankCode: c.bankAccounts.isNotEmpty
+            ? c.bankAccounts.first.bankCode
+            : '',
+        bankName: c.bankAccounts.isNotEmpty
+            ? c.bankAccounts.first.bankName
+            : '',
         accountName: c.bankAccounts.isNotEmpty
             ? c.bankAccounts.first.accountHolderName
             : '',
         accountNumber: c.bankAccounts.isNotEmpty
             ? c.bankAccounts.first.accountNumber
             : '',
-        bankCode: c.bankAccounts.isNotEmpty
-            ? c.bankAccounts.first.bankCode
-            : '',
         // Additional
-        additionalConditions:
-            c.flexibleTerms ??
-            '', // Assuming this maps to additional conditions
+        additionalConditions: c.flexibleTerms ?? '',
+        signingPlace: c.signingPlace ?? '',
+        propertyUnitNo: c.propertyUnitNo ?? '',
+        propertyFloor: c.propertyFloor ?? '',
+        propertyBuilding: c.propertyBuilding ?? '',
+        propertyProjectName: c.propertyProjectName ?? '',
+        propertyAreaSqm: c.propertyAreaSqm ?? '',
       ),
     );
 
@@ -402,6 +431,10 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         selectedProperty: event.property,
         propertyName:
             '${event.property.name ?? event.property.title} (${AppUtils.generatePropertyCode(propertyId: event.property.id!, createdAt: event.property.createdAt)})',
+        propertyUnitNo: event.property.number ?? '',
+        propertyProjectName: event.property.name ?? event.property.title,
+        propertyAreaSqm: event.property.area.toString(),
+        propertyFloor: event.property.totalFloors?.toString() ?? '',
       ),
     );
     _validateCurrentStep(emit);
@@ -939,6 +972,9 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         // Create new contract
         final newContractId = await _contractApiService.createContract(
           data: payload,
+          isFromProperty:
+              filteredData['property_id'] != null &&
+              filteredData['booking_id'] == null,
         );
 
         // Upload attachments
@@ -1003,34 +1039,38 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     final rawData = {
       if (state.contractId != null) 'id': state.contractId,
       'property_id': state.selectedProperty?.id,
-      'contract_date': state.contractDate?.toUtc().toIso8601String(),
+      'contract_date': state.contractDate?.toIso8601String().split('T')[0],
       'contract_type': state.contractType == ContractType.buy ? 'buy' : 'rent',
 
-      // Step 2: Owner
-      'owner': {
-        'type': state.ownerType == PersonType.individual
-            ? 'individual'
-            : 'juristic',
-        'name': state.ownerName,
-        'id_card': state.ownerIdCard,
-        'address': state.ownerAddress,
-        'phone': state.ownerPhone,
-        'email': state.ownerEmail,
-        if (state.ownerType == PersonType.juristic)
-          'signatory': state.ownerSignatory,
-      },
+      // Seller (Owner)
+      'seller_email': state.ownerEmail,
+      'seller_name': state.ownerName,
+      'seller_password': state.ownerPassword.isNotEmpty
+          ? state.ownerPassword
+          : null,
+      'seller_national_id': state.ownerIdCard,
+      'seller_address': state.ownerAddress,
+      'seller_phone': state.ownerPhone,
+      if (state.ownerType == PersonType.juristic)
+        'seller_signatory': state.ownerSignatory,
 
-      // Step 3: Buyer
-      'buyer': {
-        'type': state.buyerType == PersonType.individual
-            ? 'individual'
-            : 'juristic',
-        'name': state.buyerName,
-        'id_card': state.buyerIdCard,
-        'address': state.buyerAddress,
-        'phone': state.buyerPhone,
-        'email': state.buyerEmail,
-      },
+      // Buyer
+      'buyer_email': state.buyerEmail,
+      'buyer_name': state.buyerName,
+      'buyer_password': state.buyerPassword.isNotEmpty
+          ? state.buyerPassword
+          : null,
+      'buyer_national_id': state.buyerIdCard,
+      'buyer_address': state.buyerAddress,
+      'buyer_phone': state.buyerPhone,
+
+      // Property Details
+      'signing_place': state.signingPlace,
+      'property_unit_no': state.propertyUnitNo,
+      'property_floor': state.propertyFloor,
+      'property_building': state.propertyBuilding,
+      'property_project_name': state.propertyProjectName,
+      'property_area_sqm': state.propertyAreaSqm,
 
       'appliances': state.applianceItems.asMap().entries.map((entry) {
         final index = entry.key;
@@ -1082,6 +1122,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
 
       // Step 6: Payment
       'monthly_rental_cost': state.price,
+      'upfront_fee': state.upfrontFee,
       'common_fee': state.commonFee,
       'other_service_fee': state.otherServiceFee,
       'advance_rent': state.advanceRent,
@@ -1091,9 +1132,11 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
       'payment_method': state.paymentMethod,
 
       'bank_accounts': [
-        if (state.paymentMethod == 'Bank')
+        if (state.paymentMethod == 'Bank' ||
+            state.paymentMethod.contains('บัญชีธนาคาร'))
           {
             'bank_code': state.bankCode,
+            'bank_name': state.bankName,
             'branch': state.bankBranch,
             'account_holder_name': state.accountName,
             'account_number': state.accountNumber,
@@ -1105,8 +1148,8 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
       'flexible_terms': state.additionalConditions,
 
       // Dates
-      'lease_start_date': state.leaseStartDate?.toUtc().toIso8601String(),
-      'lease_end_date': state.leaseEndDate?.toUtc().toIso8601String(),
+      'start_date': state.leaseStartDate?.toIso8601String().split('T')[0],
+      'end_date': state.leaseEndDate?.toIso8601String().split('T')[0],
     };
 
     if (state.contractId != null && state.initialData != null) {
@@ -1392,6 +1435,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
       state.copyWith(
         bankBranch: event.branch,
         bankCode: event.bankCode,
+        bankName: event.bankName,
         clearBankCode: event.bankCode == null,
       ),
     );
@@ -1561,6 +1605,78 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
           : a;
     }).toList();
     emit(state.copyWith(attachments: newList));
+    _validateCurrentStep(emit);
+  }
+
+  void _onOwnerPasswordUpdated(
+    ContractFormOwnerPasswordUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    emit(state.copyWith(ownerPassword: event.password));
+    _validateCurrentStep(emit);
+  }
+
+  void _onBuyerPasswordUpdated(
+    ContractFormBuyerPasswordUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    emit(state.copyWith(buyerPassword: event.password));
+    _validateCurrentStep(emit);
+  }
+
+  void _onUpfrontFeeUpdated(
+    ContractFormUpfrontFeeUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    emit(state.copyWith(upfrontFee: event.fee));
+    _validateCurrentStep(emit);
+  }
+
+  void _onSigningPlaceUpdated(
+    ContractFormSigningPlaceUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    emit(state.copyWith(signingPlace: event.place));
+    _validateCurrentStep(emit);
+  }
+
+  void _onPropertyUnitNoUpdated(
+    ContractFormPropertyUnitNoUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    emit(state.copyWith(propertyUnitNo: event.unitNo));
+    _validateCurrentStep(emit);
+  }
+
+  void _onPropertyFloorUpdated(
+    ContractFormPropertyFloorUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    emit(state.copyWith(propertyFloor: event.floor));
+    _validateCurrentStep(emit);
+  }
+
+  void _onPropertyBuildingUpdated(
+    ContractFormPropertyBuildingUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    emit(state.copyWith(propertyBuilding: event.building));
+    _validateCurrentStep(emit);
+  }
+
+  void _onPropertyProjectNameUpdated(
+    ContractFormPropertyProjectNameUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    emit(state.copyWith(propertyProjectName: event.projectName));
+    _validateCurrentStep(emit);
+  }
+
+  void _onPropertyAreaSqmUpdated(
+    ContractFormPropertyAreaSqmUpdated event,
+    Emitter<ContractFormState> emit,
+  ) {
+    emit(state.copyWith(propertyAreaSqm: event.area));
     _validateCurrentStep(emit);
   }
 

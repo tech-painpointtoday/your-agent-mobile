@@ -192,10 +192,28 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () => UserRegistrationBottomSheet.show(
-                        context,
-                        RegistrationUserType.buyer,
-                      ),
+                      onPressed: () async {
+                        final result = await UserRegistrationBottomSheet.show(
+                          context,
+                          RegistrationUserType.buyer,
+                        );
+
+                        if (result != null && mounted) {
+                          // Update text controllers
+                          _nameController.text = result.name;
+                          _emailController.text = result.email;
+                          _phoneController.text = result.phone;
+
+                          // Update BLoC
+                          final bloc = context.read<ContractFormBloc>();
+                          bloc.add(ContractFormBuyerNameUpdated(result.name));
+                          bloc.add(ContractFormBuyerEmailUpdated(result.email));
+                          bloc.add(ContractFormBuyerPhoneUpdated(result.phone));
+                          bloc.add(
+                            ContractFormBuyerPasswordUpdated(result.password),
+                          );
+                        }
+                      },
                       icon: const Icon(Icons.add, size: 20),
                       label: Text(
                         AppLocalizations.of(context).createNewAccountTitle,

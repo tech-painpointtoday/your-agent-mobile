@@ -39,6 +39,12 @@ class ContractFormState extends Equatable {
   final DateTime? leaseEndDate;
   final int leaseDuration;
   final String additionalConditions;
+  final String signingPlace; // Added
+  final String propertyUnitNo; // Added
+  final String propertyFloor; // Added
+  final String propertyBuilding; // Added
+  final String propertyProjectName; // Added
+  final String propertyAreaSqm; // Added
 
   // Step 2 Data
   final PersonType ownerType;
@@ -47,6 +53,7 @@ class ContractFormState extends Equatable {
   final String ownerAddress;
   final String ownerPhone;
   final String ownerEmail;
+  final String ownerPassword; // Added
   final String ownerSignatory;
   final List<Owner> owners;
   final Owner? selectedOwner;
@@ -58,6 +65,7 @@ class ContractFormState extends Equatable {
   final String buyerAddress;
   final String buyerPhone;
   final String buyerEmail;
+  final String buyerPassword; // Added
   final List<Buyer> buyers;
   final Buyer? selectedBuyer;
 
@@ -80,7 +88,9 @@ class ContractFormState extends Equatable {
   final int? dueDate;
   final double lateFee;
   final String paymentMethod;
+  final double upfrontFee; // Added
   final String? bankCode;
+  final String bankName;
   final String bankBranch;
   final String accountName;
   final String accountNumber;
@@ -137,12 +147,22 @@ class ContractFormState extends Equatable {
     this.lateFee = 0,
     this.paymentMethod = '',
     this.bankCode,
+    this.bankName = '',
     this.bankBranch = '',
     this.accountName = '',
     this.accountNumber = '',
     this.attachments = const [],
     this.initialData,
     this.contractStatus,
+    this.ownerPassword = '',
+    this.buyerPassword = '',
+    this.signingPlace = '',
+    this.propertyUnitNo = '',
+    this.propertyFloor = '',
+    this.propertyBuilding = '',
+    this.propertyProjectName = '',
+    this.propertyAreaSqm = '',
+    this.upfrontFee = 0,
   });
 
   ContractFormState copyWith({
@@ -192,12 +212,22 @@ class ContractFormState extends Equatable {
     double? lateFee,
     String? paymentMethod,
     String? bankCode,
+    String? bankName,
     String? bankBranch,
     String? accountName,
     String? accountNumber,
     List<ContractAttachment>? attachments,
     Map<String, dynamic>? initialData,
     ContractStatus? contractStatus,
+    String? ownerPassword,
+    String? buyerPassword,
+    String? signingPlace,
+    String? propertyUnitNo,
+    String? propertyFloor,
+    String? propertyBuilding,
+    String? propertyProjectName,
+    String? propertyAreaSqm,
+    double? upfrontFee,
     bool clearBankCode = false,
   }) {
     return ContractFormState(
@@ -217,6 +247,7 @@ class ContractFormState extends Equatable {
       ownerAddress: ownerAddress ?? this.ownerAddress,
       ownerPhone: ownerPhone ?? this.ownerPhone,
       ownerEmail: ownerEmail ?? this.ownerEmail,
+      ownerPassword: ownerPassword ?? this.ownerPassword,
       ownerSignatory: ownerSignatory ?? this.ownerSignatory,
       owners: owners ?? this.owners,
       selectedOwner: selectedOwner ?? this.selectedOwner,
@@ -226,6 +257,7 @@ class ContractFormState extends Equatable {
       buyerAddress: buyerAddress ?? this.buyerAddress,
       buyerPhone: buyerPhone ?? this.buyerPhone,
       buyerEmail: buyerEmail ?? this.buyerEmail,
+      buyerPassword: buyerPassword ?? this.buyerPassword,
       buyers: buyers ?? this.buyers,
       selectedBuyer: selectedBuyer ?? this.selectedBuyer,
       applianceItems: applianceItems ?? this.applianceItems,
@@ -236,6 +268,13 @@ class ContractFormState extends Equatable {
       leaseEndDate: leaseEndDate ?? this.leaseEndDate,
       leaseDuration: leaseDuration ?? this.leaseDuration,
       additionalConditions: additionalConditions ?? this.additionalConditions,
+      signingPlace: signingPlace ?? this.signingPlace,
+      propertyUnitNo: propertyUnitNo ?? this.propertyUnitNo,
+      propertyFloor: propertyFloor ?? this.propertyFloor,
+      propertyBuilding: propertyBuilding ?? this.propertyBuilding,
+      propertyProjectName: propertyProjectName ?? this.propertyProjectName,
+      propertyAreaSqm: propertyAreaSqm ?? this.propertyAreaSqm,
+      upfrontFee: upfrontFee ?? this.upfrontFee,
       price: price ?? this.price,
       commonFee: commonFee ?? this.commonFee,
       otherServiceFee: otherServiceFee ?? this.otherServiceFee,
@@ -247,6 +286,7 @@ class ContractFormState extends Equatable {
       lateFee: lateFee ?? this.lateFee,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       bankCode: clearBankCode ? null : (bankCode ?? this.bankCode),
+      bankName: bankName ?? this.bankName,
       bankBranch: bankBranch ?? this.bankBranch,
       accountName: accountName ?? this.accountName,
       accountNumber: accountNumber ?? this.accountNumber,
@@ -304,11 +344,21 @@ class ContractFormState extends Equatable {
     lateFee,
     paymentMethod,
     bankCode,
+    bankName,
     bankBranch,
     accountName,
     accountNumber,
     attachments,
     initialData,
     contractStatus,
+    ownerPassword,
+    buyerPassword,
+    signingPlace,
+    propertyUnitNo,
+    propertyFloor,
+    propertyBuilding,
+    propertyProjectName,
+    propertyAreaSqm,
+    upfrontFee,
   ];
 }

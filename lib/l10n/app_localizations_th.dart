@@ -1110,6 +1110,12 @@ class AppLocalizationsTh extends AppLocalizations {
   String get contract_date => 'วันที่ทำสัญญา';
 
   @override
+  String get signing_place => 'สถานที่ทำสัญญา';
+
+  @override
+  String get enter_signing_place => 'ระบุสถานที่ทำสัญญา';
+
+  @override
   String get individual => 'บุคคลธรรมดา';
 
   @override

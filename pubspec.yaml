@@ -112,6 +112,7 @@ flutter:
     - assets/icons/profile/
     - assets/icons/sidebar/
     - assets/icons/social/
+    - assets/icons/money/
     - assets/images/
     - assets/images/auth/
     - assets/images/home/

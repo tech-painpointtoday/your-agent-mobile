@@ -7,6 +7,8 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/backgrounds/blue_wave_background.dart';
 
 import '../widgets/money_property_card.dart';
+import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
+import 'payment_detail_screen.dart';
 
 class MoneyScreen extends StatefulWidget {
   const MoneyScreen({super.key});
@@ -77,8 +79,8 @@ class _MoneyScreenState extends State<MoneyScreen>
   Widget _buildSliverAppBar() {
     return SliverAppBar(
       pinned: true,
-      expandedHeight: 200,
-      collapsedHeight: 84,
+      expandedHeight: 186,
+      collapsedHeight: 68,
       backgroundColor: AppColors.primary,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
@@ -97,7 +99,7 @@ class _MoneyScreenState extends State<MoneyScreen>
         children: [
           Positioned.fill(child: BlueWaveBackground(hasFilter: true)),
           Positioned(
-            top: 100,
+            top: 108,
             left: 0,
             right: 0,
             child: Opacity(
@@ -154,7 +156,7 @@ class _MoneyScreenState extends State<MoneyScreen>
               '฿ 108,240',
               style: GoogleFonts.anuphan(
                 color: Colors.white,
-                fontSize: 40,
+                fontSize: 32,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -192,17 +194,17 @@ class _MoneyScreenState extends State<MoneyScreen>
         child: TabBar(
           controller: _tabController,
           indicator: BoxDecoration(
-            color: const Color(0xFF2E90FA),
+            color: AppColors.supportBlueDark,
             borderRadius: BorderRadius.circular(8),
           ),
-          labelColor: const Color(0xFFEFF8FF),
-          unselectedLabelColor: const Color(0xFF717680),
+          labelColor: AppColors.supportBlueLight,
+          unselectedLabelColor: AppColors.baseDarkGrey,
           labelStyle: GoogleFonts.anuphan(
-            fontSize: 10,
+            fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
           unselectedLabelStyle: GoogleFonts.anuphan(
-            fontSize: 10,
+            fontSize: 12,
             fontWeight: FontWeight.w400,
           ),
           padding: EdgeInsets.zero,
@@ -304,6 +306,8 @@ class _MoneyScreenState extends State<MoneyScreen>
                   {
                     'installment': 'งวดชำระที่ 7/12',
                     'tenant': 'สมหญิง สงวนงาม',
+                    'tenant_phone': '0812345678',
+                    'owner_phone': '0898765432',
                     'title':
                         'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
                     'price': '10,000',
@@ -314,6 +318,8 @@ class _MoneyScreenState extends State<MoneyScreen>
                   {
                     'installment': 'งวดชำระที่ 7/12',
                     'tenant': 'สมหญิง สงวนงาม',
+                    'tenant_phone': '0812345678',
+                    'owner_phone': '0898765432',
                     'title':
                         'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
                     'price': '10,000',
@@ -324,6 +330,8 @@ class _MoneyScreenState extends State<MoneyScreen>
                   {
                     'installment': 'งวดชำระที่ 7/12',
                     'tenant': 'สมหญิง สงวนงาม',
+                    'tenant_phone': '0812345678',
+                    'owner_phone': '0898765432',
                     'title':
                         'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
                     'price': '10,000',
@@ -340,7 +348,31 @@ class _MoneyScreenState extends State<MoneyScreen>
                   price: item['price']!,
                   dueDate: item['date']!,
                   imageUrl: item['image'],
-                  onCall: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PaymentDetailScreen(),
+                      ),
+                    );
+                  },
+                  onCall: () {
+                    AppCallBottomSheet.show(
+                      context: context,
+                      options: [
+                        if (item['owner_phone'] != null)
+                          CallOption(
+                            label: 'เจ้าของทรัพย์',
+                            phone: item['owner_phone']!,
+                          ),
+                        if (item['tenant_phone'] != null)
+                          CallOption(
+                            label: 'ผู้เช่า',
+                            phone: item['tenant_phone']!,
+                          ),
+                      ],
+                    );
+                  },
                 );
               },
             ),

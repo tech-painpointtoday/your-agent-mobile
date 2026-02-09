@@ -195,10 +195,36 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () => UserRegistrationBottomSheet.show(
-                        context,
-                        RegistrationUserType.owner,
-                      ),
+                      onPressed: () async {
+                        final result = await UserRegistrationBottomSheet.show(
+                          context,
+                          RegistrationUserType.owner,
+                        );
+
+                        if (result != null && mounted) {
+                          // Update text controllers
+                          _nameController.text = result.name;
+                          _emailController.text = result.email;
+                          _phoneController.text = result.phone;
+                          if (result.address != null) {
+                            _addressController.text = result.address!;
+                          }
+
+                          // Update BLoC
+                          final bloc = context.read<ContractFormBloc>();
+                          bloc.add(ContractFormOwnerNameUpdated(result.name));
+                          bloc.add(ContractFormOwnerEmailUpdated(result.email));
+                          bloc.add(ContractFormOwnerPhoneUpdated(result.phone));
+                          if (result.address != null) {
+                            bloc.add(
+                              ContractFormOwnerAddressUpdated(result.address!),
+                            );
+                          }
+                          bloc.add(
+                            ContractFormOwnerPasswordUpdated(result.password),
+                          );
+                        }
+                      },
                       icon: const Icon(Icons.add, size: 20),
                       label: Text(
                         AppLocalizations.of(context).createNewAccountTitle,

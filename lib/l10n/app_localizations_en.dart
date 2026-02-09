@@ -1109,6 +1109,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contract_date => 'Contract Date';
 
   @override
+  String get signing_place => 'Signing Place';
+
+  @override
+  String get enter_signing_place => 'Enter signing place';
+
+  @override
   String get individual => 'Individual';
 
   @override

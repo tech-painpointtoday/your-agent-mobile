@@ -9,7 +9,7 @@ import 'contract_status_badge.dart';
 import 'package:youragent/domain/entities/contract_status.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'contract_share_bottom_sheet.dart';
-import 'contract_call_bottom_sheet.dart';
+import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
 
 class ContractListItem extends StatefulWidget {
   final Contract contract;
@@ -260,10 +260,31 @@ class _ContractListItemState extends State<ContractListItem> {
                   // Phone Button
                   _SmallActionButton(
                     iconPath: 'assets/icons/phone.svg',
-                    onTap: () => ContractCallBottomSheet.show(
-                      context: context,
-                      contract: contract,
-                    ),
+                    onTap: () {
+                      final options = <CallOption>[];
+                      if (contract.owner?.phone != null &&
+                          contract.owner!.phone!.isNotEmpty) {
+                        options.add(
+                          CallOption(
+                            label: 'เจ้าของทรัพย์',
+                            phone: contract.owner!.phone!,
+                          ),
+                        );
+                      }
+                      if (contract.buyer?.phone != null &&
+                          contract.buyer!.phone!.isNotEmpty) {
+                        options.add(
+                          CallOption(
+                            label: 'ผู้ซื้อ',
+                            phone: contract.buyer!.phone!,
+                          ),
+                        );
+                      }
+                      AppCallBottomSheet.show(
+                        context: context,
+                        options: options,
+                      );
+                    },
                   ),
                   const SizedBox(width: 8),
                   // Share Button

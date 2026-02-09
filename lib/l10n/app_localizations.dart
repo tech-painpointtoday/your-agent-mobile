@@ -2234,6 +2234,18 @@ abstract class AppLocalizations {
   /// **'Contract Date'**
   String get contract_date;
 
+  /// No description provided for @signing_place.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing Place'**
+  String get signing_place;
+
+  /// No description provided for @enter_signing_place.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter signing place'**
+  String get enter_signing_place;
+
   /// No description provided for @individual.
   ///
   /// In en, this message translates to:

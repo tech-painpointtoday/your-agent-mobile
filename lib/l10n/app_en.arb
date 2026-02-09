@@ -363,6 +363,8 @@
   "general_rental_contract": "General Rental Contract",
   "purchase_sale_contract": "Purchase and Sale Contract",
   "contract_date": "Contract Date",
+  "signing_place": "Signing Place",
+  "enter_signing_place": "Enter signing place",
   "individual": "Individual",
   "juristic_person": "Juristic Person",
   "full_name_or_company": "Full Name / Company Name",

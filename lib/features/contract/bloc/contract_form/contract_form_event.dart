@@ -152,6 +152,13 @@ class ContractFormOwnerEmailUpdated extends ContractFormEvent {
   List<Object?> get props => [email];
 }
 
+class ContractFormOwnerPasswordUpdated extends ContractFormEvent {
+  final String password;
+  const ContractFormOwnerPasswordUpdated(this.password);
+  @override
+  List<Object?> get props => [password];
+}
+
 class ContractFormOwnerSignatoryUpdated extends ContractFormEvent {
   final String signatory;
   const ContractFormOwnerSignatoryUpdated(this.signatory);
@@ -214,6 +221,13 @@ class ContractFormBuyerEmailUpdated extends ContractFormEvent {
   const ContractFormBuyerEmailUpdated(this.email);
   @override
   List<Object?> get props => [email];
+}
+
+class ContractFormBuyerPasswordUpdated extends ContractFormEvent {
+  final String password;
+  const ContractFormBuyerPasswordUpdated(this.password);
+  @override
+  List<Object?> get props => [password];
 }
 
 class ContractFormBuyersFetched extends ContractFormEvent {
@@ -342,6 +356,13 @@ class ContractFormFurniturePropertyImageSelected extends ContractFormEvent {
   List<Object?> get props => [furnitureId, propertyImageId, url];
 }
 
+class ContractFormUpfrontFeeUpdated extends ContractFormEvent {
+  final double fee;
+  const ContractFormUpfrontFeeUpdated(this.fee);
+  @override
+  List<Object?> get props => [fee];
+}
+
 // Step 6 Events
 class ContractFormPriceUpdated extends ContractFormEvent {
   final double price;
@@ -409,9 +430,14 @@ class ContractFormBankCodeUpdated extends ContractFormEvent {
 class ContractFormBankBranchUpdated extends ContractFormEvent {
   final String? branch;
   final String? bankCode;
-  const ContractFormBankBranchUpdated(this.branch, this.bankCode);
+  final String? bankName;
+  const ContractFormBankBranchUpdated(
+    this.branch,
+    this.bankCode,
+    this.bankName,
+  );
   @override
-  List<Object?> get props => [branch, bankCode];
+  List<Object?> get props => [branch, bankCode, bankName];
 }
 
 class ContractFormAccountNameUpdated extends ContractFormEvent {
@@ -433,6 +459,48 @@ class ContractFormAdditionalConditionsUpdated extends ContractFormEvent {
   const ContractFormAdditionalConditionsUpdated(this.conditions);
   @override
   List<Object?> get props => [conditions];
+}
+
+class ContractFormSigningPlaceUpdated extends ContractFormEvent {
+  final String place;
+  const ContractFormSigningPlaceUpdated(this.place);
+  @override
+  List<Object?> get props => [place];
+}
+
+class ContractFormPropertyUnitNoUpdated extends ContractFormEvent {
+  final String unitNo;
+  const ContractFormPropertyUnitNoUpdated(this.unitNo);
+  @override
+  List<Object?> get props => [unitNo];
+}
+
+class ContractFormPropertyFloorUpdated extends ContractFormEvent {
+  final String floor;
+  const ContractFormPropertyFloorUpdated(this.floor);
+  @override
+  List<Object?> get props => [floor];
+}
+
+class ContractFormPropertyBuildingUpdated extends ContractFormEvent {
+  final String building;
+  const ContractFormPropertyBuildingUpdated(this.building);
+  @override
+  List<Object?> get props => [building];
+}
+
+class ContractFormPropertyProjectNameUpdated extends ContractFormEvent {
+  final String projectName;
+  const ContractFormPropertyProjectNameUpdated(this.projectName);
+  @override
+  List<Object?> get props => [projectName];
+}
+
+class ContractFormPropertyAreaSqmUpdated extends ContractFormEvent {
+  final String area;
+  const ContractFormPropertyAreaSqmUpdated(this.area);
+  @override
+  List<Object?> get props => [area];
 }
 
 // Step 8: Attachment Events

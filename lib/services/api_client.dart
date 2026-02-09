@@ -5,6 +5,7 @@ import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 import '../core/config/app_config.dart';
 import '../core/di/dependency_injection.dart';
+import '../features/auth/bloc/auth_event.dart';
 import 'session_service.dart';
 
 class ApiClient {
@@ -52,7 +53,23 @@ class ApiClient {
           }
           handler.next(options);
         },
-        onError: (error, handler) {
+        onError: (error, handler) async {
+          // Handle 401 Unauthorized
+          if (error.response?.statusCode == 401) {
+            final isLogoutRequest = error.requestOptions.path.contains(
+              '/logout',
+            );
+            if (!isLogoutRequest) {
+              final authRepo = DependencyInjection.authRepository;
+              if (authRepo.isAuthenticated) {
+                // Trigger global logout via Bloc to ensure state consistency
+                debugPrint(
+                  'Unauthorized access detected (401). Logging out...',
+                );
+                DependencyInjection.authBloc.add(const SignOutEvent());
+              }
+            }
+          }
           handler.next(error);
         },
       ),

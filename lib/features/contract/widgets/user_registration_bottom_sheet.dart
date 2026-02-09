@@ -11,13 +11,32 @@ import 'package:youragent/utils/thai_phone_input_formatter.dart';
 
 enum RegistrationUserType { owner, buyer }
 
+class RegistrationResult {
+  final String name;
+  final String email;
+  final String phone;
+  final String? address;
+  final String password; // Added
+
+  RegistrationResult({
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.password,
+    this.address,
+  });
+}
+
 class UserRegistrationBottomSheet extends StatefulWidget {
   final RegistrationUserType type;
 
   const UserRegistrationBottomSheet({super.key, required this.type});
 
-  static Future<void> show(BuildContext context, RegistrationUserType type) {
-    return showModalBottomSheet(
+  static Future<RegistrationResult?> show(
+    BuildContext context,
+    RegistrationUserType type,
+  ) {
+    return showModalBottomSheet<RegistrationResult>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -82,11 +101,22 @@ class _UserRegistrationBottomSheetState
       }
 
       if (mounted) {
-        Navigator.pop(context);
         StatusDialog.showSuccess(
           context: context,
           title: AppLocalizations.of(context).registrationSuccessTitle,
           message: AppLocalizations.of(context).accountCreatedMessage,
+        );
+        Navigator.pop(
+          context,
+          RegistrationResult(
+            name: _nameController.text,
+            email: _emailController.text,
+            phone: _phoneController.text,
+            password: _passwordController.text,
+            address: widget.type == RegistrationUserType.owner
+                ? _addressController.text
+                : null,
+          ),
         );
       }
     } catch (e) {

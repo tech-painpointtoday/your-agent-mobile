@@ -415,7 +415,11 @@ class _PaymentStepState extends State<PaymentStep> {
             hintText: AppLocalizations.of(context).enterBranchHint,
             onChanged: (value) {
               context.read<ContractFormBloc>().add(
-                ContractFormBankBranchUpdated(value, null),
+                ContractFormBankBranchUpdated(
+                  value,
+                  state.bankCode,
+                  state.bankName,
+                ),
               );
             },
           ),
@@ -434,7 +438,11 @@ class _PaymentStepState extends State<PaymentStep> {
           onSelected: (suggestion) {
             _bankBranchController.text = suggestion.name;
             context.read<ContractFormBloc>().add(
-              ContractFormBankBranchUpdated(suggestion.name, suggestion.code),
+              ContractFormBankBranchUpdated(
+                suggestion.name,
+                suggestion.code,
+                suggestion.name,
+              ),
             );
 
             FocusScope.of(context).unfocus();
