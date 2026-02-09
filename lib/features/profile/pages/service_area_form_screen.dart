@@ -287,10 +287,12 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
       backgroundColor: AppColors.primary,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(
-          Icons.arrow_back_ios_new,
-          color: Colors.white,
-          size: 20,
+        icon: SvgPicture.asset(
+          'assets/icons/chevron-left.svg',
+          width: 18,
+          height: 18,
+          fit: BoxFit.contain,
+          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
         ),
         onPressed: () => context.pop(),
       ),

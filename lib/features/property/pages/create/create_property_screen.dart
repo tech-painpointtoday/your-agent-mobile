@@ -57,11 +57,12 @@ class _CreatePropertyView extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+          constraints: BoxConstraints(),
           icon: SvgPicture.asset(
             'assets/icons/x.svg',
-            height: 24,
-            width: 24,
+            height: 18,
+            width: 18,
+            fit: BoxFit.contain,
             colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
           onPressed: () async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../widgets/badges/app_badge.dart';
 
 class MoneyPropertyCard extends StatelessWidget {
   final String? installment;
@@ -13,6 +14,12 @@ class MoneyPropertyCard extends StatelessWidget {
   final VoidCallback onCall;
   final VoidCallback? onTap;
 
+  final String? fineAmount;
+  final String? overdueStatus;
+  final bool isOverdue;
+  final bool isPaid;
+  final String? paidDate;
+
   const MoneyPropertyCard({
     super.key,
     this.installment,
@@ -23,6 +30,11 @@ class MoneyPropertyCard extends StatelessWidget {
     required this.dueDate,
     this.imageUrl,
     required this.onCall,
+    this.fineAmount,
+    this.overdueStatus,
+    this.isOverdue = false,
+    this.isPaid = false,
+    this.paidDate,
     this.onTap,
   });
 
@@ -95,7 +107,7 @@ class MoneyPropertyCard extends StatelessWidget {
                                     Text(
                                       installment!,
                                       style: const TextStyle(
-                                        color: Color(0xFF717680),
+                                        color: AppColors.baseDarkGrey,
                                         fontSize: 10,
                                         fontFamily: 'Anuphan',
                                         fontWeight: FontWeight.w400,
@@ -106,7 +118,7 @@ class MoneyPropertyCard extends StatelessWidget {
                                     Text(
                                       'ผู้เช่า: $tenantName',
                                       style: const TextStyle(
-                                        color: Color(0xFF717680),
+                                        color: AppColors.baseDarkGrey,
                                         fontSize: 10,
                                         fontFamily: 'Anuphan',
                                         fontWeight: FontWeight.w400,
@@ -137,7 +149,7 @@ class MoneyPropertyCard extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            color: Color(0xFF181D27),
+                            color: AppColors.baseBlack,
                             fontSize: 14,
                             fontFamily: 'Anuphan',
                             fontWeight: FontWeight.w400,
@@ -161,53 +173,67 @@ class MoneyPropertyCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '฿$price',
-                        style: const TextStyle(
-                          color: Color(0xFFF04437),
-                          fontSize: 18,
-                          fontFamily: 'Anuphan',
-                          fontWeight: FontWeight.w600,
-                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(
+                            '฿$price',
+                            style: const TextStyle(
+                              color: Color(0xFFF04437),
+                              fontSize: 18,
+                              fontFamily: 'Anuphan',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            '/ เดือน',
+                            style: TextStyle(
+                              color: Color(0xFF717680),
+                              fontSize: 12,
+                              fontFamily: 'Anuphan',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 4),
-                      const Text(
-                        '/ เดือน',
-                        style: TextStyle(
-                          color: Color(0xFF717680),
-                          fontSize: 12,
-                          fontFamily: 'Anuphan',
-                          fontWeight: FontWeight.w400,
+                      if (isOverdue && fineAmount != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          '+ ค่าปรับ $fineAmount บาท',
+                          style: const TextStyle(
+                            color: Color(0xFFF04437),
+                            fontSize: 12,
+                            fontFamily: 'Anuphan',
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
-                  Container(
+                  AppBadge(
+                    label: isPaid
+                        ? (paidDate ?? '')
+                        : (isOverdue
+                              ? (overdueStatus ?? '')
+                              : 'กำหนดชำระ : $dueDate'),
+                    color: isPaid
+                        ? BadgeColor.green
+                        : (isOverdue
+                              ? BadgeColor.red
+                              : (dueDate.contains('วันนี้')
+                                    ? BadgeColor.blue
+                                    : BadgeColor.default_)),
+                    style: isPaid ? BadgeStyle.done : BadgeStyle.plain,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 4,
                     ),
-                    decoration: BoxDecoration(
-                      color: dueDate.contains('วันนี้')
-                          ? const Color(0xFFEFF8FF)
-                          : const Color(0xFFF5F5F5),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      'กำหนดชำระ : $dueDate',
-                      style: TextStyle(
-                        color: dueDate.contains('วันนี้')
-                            ? const Color(0xFF175CD3)
-                            : const Color(0xFF717680),
-                        fontSize: 12,
-                        fontFamily: 'Anuphan',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    fontSize: 12,
                   ),
                 ],
               ),

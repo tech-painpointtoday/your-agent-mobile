@@ -41,6 +41,9 @@ class EditContractMenuScreen extends StatelessWidget {
           leading: IconButton(
             icon: SvgPicture.asset(
               'assets/icons/chevron-left.svg',
+              width: 18,
+              height: 18,
+              fit: BoxFit.contain,
               colorFilter: const ColorFilter.mode(
                 Colors.white,
                 BlendMode.srcIn,

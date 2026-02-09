@@ -75,8 +75,9 @@ class ContractPdfPreviewPage extends StatelessWidget {
           leading: IconButton(
             icon: SvgPicture.asset(
               'assets/icons/x.svg',
-              height: 24,
-              width: 24,
+              height: 18,
+              width: 18,
+              fit: BoxFit.contain,
               colorFilter: const ColorFilter.mode(
                 Colors.white,
                 BlendMode.srcIn,

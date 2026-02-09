@@ -93,8 +93,9 @@ class _PolicyScreenState extends State<PolicyScreen> {
         leading: IconButton(
           icon: SvgPicture.asset(
             'assets/icons/chevron-left.svg',
-            width: 24,
-            height: 24,
+            width: 18,
+            height: 18,
+            fit: BoxFit.contain,
             colorFilter: const ColorFilter.mode(
               AppColors.baseDarkGrey,
               BlendMode.srcIn,

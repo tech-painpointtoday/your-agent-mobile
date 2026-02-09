@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
+import 'package:youragent/features/money/pages/payment_installments_screen.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
 
@@ -17,12 +18,17 @@ class PaymentDetailScreen extends StatelessWidget {
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(
-            Icons.chevron_left,
-            color: AppColors.baseBlack,
-            size: 32,
+          icon: SvgPicture.asset(
+            'assets/icons/chevron-left.svg',
+            width: 18,
+            height: 18,
+            fit: BoxFit.contain,
+            colorFilter: const ColorFilter.mode(
+              AppColors.baseDarkGrey,
+              BlendMode.srcIn,
+            ),
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           'รายละเอียดการชำระเงิน',
@@ -37,11 +43,6 @@ class PaymentDetailScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Container(
-          decoration: const BoxDecoration(
-            border: Border(
-              top: BorderSide(width: 0.50, color: Color(0xFFE9EAEB)),
-            ),
-          ),
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +58,14 @@ class PaymentDetailScreen extends StatelessWidget {
                 style: AppButtonStyle.outline,
                 width: double.infinity,
                 height: 32,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PaymentInstallmentsScreen(),
+                    ),
+                  );
+                },
                 textStyle: GoogleFonts.anuphan(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
@@ -107,6 +115,7 @@ class PaymentDetailScreen extends StatelessWidget {
             role: 'เจ้าของทรัพย์',
             name: 'สมชาย ใจดี',
             phone: '0898765432',
+            alignCenter: true,
           ),
         ),
         const SizedBox(width: 16),
@@ -167,12 +176,12 @@ class PaymentDetailScreen extends StatelessWidget {
             style: AppButtonStyle.outline,
             height: 32,
             width: double.infinity,
-            icon: Icons.phone_outlined,
+            iconPath: 'assets/icons/phone.svg',
             iconSize: 12,
+            textColor: AppColors.baseDarkGrey,
             textStyle: GoogleFonts.anuphan(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF717680),
             ),
             onPressed: () {
               AppCallBottomSheet.show(
@@ -212,10 +221,11 @@ class PaymentDetailScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+        Center(
+          child: Wrap(
+            alignment: WrapAlignment.start,
+            spacing: 4.0,
+            runSpacing: 4.0,
             children: List.generate(12, (index) {
               String iconPath;
               if (index < 4) {
@@ -224,14 +234,13 @@ class PaymentDetailScreen extends StatelessWidget {
                 iconPath = 'assets/icons/money/status_delayed.svg';
               } else if (index == 5) {
                 iconPath = 'assets/icons/money/status_on_time.svg';
+              } else if (index == 6) {
+                iconPath = 'assets/icons/money/status_now.svg';
               } else {
                 iconPath = 'assets/icons/money/status_not_yet.svg';
               }
 
-              return Padding(
-                padding: EdgeInsets.only(right: index == 11 ? 0 : 4.0),
-                child: SvgPicture.asset(iconPath, width: 23.67, height: 23.67),
-              );
+              return SvgPicture.asset(iconPath, width: 24, height: 24);
             }),
           ),
         ),
@@ -257,7 +266,7 @@ class PaymentDetailScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: ShapeDecoration(
-                color: const Color(0xFFF5F5F5),
+                color: AppColors.basePaleGrey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),

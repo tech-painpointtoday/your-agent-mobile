@@ -31,8 +31,7 @@ class _NotificationsScreenContent extends StatelessWidget {
     AppConfirmationBottomSheet.show(
       context: context,
       title: 'Mark All as Read',
-      description:
-          'Are you sure you want to mark all notifications as read?',
+      description: 'Are you sure you want to mark all notifications as read?',
       confirmLabel: 'Mark as Read',
       cancelLabel: 'Cancel',
       style: ConfirmationStyle.normal,
@@ -63,8 +62,9 @@ class _NotificationsScreenContent extends StatelessWidget {
                   leading: IconButton(
                     icon: SvgPicture.asset(
                       'assets/icons/chevron-left.svg',
-                      width: 20,
-                      height: 20,
+                      width: 18,
+                      height: 18,
+                      fit: BoxFit.contain,
                       colorFilter: const ColorFilter.mode(
                         AppColors.baseDarkGrey,
                         BlendMode.srcIn,

@@ -175,6 +175,7 @@ class _NotificationSettingsScreenState
             colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
             width: 18,
             height: 18,
+            fit: BoxFit.contain,
           ),
           onPressed: () => context.pop(),
         ),

@@ -50,8 +50,9 @@ class NotificationDetailScreen extends StatelessWidget {
         leading: IconButton(
           icon: SvgPicture.asset(
             'assets/icons/chevron-left.svg',
-            width: 20,
-            height: 20,
+            width: 18,
+            height: 18,
+            fit: BoxFit.contain,
             colorFilter: const ColorFilter.mode(
               AppColors.baseDarkGrey,
               BlendMode.srcIn,

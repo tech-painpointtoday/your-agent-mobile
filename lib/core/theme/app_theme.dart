@@ -6,7 +6,7 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      
+
       // ColorScheme
       colorScheme: ColorScheme.light(
         primary: AppColors.primary,
@@ -21,17 +21,20 @@ class AppTheme {
         onSurfaceVariant: AppColors.baseDarkGrey,
         outline: AppColors.baseLightGrey,
       ),
-      
+
       scaffoldBackgroundColor: AppColors.baseWhite,
-      
+
       // Typography
       textTheme: _buildTextTheme(),
-      
+
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.baseWhite,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
           borderSide: const BorderSide(color: AppColors.baseLightGrey),
@@ -57,7 +60,7 @@ class AppTheme {
           borderSide: const BorderSide(color: AppColors.baseLightGrey),
         ),
       ),
-      
+
       // Elevated Button Theme
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -72,7 +75,7 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
-      
+
       // Outlined Button Theme
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
@@ -85,7 +88,7 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
-      
+
       // Text Button Theme
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -97,37 +100,33 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
-      
+
       // Checkbox Theme
       checkboxTheme: CheckboxThemeData(
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        fillColor: WidgetStateProperty.resolveWith<Color?>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primary;
-            }
-            return null;
-          },
-        ),
+        fillColor: WidgetStateProperty.resolveWith<Color?>((
+          Set<WidgetState> states,
+        ) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.primary;
+          }
+          return null;
+        }),
         checkColor: WidgetStateProperty.all(AppColors.baseWhite),
         side: const BorderSide(color: AppColors.baseLightGrey),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.0),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
       ),
-      
+
       // Dropdown Menu Theme
       dropdownMenuTheme: DropdownMenuThemeData(
         menuStyle: MenuStyle(
           backgroundColor: WidgetStateProperty.all(AppColors.baseWhite),
           shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
           ),
         ),
       ),
-      
+
       // Card Theme
       cardTheme: CardThemeData(
         color: AppColors.baseWhite,
@@ -136,7 +135,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12.0),
         ),
       ),
-      
+
       // App Bar Theme
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.baseWhite,
@@ -144,7 +143,7 @@ class AppTheme {
         elevation: 0,
         centerTitle: false,
       ),
-      
+
       // Divider Theme
       dividerTheme: const DividerThemeData(
         color: AppColors.baseLightGrey,
@@ -153,11 +152,11 @@ class AppTheme {
       ),
     );
   }
-  
+
   static TextTheme _buildTextTheme() {
     // Try to use GoogleFonts.anuphan, fallback to default if not available
     final baseTextStyle = _getAnuphanFont();
-    
+
     return TextTheme(
       displayLarge: baseTextStyle.copyWith(
         fontSize: 57,
@@ -245,16 +244,13 @@ class AppTheme {
       ),
     );
   }
-  
+
   static TextStyle _getAnuphanFont() {
     try {
       return GoogleFonts.anuphan();
     } catch (e) {
       // Fallback to default sans-serif if GoogleFonts.anuphan is not available
-      return const TextStyle(
-        fontFamily: 'sans-serif',
-      );
+      return const TextStyle(fontFamily: 'sans-serif');
     }
   }
 }
-
