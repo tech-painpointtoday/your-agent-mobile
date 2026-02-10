@@ -6595,6 +6595,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contract Published Successfully'**
   String get contractPublishedSuccess;
+
+  /// No description provided for @empty_chat_message.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet.\nOnce you start a conversation, it will appear here.'**
+  String get empty_chat_message;
+
+  /// No description provided for @recent_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Search'**
+  String get recent_search;
+
+  /// No description provided for @type_message_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message here...'**
+  String get type_message_hint;
+
+  /// No description provided for @read_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get read_status;
+
+  /// No description provided for @conversation_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get conversation_title;
+
+  /// No description provided for @search_messages_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search messages...'**
+  String get search_messages_hint;
+
+  /// No description provided for @no_conversations_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations found'**
+  String get no_conversations_found;
+
+  /// No description provided for @no_messages.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages'**
+  String get no_messages;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @time_unit_th.
+  ///
+  /// In en, this message translates to:
+  /// **''**
+  String get time_unit_th;
 }
 
 class _AppLocalizationsDelegate

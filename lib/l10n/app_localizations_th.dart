@@ -3357,4 +3357,35 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get contractPublishedSuccess => 'เผยแพร่สัญญาเรียบร้อยแล้ว';
+
+  @override
+  String get empty_chat_message =>
+      'ยังไม่มีการข้อความตอนนี้\nหากเริ่มต้นสนทนาแล้ว แชทจะปรากฏที่นี่';
+
+  @override
+  String get recent_search => 'การค้นหาล่าสุด';
+
+  @override
+  String get type_message_hint => 'พิมพ์ข้อความที่นี่...';
+
+  @override
+  String get read_status => 'อ่านแล้ว';
+
+  @override
+  String get conversation_title => 'การสนทนา';
+
+  @override
+  String get search_messages_hint => 'ค้นหาข้อความ...';
+
+  @override
+  String get no_conversations_found => 'ไม่พบการสนทนา';
+
+  @override
+  String get no_messages => 'ไม่มีข้อความ';
+
+  @override
+  String get yesterday => 'เมื่อวานนี้';
+
+  @override
+  String get time_unit_th => 'น.';
 }

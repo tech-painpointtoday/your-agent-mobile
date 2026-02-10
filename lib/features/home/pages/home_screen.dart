@@ -211,7 +211,7 @@ class _HomeHeaderState extends State<HomeHeader> {
         SizedBox(width: 10),
         _HeaderActionIcon(
           svgPath: 'assets/icons/message-round.svg',
-          onTap: null,
+          onTap: () => context.push('/chat'),
         ),
       ],
     );

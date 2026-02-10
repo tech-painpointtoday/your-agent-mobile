@@ -437,6 +437,12 @@
   "back_to_login": "กลับไปหน้าเข้าสู่ระบบ",
   "bookings": "การจอง",
   "chats": "แชท",
+  "conversation_title": "การสนทนา",
+  "search_messages_hint": "ค้นหาข้อความ...",
+  "no_conversations_found": "ไม่พบการสนทนา",
+  "no_messages": "ไม่มีข้อความ",
+  "yesterday": "เมื่อวานนี้",
+  "time_unit_th": "น.",
   "time_slots": "ช่องเวลา",
   "support": "สนับสนุน",
   "profile": "โปรไฟล์",
@@ -1089,5 +1095,9 @@
   "noApprovedPropertiesMessage": "คุณยังไม่มีอสังหาริมทรัพย์ที่ได้รับการอนุมัติในรายการของคุณ กรุณากรอกข้อมูลอสังหาริมทรัพย์ให้ครบถ้วนและรอการอนุมัติก่อนสร้างสัญญา",
   "invalidThaiIdError": "เลขบัตรประชาชนไม่ถูกต้อง",
   "contractCreatedSuccess": "สร้างสัญญาเรียบร้อยแล้ว",
-  "contractPublishedSuccess": "เผยแพร่สัญญาเรียบร้อยแล้ว"
+  "contractPublishedSuccess": "เผยแพร่สัญญาเรียบร้อยแล้ว",
+  "empty_chat_message": "ยังไม่มีการข้อความตอนนี้\nหากเริ่มต้นสนทนาแล้ว แชทจะปรากฏที่นี่",
+  "recent_search": "การค้นหาล่าสุด",
+  "type_message_hint": "พิมพ์ข้อความที่นี่...",
+  "read_status": "อ่านแล้ว"
 }

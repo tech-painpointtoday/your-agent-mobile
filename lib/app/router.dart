@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youragent/domain/entities/contract.dart';
+import 'package:youragent/features/chat/pages/chat_screen.dart';
+import 'package:youragent/features/chat/pages/message_screen.dart';
 import 'package:youragent/features/contract/pages/edit/edit_contract_form_screen.dart';
 import 'package:youragent/features/contract/pages/edit/edit_contract_menu_screen.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
@@ -195,6 +197,18 @@ class AppRouter {
       GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(path: '/chat', builder: (context, state) => const ChatScreen()),
+      GoRoute(
+        path: '/chat/:bookingId',
+        builder: (context, state) {
+          final bookingId = int.parse(state.pathParameters['bookingId']!);
+          final participantName = state.extra as String? ?? 'การสนทนา';
+          return MessageScreen(
+            bookingId: bookingId,
+            participantName: participantName,
+          );
+        },
       ),
       GoRoute(
         path: '/profile/edit',

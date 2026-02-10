@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import 'api_client.dart';
+import '../domain/entities/device_info_model.dart';
 
 class AuthApiService {
   final ApiClient _apiClient;
@@ -390,6 +391,14 @@ class AuthApiService {
     final response = await _apiClient.post(
       '/agent/profile/update-photo',
       data: formData,
+    );
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> registerDeviceToken(DeviceInfoModel info) async {
+    final response = await _apiClient.post(
+      '/device-tokens/register',
+      data: info.toJson(),
     );
     return response.data as Map<String, dynamic>;
   }

@@ -68,6 +68,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else {
           await CredentialsStorageService().clear();
         }
+        // Register device info after successful login
+        // Tmp disable device registration
+        // DependencyInjection.deviceService.registerDevice();
         emit(Authenticated(user));
       },
     );
@@ -86,10 +89,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         passwordConfirmation: event.passwordConfirmation,
       ),
     );
-    result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (user) => emit(Authenticated(user)),
-    );
+    result.fold((failure) => emit(AuthError(failure.message)), (user) {
+      // Tmp disable device registration
+      //DependencyInjection.deviceService.registerDevice();
+      emit(Authenticated(user));
+    });
   }
 
   Future<void> _onSignOut(SignOutEvent event, Emitter<AuthState> emit) async {
@@ -214,10 +218,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
     final result = await signInWithGoogleUseCase(event.role);
-    result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (user) => emit(Authenticated(user)),
-    );
+    result.fold((failure) => emit(AuthError(failure.message)), (user) {
+      // Tmp disable device registration
+      //DependencyInjection.deviceService.registerDevice();
+      emit(Authenticated(user));
+    });
   }
 
   Future<void> _onSignInWithFacebook(
@@ -226,9 +231,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
     final result = await signInWithFacebookUseCase(event.role);
-    result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (user) => emit(Authenticated(user)),
-    );
+    result.fold((failure) => emit(AuthError(failure.message)), (user) {
+      // Tmp disable device registration
+      //DependencyInjection.deviceService.registerDevice();
+      emit(Authenticated(user));
+    });
   }
 }

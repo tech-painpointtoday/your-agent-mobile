@@ -9,8 +9,7 @@ import 'package:youragent/services/property_api_service.dart';
 // import 'package:youragent/services/fengshui_api_service.dart';
 // import 'package:youragent/services/booking_api_service.dart';
 import 'package:youragent/services/chat_api_service.dart';
-// import 'package:youragent/services/floorplan_api_service.dart';
-// import 'package:youragent/services/pusher_service.dart';
+import 'package:youragent/services/pusher_service.dart';
 // import 'package:youragent/services/agent_api_service.dart';
 // import 'package:youragent/services/places_service.dart';
 // import 'package:youragent/services/contract_api_service.dart';
@@ -22,6 +21,8 @@ import 'package:youragent/services/google_places_service.dart';
 import 'package:youragent/services/settings_api_service.dart';
 import 'package:youragent/core/services/deep_link_service.dart';
 import 'package:youragent/core/config/app_config.dart';
+import 'package:youragent/core/services/device_service.dart';
+import 'package:youragent/features/chat/services/chat_search_service.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 /// Global navigator key for accessing overlay from anywhere
@@ -84,10 +85,16 @@ class DependencyInjection {
 
   static final DeepLinkService _deepLinkService = DeepLinkService();
 
+  static final PusherService _pusherService = PusherService();
+
+  static final ChatSearchService _chatSearchService = ChatSearchService();
+
   static void init(BuildContext context) {
     // This function can be called during app startup to register dependencies
     _addressLookupService.loadData();
     _deepLinkService.init();
+    _pusherService.init();
+    DeviceService().init();
   }
 
   // Factory methods for dependencies - all return singleton instances
@@ -108,6 +115,12 @@ class DependencyInjection {
   static SettingsApiService get settingsApiService => _settingsApiService;
 
   static DeepLinkService get deepLinkService => _deepLinkService;
+
+  static PusherService get pusherService => _pusherService;
+
+  static DeviceService get deviceService => DeviceService();
+
+  static ChatSearchService get chatSearchService => _chatSearchService;
 
   // Auth dependencies - singleton
   static AuthRepository get authRepository => _authRepository;

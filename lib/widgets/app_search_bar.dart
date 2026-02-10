@@ -6,12 +6,14 @@ import 'package:youragent/core/theme/app_colors.dart';
 class AppSearchBar extends StatefulWidget {
   final String hintText;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
 
   const AppSearchBar({
     super.key,
     this.hintText = 'ค้นหา...',
     this.controller,
+    this.focusNode,
     this.onChanged,
   });
 
@@ -21,7 +23,10 @@ class AppSearchBar extends StatefulWidget {
 
 class _AppSearchBarState extends State<AppSearchBar> {
   late TextEditingController _searchController;
+  late FocusNode _focusNode;
   bool _isInternalController = false;
+  bool _isInternalFocusNode = false;
+  bool _isFocused = false;
 
   @override
   void initState() {
@@ -32,9 +37,23 @@ class _AppSearchBarState extends State<AppSearchBar> {
     } else {
       _searchController = widget.controller!;
     }
+
+    if (widget.focusNode == null) {
+      _focusNode = FocusNode();
+      _isInternalFocusNode = true;
+    } else {
+      _focusNode = widget.focusNode!;
+    }
+
     _searchController.addListener(() {
-      setState(() {}); // Update UI when text changes
+      setState(() {});
       widget.onChanged?.call(_searchController.text);
+    });
+
+    _focusNode.addListener(() {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
     });
   }
 
@@ -42,6 +61,9 @@ class _AppSearchBarState extends State<AppSearchBar> {
   void dispose() {
     if (_isInternalController) {
       _searchController.dispose();
+    }
+    if (_isInternalFocusNode) {
+      _focusNode.dispose();
     }
     super.dispose();
   }
@@ -54,7 +76,10 @@ class _AppSearchBarState extends State<AppSearchBar> {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.baseLightGrey),
+        border: Border.all(
+          color: _isFocused ? AppColors.primary : AppColors.baseLightGrey,
+          width: _isFocused ? 1.5 : 1.0,
+        ),
       ),
       child: Row(
         children: [
@@ -67,6 +92,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
           Expanded(
             child: TextField(
               controller: _searchController,
+              focusNode: _focusNode,
               style: const TextStyle(
                 color: AppColors.baseDarkGrey,
                 fontSize: 13,

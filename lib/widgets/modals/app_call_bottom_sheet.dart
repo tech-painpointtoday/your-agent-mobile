@@ -70,8 +70,10 @@ class AppCallBottomSheet extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 12),
                 child: AppButton(
                   width: double.infinity,
-                  height: 44,
-                  text: 'โทร ${option.phone} (${option.label})',
+                  height: 48,
+                  text: option.label.isNotEmpty
+                      ? 'โทร ${option.phone} (${option.label})'
+                      : 'โทร ${option.phone}',
                   style: AppButtonStyle.primary,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   onPressed: () {

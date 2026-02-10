@@ -1089,5 +1089,15 @@
   "noApprovedPropertiesMessage": "You don't have any approved properties in your list. Please complete property information and wait for approval before creating a contract.",
   "invalidThaiIdError": "Invalid Thai National ID",
   "contractCreatedSuccess": "Contract Created Successfully",
-  "contractPublishedSuccess": "Contract Published Successfully"
+  "contractPublishedSuccess": "Contract Published Successfully",
+  "empty_chat_message": "No messages yet.\nOnce you start a conversation, it will appear here.",
+  "recent_search": "Recent Search",
+  "type_message_hint": "Type a message here...",
+  "read_status": "Read",
+  "conversation_title": "Conversations",
+  "search_messages_hint": "Search messages...",
+  "no_conversations_found": "No conversations found",
+  "no_messages": "No messages",
+  "yesterday": "Yesterday",
+  "time_unit_th": ""
 }

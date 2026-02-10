@@ -3342,4 +3342,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contractPublishedSuccess => 'Contract Published Successfully';
+
+  @override
+  String get empty_chat_message =>
+      'No messages yet.\nOnce you start a conversation, it will appear here.';
+
+  @override
+  String get recent_search => 'Recent Search';
+
+  @override
+  String get type_message_hint => 'Type a message here...';
+
+  @override
+  String get read_status => 'Read';
+
+  @override
+  String get conversation_title => 'Conversations';
+
+  @override
+  String get search_messages_hint => 'Search messages...';
+
+  @override
+  String get no_conversations_found => 'No conversations found';
+
+  @override
+  String get no_messages => 'No messages';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get time_unit_th => '';
 }
