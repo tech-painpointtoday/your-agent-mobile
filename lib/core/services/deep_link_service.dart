@@ -29,8 +29,9 @@ class DeepLinkService {
   void _handleUri(Uri uri) {
     DependencyInjection.talker?.log('Incoming Deep Link: $uri');
 
-    // Check if it's our callback: youragent://callback?status=success
-    if (uri.scheme == 'youragent' && uri.host == 'callback') {
+    // Check for both 'callback' (legacy/generic) and 'line-callback'
+    if (uri.scheme == 'youragent' &&
+        (uri.host == 'callback' || uri.host == 'line-callback')) {
       final status = uri.queryParameters['status'];
       if (status == 'success') {
         _statusController.add(DeepLinkStatus.success);

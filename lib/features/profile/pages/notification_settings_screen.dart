@@ -1,15 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/services/deep_link_service.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+
+import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -33,6 +35,21 @@ class _NotificationSettingsScreenState
     super.initState();
     _initDeepLinkListener();
     _fetchLineStatus();
+    _setupLineSDK();
+  }
+
+  Future<void> _setupLineSDK() async {
+    // Placeholder Channel ID as requested.
+    // In a real app, this should come from AppConfig or an environment variable.
+    await LineSDK.instance
+        .setup("YOUR_CHANNEL_ID")
+        .then((_) {
+          // SDK setup success
+        })
+        .catchError((e) {
+          // SDK setup failed
+          // DependencyInjection.talker?.error('LineSDK Setup Failed: $e');
+        });
   }
 
   Future<void> _fetchLineStatus() async {
@@ -86,14 +103,40 @@ class _NotificationSettingsScreenState
     setState(() => _isLoading = true);
 
     try {
-      final urlString = await DependencyInjection.settingsApiService
-          .getLineAuthorizationUrl();
-      final url = Uri.parse(urlString);
+      // Login with LINE SDK
+      final result = await LineSDK.instance.login(
+        scopes: ["profile", "openid"],
+      );
 
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
-      } else {
-        throw Exception('Could not launch $urlString');
+      final accessToken = result.accessToken.value;
+
+      // Link account with backend
+      final success = await DependencyInjection.settingsApiService
+          .linkLineAccount(accessToken);
+
+      if (success && mounted) {
+        setState(() {
+          _isLineConnected = true;
+        });
+        StatusDialog.showSuccess(
+          context: context,
+          title: AppLocalizations.of(context).success,
+          message: 'เชื่อมต่อบัญชี LINE เรียบร้อยแล้ว',
+        );
+      }
+    } on PlatformException catch (e) {
+      // Handle user cancellation or SDK specific errors
+      if (mounted) {
+        // Don't show error if user cancelled (checking error code if possible,
+        // but generic handling for now as 'User Cancelled' is common)
+        if (!e.message.toString().contains('User cancelled')) {
+          // Heuristic
+          StatusDialog.showError(
+            context: context,
+            title: 'การเชื่อมต่อล้มเหลว',
+            message: e.message ?? 'Unknown LINE SDK Error',
+          );
+        }
       }
     } catch (e) {
       if (mounted) {

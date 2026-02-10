@@ -544,7 +544,7 @@ class _ChatSessionTile extends StatelessWidget {
     final chatDate = DateTime(date.year, date.month, date.day);
 
     if (chatDate == today) {
-      return DateFormat('HH:mm').format(date) + ' ' + l10n.time_unit_th;
+      return '${DateFormat('HH:mm').format(date)} ${l10n.time_unit_th}';
     } else if (chatDate == yesterday) {
       return l10n.yesterday;
     } else {

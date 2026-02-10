@@ -7,7 +7,7 @@ import '../../features/auth/bloc/auth_event.dart';
 
 import '../../domain/entities/user.dart';
 import '../../l10n/app_localizations.dart';
-import '../dialogs/status_dialog.dart';
+import '../modals/app_confirmation_bottom_sheet.dart';
 
 /// Stubbed for mobile until social auth is wired.
 class SocialLoginSection extends StatelessWidget {
@@ -16,10 +16,10 @@ class SocialLoginSection extends StatelessWidget {
 
   Future<void> _handleGoogleLogin(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
-    await StatusDialog.confirm(
+    AppConfirmationBottomSheet.show(
       context: context,
       title: l10n.confirm,
-      message: l10n.social_login_confirmation('Google'),
+      description: l10n.social_login_confirmation('Google'),
       confirmLabel: l10n.confirm,
       onConfirm: () {
         context.read<AuthBloc>().add(AuthSignInWithGoogleRequested(role: role));
@@ -29,10 +29,10 @@ class SocialLoginSection extends StatelessWidget {
 
   Future<void> _handleFacebookLogin(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
-    await StatusDialog.confirm(
+    AppConfirmationBottomSheet.show(
       context: context,
       title: l10n.confirm,
-      message: l10n.social_login_confirmation('Facebook'),
+      description: l10n.social_login_confirmation('Facebook'),
       confirmLabel: l10n.confirm,
       onConfirm: () {
         context.read<AuthBloc>().add(

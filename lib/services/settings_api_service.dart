@@ -67,4 +67,24 @@ class SettingsApiService {
       throw Exception('Failed to unsubscribe from LINE: $e');
     }
   }
+
+  /// Link LINE account with access token
+  Future<bool> linkLineAccount(String accessToken) async {
+    try {
+      final response = await _apiClient.post(
+        '/agent/settings/line/link',
+        data: {'access_token': accessToken},
+      );
+      final data = response.data as Map<String, dynamic>;
+      return data['success'] == true;
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final message = (e.response?.data is Map<String, dynamic>)
+            ? (e.response?.data['message']?.toString())
+            : null;
+        throw Exception(message ?? 'Failed to link LINE account');
+      }
+      throw Exception('Failed to link LINE account: $e');
+    }
+  }
 }
