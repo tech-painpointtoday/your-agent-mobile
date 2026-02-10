@@ -181,14 +181,9 @@ class _LanguageOption extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.brandBlue.withOpacity(0.05)
-              : Colors.white,
+          color: isSelected ? AppColors.supportBlueLight : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected ? AppColors.brandBlue : Colors.transparent,
-            width: 1,
-          ),
+          border: Border.all(color: Colors.transparent, width: 1),
         ),
         child: Row(
           children: [
@@ -207,7 +202,7 @@ class _LanguageOption extends StatelessWidget {
                 label,
                 style: GoogleFonts.anuphan(
                   fontSize: 16,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: FontWeight.w400,
                   color: AppColors.baseBlack,
                 ),
               ),

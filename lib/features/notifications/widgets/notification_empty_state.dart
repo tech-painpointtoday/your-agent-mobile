@@ -16,7 +16,7 @@ class NotificationEmptyState extends StatelessWidget {
           children: [
             // Placeholder for empty state icon - you can add an SVG asset later
             Image.asset(
-              'assets/images/home/YA_Illustration_EmptyState_NoNotification.png',
+              'assets/images/YA_Illustration_EmptyState_NoNotification.png',
               fit: BoxFit.contain,
               width: 180,
               height: 180,

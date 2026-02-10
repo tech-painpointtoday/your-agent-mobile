@@ -147,7 +147,7 @@ class _ContractScreenState extends State<ContractScreen> {
       if (approvedProperties.isEmpty) {
         AppStatusBottomSheet.showWarning(
           context: context,
-          iconPath: 'assets/images/contract/YA_Illustration_ConfirmWarning.png',
+          iconPath: 'assets/images/YA_Illustration_ConfirmWarning.png',
           title: 'ไม่สามารถสร้างสัญญาได้',
           message:
               'คุณต้องมีทรัพย์ที่ผ่านการอนุมัติแล้วในระบบก่อน\nจึงจะสามารถสร้างเอกสารสัญญาได้',

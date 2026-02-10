@@ -169,6 +169,7 @@ class SettingsScreen extends StatelessWidget {
       description: l10n.logoutConfirmMessage,
       confirmLabel: l10n.logoutConfirmButton,
       cancelLabel: l10n.cancel_button,
+      icon: 'assets/images/auth/YA_Illustration_SignOut.png',
       style: ConfirmationStyle.destructive,
       onConfirm: () {
         context.read<AuthBloc>().add(const SignOutEvent());

@@ -364,7 +364,7 @@ class _ConversationList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/images/home/YA_Illustration_EmptyState_NoMessage.png',
+                      'assets/images/YA_Illustration_EmptyState_NoMessage.png',
                       width: 280,
                     ),
                     const SizedBox(height: 24),
