@@ -29,7 +29,15 @@ class ApiClient {
     // Add TalkerDioLogger interceptor ONLY in DEV environment
     if (AppConfig.isDev && DependencyInjection.talker != null) {
       dio.interceptors.add(
-        TalkerDioLogger(talker: DependencyInjection.talker!),
+        TalkerDioLogger(
+          talker: DependencyInjection.talker!,
+          // Avoid logging binary (bytes) responses such as PDFs to keep
+          // logs readable and prevent slowdowns when downloading files.
+          settings: TalkerDioLoggerSettings(
+            responseFilter: (response) =>
+                response.requestOptions.responseType != ResponseType.bytes,
+          ),
+        ),
       );
     }
 

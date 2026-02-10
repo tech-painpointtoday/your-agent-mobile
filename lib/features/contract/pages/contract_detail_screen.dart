@@ -91,11 +91,12 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
               message: state.message,
             );
           } else if (state is ContractDeletedSuccess) {
-            StatusDialog.showSuccessDialog(
+            StatusDialog.showSuccess(
               context: context,
-              title: AppLocalizations.of(context).contract_deleted_success,
-              onOk: () => Navigator.pop(context, true),
+              title: AppLocalizations.of(context).successTitle,
+              message: AppLocalizations.of(context).contract_deleted_success,
             );
+            context.pop(true);
           } else if (state is ContractActionSuccess) {
             StatusDialog.showSuccess(
               context: context,

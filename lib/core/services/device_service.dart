@@ -84,6 +84,15 @@ class DeviceService {
   Future<void> registerDevice() async {
     try {
       final info = await getDeviceInfo();
+      // If FCM token is not yet available, skip registration to avoid
+      // unauthorized (401) errors that can trigger a global logout.
+      if (info.token.isEmpty) {
+        debugPrint(
+          'Skipping device registration: FCM token is empty (APNS token not ready yet).',
+        );
+        return;
+      }
+
       await DependencyInjection.authApiService.registerDeviceToken(info);
       debugPrint('Device registered successfully');
     } catch (e) {
