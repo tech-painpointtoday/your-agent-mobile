@@ -114,7 +114,7 @@ class PropertyListItem extends StatelessWidget {
                   const SizedBox(height: 4),
                   // Location
                   Text(
-                    property.address!,
+                    property.address ?? '',
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseDarkGrey,
                       fontSize: 10,

@@ -77,8 +77,10 @@ class _PropertyScreenState extends State<PropertyScreen> {
         _filteredProperties = _properties.where((property) {
           final normalizedQuery = _normalizeText(query);
           return _normalizeText(property.title).contains(normalizedQuery) ||
-              _normalizeText(property.address!).contains(normalizedQuery) ||
-              _normalizeText(property.code!).contains(normalizedQuery);
+              _normalizeText(
+                property.address ?? '',
+              ).contains(normalizedQuery) ||
+              _normalizeText(property.code ?? '').contains(normalizedQuery);
         }).toList();
       }
     });

@@ -56,7 +56,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
+      physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 100),
       child: Stack(
         children: [

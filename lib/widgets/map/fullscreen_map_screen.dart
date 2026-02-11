@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
@@ -34,6 +35,7 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
   final TextEditingController _searchController = TextEditingController();
   bool _mapError = false;
   bool _isMapReady = false;
+  MapType _mapType = MapType.normal;
   // Set to true when Google Maps API key is configured in Info.plist
   static const bool _mapsEnabled = true;
 
@@ -109,13 +111,134 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
   }
 
   void _onMyLocationTapped() {
-    // TODO: Implement get current location and move camera
-    debugPrint('My location tapped');
+    if (_mapController == null || _markers.isEmpty) return;
+
+    if (_markers.length == 1) {
+      _mapController?.animateCamera(
+        CameraUpdate.newLatLngZoom(_markers.first.position, 15),
+      );
+      return;
+    }
+
+    double minLat = 90.0;
+    double maxLat = -90.0;
+    double minLng = 180.0;
+    double maxLng = -180.0;
+
+    for (final marker in _markers) {
+      final pos = marker.position;
+      if (pos.latitude < minLat) minLat = pos.latitude;
+      if (pos.latitude > maxLat) maxLat = pos.latitude;
+      if (pos.longitude < minLng) minLng = pos.longitude;
+      if (pos.longitude > maxLng) maxLng = pos.longitude;
+    }
+
+    final bounds = LatLngBounds(
+      southwest: LatLng(minLat, minLng),
+      northeast: LatLng(maxLat, maxLng),
+    );
+
+    _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
   }
 
   void _onLayersTapped() {
-    // TODO: Implement map type selection (normal, satellite, terrain, hybrid)
-    debugPrint('Layers tapped');
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 32,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.baseLightGrey,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'เลือกประเภทแผนที่',
+              style: GoogleFonts.anuphan(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.baseBlack,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildMapTypeItem(MapType.normal, 'ปกติ', Icons.map),
+                _buildMapTypeItem(
+                  MapType.satellite,
+                  'ดาวเทียม',
+                  Icons.satellite,
+                ),
+                _buildMapTypeItem(MapType.terrain, 'ภูมิประเทศ', Icons.terrain),
+                _buildMapTypeItem(MapType.hybrid, 'ผสม', Icons.layers),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMapTypeItem(MapType type, String label, IconData icon) {
+    final isSelected = _mapType == type;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _mapType = type;
+        });
+        Navigator.pop(context);
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? AppColors.brandLightGreen
+                  : AppColors.basePaleGrey,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isSelected ? AppColors.brandGreen : Colors.transparent,
+                width: 2,
+              ),
+            ),
+            child: Icon(
+              icon,
+              color: isSelected ? AppColors.brandGreen : AppColors.baseGrey,
+              size: 28,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: GoogleFonts.anuphan(
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              color: isSelected ? AppColors.brandGreen : AppColors.baseDarkGrey,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _zoomIn() {
@@ -193,8 +316,15 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
                   zoom: 12,
                 ),
                 markers: _markers,
+                mapType: _mapType,
                 onMapCreated: (controller) {
                   _mapController = controller;
+                  // Auto fit bounds when map is created if there are properties
+                  if (widget.properties.isNotEmpty) {
+                    Future.delayed(const Duration(milliseconds: 500), () {
+                      _onMyLocationTapped();
+                    });
+                  }
                 },
                 myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,

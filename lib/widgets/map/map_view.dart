@@ -271,13 +271,17 @@ class _MapViewState extends State<MapView> {
                         : {},
                   ),
                   if (widget.showCenterMarker && widget.initialLocation != null)
-                    const Center(
+                    Center(
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: 35),
-                        child: Icon(
-                          Icons.location_on,
-                          color: AppColors.supportRedDeep,
-                          size: 40,
+                        padding: const EdgeInsets.only(bottom: 36),
+                        child: SvgPicture.asset(
+                          'assets/icons/map-marker-filled.svg',
+                          width: 36,
+                          height: 36,
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.supportRedDark,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                     ),

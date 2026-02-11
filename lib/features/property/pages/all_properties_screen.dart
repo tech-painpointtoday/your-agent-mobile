@@ -72,8 +72,8 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
       } else {
         _filteredProperties = _allProperties.where((property) {
           return property.title.toLowerCase().contains(query) ||
-              property.code!.toLowerCase().contains(query) ||
-              property.address!.toLowerCase().contains(query);
+              (property.code?.toLowerCase().contains(query) ?? false) ||
+              (property.address?.toLowerCase().contains(query) ?? false);
         }).toList();
       }
     });

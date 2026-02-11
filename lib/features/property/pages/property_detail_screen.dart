@@ -117,6 +117,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
           if (_property != null)
             RefreshIndicator(
               onRefresh: _fetchPropertyDetail,
+              triggerMode: RefreshIndicatorTriggerMode.anywhere,
               child: PropertyDetail(
                 key: ObjectKey(_property!),
                 property: _property!,

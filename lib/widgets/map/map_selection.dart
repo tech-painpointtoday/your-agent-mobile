@@ -353,13 +353,17 @@ class _MapSelectionState extends State<MapSelection> {
 
           // แสดง marker เมื่อมีตำแหน่งเริ่มต้น หรือเมื่อผู้ใช้เปลี่ยนหมุด/ค้นหาแล้วเลือก
           if (_selected != _bangkok || widget.initialLocation != null)
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.only(bottom: 35),
-                child: Icon(
-                  Icons.location_on,
-                  color: AppColors.supportRedDeep,
-                  size: 40,
+                padding: const EdgeInsets.only(bottom: 36),
+                child: SvgPicture.asset(
+                  'assets/icons/map-marker-filled.svg',
+                  width: 36,
+                  height: 36,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.supportRedDark,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),

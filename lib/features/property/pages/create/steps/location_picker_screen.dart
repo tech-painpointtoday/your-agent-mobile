@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../widgets/buttons/app_button.dart';
 import 'package:youragent/l10n/app_localizations.dart';
@@ -78,13 +79,17 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
             myLocationButtonEnabled: true,
           ),
           if (widget.initialLocation != null)
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.only(bottom: 35),
-                child: Icon(
-                  Icons.location_on,
-                  color: AppColors.primary,
-                  size: 40,
+                padding: const EdgeInsets.only(bottom: 36),
+                child: SvgPicture.asset(
+                  'assets/icons/map-marker-filled.svg',
+                  width: 36,
+                  height: 36,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.supportRedDark,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
