@@ -282,10 +282,11 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                     isRequired: true,
                     value: state.contractType,
                     options: [
-                      AppChipOption(
-                        label: AppLocalizations.of(context).saleContractType,
-                        value: ContractType.buy,
-                      ),
+                      // Tmp Close
+                      // AppChipOption(
+                      //   label: AppLocalizations.of(context).saleContractType,
+                      //   value: ContractType.buy,
+                      // ),
                       AppChipOption(
                         label: AppLocalizations.of(context).rentContractType,
                         value: ContractType.rent,

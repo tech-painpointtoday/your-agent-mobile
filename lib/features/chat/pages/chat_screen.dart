@@ -90,6 +90,8 @@ class _ChatScreenContentState extends State<_ChatScreenContent> {
         ),
       ),
       body: RefreshIndicator(
+        color: Colors.white,
+        backgroundColor: AppColors.primary,
         onRefresh: () async {
           context.read<ChatBloc>().add(const LoadChatConversations());
         },

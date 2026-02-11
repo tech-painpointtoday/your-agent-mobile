@@ -368,7 +368,9 @@ class PropertyFormState extends Equatable {
       'land_size': landSize,
       'building_size': buildingSize,
       'house_color': houseColor?.label,
-      'built': built?.toUtc().toIso8601String(),
+      'built': built != null
+          ? "${built!.year.toString().padLeft(4, '0')}-${built!.month.toString().padLeft(2, '0')}-${built!.day.toString().padLeft(2, '0')}"
+          : null,
       'direction': direction?.value,
       'available_from': availableFrom,
       'listing_type': listingType?.value,
@@ -388,20 +390,18 @@ class PropertyFormState extends Equatable {
       'soi': soi,
       'formatted_address_en': formattedAddressEn,
       'formatted_address_th': formattedAddressTh,
-      'condoProjectId': condoProjectId,
-      'tower': tower,
-      'condoFloor': condoFloor,
-      'unitNo': unitNo,
+      'building': tower,
+      'floor': condoFloor,
+      'unit_no': unitNo,
       'village_name': villageName,
       'moo': moo,
       'house_subtype': houseSubtype,
       'parking_type': parkingType,
       'is_corner_plot': isCornerPlot,
       'house_notes': houseNotes,
-      if (selectedDeveloperId != null)
-        'developer_id': selectedDeveloperId.toString(),
+      if (selectedDeveloperId != null) 'developer_id': selectedDeveloperId,
       if (selectedCondoProjectId != null)
-        'condo_project_id': selectedCondoProjectId.toString(),
+        'condo_project_id': selectedCondoProjectId,
       'specifications': {
         ...specifications,
         if (propertyStyle != null) 'style': propertyStyle!.value,
@@ -450,26 +450,25 @@ class PropertyFormState extends Equatable {
   bool get isValid {
     if (step == 1) return selectedPropertyType != null;
     if (step == 2) {
-      final baseValid =
-          (name?.isNotEmpty == true) &&
-          (number?.isNotEmpty == true) &&
-          (address?.isNotEmpty == true) &&
-          (formattedAddressTh?.isNotEmpty == true);
-
-      if (!baseValid) return false;
-
       final isCondoOrApt = this.isCondoOrApt;
+      final baseValid =
+          (name?.isNotEmpty == true) && (latitude != null && longitude != null);
 
       if (isCondoOrApt) {
-        return selectedDeveloperId != null &&
+        return baseValid &&
+            selectedDeveloperId != null &&
             selectedCondoProjectId != null &&
             (condoFloor?.isNotEmpty == true) &&
             (unitNo?.isNotEmpty == true);
+      } else {
+        return baseValid && (number?.isNotEmpty == true);
       }
-      return true;
     }
     if (step == 3) {
-      return listingType != null &&
+      final isCondoOrApt = this.isCondoOrApt;
+
+      final baseValid =
+          listingType != null &&
           status != null &&
           totalFloors != null &&
           bedrooms != null &&
@@ -477,10 +476,16 @@ class PropertyFormState extends Equatable {
           garage != null &&
           built != null &&
           houseColor != null &&
-          price != null &&
-          landSize != null &&
-          buildingSize != null &&
+          (price != null && price! > 0) &&
           direction != null;
+
+      if (isCondoOrApt) {
+        return baseValid && (buildingSize != null && buildingSize! > 0);
+      } else {
+        return baseValid &&
+            (landSize != null && landSize! > 0) &&
+            (buildingSize != null && buildingSize! > 0);
+      }
     }
     if (step == 4) {
       return propertyStyle != null && description?.isNotEmpty == true;

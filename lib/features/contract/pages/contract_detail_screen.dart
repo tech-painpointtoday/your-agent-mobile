@@ -582,13 +582,15 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
   void _downloadPdf(BuildContext context, ContractDetailLoaded state) {
     if (state.pdfPath != null) {
+      final dateStr = state.contract.contractDate != null
+          ? state.contract.contractDate!.toIso8601String()
+          : 'Draft';
       SharePlus.instance.share(
         ShareParams(
           files: [
             XFile(
               state.pdfPath!,
-              name:
-                  'สัญญา_${state.contract.contractNumber}_${state.contract.contractDate!.toIso8601String()}.pdf',
+              name: 'สัญญา_${state.contract.contractNumber}_$dateStr.pdf',
               mimeType: 'application/pdf',
             ),
           ],

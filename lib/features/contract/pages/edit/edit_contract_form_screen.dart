@@ -9,6 +9,7 @@ import 'package:youragent/domain/entities/contract.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
+import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
@@ -99,7 +100,7 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
         backgroundColor: AppColors.primary,
         appBar: AppBar(
           title: Text(
-            widget.title,
+            AppLocalizations.of(context).editContract,
             style: GoogleFonts.anuphan(
               color: Colors.white,
               fontSize: 18,
@@ -135,7 +136,20 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
                 topRight: Radius.circular(24),
               ),
             ),
-            child: _buildBody(context),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                  child: AppBadge(
+                    label: widget.title,
+                    color: BadgeColor.blue,
+                    style: BadgeStyle.plain,
+                  ),
+                ),
+                Expanded(child: _buildBody(context)),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: _buildBottomBar(context),

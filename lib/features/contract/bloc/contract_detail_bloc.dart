@@ -4,7 +4,9 @@ import 'package:equatable/equatable.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdfx/pdfx.dart';
 import '../../../domain/entities/contract.dart';
+import '../../../domain/entities/contract_status.dart';
 import '../../../services/contract_api_service.dart';
+import '../services/contract_pdf_service.dart';
 
 // Events
 abstract class ContractDetailEvent extends Equatable {
@@ -139,19 +141,33 @@ class ContractDetailBloc
       String? pdfPath;
       Future<PdfDocument>? pdfDocument;
       try {
-        final pdfBytes = await _contractApiService.getContractPdf(
-          contractId: event.contractId,
-        );
-        final tempDir = await getTemporaryDirectory();
-        final file = File('${tempDir.path}/contract_${event.contractId}.pdf');
-        await file.writeAsBytes(pdfBytes);
-        pdfPath = file.path;
+        if (contract.status == ContractStatus.draft) {
+          // For drafts, generate preview locally
+          final pdfBytes = await ContractPdfService().generateFromContract(
+            contract,
+          );
+          final tempDir = await getTemporaryDirectory();
+          final file = File('${tempDir.path}/contract_${event.contractId}.pdf');
+          await file.writeAsBytes(pdfBytes);
+          pdfPath = file.path;
+        } else {
+          // For other statuses, fetch from API
+          final pdfBytes = await _contractApiService.getContractPdf(
+            contractId: event.contractId,
+          );
+          final tempDir = await getTemporaryDirectory();
+          final file = File('${tempDir.path}/contract_${event.contractId}.pdf');
+          await file.writeAsBytes(pdfBytes);
+          pdfPath = file.path;
+        }
 
         // Open the document here so it starts processing in background
-        pdfDocument = PdfDocument.openFile(pdfPath);
+        if (pdfPath != null) {
+          pdfDocument = PdfDocument.openFile(pdfPath);
+        }
       } catch (e) {
         // PDF fetch failed, but we still have contract info
-        print('Error fetching PDF: $e');
+        print('Error fetching/generating PDF: $e');
       }
 
       emit(

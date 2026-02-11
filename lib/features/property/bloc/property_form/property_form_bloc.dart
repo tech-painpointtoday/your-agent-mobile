@@ -140,10 +140,18 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         emit(state.copyWith(address: event.value as String?));
         break;
       case 'project':
-        // emit(state.copyWith(condoProjectId: event.value as int?));
+        if (state.isCondoOrApt) {
+          if (event.value is int) {
+            emit(state.copyWith(selectedCondoProjectId: event.value as int?));
+          }
+        } else {
+          emit(state.copyWith(villageName: event.value as String?));
+        }
         break;
       case 'developer':
-        // emit(state.copyWith(selectedDeveloperId: event.value as int?));
+        if (event.value is int) {
+          emit(state.copyWith(selectedDeveloperId: event.value as int?));
+        }
         break;
       case 'building':
         emit(state.copyWith(tower: event.value as String?));
@@ -151,11 +159,35 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       case 'floor':
         emit(state.copyWith(condoFloor: event.value as String?));
         break;
-      case 'room_number':
+      case 'unit_no':
         emit(state.copyWith(unitNo: event.value as String?));
         break;
       case 'number':
         emit(state.copyWith(number: event.value as String?));
+        break;
+      case 'price':
+        emit(state.copyWith(price: event.value as double?));
+        break;
+      case 'description':
+        emit(state.copyWith(description: event.value as String?));
+        break;
+      case 'land_size':
+        emit(state.copyWith(landSize: event.value as double?));
+        break;
+      case 'building_size':
+        emit(state.copyWith(buildingSize: event.value as double?));
+        break;
+      case 'bedrooms':
+        emit(state.copyWith(bedrooms: event.value as int?));
+        break;
+      case 'bathrooms':
+        emit(state.copyWith(bathrooms: event.value as int?));
+        break;
+      case 'garage':
+        emit(state.copyWith(garage: event.value as int?));
+        break;
+      case 'total_floors':
+        emit(state.copyWith(totalFloors: event.value as int?));
         break;
     }
   }

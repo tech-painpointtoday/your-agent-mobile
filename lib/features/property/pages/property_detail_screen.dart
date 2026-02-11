@@ -116,8 +116,9 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
         children: [
           if (_property != null)
             RefreshIndicator(
+              color: Colors.white,
+              backgroundColor: AppColors.primary,
               onRefresh: _fetchPropertyDetail,
-              triggerMode: RefreshIndicatorTriggerMode.anywhere,
               child: PropertyDetail(
                 key: ObjectKey(_property!),
                 property: _property!,

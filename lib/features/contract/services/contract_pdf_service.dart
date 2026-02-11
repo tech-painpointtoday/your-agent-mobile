@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -7,27 +8,22 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
 import 'package:http/http.dart' as http;
 import 'package:youragent/domain/entities/person_type.dart';
+import 'package:youragent/domain/entities/contract.dart';
+import 'package:youragent/domain/entities/appliance_item.dart';
+import 'package:youragent/domain/entities/furniture_item.dart';
+import 'package:youragent/domain/entities/contract_attachment.dart';
 
 class ContractPdfService {
   Future<Uint8List> generate(ContractFormState state) async {
     final pdf = pw.Document();
 
-    // Load Thai Font
-    // Using Anuphan-Regular as it is confirmed to exist in the project assets.
-    // If THSarabunNew is preferred, ensure it is added to assets/fonts/ and update this path.
-    final fontData = await rootBundle.load('assets/fonts/Anuphan-Regular.ttf');
-    final ttf = pw.Font.ttf(fontData);
-    final boldFontData = await rootBundle.load('assets/fonts/Anuphan-Bold.ttf');
-    final boldTtf = pw.Font.ttf(boldFontData);
+    final fonts = await _loadFonts();
+    final theme = pw.ThemeData.withFont(base: fonts.regular, bold: fonts.bold);
 
-    final theme = pw.ThemeData.withFont(base: ttf, bold: boldTtf);
-
-    // Formatters
     final dateFormat = DateFormat('d MMMM yyyy', 'th');
     final currencyFormat = NumberFormat('#,##0.00', 'en_US');
 
-    // Prepare Data
-    final contractDate = state.contractDate != null
+    final contractDateStr = state.contractDate != null
         ? dateFormat.format(
             DateTime(
               state.contractDate!.year + 543,
@@ -37,7 +33,6 @@ class ContractPdfService {
           )
         : '..........................................................';
 
-    // Helper for null checks
     String money(double? val) => val != null ? currencyFormat.format(val) : '-';
 
     pdf.addPage(
@@ -49,36 +44,250 @@ class ContractPdfService {
         ),
         build: (pw.Context context) {
           return [
-            _buildHeader(state, contractDate, boldTtf),
+            _buildHeader(
+              contractId: state.contractId?.toString(),
+              date: contractDateStr,
+              boldFont: fonts.bold,
+            ),
             pw.SizedBox(height: 20),
-            _buildParties(state, boldTtf),
+            _buildParties(
+              ownerName: state.ownerName,
+              ownerType: state.ownerType,
+              ownerSignatory: state.ownerSignatory,
+              ownerIdCard: state.ownerIdCard,
+              ownerAddress: state.ownerAddress,
+              ownerPhone: state.ownerPhone,
+              buyerName: state.buyerName,
+              buyerType: state.buyerType,
+              buyerIdCard: state.buyerIdCard,
+              buyerAddress: state.buyerAddress,
+              buyerPhone: state.buyerPhone,
+              boldFont: fonts.bold,
+            ),
             pw.SizedBox(height: 10),
-            _buildSectionHeader('ข้อ 1. วัตถุประสงค์แห่งสัญญา', boldTtf),
-            _buildClause1(state),
+            _buildSectionHeader('ข้อ 1. วัตถุประสงค์แห่งสัญญา', fonts.bold),
+            _buildClause1(),
             pw.SizedBox(height: 10),
-            _buildSectionHeader('ข้อ 2. ทรัพย์สินที่เช่า', boldTtf),
-            _buildClause2(state),
+            _buildSectionHeader('ข้อ 2. ทรัพย์สินที่เช่า', fonts.bold),
+            _buildClause2(
+              propertyName: state.propertyName,
+              address: state.selectedProperty?.address,
+              number: state.selectedProperty?.number,
+              floor: state.selectedProperty?.specifications['floor'],
+              area: state.selectedProperty?.area ?? 0,
+            ),
             pw.SizedBox(height: 10),
-            _buildSectionHeader('ข้อ 3. ระยะเวลาเช่า', boldTtf),
-            _buildClause3(state, dateFormat),
+            _buildSectionHeader('ข้อ 3. ระยะเวลาเช่า', fonts.bold),
+            _buildClause3(
+              leaseDuration: state.leaseDuration,
+              leaseStartDate: state.leaseStartDate,
+              leaseEndDate: state.leaseEndDate,
+              dateFormat: dateFormat,
+            ),
             pw.SizedBox(height: 10),
-            _buildSectionHeader('ข้อ 4. ค่าเช่าและวิธีการชำระเงิน', boldTtf),
-            _buildClause4(state, money),
+            _buildSectionHeader('ข้อ 4. ค่าเช่าและวิธีการชำระเงิน', fonts.bold),
+            _buildClause4(
+              price: state.price,
+              dueDate: state.dueDate?.toString(),
+              money: money,
+            ),
             pw.SizedBox(height: 10),
-            _buildSectionHeader('ข้อ 5. เงินประกันและค่าเช่าล่วงหน้า', boldTtf),
-            _buildClause5(state, money),
+            _buildSectionHeader(
+              'ข้อ 5. เงินประกันและค่าเช่าล่วงหน้า',
+              fonts.bold,
+            ),
+            _buildClause5(
+              securityDeposit: state.securityDeposit,
+              advanceRent: state.advanceRent,
+              totalUpfrontPayment: state.totalUpfrontPayment,
+              money: money,
+            ),
             pw.SizedBox(height: 10),
-            _buildSectionHeader('ข้อ 6. ข้อมูลบัญชีธนาคารผู้ให้เช่า', boldTtf),
-            _buildClause6(state),
+            _buildSectionHeader(
+              'ข้อ 6. ข้อมูลบัญชีธนาคารผู้ให้เช่า',
+              fonts.bold,
+            ),
+            _buildClause6(
+              bankBranch: state.bankBranch,
+              accountNumber: state.accountNumber,
+              accountName: state.accountName,
+            ),
             pw.SizedBox(height: 30),
-            _buildSignatures(state, boldTtf),
+            _buildSignatures(
+              ownerName: state.ownerName,
+              buyerName: state.buyerName,
+              boldFont: fonts.bold,
+            ),
           ];
         },
       ),
     );
 
+    // Annexes and Attachments
+    await _addAnnexesAndAttachments(
+      pdf: pdf,
+      fonts: fonts,
+      theme: theme,
+      furnitureItems: state.furnitureItems,
+      applianceItems: state.applianceItems,
+      attachments: state.attachments,
+    );
+
+    return pdf.save();
+  }
+
+  Future<Uint8List> generateFromContract(Contract contract) async {
+    final pdf = pw.Document();
+
+    final fonts = await _loadFonts();
+    final theme = pw.ThemeData.withFont(base: fonts.regular, bold: fonts.bold);
+
+    final dateFormat = DateFormat('d MMMM yyyy', 'th');
+    final currencyFormat = NumberFormat('#,##0.00', 'en_US');
+
+    final contractDateStr = contract.contractDate != null
+        ? dateFormat.format(
+            DateTime(
+              contract.contractDate!.year + 543,
+              contract.contractDate!.month,
+              contract.contractDate!.day,
+            ),
+          )
+        : '..........................................................';
+
+    String money(double? val) => val != null ? currencyFormat.format(val) : '-';
+    double? parseMoney(String? s) =>
+        s != null ? double.tryParse(s.replaceAll(',', '')) : null;
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageTheme: pw.PageTheme(
+          theme: theme,
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.all(32),
+        ),
+        build: (pw.Context context) {
+          return [
+            _buildHeader(
+              contractId: contract.id?.toString() ?? contract.contractNumber,
+              date: contractDateStr,
+              boldFont: fonts.bold,
+            ),
+            pw.SizedBox(height: 20),
+            _buildParties(
+              ownerName: contract.owner?.name ?? contract.lessor,
+              ownerType: contract.owner?.type ?? PersonType.individual,
+              ownerSignatory: contract.owner?.signatory ?? '',
+              ownerIdCard: contract.owner?.idCard ?? '',
+              ownerAddress: contract.owner?.address ?? '',
+              ownerPhone: contract.owner?.phone ?? '',
+              buyerName: contract.buyer?.name ?? contract.lessee,
+              buyerType: contract.buyer?.type ?? PersonType.individual,
+              buyerIdCard: contract.buyer?.idCard ?? '',
+              buyerAddress: contract.buyer?.address ?? '',
+              buyerPhone: contract.buyer?.phone ?? '',
+              boldFont: fonts.bold,
+            ),
+            pw.SizedBox(height: 10),
+            _buildSectionHeader('ข้อ 1. วัตถุประสงค์แห่งสัญญา', fonts.bold),
+            _buildClause1(),
+            pw.SizedBox(height: 10),
+            _buildSectionHeader('ข้อ 2. ทรัพย์สินที่เช่า', fonts.bold),
+            _buildClause2(
+              propertyName: contract.propertyName,
+              address: contract.property?.address,
+              number: contract.propertyUnitNo ?? contract.property?.number,
+              floor:
+                  contract.propertyFloor ??
+                  contract.property?.specifications['floor'],
+              area: double.tryParse(contract.propertyAreaSqm ?? '0') ?? 0,
+            ),
+            pw.SizedBox(height: 10),
+            _buildSectionHeader('ข้อ 3. ระยะเวลาเช่า', fonts.bold),
+            _buildClause3(
+              leaseDuration:
+                  0, // Not directly in Contract entity as int, but we have dates
+              leaseStartDate: null, // Need to find where these are
+              leaseEndDate: null,
+              dateFormat: dateFormat,
+            ),
+            pw.SizedBox(height: 10),
+            _buildSectionHeader('ข้อ 4. ค่าเช่าและวิธีการชำระเงิน', fonts.bold),
+            _buildClause4(
+              price: parseMoney(contract.monthlyRentalCost),
+              dueDate: contract.rentalPaymentDate?.toString(),
+              money: money,
+            ),
+            pw.SizedBox(height: 10),
+            _buildSectionHeader(
+              'ข้อ 5. เงินประกันและค่าเช่าล่วงหน้า',
+              fonts.bold,
+            ),
+            _buildClause5(
+              securityDeposit: parseMoney(contract.securityDeposit),
+              advanceRent: parseMoney(contract.advanceRent),
+              totalUpfrontPayment: parseMoney(contract.upfrontFee),
+              money: money,
+            ),
+            pw.SizedBox(height: 10),
+            _buildSectionHeader(
+              'ข้อ 6. ข้อมูลบัญชีธนาคารผู้ให้เช่า',
+              fonts.bold,
+            ),
+            _buildClause6(
+              bankBranch: contract.bankAccounts.isNotEmpty
+                  ? contract.bankAccounts.first.branch ?? ''
+                  : '',
+              accountNumber: contract.bankAccounts.isNotEmpty
+                  ? contract.bankAccounts.first.accountNumber
+                  : '',
+              accountName: contract.bankAccounts.isNotEmpty
+                  ? contract.bankAccounts.first.accountHolderName
+                  : '',
+            ),
+            pw.SizedBox(height: 30),
+            _buildSignatures(
+              ownerName: contract.owner?.name ?? contract.lessor,
+              buyerName: contract.buyer?.name ?? contract.lessee,
+              boldFont: fonts.bold,
+            ),
+          ];
+        },
+      ),
+    );
+
+    // Annexes and Attachments
+    await _addAnnexesAndAttachments(
+      pdf: pdf,
+      fonts: fonts,
+      theme: theme,
+      furnitureItems: contract.furniture,
+      applianceItems: contract.appliances,
+      attachments:
+          [], // Contract entity doesn't have local attachments in the same way
+    );
+
+    return pdf.save();
+  }
+
+  Future<_Fonts> _loadFonts() async {
+    final fontData = await rootBundle.load('assets/fonts/Anuphan-Regular.ttf');
+    final ttf = pw.Font.ttf(fontData);
+    final boldFontData = await rootBundle.load('assets/fonts/Anuphan-Bold.ttf');
+    final boldTtf = pw.Font.ttf(boldFontData);
+    return _Fonts(regular: ttf, bold: boldTtf);
+  }
+
+  Future<void> _addAnnexesAndAttachments({
+    required pw.Document pdf,
+    required _Fonts fonts,
+    required pw.ThemeData theme,
+    required List<FurnitureItem> furnitureItems,
+    required List<ApplianceItem> applianceItems,
+    required List<ContractAttachment> attachments,
+  }) async {
     // Annex: Furniture
-    if (state.furnitureItems.isNotEmpty) {
+    if (furnitureItems.isNotEmpty) {
       pdf.addPage(
         pw.MultiPage(
           pageTheme: pw.PageTheme(theme: theme, pageFormat: PdfPageFormat.a4),
@@ -87,12 +296,12 @@ class ContractPdfService {
               level: 0,
               child: pw.Text(
                 'รายการเฟอร์นิเจอร์ (Furniture List)',
-                style: pw.TextStyle(font: boldTtf, fontSize: 18),
+                style: pw.TextStyle(font: fonts.bold, fontSize: 18),
               ),
             ),
             pw.Table.fromTextArray(
               headers: ['ลำดับ', 'รายการ', 'รายละเอียด'],
-              data: state.furnitureItems.asMap().entries.map((e) {
+              data: furnitureItems.asMap().entries.map((e) {
                 final item = e.value;
                 return [
                   (e.key + 1).toString(),
@@ -100,7 +309,7 @@ class ContractPdfService {
                   item.description ?? '',
                 ];
               }).toList(),
-              headerStyle: pw.TextStyle(font: boldTtf),
+              headerStyle: pw.TextStyle(font: fonts.bold),
               cellAlignments: {0: pw.Alignment.center},
             ),
           ],
@@ -109,7 +318,7 @@ class ContractPdfService {
     }
 
     // Annex: Appliances
-    if (state.applianceItems.isNotEmpty) {
+    if (applianceItems.isNotEmpty) {
       pdf.addPage(
         pw.MultiPage(
           pageTheme: pw.PageTheme(theme: theme, pageFormat: PdfPageFormat.a4),
@@ -118,12 +327,12 @@ class ContractPdfService {
               level: 0,
               child: pw.Text(
                 'รายการเครื่องใช้ไฟฟ้า (Appliance List)',
-                style: pw.TextStyle(font: boldTtf, fontSize: 18),
+                style: pw.TextStyle(font: fonts.bold, fontSize: 18),
               ),
             ),
             pw.Table.fromTextArray(
               headers: ['ลำดับ', 'รายการ', 'รายละเอียด'],
-              data: state.applianceItems.asMap().entries.map((e) {
+              data: applianceItems.asMap().entries.map((e) {
                 final item = e.value;
                 return [
                   (e.key + 1).toString(),
@@ -131,7 +340,7 @@ class ContractPdfService {
                   item.description ?? '',
                 ];
               }).toList(),
-              headerStyle: pw.TextStyle(font: boldTtf),
+              headerStyle: pw.TextStyle(font: fonts.bold),
               cellAlignments: {0: pw.Alignment.center},
             ),
           ],
@@ -140,21 +349,18 @@ class ContractPdfService {
     }
 
     // Attachments (Images)
-    if (state.attachments.isNotEmpty) {
-      for (final attachment in state.attachments) {
+    if (attachments.isNotEmpty) {
+      for (final attachment in attachments) {
         Uint8List? imageBytes;
 
         try {
           if (attachment.filePath != null && attachment.filePath!.isNotEmpty) {
-            // Local file
             final file = File(attachment.filePath!);
             if (await file.exists()) {
               imageBytes = await file.readAsBytes();
             }
           } else if (attachment.fileUrl != null &&
               attachment.fileUrl!.isNotEmpty) {
-            // Remote file
-            // Note: Accessing network in UI thread/build might be slow, but this generate is async.
             final response = await http.get(Uri.parse(attachment.fileUrl!));
             if (response.statusCode == 200) {
               imageBytes = response.bodyBytes;
@@ -176,7 +382,7 @@ class ContractPdfService {
                       children: [
                         pw.Text(
                           'เอกสารแนบ: ${attachment.name}',
-                          style: pw.TextStyle(font: boldTtf, fontSize: 16),
+                          style: pw.TextStyle(font: fonts.bold, fontSize: 16),
                         ),
                         pw.SizedBox(height: 20),
                         pw.Image(image, fit: pw.BoxFit.contain, width: 450),
@@ -188,13 +394,10 @@ class ContractPdfService {
             );
           }
         } catch (e) {
-          // Ignore loading errors for attachments to allow PDF generation to succeed
           print('Error loading attachment ${attachment.name}: $e');
         }
       }
     }
-
-    return pdf.save();
   }
 
   bool _isImage(String name) {
@@ -205,11 +408,11 @@ class ContractPdfService {
         lower.endsWith('.webp');
   }
 
-  pw.Widget _buildHeader(
-    ContractFormState state,
-    String date,
-    pw.Font boldFont,
-  ) {
+  pw.Widget _buildHeader({
+    String? contractId,
+    required String date,
+    required pw.Font boldFont,
+  }) {
     return pw.Column(
       children: [
         pw.Text(
@@ -224,9 +427,7 @@ class ContractPdfService {
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.end,
           children: [
-            pw.Text(
-              'สัญญาเลขที่: ${state.contractId ?? "...................."}',
-            ),
+            pw.Text('สัญญาเลขที่: ${contractId ?? "...................."}'),
           ],
         ),
         pw.Row(
@@ -237,22 +438,30 @@ class ContractPdfService {
     );
   }
 
-  pw.Widget _buildParties(ContractFormState state, pw.Font boldFont) {
-    String ownerInfo = state.ownerName;
-    if (state.ownerType == PersonType.juristic) {
-      ownerInfo += ' (นิติบุคคล) โดย ${state.ownerSignatory} ผู้มีอำนาจลงนาม';
+  pw.Widget _buildParties({
+    required String ownerName,
+    required PersonType ownerType,
+    required String ownerSignatory,
+    required String ownerIdCard,
+    required String ownerAddress,
+    required String ownerPhone,
+    required String buyerName,
+    required PersonType buyerType,
+    required String buyerIdCard,
+    required String buyerAddress,
+    required String buyerPhone,
+    required pw.Font boldFont,
+  }) {
+    String ownerInfo = ownerName;
+    if (ownerType == PersonType.juristic) {
+      ownerInfo += ' (นิติบุคคล) โดย $ownerSignatory ผู้มีอำนาจลงนาม';
     }
-    ownerInfo += ' เลขบัตรประชาชน/เลขทะเบียนนิติบุคคล: ${state.ownerIdCard}';
-    ownerInfo +=
-        '\nที่อยู่: ${state.ownerAddress} เบอร์โทร: ${state.ownerPhone}';
+    ownerInfo += ' เลขบัตรประชาชน/เลขทะเบียนนิติบุคคล: $ownerIdCard';
+    ownerInfo += '\nที่อยู๋: $ownerAddress เบอร์โทร: $ownerPhone';
 
-    String buyerInfo = state.buyerName;
-    if (state.buyerType == PersonType.juristic) {
-      // Assuming buyer signage is handled similarly or just generic
-    }
-    buyerInfo += ' เลขบัตรประชาชน: ${state.buyerIdCard}';
-    buyerInfo +=
-        '\nที่อยู่: ${state.buyerAddress} เบอร์โทร: ${state.buyerPhone}';
+    String buyerInfo = buyerName;
+    buyerInfo += ' เลขบัตรประชาชน: $buyerIdCard';
+    buyerInfo += '\nที่อยู๋: $buyerAddress เบอร์โทร: $buyerPhone';
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -278,99 +487,109 @@ class ContractPdfService {
     );
   }
 
-  pw.Widget _buildClause1(ContractFormState state) {
+  pw.Widget _buildClause1() {
     return pw.Text(
       '        ผู้ให้เช่าตกลงให้เช่าและผู้เช่าตกลงเช่าทรัพย์สินตามรายละเอียดในข้อ 2 เพื่อใช้เป็นที่อยู่อาศัยเท่านั้น',
     );
   }
 
-  pw.Widget _buildClause2(ContractFormState state) {
-    final prop = state.selectedProperty;
-    String details = '';
-    if (prop != null) {
-      details += 'โครงการ: ${prop.name ?? state.propertyName}';
-      details += ' ที่อยู่: ${prop.address ?? "-"}';
-      if (prop.number != null) details += ' เลขที่ห้อง: ${prop.number}';
-      // Safely access dynamic specifications
-      final floor = prop.specifications['floor'];
-      if (floor != null) details += ' ชั้น: $floor';
-      if (prop.area > 0) details += ' ขนาด: ${prop.area} ตร.ม.';
-    } else {
-      details = 'ทรัพย์สิน: ${state.propertyName}';
-    }
+  pw.Widget _buildClause2({
+    required String propertyName,
+    String? address,
+    String? number,
+    String? floor,
+    required double area,
+  }) {
+    String details = 'โครงการ: $propertyName';
+    details += ' ที่อยู่: ${address ?? "-"}';
+    if (number != null) details += ' เลขที่ห้อง: $number';
+    if (floor != null) details += ' ชั้น: $floor';
+    if (area > 0) details += ' ขนาด: $area ตร.ม.';
 
     return pw.Text('        $details (รายละเอียดตามเอกสารแนบ)');
   }
 
-  pw.Widget _buildClause3(ContractFormState state, DateFormat fmt) {
-    final start = state.leaseStartDate != null
-        ? fmt.format(
+  pw.Widget _buildClause3({
+    required int leaseDuration,
+    DateTime? leaseStartDate,
+    DateTime? leaseEndDate,
+    required DateFormat dateFormat,
+  }) {
+    final start = leaseStartDate != null
+        ? dateFormat.format(
             DateTime(
-              state.leaseStartDate!.year + 543,
-              state.leaseStartDate!.month,
-              state.leaseStartDate!.day,
+              leaseStartDate.year + 543,
+              leaseStartDate.month,
+              leaseStartDate.day,
             ),
           )
         : '....................';
-    final end = state.leaseEndDate != null
-        ? fmt.format(
+    final end = leaseEndDate != null
+        ? dateFormat.format(
             DateTime(
-              state.leaseEndDate!.year + 543,
-              state.leaseEndDate!.month,
-              state.leaseEndDate!.day,
+              leaseEndDate.year + 543,
+              leaseEndDate.month,
+              leaseEndDate.day,
             ),
           )
         : '....................';
 
     return pw.Text(
-      '        มีกำหนดระยะเวลาเช่า ${state.leaseDuration} ปี/เดือน เริ่มตั้งแต่วันที่ $start ถึงวันที่ $end',
+      '        มีกำหนดระยะเวลาเช่า $leaseDuration ปี/เดือน เริ่มตั้งแต่วันที่ $start ถึงวันที่ $end',
     );
   }
 
-  pw.Widget _buildClause4(
-    ContractFormState state,
-    String Function(double?) money,
-  ) {
+  pw.Widget _buildClause4({
+    double? price,
+    String? dueDate,
+    required String Function(double?) money,
+  }) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Text(
-          '        ผู้เช่าตกลงชำระค่าเช่าให้แก่ผู้ให้เช่าในอัตราเดือนละ ${money(state.price)} บาท',
+          '        ผู้เช่าตกลงชำระค่าเช่าให้แก่ผู้ให้เช่าในอัตราเดือนละ ${money(price)} บาท',
         ),
+        pw.Text('        โดยจะชำระภายในวันที่ ${dueDate ?? "..."} ของทุกเดือน'),
+      ],
+    );
+  }
+
+  pw.Widget _buildClause5({
+    double? securityDeposit,
+    double? advanceRent,
+    double? totalUpfrontPayment,
+    required String Function(double?) money,
+  }) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
         pw.Text(
-          '        โดยจะชำระภายในวันที่ ${state.dueDate ?? "..."} ของทุกเดือน',
+          '        ในวันทำสัญญานี้ ผู้เช่าได้วางเงินประกันความเสียหายจำนวน ${money(securityDeposit)} บาท',
+        ),
+        pw.Text('        และค่าเช่าล่วงหน้าจำนวน ${money(advanceRent)} บาท'),
+        pw.Text(
+          '        รวมเป็นเงินทั้งสิ้น ${money(totalUpfrontPayment)} บาท แก่ผู้ให้เช่า',
         ),
       ],
     );
   }
 
-  pw.Widget _buildClause5(
-    ContractFormState state,
-    String Function(double?) money,
-  ) {
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        pw.Text(
-          '        ในวันทำสัญญานี้ ผู้เช่าได้วางเงินประกันความเสียหายจำนวน ${money(state.securityDeposit)} บาท',
-        ),
-        pw.Text(
-          '        และค่าเช่าล่วงหน้าจำนวน ${money(state.advanceRent)} บาท',
-        ),
-        pw.Text(
-          '        รวมเป็นเงินทั้งสิ้น ${money(state.totalUpfrontPayment)} บาท แก่ผู้ให้เช่า',
-        ),
-      ],
-    );
-  }
-
-  pw.Widget _buildClause6(ContractFormState state) {
+  pw.Widget _buildClause6({
+    required String bankBranch,
+    required String accountNumber,
+    required String accountName,
+  }) {
     return pw.Text(
-      '        ธนาคาร: ${state.bankBranch} เลขที่บัญชี: ${state.accountNumber} ชื่อบัญชี: ${state.accountName}',
+      '        ธนาคาร: $bankBranch เลขที่บัญชี: $accountNumber ชื่อบัญชี: $accountName',
     );
   }
 
-  pw.Widget _buildSignatures(ContractFormState state, pw.Font boldFont) {
+  pw.Widget _buildSignatures({
+    required String ownerName,
+    required String buyerName,
+    required pw.Font boldFont,
+  }) {
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
@@ -379,7 +598,7 @@ class ContractPdfService {
             pw.Text(
               'ลงชื่อ ....................................................... ผู้ให้เช่า',
             ),
-            pw.Text('(${state.ownerName})'),
+            pw.Text('($ownerName)'),
           ],
         ),
         pw.Column(
@@ -387,10 +606,16 @@ class ContractPdfService {
             pw.Text(
               'ลงชื่อ ....................................................... ผู้เช่า',
             ),
-            pw.Text('(${state.buyerName})'),
+            pw.Text('($buyerName)'),
           ],
         ),
       ],
     );
   }
+}
+
+class _Fonts {
+  final pw.Font regular;
+  final pw.Font bold;
+  _Fonts({required this.regular, required this.bold});
 }

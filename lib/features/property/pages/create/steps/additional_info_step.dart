@@ -32,6 +32,15 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
     if (state.specificationFilters.multiSelect.isEmpty) {
       context.read<PropertyFormBloc>().add(PropertyFormFiltersFetched());
     }
+
+    _descriptionController.addListener(() {
+      context.read<PropertyFormBloc>().add(
+        PropertyFormDataUpdated(
+          key: 'description',
+          value: _descriptionController.text,
+        ),
+      );
+    });
   }
 
   @override
@@ -173,9 +182,6 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                 controller: _descriptionController,
                 maxLines: 5,
                 isRequired: true,
-                onChanged: (val) => context.read<PropertyFormBloc>().add(
-                  PropertyFormGeneralInfoUpdated(description: val),
-                ),
               ),
               const SizedBox(height: 100),
             ],

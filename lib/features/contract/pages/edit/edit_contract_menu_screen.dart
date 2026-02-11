@@ -70,8 +70,7 @@ class EditContractMenuScreen extends StatelessWidget {
                   context,
                   title: AppLocalizations.of(context).dataProperty,
                   subtitle: AppLocalizations.of(context).dataAddress,
-                  iconPath:
-                      'assets/icons/home.svg', // Using home icon as placeholder for property owner
+                  iconPath: 'assets/icons/home.svg',
                   iconColor: AppColors.brandGreen,
                   bgColor: AppColors.supportGreenLight,
                   onTap: (bloc) {

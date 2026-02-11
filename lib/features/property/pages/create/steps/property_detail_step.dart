@@ -53,6 +53,32 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
           ? NumberFormat.decimalPattern('en_US').format(state.buildingSize)
           : null,
     );
+
+    // Add listeners to update Bloc
+    _priceController.addListener(() {
+      final val = _priceController.text;
+      context.read<PropertyFormBloc>().add(
+        PropertyFormDataUpdated(
+          key: 'price',
+          value: double.tryParse(val.replaceAll(',', '')),
+        ),
+      );
+    });
+    _landSizeController.addListener(() {
+      final val = _landSizeController.text;
+      context.read<PropertyFormBloc>().add(
+        PropertyFormDataUpdated(key: 'land_size', value: double.tryParse(val)),
+      );
+    });
+    _buildingSizeController.addListener(() {
+      final val = _buildingSizeController.text;
+      context.read<PropertyFormBloc>().add(
+        PropertyFormDataUpdated(
+          key: 'building_size',
+          value: double.tryParse(val),
+        ),
+      );
+    });
   }
 
   @override
@@ -121,10 +147,11 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                 value: state.listingType,
                 isRequired: true,
                 options: [
-                  SelectionPillOption(
-                    label: AppLocalizations.of(context).listingTypeValueSale,
-                    value: PropertyListingType.sale,
-                  ),
+                  // Tmp Close
+                  // SelectionPillOption(
+                  //   label: AppLocalizations.of(context).listingTypeValueSale,
+                  //   value: PropertyListingType.sale,
+                  // ),
                   SelectionPillOption(
                     label: AppLocalizations.of(context).listingTypeValueRent,
                     value: PropertyListingType.rent,
@@ -323,11 +350,6 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                 ),
                 keyboardType: TextInputType.number,
-                onChanged: (val) => context.read<PropertyFormBloc>().add(
-                  PropertyFormGeneralInfoUpdated(
-                    price: double.tryParse(val.replaceAll(',', '')),
-                  ),
-                ),
               ),
               const SizedBox(height: 24),
 
@@ -355,12 +377,6 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                           signed: true,
                           decimal: true,
                         ),
-                        onChanged: (val) =>
-                            context.read<PropertyFormBloc>().add(
-                              PropertyFormDetailsUpdated(
-                                landSize: double.tryParse(val),
-                              ),
-                            ),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -384,11 +400,6 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                       keyboardType: const TextInputType.numberWithOptions(
                         signed: true,
                         decimal: true,
-                      ),
-                      onChanged: (val) => context.read<PropertyFormBloc>().add(
-                        PropertyFormDetailsUpdated(
-                          buildingSize: double.tryParse(val),
-                        ),
                       ),
                     ),
                   ),

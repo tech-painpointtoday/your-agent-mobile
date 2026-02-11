@@ -10,9 +10,9 @@ plugins {
 
 android {
     namespace = "com.youragent"
-    compileSdk = 35 // Updated to stable SDK 35
+    compileSdk = 36 // Updated to stable SDK 36
     ndkVersion = flutter.ndkVersion
-    buildToolsVersion = "35.0.0" // Updated to stable Build Tools 35.0.0
+    buildToolsVersion = "36.0.0" // Updated to stable Build Tools 36.0.0
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21 // Updated to stable JDK 21
@@ -30,7 +30,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24 // Reasonable stable minSdk
-        targetSdk = 35 // Updated to stable Target SDK 35
+        targetSdk = 36 // Updated to stable Target SDK 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

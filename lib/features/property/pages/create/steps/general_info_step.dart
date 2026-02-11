@@ -43,33 +43,40 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   void initState() {
     super.initState();
     final state = context.read<PropertyFormBloc>().state;
-    _nameController = TextEditingController(
-      text: state.data['name'] as String?,
-    );
-    _houseNoController = TextEditingController(
-      text: state.data['number'] as String?,
-    );
+    _nameController = TextEditingController(text: state.name);
+    _houseNoController = TextEditingController(text: state.number);
+
     // ตำแหน่งที่ตั้ง: แสดงค่าก็ต่อเมื่อมี lat/lng แล้ว (เช่น เลือกจากแผนที่แล้ว)
     _addressController = TextEditingController(
-      text: (state.data['latitude'] != null && state.data['longitude'] != null)
-          ? (state.data['address'] as String? ?? '')
+      text: (state.latitude != null && state.longitude != null)
+          ? (state.address ?? '')
           : '',
     );
-    _projectController = TextEditingController(
-      text: state.data['project'] as String?,
-    );
-    _developerController = TextEditingController(
-      text: state.data['developer'] as String?,
-    );
-    _buildingController = TextEditingController(
-      text: state.data['building'] as String?,
-    );
-    _floorController = TextEditingController(
-      text: state.data['floor'] as String?,
-    );
-    _roomNoController = TextEditingController(
-      text: state.data['unitNo'] as String?,
-    );
+
+    // Initial project/developer name restoration
+    String? projectName = state.villageName;
+    String? developerName;
+
+    if (state.isCondoOrApt) {
+      if (state.selectedCondoProjectId != null) {
+        projectName = state.condoProjects
+            .where((p) => p.id == state.selectedCondoProjectId)
+            .firstOrNull
+            ?.name;
+      }
+      if (state.selectedDeveloperId != null) {
+        developerName = state.developers
+            .where((d) => d.id == state.selectedDeveloperId)
+            .firstOrNull
+            ?.nameTh;
+      }
+    }
+
+    _projectController = TextEditingController(text: projectName);
+    _developerController = TextEditingController(text: developerName);
+    _buildingController = TextEditingController(text: state.tower);
+    _floorController = TextEditingController(text: state.condoFloor);
+    _roomNoController = TextEditingController(text: state.unitNo);
 
     // Add listeners to update Bloc
     _nameController.addListener(
@@ -94,7 +101,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       () => _updateData('floor', _floorController.text),
     );
     _roomNoController.addListener(
-      () => _updateData('room_number', _roomNoController.text),
+      () => _updateData('unit_no', _roomNoController.text),
     );
 
     // Initial fetch for developers and all condo projects if empty
@@ -111,7 +118,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   }
 
   void _updateData(String key, String value) {
-    print('updateData: $key, $value');
     context.read<PropertyFormBloc>().add(
       PropertyFormDataUpdated(key: key, value: value),
     );

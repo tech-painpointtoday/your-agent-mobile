@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youragent/core/theme/app_colors.dart';
 import '../backgrounds/blue_wave_background.dart';
 
 /// A reusable silver app bar widget that can be used in CustomScrollView
@@ -239,7 +240,7 @@ class _SilverAppBarScreenState extends State<SilverAppBarScreen> {
                   ? RefreshIndicator(
                       onRefresh: widget.onRefresh!,
                       color: Colors.white,
-                      backgroundColor: const Color(0xFF1743C7),
+                      backgroundColor: AppColors.primary,
                       edgeOffset: widget.preferredHeight,
                       child: _buildScrollView(),
                     )
