@@ -472,4 +472,64 @@ class ContractApiService {
       throw Exception('Failed to delete contract document: $e');
     }
   }
+
+  /// Delete Appliance Photo
+  /// DELETE /agent/contracts/{contract_id}/appliances/{appliance_id}/photo
+  Future<void> deleteAppliancePhoto({
+    required int contractId,
+    required String applianceId,
+  }) async {
+    try {
+      final response = await _apiClient.delete(
+        '/agent/contracts/$contractId/appliances/$applianceId/photo',
+      );
+
+      final apiResponse = ApiResponseService.parseResponse<void>(
+        response,
+        null,
+      );
+
+      if (!apiResponse.success) {
+        throw Exception(
+          apiResponse.message ?? 'Failed to delete appliance photo',
+        );
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to delete appliance photo: $e');
+    }
+  }
+
+  /// Delete Furniture Photo
+  /// DELETE /agent/contracts/{contract_id}/furniture/{furniture_id}/photo
+  Future<void> deleteFurniturePhoto({
+    required int contractId,
+    required String furnitureId,
+  }) async {
+    try {
+      final response = await _apiClient.delete(
+        '/agent/contracts/$contractId/furniture/$furnitureId/photo',
+      );
+
+      final apiResponse = ApiResponseService.parseResponse<void>(
+        response,
+        null,
+      );
+
+      if (!apiResponse.success) {
+        throw Exception(
+          apiResponse.message ?? 'Failed to delete furniture photo',
+        );
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to delete furniture photo: $e');
+    }
+  }
 }

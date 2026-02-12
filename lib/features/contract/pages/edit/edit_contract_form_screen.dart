@@ -159,6 +159,15 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
 
   Widget _buildBody(BuildContext context) {
     return BlocConsumer<ContractFormBloc, ContractFormState>(
+      listenWhen: (prev, curr) {
+        // Only listen when transitioning TO success/failure FROM a different status
+        // This prevents duplicate dialogs when widget rebuilds with same success state
+        return prev.status != curr.status &&
+            prev.status != ContractFormStatus.success &&
+            prev.status != ContractFormStatus.failure &&
+            (curr.status == ContractFormStatus.success ||
+                curr.status == ContractFormStatus.failure);
+      },
       listener: (context, state) {
         if (state.status == ContractFormStatus.success) {
           StatusDialog.showSuccess(
@@ -166,7 +175,12 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
             title: AppLocalizations.of(context).successTitle,
             message: AppLocalizations.of(context).changesSavedMessage,
           );
-          context.pop(true);
+          // Pop after a short delay to ensure dialog is shown
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (context.mounted) {
+              context.pop(true);
+            }
+          });
         } else if (state.status == ContractFormStatus.failure) {
           AppConfirmationBottomSheet.show(
             context: context,

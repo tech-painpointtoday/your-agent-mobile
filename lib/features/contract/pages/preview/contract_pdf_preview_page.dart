@@ -24,7 +24,19 @@ class ContractPdfPreviewPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return BlocListener<ContractFormBloc, ContractFormState>(
-      listenWhen: (prev, curr) => prev.status != curr.status,
+      listenWhen: (prev, curr) {
+        // Only listen when transitioning TO success/failure/draftSave states FROM a different status
+        // This prevents duplicate dialogs when widget rebuilds with same state
+        return prev.status != curr.status &&
+            prev.status != ContractFormStatus.success &&
+            prev.status != ContractFormStatus.failure &&
+            prev.status != ContractFormStatus.draftSaveSuccess &&
+            prev.status != ContractFormStatus.draftSaveFailure &&
+            (curr.status == ContractFormStatus.success ||
+                curr.status == ContractFormStatus.failure ||
+                curr.status == ContractFormStatus.draftSaveSuccess ||
+                curr.status == ContractFormStatus.draftSaveFailure);
+      },
       listener: (context, state) {
         if (state.status == ContractFormStatus.success) {
           StatusDialog.showSuccess(

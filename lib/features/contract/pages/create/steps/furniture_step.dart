@@ -135,9 +135,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
           (i) => i.id == furnitureId,
         );
         context.read<ContractFormBloc>().add(
-          ContractFormFurnitureUpdated(
-            item.copyWith(images: [], clearPropertyImage: true),
-          ),
+          ContractFormFurnitureImageRemoved(item.id),
         );
         StatusDialog.showSuccess(
           context: context,
@@ -241,10 +239,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
                               );
                             } else {
                               context.read<ContractFormBloc>().add(
-                                ContractFormFurnitureImageRemoved(
-                                  item.id,
-                                  path,
-                                ),
+                                ContractFormFurnitureImageRemoved(item.id),
                               );
                             }
                           },

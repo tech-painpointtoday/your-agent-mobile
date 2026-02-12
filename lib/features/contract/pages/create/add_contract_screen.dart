@@ -22,8 +22,6 @@ import 'package:youragent/core/di/dependency_injection.dart';
 
 import 'package:youragent/features/contract/pages/create/steps/payment_step.dart';
 import 'package:youragent/features/contract/pages/preview/contract_pdf_preview_page.dart';
-import 'package:youragent/domain/entities/contract_status.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
 class AddContractScreen extends StatelessWidget {
@@ -54,8 +52,13 @@ class _AddContractView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<ContractFormBloc, ContractFormState>(
-      listenWhen: (prev, curr) =>
-          prev.status != curr.status || prev.errorMessage != curr.errorMessage,
+      listenWhen: (prev, curr) {
+        // Only listen when transitioning TO success FROM a different status
+        // This prevents duplicate pops when widget rebuilds with same success state
+        return prev.status != curr.status &&
+            prev.status != ContractFormStatus.success &&
+            curr.status == ContractFormStatus.success;
+      },
       listener: (context, state) {
         if (state.status == ContractFormStatus.success) {
           Navigator.of(context).pop(true);
@@ -184,69 +187,25 @@ class _AddContractView extends StatelessWidget {
         body: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           behavior: HitTestBehavior.translucent,
-          child: BlocListener<ContractFormBloc, ContractFormState>(
-            listenWhen: (prev, curr) => prev.status != curr.status,
-            listener: (context, state) {
-              if (state.status == ContractFormStatus.success) {
-                StatusDialog.showSuccess(
-                  context: context,
-                  title: AppLocalizations.of(context).successTitle,
-                  message: state.contractStatus == ContractStatus.draft
-                      ? AppLocalizations.of(context).contractPublishedSuccess
-                      : AppLocalizations.of(context).contractCreatedSuccess,
-                );
-                Future.delayed(const Duration(seconds: 1), () {
-                  if (context.mounted) {
-                    context.pop(true);
-                  }
-                });
-              } else if (state.status == ContractFormStatus.failure) {
-                StatusDialog.showError(
-                  context: context,
-                  title: AppLocalizations.of(context).errorLabel,
-                  message: state.errorMessage ?? 'Error',
-                );
-              } else if (state.status == ContractFormStatus.draftSaveSuccess) {
-                StatusDialog.showSuccess(
-                  context: context,
-                  title: AppLocalizations.of(context).successTitle,
-                  message: AppLocalizations.of(context).draftSavedMessage,
-                );
-                Future.delayed(const Duration(seconds: 1), () {
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                  }
-                });
-              } else if (state.status == ContractFormStatus.draftSaveFailure) {
-                StatusDialog.showError(
-                  context: context,
-                  title: AppLocalizations.of(context).errorLabel,
-                  message:
-                      state.errorMessage ??
-                      AppLocalizations.of(context).draftSaveErrorMessage,
-                );
-              }
-            },
-            child: Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
-                ),
+          child: Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
               ),
-              child: BlocBuilder<ContractFormBloc, ContractFormState>(
-                builder: (context, state) {
-                  return Stack(
-                    children: [
-                      _buildStepBody(state.step),
-                      if (state.status == ContractFormStatus.loading)
-                        const Center(child: CircularProgressIndicator()),
-                    ],
-                  );
-                },
-              ),
+            ),
+            child: BlocBuilder<ContractFormBloc, ContractFormState>(
+              builder: (context, state) {
+                return Stack(
+                  children: [
+                    _buildStepBody(state.step),
+                    if (state.status == ContractFormStatus.loading)
+                      const Center(child: CircularProgressIndicator()),
+                  ],
+                );
+              },
             ),
           ),
         ),

@@ -149,10 +149,9 @@ class _ApplianceStepState extends State<ApplianceStep> {
           (i) => i.id == applianceId,
         );
         context.read<ContractFormBloc>().add(
-          ContractFormApplianceUpdated(
-            item.copyWith(images: [], clearPropertyImage: true),
-          ),
+          ContractFormApplianceImageRemoved(item.id),
         );
+
         StatusDialog.showSuccess(
           context: context,
           title: AppLocalizations.of(context).successTitle,
@@ -253,13 +252,6 @@ class _ApplianceStepState extends State<ApplianceStep> {
                               context.read<ContractFormBloc>().add(
                                 ContractFormApplianceUpdated(
                                   item.copyWith(clearPropertyImage: true),
-                                ),
-                              );
-                            } else {
-                              context.read<ContractFormBloc>().add(
-                                ContractFormApplianceImageRemoved(
-                                  item.id,
-                                  path,
                                 ),
                               );
                             }

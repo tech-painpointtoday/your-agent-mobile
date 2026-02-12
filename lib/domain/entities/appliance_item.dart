@@ -57,7 +57,11 @@ class ApplianceItem extends Equatable {
       name.isNotEmpty ||
       (description?.isNotEmpty == true) ||
       images.isNotEmpty ||
-      propertyImageId != null;
+      propertyImageId != null ||
+      existingPhotoUrl != null ||
+      validatedPhotoUrl != null ||
+      existingPhotoUrls.isNotEmpty ||
+      photos.isNotEmpty;
 
   @override
   List<Object?> get props => [
