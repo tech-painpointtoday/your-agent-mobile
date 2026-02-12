@@ -1544,6 +1544,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profilePhotoUpdated => 'Profile photo updated successfully';
 
   @override
+  String get profileUpdated => 'Profile updated successfully';
+
+  @override
   String get emailVerified => 'Email Verified';
 
   @override
@@ -1952,6 +1955,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get securityGuard => 'Security Guard';
+
+  @override
+  String get ownerOccupied => 'Owner Occupied';
+
+  @override
+  String get roomTypeLabel => 'Room Type';
 
   @override
   String get baht => 'Baht';

@@ -79,22 +79,11 @@ class _StatusToastState extends State<StatusToast>
 
     _dismissTimer?.cancel();
 
-    _controller.reverse().then((_) {
-      if (!mounted) return;
-
-      if (widget.callbackDelay == null && widget.onDismiss != null) {
-        widget.onDismiss?.call();
-      }
-
-      try {
-        final navigator = Navigator.of(context, rootNavigator: true);
-        if (navigator.canPop()) {
-          navigator.pop();
-        }
-      } catch (e) {
-        debugPrint('⚠️ StatusToast: Error dismissing toast: $e');
-      }
-    });
+    // Simply call the onDismiss callback without using Navigator.pop()
+    // The parent _ToastAnimator (in status_dialog.dart) handles overlay removal
+    if (widget.callbackDelay == null && widget.onDismiss != null) {
+      widget.onDismiss?.call();
+    }
   }
 
   Color _getIconColor() {

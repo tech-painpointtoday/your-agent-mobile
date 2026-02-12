@@ -162,10 +162,8 @@ class ContractDetailBloc
         }
 
         // Open the document here so it starts processing in background
-        if (pdfPath != null) {
-          pdfDocument = PdfDocument.openFile(pdfPath);
-        }
-      } catch (e) {
+        pdfDocument = PdfDocument.openFile(pdfPath);
+            } catch (e) {
         // PDF fetch failed, but we still have contract info
         print('Error fetching/generating PDF: $e');
       }

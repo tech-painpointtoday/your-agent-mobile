@@ -9,6 +9,7 @@ import 'package:youragent/features/property/widgets/property_filter_bottom_sheet
 import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/domain/entities/property_filter.dart';
 
 /// Screen showing all properties in a list
 class AllPropertiesScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
 
   List<Property> _allProperties = [];
   List<Property> _filteredProperties = [];
+  PropertyFilter _currentFilter = const PropertyFilter();
   bool _isLoading = true;
   String? _error;
 
@@ -65,27 +67,43 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
   }
 
   void _onSearchChanged() {
+    _applyFilters();
+  }
+
+  void _applyFilters() {
     final query = _searchController.text.toLowerCase();
     setState(() {
-      if (query.isEmpty) {
-        _filteredProperties = _allProperties;
-      } else {
-        _filteredProperties = _allProperties.where((property) {
-          return property.title.toLowerCase().contains(query) ||
-              (property.code?.toLowerCase().contains(query) ?? false) ||
-              (property.address?.toLowerCase().contains(query) ?? false);
-        }).toList();
-      }
+      _filteredProperties = _allProperties.where((property) {
+        // Search Query Filter
+        final matchesSearch =
+            query.isEmpty ||
+            property.title.toLowerCase().contains(query) ||
+            (property.code?.toLowerCase().contains(query) ?? false) ||
+            (property.address?.toLowerCase().contains(query) ?? false);
+
+        if (!matchesSearch) return false;
+
+        // Property Filter
+        return _currentFilter.matches(property);
+      }).toList();
     });
   }
 
-  void _showFilterBottomSheet() {
-    showModalBottomSheet(
+  void _showFilterBottomSheet() async {
+    final filter = await showModalBottomSheet<PropertyFilter>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
-      builder: (context) => PropertyFilterBottomSheet(),
+      builder: (context) => PropertyFilterBottomSheet(
+        initialFilter: _currentFilter,
+        properties: _allProperties,
+      ),
     );
+
+    if (filter != null) {
+      _currentFilter = filter;
+      _applyFilters();
+    }
   }
 
   @override
@@ -321,6 +339,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final property = _filteredProperties[index];
+        final route = property.isDraft ? '/property/create' : '/property/edit';
         return PropertyListItem(
           property: property,
           onTap: () {
@@ -329,9 +348,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                 .then((_) => _loadProperties());
           },
           onEdit: () {
-            context
-                .push('/property/edit', extra: property)
-                .then((_) => _loadProperties());
+            context.push(route, extra: property).then((_) => _loadProperties());
           },
         );
       },

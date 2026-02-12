@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
@@ -19,7 +20,7 @@ class ChangePasswordBottomSheet extends StatefulWidget {
       backgroundColor: Colors.transparent,
       builder: (context) => BlocProvider.value(
         value: profileBloc,
-        child: const ChangePasswordBottomSheet(),
+        child: ChangePasswordBottomSheet(),
       ),
     );
   }
@@ -95,12 +96,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
       listener: (context, state) {
         if (state is ProfileUpdateSuccess) {
           ProfileScreen.needsRefresh = true;
-          Navigator.pop(context);
-          StatusDialog.showSuccess(
-            context: context,
-            title: AppLocalizations.of(context).passwordChangeSuccessTitle,
-            message: AppLocalizations.of(context).passwordChangeSuccessMessage,
-          );
+          context.pop();
         } else if (state is ProfileError) {
           StatusDialog.showError(
             context: context,

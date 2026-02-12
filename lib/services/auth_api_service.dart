@@ -372,15 +372,28 @@ class AuthApiService {
     required String newPassword,
     required String confirmPassword,
   }) async {
-    final response = await _apiClient.post(
-      '/api/agent/password',
-      data: {
-        'current_password': currentPassword,
-        'password': newPassword,
-        'password_confirmation': confirmPassword,
-      },
-    );
-    return response.data as Map<String, dynamic>;
+    try {
+      final response = await _apiClient.post(
+        '/agent/password',
+        data: {
+          'current_password': currentPassword,
+          'password': newPassword,
+          'password_confirmation': confirmPassword,
+        },
+      );
+
+      // Normalize response format to include 'success' field
+      final data = response.data as Map<String, dynamic>;
+      if (!data.containsKey('success')) {
+        return {'success': true, ...data};
+      }
+      return data;
+    } catch (e) {
+      if (e is DioException) {
+        throw Exception(_extractErrorMessage(e));
+      }
+      throw Exception('Failed to change password: $e');
+    }
   }
 
   Future<Map<String, dynamic>> updateProfilePhoto(String filePath) async {

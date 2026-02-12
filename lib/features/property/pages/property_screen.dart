@@ -245,6 +245,10 @@ class _PropertyScreenState extends State<PropertyScreen> {
                       const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final property = _filteredProperties[index];
+                    final route = property.isDraft
+                        ? '/property/create'
+                        : '/property/edit';
+
                     return PropertyListItem(
                       property: property,
                       onTap: () {
@@ -254,7 +258,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                       },
                       onEdit: () {
                         context
-                            .push('/property/edit', extra: property)
+                            .push(route, extra: property)
                             .then((_) => _loadProperties());
                       },
                     );

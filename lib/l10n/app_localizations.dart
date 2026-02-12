@@ -3104,6 +3104,12 @@ abstract class AppLocalizations {
   /// **'Profile photo updated successfully'**
   String get profilePhotoUpdated;
 
+  /// No description provided for @profileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdated;
+
   /// No description provided for @emailVerified.
   ///
   /// In en, this message translates to:
@@ -3913,6 +3919,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Security Guard'**
   String get securityGuard;
+
+  /// No description provided for @ownerOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner Occupied'**
+  String get ownerOccupied;
+
+  /// No description provided for @roomTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Room Type'**
+  String get roomTypeLabel;
 
   /// No description provided for @baht.
   ///

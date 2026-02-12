@@ -511,6 +511,11 @@ class _ToastAnimatorState extends State<_ToastAnimator>
         child: FadeTransition(
           opacity: _fadeAnimation,
           child: GestureDetector(
+            // Tap เพื่อปิด Toast ทันที
+            onTap: () {
+              _timer?.cancel();
+              _controller.reverse().then((_) => widget.onDismissed());
+            },
             // เพิ่มการปัดขึ้นเพื่อปิด Toast ก่อนเวลา
             onVerticalDragEnd: (details) {
               if (details.primaryVelocity! < 0) {

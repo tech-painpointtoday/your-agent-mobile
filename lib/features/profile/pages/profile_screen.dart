@@ -83,6 +83,8 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return BlocBuilder<ProfileBloc, ProfileState>(
+      buildWhen: (previous, current) =>
+          previous is! ChangePassword && current is ProfileLoaded,
       builder: (context, state) {
         if (state is ProfileLoading) {
           return const Scaffold(
@@ -97,10 +99,11 @@ class ProfileView extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.error_outline,
-                    color: AppColors.supportRedDeep,
-                    size: 48,
+                  Image.asset(
+                    'assets/images/YA_Illustration_ConfirmWarning.png',
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -129,7 +132,7 @@ class ProfileView extends StatelessWidget {
                 StatusDialog.showSuccess(
                   context: context,
                   title: l10n.successTitle,
-                  message: l10n.profilePhotoUpdated,
+                  message: l10n.profileUpdated,
                 );
               } else if (state is ProfileError) {
                 StatusDialog.showError(

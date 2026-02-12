@@ -1545,6 +1545,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get profilePhotoUpdated => 'อัปเดตรูปโปรไฟล์เรียบร้อยแล้ว';
 
   @override
+  String get profileUpdated => 'อัปเดตโปรไฟล์เรียบร้อยแล้ว';
+
+  @override
   String get emailVerified => 'ยืนยันอีเมลแล้ว';
 
   @override
@@ -1952,6 +1955,12 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get securityGuard => 'เจ้าหน้าที่รักษาความปลอดภัย';
+
+  @override
+  String get ownerOccupied => 'เจ้าของอยู่เอง';
+
+  @override
+  String get roomTypeLabel => 'รูปแบบห้อง';
 
   @override
   String get baht => 'บาท';
