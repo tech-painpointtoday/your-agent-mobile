@@ -83,12 +83,16 @@ class _AppSearchBarState extends State<AppSearchBar> {
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.search_rounded,
-            size: 20,
-            color: AppColors.baseDarkGrey,
+          SvgPicture.asset(
+            'assets/icons/search.svg',
+            width: 20,
+            height: 20,
+            colorFilter: const ColorFilter.mode(
+              AppColors.baseDarkGrey,
+              BlendMode.srcIn,
+            ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
           Expanded(
             child: TextField(
               controller: _searchController,

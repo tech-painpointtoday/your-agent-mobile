@@ -92,7 +92,7 @@ class PropertyListItem extends StatelessWidget {
                 children: [
                   // Code
                   Text(
-                    '${AppLocalizations.of(context).labelCode}: ${property.id != null ? AppUtils.generatePropertyCode(propertyId: property.id!, createdAt: property.createdAt) : "???"}',
+                    '${AppLocalizations.of(context).labelCode}: ${property.id != null ? AppUtils.generatePropertyCode(property) : "???"}',
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseGrey,
                       fontSize: 10,

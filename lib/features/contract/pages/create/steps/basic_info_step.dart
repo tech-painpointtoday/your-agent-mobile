@@ -162,7 +162,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                               const WidgetSpan(child: SizedBox(width: 8)),
                               TextSpan(
                                 text:
-                                    '(${AppUtils.generatePropertyCode(propertyId: property.id!, createdAt: property.createdAt)})',
+                                '(${AppUtils.generatePropertyCode(property)})',
                                 style: GoogleFonts.anuphan(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 12,
@@ -185,7 +185,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                     },
                     onSelected: (property) {
                       _propertyNameController.text =
-                          '${property.name ?? property.title} (${AppUtils.generatePropertyCode(propertyId: property.id!, createdAt: property.createdAt)})';
+                          '${property.name ?? property.title} (${AppUtils.generatePropertyCode(property)})';
                       context.read<ContractFormBloc>().add(
                         ContractFormPropertySelected(property),
                       );

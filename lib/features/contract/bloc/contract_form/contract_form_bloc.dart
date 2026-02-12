@@ -145,10 +145,10 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
       Property? effectiveProperty = contract.property;
 
       if (contract.property != null) {
-        if (contract.property!.approvalStatus ==
+          if (contract.property!.approvalStatus ==
             PropertyApprovalStatus.approved) {
           effectivePropertyName =
-              '${contract.property!.name ?? contract.property!.title} (${AppUtils.generatePropertyCode(propertyId: contract.property!.id!, createdAt: contract.property!.createdAt)})';
+              '${contract.property!.name ?? contract.property!.title} (${AppUtils.generatePropertyCode(contract.property!)})';
         } else {
           effectivePropertyName = '';
           effectiveProperty = null;
@@ -430,7 +430,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
       state.copyWith(
         selectedProperty: event.property,
         propertyName:
-            '${event.property.name ?? event.property.title} (${AppUtils.generatePropertyCode(propertyId: event.property.id!, createdAt: event.property.createdAt)})',
+            '${event.property.name ?? event.property.title} (${AppUtils.generatePropertyCode(event.property)})',
         propertyUnitNo: event.property.number ?? '',
         propertyProjectName: event.property.name ?? event.property.title,
         propertyAreaSqm: event.property.area.toString(),

@@ -17,6 +17,7 @@ import '../bloc/contract_detail_bloc.dart';
 import '../widgets/contract_status_badge.dart';
 import '../widgets/contract_share_bottom_sheet.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/utils/app_utils.dart';
 
 class ContractDetailScreen extends StatefulWidget {
   final int contractId;
@@ -32,6 +33,9 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
   bool _isPdfLoaded = false;
   int _currentPage = 1;
   int _totalPages = 0;
+  bool _isInitialLoad = true;
+  bool _isLoadingDialogShown = false;
+  ContractDetailState? _stableState;
 
   @override
   void initState() {
@@ -82,9 +86,30 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             ..add(FetchContractDetail(widget.contractId)),
       child: BlocConsumer<ContractDetailBloc, ContractDetailState>(
         listener: (context, state) {
+          // Handle loading dialog for non-initial loads
+          if (state is ContractDetailLoading && !_isInitialLoad) {
+            if (!_isLoadingDialogShown) {
+              _isLoadingDialogShown = true;
+              StatusDialog.showLoading(context: context);
+            }
+          } else {
+            // Dismiss loading dialog if it's shown
+            if (_isLoadingDialogShown) {
+              _isLoadingDialogShown = false;
+              Navigator.of(context, rootNavigator: true).pop();
+            }
+          }
+
           if (state is ContractDetailLoaded && state.pdfDocument != null) {
+            _isInitialLoad = false;
+            _stableState = state;
             _initPdf(state.pdfDocument!);
+          } else if (state is ContractDetailLoadedWithoutPdf ||
+              state is ContractDetailPdfLoading) {
+            _isInitialLoad = false;
+            _stableState = state;
           } else if (state is ContractDetailError) {
+            _isInitialLoad = false;
             StatusDialog.showError(
               context: context,
               title: AppLocalizations.of(context).errorOccurredTitle,
@@ -106,14 +131,25 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           }
         },
         builder: (context, state) {
+          // When performing secondary actions (delete/send),
+          // keep showing the last stable state (with PDF)
+          // while a loading dialog is displayed.
+          final effectiveState =
+              state is ContractDetailLoading &&
+                  !_isInitialLoad &&
+                  _stableState != null
+              ? _stableState!
+              : state;
+
           final isLoaded =
-              state is ContractDetailLoadedWithoutPdf ||
-              state is ContractDetailPdfLoading ||
-              state is ContractDetailLoaded;
+              effectiveState is ContractDetailLoadedWithoutPdf ||
+              effectiveState is ContractDetailPdfLoading ||
+              effectiveState is ContractDetailLoaded;
           final isCompleted =
               isLoaded &&
-              (_getContract(state).status == ContractStatus.signed ||
-                  _getContract(state).status == ContractStatus.completed);
+              (_getContract(effectiveState).status == ContractStatus.signed ||
+                  _getContract(effectiveState).status ==
+                      ContractStatus.completed);
 
           return Scaffold(
             backgroundColor: Colors.white,
@@ -124,23 +160,21 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 16),
-                      _buildHeader(context, state),
+                      _buildHeader(context, effectiveState),
                       const SizedBox(height: 12),
-                      if (state is ContractDetailLoadedWithoutPdf ||
-                          state is ContractDetailPdfLoading ||
-                          state is ContractDetailLoaded) ...[
-                        _buildInfoSection(_getContract(state)),
-                        _buildDocumentActions(state),
+                      if (effectiveState is ContractDetailLoadedWithoutPdf ||
+                          effectiveState is ContractDetailPdfLoading ||
+                          effectiveState is ContractDetailLoaded) ...[
+                        _buildInfoSection(_getContract(effectiveState)),
+                        _buildDocumentActions(context, effectiveState),
                         const SizedBox(height: 24),
                         const Divider(color: AppColors.baseLightGrey),
-                        Expanded(child: _buildPdfViewer(state)),
-                        _buildBottomActions(context, state),
-                      ] else if (state is ContractDetailLoading)
+                        Expanded(child: _buildPdfViewer(effectiveState)),
+                        _buildBottomActions(context, effectiveState),
+                      ] else
                         const Expanded(
                           child: Center(child: CircularProgressIndicator()),
-                        )
-                      else
-                        const Expanded(child: SizedBox.shrink()),
+                        ),
                     ],
                   ),
                   if (isCompleted)
@@ -177,7 +211,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         state is ContractDetailPdfLoading ||
         state is ContractDetailLoaded) {
       final contract = _getContract(state);
-      contractNumber = contract.contractNumber;
+      contractNumber = AppUtils.generateContractCode(contract);
       propertyName = contract.propertyName;
     }
 
@@ -187,7 +221,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'เลขที่สัญญา: $contractNumber',
+            '${AppLocalizations.of(context).contract_number}: $contractNumber',
             style: GoogleFonts.anuphan(
               color: AppColors.baseGrey,
               fontSize: 10,
@@ -258,7 +292,10 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     );
   }
 
-  Widget _buildDocumentActions(ContractDetailState state) {
+  Widget _buildDocumentActions(
+    BuildContext context,
+    ContractDetailState state,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -283,11 +320,15 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             child: _buildDocumentActionButton(
               label: AppLocalizations.of(context).shareDocument,
               iconPath: 'assets/icons/arrow-up-right.svg',
-              onTap: () {
-                if (state is ContractDetailLoaded) {
-                  _showShareBottomSheet(context, state);
-                }
-              },
+              onTap:
+                  (state is ContractDetailLoaded &&
+                      state.contract.status == ContractStatus.draft)
+                  ? null
+                  : () {
+                      if (state is ContractDetailLoaded) {
+                        _showShareBottomSheet(context, state);
+                      }
+                    },
             ),
           ),
         ],
@@ -299,20 +340,19 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     final contract = state.contract;
     final pdfPath = state.pdfPath;
 
+    // Capture the bloc reference before showing the bottom sheet
+    final bloc = context.read<ContractDetailBloc>();
+
     ContractShareBottomSheet.show(
       context: context,
       contract: contract,
       pdfPath: pdfPath,
       onDownloadPdf: () => _downloadPdf(context, state),
       onSendToSeller: () {
-        context.read<ContractDetailBloc>().add(
-          SendContractToSeller(contract.id!),
-        );
+        bloc.add(SendContractToSeller(contract.id!));
       },
       onSendToBuyer: () {
-        context.read<ContractDetailBloc>().add(
-          SendContractToBuyer(contract.id!),
-        );
+        bloc.add(SendContractToBuyer(contract.id!));
       },
     );
   }
@@ -320,7 +360,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
   Widget _buildDocumentActionButton({
     required String label,
     String? iconPath,
-    required VoidCallback onTap,
+    VoidCallback? onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -328,7 +368,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         height: 32,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: ShapeDecoration(
-          color: Colors.white,
+          color: onTap == null ? AppColors.basePaleGrey : Colors.white,
           shape: RoundedRectangleBorder(
             side: const BorderSide(width: 1, color: Color(0xFFE9EAEB)),
             borderRadius: BorderRadius.circular(12),

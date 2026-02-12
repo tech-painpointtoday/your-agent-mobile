@@ -107,7 +107,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     children: [
                       if (property.id != null)
                         Text(
-                          '${AppLocalizations.of(context).labelCode}: ${AppUtils.generatePropertyCode(propertyId: property.id!, createdAt: property.createdAt)}',
+                          '${AppLocalizations.of(context).labelCode}: ${AppUtils.generatePropertyCode(property)}',
                           style: GoogleFonts.anuphan(
                             color: AppColors.baseGrey,
                             fontSize: 12,

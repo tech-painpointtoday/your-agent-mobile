@@ -10,6 +10,9 @@ import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 
 class ContractShareBottomSheet extends StatelessWidget {
+  /// Context of the parent screen that opened this bottom sheet.
+  /// Used for showing global dialogs/toasts that outlive the sheet itself.
+  final BuildContext parentContext;
   final Contract contract;
   final String? pdfPath;
   final VoidCallback? onDownloadPdf;
@@ -18,6 +21,7 @@ class ContractShareBottomSheet extends StatelessWidget {
 
   const ContractShareBottomSheet({
     super.key,
+    required this.parentContext,
     required this.contract,
     this.pdfPath,
     this.onDownloadPdf,
@@ -39,7 +43,8 @@ class ContractShareBottomSheet extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (context) => ContractShareBottomSheet(
+      builder: (bottomSheetContext) => ContractShareBottomSheet(
+        parentContext: context,
         contract: contract,
         pdfPath: pdfPath,
         onDownloadPdf: onDownloadPdf,
@@ -78,7 +83,8 @@ class ContractShareBottomSheet extends StatelessWidget {
               label: AppLocalizations.of(context).property,
               email: sellerEmail,
               isSigned: contract.sellerSignedAt != null,
-              onSend: onSendToSeller ?? () => _handleSendToSeller(context),
+              onSend:
+                  onSendToSeller ?? () => _handleSendToSeller(parentContext),
             ),
             const SizedBox(height: 12),
             _buildResendOrSendAction(
@@ -86,7 +92,7 @@ class ContractShareBottomSheet extends StatelessWidget {
               label: AppLocalizations.of(context).lessee,
               email: buyerEmail,
               isSigned: contract.buyerSignedAt != null,
-              onSend: onSendToBuyer ?? () => _handleSendToBuyer(context),
+              onSend: onSendToBuyer ?? () => _handleSendToBuyer(parentContext),
             ),
             // if (pdfPath != null || onDownloadPdf != null) ...[
             //   const SizedBox(height: 12),
@@ -226,16 +232,17 @@ class ContractShareBottomSheet extends StatelessWidget {
 
   Future<void> _handleSendToSeller(BuildContext context) async {
     try {
-      if (context.mounted) {
-        StatusDialog.showLoading(context: context);
-      }
+      // Show global loading overlay while sending
+      StatusDialog.showLoading(context: context);
 
       await DependencyInjection.contractApiService.sendToSeller(
         contractId: contract.id!,
       );
 
       if (context.mounted) {
-        Navigator.pop(context); // Pop loading
+        // Dismiss loading dialog
+        Navigator.of(context, rootNavigator: true).pop();
+
         StatusDialog.showSuccess(
           context: context,
           title: AppLocalizations.of(context).successTitle,
@@ -244,11 +251,18 @@ class ContractShareBottomSheet extends StatelessWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        Navigator.pop(context); // Pop loading
+        // Dismiss loading dialog first using root navigator
+        Navigator.of(context, rootNavigator: true).pop();
+
+        // Extract clean error message from Exception
+        String errorMessage = e.toString();
+        if (errorMessage.startsWith('Exception: ')) {
+          errorMessage = errorMessage.substring('Exception: '.length);
+        }
         StatusDialog.showError(
           context: context,
           title: AppLocalizations.of(context).errorOccurredTitle,
-          message: e.toString(),
+          message: errorMessage,
         );
       }
     }
@@ -256,16 +270,17 @@ class ContractShareBottomSheet extends StatelessWidget {
 
   Future<void> _handleSendToBuyer(BuildContext context) async {
     try {
-      if (context.mounted) {
-        StatusDialog.showLoading(context: context);
-      }
+      // Show global loading overlay while sending
+      StatusDialog.showLoading(context: context);
 
       await DependencyInjection.contractApiService.sendToBuyer(
         contractId: contract.id!,
       );
 
       if (context.mounted) {
-        Navigator.pop(context); // Pop loading
+        // Dismiss loading dialog
+        Navigator.of(context, rootNavigator: true).pop();
+
         StatusDialog.showSuccess(
           context: context,
           title: AppLocalizations.of(context).successTitle,
@@ -274,11 +289,18 @@ class ContractShareBottomSheet extends StatelessWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        Navigator.pop(context); // Pop loading
+        // Dismiss loading dialog first using root navigator
+        Navigator.of(context, rootNavigator: true).pop();
+
+        // Extract clean error message from Exception
+        String errorMessage = e.toString();
+        if (errorMessage.startsWith('Exception: ')) {
+          errorMessage = errorMessage.substring('Exception: '.length);
+        }
         StatusDialog.showError(
           context: context,
           title: AppLocalizations.of(context).errorOccurredTitle,
-          message: e.toString(),
+          message: errorMessage,
         );
       }
     }

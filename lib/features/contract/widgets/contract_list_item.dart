@@ -10,6 +10,7 @@ import 'package:youragent/domain/entities/contract_status.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'contract_share_bottom_sheet.dart';
 import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
+import 'package:youragent/utils/app_utils.dart';
 
 class ContractListItem extends StatefulWidget {
   final Contract contract;
@@ -97,7 +98,7 @@ class _ContractListItemState extends State<ContractListItem> {
                   const SizedBox(height: 12),
                   // Contract Number
                   Text(
-                    'เลขที่สัญญา: ${contract.contractNumber}',
+                    '${AppLocalizations.of(context).contract_number}: ${AppUtils.generateContractCode(contract)}',
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseGrey,
                       fontSize: 10,
@@ -299,15 +300,19 @@ class _ContractListItemState extends State<ContractListItem> {
                         fontWeight: FontWeight.w500,
                         color: AppColors.baseDarkGrey,
                       ),
-                      onPressed: () {
-                        if (widget.onShare != null) {
-                          widget.onShare!();
-                        }
-                        ContractShareBottomSheet.show(
-                          context: context,
-                          contract: contract,
-                        );
-                      },
+                      onPressed: contract.status == ContractStatus.draft
+                          ? null
+                          : () {
+                              if (widget.onShare != null) {
+                                widget.onShare!();
+                              }
+                              // The callbacks are handled internally by ContractShareBottomSheet
+                              // using _handleSendToSeller and _handleSendToBuyer methods
+                              ContractShareBottomSheet.show(
+                                context: context,
+                                contract: contract,
+                              );
+                            },
                       elevation: 0.1,
                     ),
                   ),
