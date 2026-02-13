@@ -502,7 +502,9 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
     final contract = _getContract(state);
 
-    final buttonText = AppLocalizations.of(context).editContract;
+    final buttonText = contract.status == ContractStatus.draft
+        ? AppLocalizations.of(context).continueAddingInfo
+        : AppLocalizations.of(context).editContract;
 
     final isCompleted =
         contract.status == ContractStatus.signed ||
@@ -535,7 +537,11 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
               style: AppButtonStyle.primary,
               height: 44,
               onPressed: () {
-                context.push('/contract/edit', extra: contract);
+                if (contract.status == ContractStatus.draft) {
+                  context.push('/contract/create', extra: contract);
+                } else {
+                  context.push('/contract/edit', extra: contract);
+                }
               },
             ),
           ),

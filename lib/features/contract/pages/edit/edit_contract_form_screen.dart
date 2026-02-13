@@ -160,13 +160,16 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
   Widget _buildBody(BuildContext context) {
     return BlocConsumer<ContractFormBloc, ContractFormState>(
       listenWhen: (prev, curr) {
-        // Only listen when transitioning TO success/failure FROM a different status
-        // This prevents duplicate dialogs when widget rebuilds with same success state
+        // Only listen when transitioning TO success/failure/draft FROM a different status
         return prev.status != curr.status &&
             prev.status != ContractFormStatus.success &&
             prev.status != ContractFormStatus.failure &&
+            prev.status != ContractFormStatus.draftSaveSuccess &&
+            prev.status != ContractFormStatus.draftSaveFailure &&
             (curr.status == ContractFormStatus.success ||
-                curr.status == ContractFormStatus.failure);
+                curr.status == ContractFormStatus.failure ||
+                curr.status == ContractFormStatus.draftSaveSuccess ||
+                curr.status == ContractFormStatus.draftSaveFailure);
       },
       listener: (context, state) {
         if (state.status == ContractFormStatus.success) {
@@ -175,13 +178,19 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
             title: AppLocalizations.of(context).successTitle,
             message: AppLocalizations.of(context).changesSavedMessage,
           );
-          // Pop after a short delay to ensure dialog is shown
           Future.delayed(const Duration(milliseconds: 300), () {
             if (context.mounted) {
               context.pop(true);
             }
           });
-        } else if (state.status == ContractFormStatus.failure) {
+        } else if (state.status == ContractFormStatus.draftSaveSuccess) {
+          StatusDialog.showSuccess(
+            context: context,
+            title: AppLocalizations.of(context).successTitle,
+            message: AppLocalizations.of(context).draftSavedMessage,
+          );
+        } else if (state.status == ContractFormStatus.failure ||
+            state.status == ContractFormStatus.draftSaveFailure) {
           AppConfirmationBottomSheet.show(
             context: context,
             title: AppLocalizations.of(context).errorLabel,

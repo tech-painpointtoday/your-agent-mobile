@@ -37,10 +37,15 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   late final TextEditingController _buildingController;
   late final TextEditingController _floorController;
   late final TextEditingController _roomNoController;
+  late final FocusNode _projectFocusNode;
   bool _inlineMapUpdating = false;
+  final SuggestionsController<CondoProject> _projectSuggestionsController =
+      SuggestionsController<CondoProject>();
+  int _lastCondoProjectsLength = -1;
 
   @override
   void initState() {
+    _projectFocusNode = FocusNode();
     super.initState();
     final state = context.read<PropertyFormBloc>().state;
     _nameController = TextEditingController(text: state.name);
@@ -318,6 +323,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
 
   @override
   void dispose() {
+    _projectFocusNode.dispose();
+    _projectSuggestionsController.dispose();
     _nameController.dispose();
     _addressController.dispose();
     _projectController.dispose();
@@ -510,10 +517,20 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       },
                       onSelected: (developer) {
                         _developerController.text = developer.nameTh;
-                        _projectController.clear();
-                        context.read<PropertyFormBloc>().add(
-                          PropertyFormDeveloperChanged(developer.id),
-                        );
+                        final bloc = context.read<PropertyFormBloc>();
+                        final currentDevId = bloc.state.selectedDeveloperId;
+                        if (developer.id != currentDevId) {
+                          _projectController.clear();
+                          bloc.add(PropertyFormDeveloperChanged(developer.id));
+                          FocusScope.of(context).unfocus();
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (mounted) _projectFocusNode.requestFocus();
+                          });
+                        } else {
+                          bloc.add(PropertyFormDeveloperChanged(developer.id));
+                        }
+
+                        // Unfocus to hide keyboard
                         FocusScope.of(context).unfocus();
                       },
                       emptyBuilder: (context) => Padding(
@@ -547,8 +564,21 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 // Project Name
                 BlocBuilder<PropertyFormBloc, PropertyFormState>(
                   builder: (context, state) {
+                    // When condo projects load (e.g. after API returns), refresh typeahead so overlay shows data
+                    if (state.condoProjects.isNotEmpty &&
+                        state.condoProjects.length !=
+                            _lastCondoProjectsLength) {
+                      _lastCondoProjectsLength = state.condoProjects.length;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (mounted) _projectSuggestionsController.refresh();
+                      });
+                    } else if (state.condoProjects.isEmpty) {
+                      _lastCondoProjectsLength = 0;
+                    }
                     return TypeAheadField<CondoProject>(
                       controller: _projectController,
+                      focusNode: _projectFocusNode,
+                      suggestionsController: _projectSuggestionsController,
                       builder: (context, controller, focusNode) =>
                           AppTextFormField(
                             label: AppLocalizations.of(context).projectNameHint,
@@ -572,21 +602,25 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                             ),
                           ),
                       suggestionsCallback: (pattern) {
+                        // state.condoProjects is always "projects for current developer" (set by bloc)
                         final projects = state.condoProjects;
-                        final devId = state.selectedDeveloperId;
-
-                        Iterable<CondoProject> filtered = projects;
-                        if (devId != null) {
-                          filtered = projects.where(
-                            (p) => p.developerId == devId,
-                          );
+                        if (projects.isEmpty && context.mounted) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (context.mounted) {
+                              context.read<PropertyFormBloc>().add(
+                                PropertyFormCondoProjectsFetched(
+                                  developerId: state.selectedDeveloperId,
+                                ),
+                              );
+                            }
+                          });
+                          return <CondoProject>[];
                         }
-
-                        if (pattern.isEmpty) return filtered.toList();
+                        if (pattern.isEmpty) return projects;
                         final lower = pattern.toLowerCase();
-                        return filtered.where((p) {
-                          return p.name.toLowerCase().contains(lower);
-                        }).toList();
+                        return projects
+                            .where((p) => p.name.toLowerCase().contains(lower))
+                            .toList();
                       },
                       itemBuilder: (context, project) {
                         return ListTile(title: Text(project.name));
@@ -613,6 +647,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         );
 
                         // Unfocus to hide keyboard
+                        _projectFocusNode.unfocus();
                         FocusScope.of(context).unfocus();
                       },
                       emptyBuilder: (context) => Padding(

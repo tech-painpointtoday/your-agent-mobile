@@ -65,6 +65,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormApplianceUpdated>(_onApplianceUpdated);
     on<ContractFormApplianceImagesAdded>(_onApplianceImagesAdded);
     on<ContractFormApplianceImageRemoved>(_onApplianceImageRemoved);
+    on<ContractFormApplianceAllImagesDeleted>(_onApplianceAllImagesDeleted);
     on<ContractFormAppliancePropertyImageSelected>(
       _onAppliancePropertyImageSelected,
     );
@@ -75,6 +76,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormFurnitureUpdated>(_onFurnitureUpdated);
     on<ContractFormFurnitureImagesAdded>(_onFurnitureImagesAdded);
     on<ContractFormFurnitureImageRemoved>(_onFurnitureImageRemoved);
+    on<ContractFormFurnitureAllImagesDeleted>(_onFurnitureAllImagesDeleted);
     on<ContractFormFurniturePropertyImageSelected>(
       _onFurniturePropertyImageSelected,
     );
@@ -650,7 +652,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         isValid = true; // Optional step
       } else {
         isValid = state.attachments.every(
-          (a) => a.name.isNotEmpty && a.filePath != null,
+          (a) => a.name.isNotEmpty && (a.filePath != null || a.fileUrl != null),
         );
       }
     } else {
@@ -912,23 +914,51 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     _validateCurrentStep(emit);
   }
 
-  Future<void> _onApplianceImageRemoved(
+  void _onApplianceImageRemoved(
     ContractFormApplianceImageRemoved event,
+    Emitter<ContractFormState> emit,
+  ) {
+    // Single image remove: only update state (no API call).
+    final newList = state.applianceItems.map((item) {
+      if (item.id == event.id) {
+        final isPropertyImage = item.existingPhotoUrl == event.imagePath;
+        return item.copyWith(
+          images: item.images.where((img) => img != event.imagePath).toList(),
+          existingPhotoUrls: item.existingPhotoUrls
+              .where((url) => url != event.imagePath)
+              .toList(),
+          photos: item.photos
+              .where(
+                (p) =>
+                    p['validated_photo_url'] != event.imagePath &&
+                    p['photo_url'] != event.imagePath,
+              )
+              .toList(),
+          clearPropertyImage: isPropertyImage,
+        );
+      }
+      return item;
+    }).toList();
+    emit(state.copyWith(applianceItems: newList));
+    _validateCurrentStep(emit);
+  }
+
+  Future<void> _onApplianceAllImagesDeleted(
+    ContractFormApplianceAllImagesDeleted event,
     Emitter<ContractFormState> emit,
   ) async {
     final currentState = state;
-    // Find the item first to determine if this is a remote image
-    final targetItem = currentState.applianceItems.firstWhere(
+    final index = currentState.applianceItems.indexWhere(
       (i) => i.id == event.id,
-      orElse: () => ApplianceItem(id: event.id, name: ''),
     );
+    if (index < 0) return;
+    final targetItem = currentState.applianceItems[index];
 
-    final isLocalFile = targetItem.images.isEmpty;
-    final isRemoteImage = !isLocalFile;
+    final hasRemotePhotos =
+        targetItem.existingPhotoUrl != null ||
+        targetItem.existingPhotoUrls.isNotEmpty;
 
-    // If we are editing an existing contract and removing a remote image,
-    // call the API endpoint to delete the photo on the server.
-    if (isRemoteImage && currentState.contractId != null) {
+    if (hasRemotePhotos && currentState.contractId != null) {
       try {
         await _contractApiService.deleteAppliancePhoto(
           contractId: currentState.contractId!,
@@ -947,7 +977,12 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
 
     final newList = currentState.applianceItems.map((item) {
       if (item.id == event.id) {
-        return item.copyWith(images: const [], clearPropertyImage: true);
+        return item.copyWith(
+          images: const [],
+          existingPhotoUrls: const [],
+          photos: const [],
+          clearPropertyImage: true,
+        );
       }
       return item;
     }).toList();
@@ -1053,8 +1088,9 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     final rawData = {
       if (state.contractId != null) 'id': state.contractId,
       'property_id': state.selectedProperty?.id,
-      'contract_date': state.contractDate?.toIso8601String().split('T')[0],
       'contract_type': state.contractType == ContractType.buy ? 'buy' : 'rent',
+      'signing_place': state.signingPlace,
+      'contract_date': state.contractDate?.toUtc().toIso8601String(),
 
       // Seller (Owner)
       'seller_email': state.ownerEmail,
@@ -1099,9 +1135,9 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
           'photo_url': item.existingPhotoUrl,
           'validated_photo_url': item.validatedPhotoUrl,
           'order': index,
-          // Only send new local image files in `photo`/`photos`
+          // First local image → appliances[i][photo], rest → appliances[i][photos][0], [1], ...
           if (imagePaths.isNotEmpty) 'photo': imagePaths.first,
-          if (imagePaths.isNotEmpty) 'photos': imagePaths,
+          if (imagePaths.length > 1) 'photos': imagePaths.sublist(1),
         };
       }).toList(),
 
@@ -1118,9 +1154,9 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
           'photo_url': item.existingPhotoUrl,
           'validated_photo_url': item.validatedPhotoUrl,
           'order': index,
-          // Only send new local image files in `photo`/`photos`
+          // First local image → furniture[i][photo], rest → furniture[i][photos][0], [1], ...
           if (imagePaths.isNotEmpty) 'photo': imagePaths.first,
-          if (imagePaths.isNotEmpty) 'photos': imagePaths,
+          if (imagePaths.length > 1) 'photos': imagePaths.sublist(1),
         };
       }).toList(),
 
@@ -1291,23 +1327,51 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     _validateCurrentStep(emit);
   }
 
-  Future<void> _onFurnitureImageRemoved(
+  void _onFurnitureImageRemoved(
     ContractFormFurnitureImageRemoved event,
+    Emitter<ContractFormState> emit,
+  ) {
+    // Single image remove: only update state (no API call).
+    final newList = state.furnitureItems.map((item) {
+      if (item.id == event.id) {
+        final isPropertyImage = item.existingPhotoUrl == event.imagePath;
+        return item.copyWith(
+          images: item.images.where((img) => img != event.imagePath).toList(),
+          existingPhotoUrls: item.existingPhotoUrls
+              .where((url) => url != event.imagePath)
+              .toList(),
+          photos: item.photos
+              .where(
+                (p) =>
+                    p['validated_photo_url'] != event.imagePath &&
+                    p['photo_url'] != event.imagePath,
+              )
+              .toList(),
+          clearPropertyImage: isPropertyImage,
+        );
+      }
+      return item;
+    }).toList();
+    emit(state.copyWith(furnitureItems: newList));
+    _validateCurrentStep(emit);
+  }
+
+  Future<void> _onFurnitureAllImagesDeleted(
+    ContractFormFurnitureAllImagesDeleted event,
     Emitter<ContractFormState> emit,
   ) async {
     final currentState = state;
-    // Find the item first to determine if this is a remote image
-    final targetItem = currentState.furnitureItems.firstWhere(
+    final index = currentState.furnitureItems.indexWhere(
       (i) => i.id == event.id,
-      orElse: () => FurnitureItem(id: event.id, name: ''),
     );
+    if (index < 0) return;
+    final targetItem = currentState.furnitureItems[index];
 
-    final isLocalFile = targetItem.images.isNotEmpty;
-    final isRemoteImage = !isLocalFile;
+    final hasRemotePhotos =
+        targetItem.existingPhotoUrl != null ||
+        targetItem.existingPhotoUrls.isNotEmpty;
 
-    // If we are editing an existing contract and removing a remote image,
-    // call the API endpoint to delete the photo on the server.
-    if (isRemoteImage && currentState.contractId != null) {
+    if (hasRemotePhotos && currentState.contractId != null) {
       try {
         await _contractApiService.deleteFurniturePhoto(
           contractId: currentState.contractId!,
@@ -1326,7 +1390,12 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
 
     final newList = currentState.furnitureItems.map((item) {
       if (item.id == event.id) {
-        return item.copyWith(images: const [], clearPropertyImage: true);
+        return item.copyWith(
+          images: const [],
+          existingPhotoUrls: const [],
+          photos: const [],
+          clearPropertyImage: true,
+        );
       }
       return item;
     }).toList();

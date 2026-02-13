@@ -9,6 +9,7 @@ import 'package:youragent/features/contract/bloc/contract_form/contract_form_blo
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'steps/basic_info_step.dart';
 import 'steps/property_owner_step.dart';
@@ -53,15 +54,36 @@ class _AddContractView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<ContractFormBloc, ContractFormState>(
       listenWhen: (prev, curr) {
-        // Only listen when transitioning TO success FROM a different status
-        // This prevents duplicate pops when widget rebuilds with same success state
         return prev.status != curr.status &&
             prev.status != ContractFormStatus.success &&
-            curr.status == ContractFormStatus.success;
+            prev.status != ContractFormStatus.draftSaveSuccess &&
+            prev.status != ContractFormStatus.draftSaveFailure &&
+            (curr.status == ContractFormStatus.success ||
+                curr.status == ContractFormStatus.draftSaveSuccess ||
+                curr.status == ContractFormStatus.draftSaveFailure);
       },
       listener: (context, state) {
         if (state.status == ContractFormStatus.success) {
           Navigator.of(context).pop(true);
+        } else if (state.status == ContractFormStatus.draftSaveSuccess) {
+          StatusDialog.showSuccess(
+            context: context,
+            title: AppLocalizations.of(context).successTitle,
+            message: AppLocalizations.of(context).draftSavedMessage,
+          );
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (context.mounted) {
+              Navigator.of(context).pop(true);
+            }
+          });
+        } else if (state.status == ContractFormStatus.draftSaveFailure) {
+          StatusDialog.showError(
+            context: context,
+            title: AppLocalizations.of(context).errorLabel,
+            message:
+                state.errorMessage ??
+                AppLocalizations.of(context).draftSaveErrorMessage,
+          );
         }
       },
       child: Scaffold(

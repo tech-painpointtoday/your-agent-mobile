@@ -347,7 +347,8 @@ class PropertyFormState extends Equatable {
       moo: specs['moo'] as String?,
       houseSubtype: specs['house_subtype'] as String?,
       parkingType: specs['parking_type'] as String?,
-      isCornerPlot: specs['is_corner_plot'] == 'true',
+      isCornerPlot: specs['is_corner_plot'] == true ||
+          specs['is_corner_plot'] == 'true',
       houseNotes: specs['house_notes'] as String?,
     );
   }

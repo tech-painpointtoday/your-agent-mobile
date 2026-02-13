@@ -130,13 +130,9 @@ class _FurnitureStepState extends State<FurnitureStep> {
       cancelLabel: AppLocalizations.of(context).statusCancelled,
       style: ConfirmationStyle.destructive,
       onConfirm: () {
-        final state = context.read<ContractFormBloc>().state;
-        final item = state.furnitureItems.firstWhere(
-          (i) => i.id == furnitureId,
-        );
         context.read<ContractFormBloc>().add(
-          ContractFormFurnitureImageRemoved(item.id),
-        );
+              ContractFormFurnitureAllImagesDeleted(furnitureId),
+            );
         StatusDialog.showSuccess(
           context: context,
           title: AppLocalizations.of(context).successTitle,
@@ -176,7 +172,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
                   ),
                 if (!widget.hideHeader) const SizedBox(height: 24),
 
-                if (state.furnitureItems.isEmpty)
+        if (state.furnitureItems.isEmpty)
                   _buildAddItemButton(context)
                 else ...[
                   ...state.furnitureItems.asMap().entries.map((entry) {
@@ -231,17 +227,12 @@ class _FurnitureStepState extends State<FurnitureStep> {
                               ? () => _showPropertyPhotosSelection(item.id)
                               : null,
                           onRemoveImage: (path) {
-                            if (path == item.existingPhotoUrl) {
-                              context.read<ContractFormBloc>().add(
-                                ContractFormFurnitureUpdated(
-                                  item.copyWith(clearPropertyImage: true),
-                                ),
-                              );
-                            } else {
-                              context.read<ContractFormBloc>().add(
-                                ContractFormFurnitureImageRemoved(item.id),
-                              );
-                            }
+                            context.read<ContractFormBloc>().add(
+                              ContractFormFurnitureImageRemoved(
+                                item.id,
+                                path,
+                              ),
+                            );
                           },
                           onDeleteAllImages: () =>
                               _showDeleteAllConfirmation(item.id),
@@ -471,7 +462,8 @@ class _FurnitureItemCard extends StatelessWidget {
           ),
         ),
 
-        if (item.images.isNotEmpty || item.existingPhotoUrl != null) ...[
+        if (item.images.isNotEmpty ||
+            item.existingPhotoUrls.isNotEmpty) ...[
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -521,29 +513,16 @@ class _FurnitureItemCard extends StatelessWidget {
               mainAxisSpacing: 12,
               childAspectRatio: 1.3,
             ),
-            itemCount:
-                item.images.length +
-                item.existingPhotoUrls.length +
-                (item.existingPhotoUrl != null &&
-                        !item.existingPhotoUrls.contains(item.existingPhotoUrl)
-                    ? 1
-                    : 0),
+            itemCount: item.existingPhotoUrls.length + item.images.length,
             itemBuilder: (context, imgIndex) {
-              final networkUrls = [...item.existingPhotoUrls];
-              if (item.existingPhotoUrl != null &&
-                  !networkUrls.contains(item.existingPhotoUrl)) {
-                networkUrls.add(item.existingPhotoUrl!);
-              }
-
-              final isNetwork = imgIndex < networkUrls.length;
+              final networkCount = item.existingPhotoUrls.length;
+              final isNetwork = imgIndex < networkCount;
               final path = isNetwork
-                  ? networkUrls[imgIndex]
-                  : item.images[imgIndex - networkUrls.length];
+                  ? item.existingPhotoUrls[imgIndex]
+                  : item.images[imgIndex - networkCount];
 
               final fileName = isNetwork
-                  ? (item.existingPhotoUrls.contains(path)
-                        ? 'รูปภาพสัญญา'
-                        : AppLocalizations.of(context).propertyPhotos)
+                  ? 'รูปภาพสัญญา'
                   : path.split('/').last;
 
               return Stack(

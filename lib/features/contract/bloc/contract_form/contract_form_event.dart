@@ -275,7 +275,15 @@ class ContractFormApplianceImagesAdded extends ContractFormEvent {
 
 class ContractFormApplianceImageRemoved extends ContractFormEvent {
   final String id;
-  const ContractFormApplianceImageRemoved(this.id);
+  final String imagePath;
+  const ContractFormApplianceImageRemoved(this.id, this.imagePath);
+  @override
+  List<Object?> get props => [id, imagePath];
+}
+
+class ContractFormApplianceAllImagesDeleted extends ContractFormEvent {
+  final String id;
+  const ContractFormApplianceAllImagesDeleted(this.id);
   @override
   List<Object?> get props => [id];
 }
@@ -334,7 +342,15 @@ class ContractFormFurnitureImagesAdded extends ContractFormEvent {
 
 class ContractFormFurnitureImageRemoved extends ContractFormEvent {
   final String id;
-  const ContractFormFurnitureImageRemoved(this.id);
+  final String imagePath;
+  const ContractFormFurnitureImageRemoved(this.id, this.imagePath);
+  @override
+  List<Object?> get props => [id, imagePath];
+}
+
+class ContractFormFurnitureAllImagesDeleted extends ContractFormEvent {
+  final String id;
+  const ContractFormFurnitureAllImagesDeleted(this.id);
   @override
   List<Object?> get props => [id];
 }

@@ -347,9 +347,36 @@ class Property extends Equatable {
     final Map<String, dynamic> specValues = specs['specification_values'] is Map
         ? Map<String, dynamic>.from(specs['specification_values'] as Map)
         : <String, dynamic>{};
-    final Map<String, dynamic> rawSpecs = specs['specifications'] is Map
+    Map<String, dynamic> rawSpecs = specs['specifications'] is Map
         ? Map<String, dynamic>.from(specs['specifications'] as Map)
         : <String, dynamic>{};
+
+    // 2b. Merge condo_details / house details from GET response for edit/draft
+    // API: condo_details = { id, property_id, condo_project_id, tower, unit_no, floor, layout_code, condo_project: { id, developer_id, ... } }
+    final condoDetails = data['condo_details'];
+    if (condoDetails is Map<String, dynamic>) {
+      final projectId = condoDetails['condo_project_id'];
+      if (projectId != null) rawSpecs['condo_project_id'] = projectId is int ? projectId : int.tryParse(projectId.toString());
+      final nestedProject = condoDetails['condo_project'];
+      if (nestedProject is Map<String, dynamic>) {
+        final devId = nestedProject['developer_id'];
+        if (devId != null) rawSpecs['developer_id'] = devId is int ? devId : int.tryParse(devId.toString());
+      }
+      if (condoDetails['tower'] != null) rawSpecs['tower'] = condoDetails['tower'].toString();
+      if (condoDetails['floor'] != null) rawSpecs['floor'] = condoDetails['floor'].toString();
+      if (condoDetails['unit_no'] != null) rawSpecs['unit_no'] = condoDetails['unit_no'].toString();
+    }
+
+    // API: house_details = { id, property_id, village_name, moo, house_subtype, parking_type, is_corner_plot, notes, ... }
+    final houseDetails = data['house_details'];
+    if (houseDetails is Map<String, dynamic>) {
+      if (houseDetails['village_name'] != null) rawSpecs['village_name'] = houseDetails['village_name'].toString();
+      if (houseDetails['moo'] != null) rawSpecs['moo'] = houseDetails['moo'].toString();
+      if (houseDetails['house_subtype'] != null) rawSpecs['house_subtype'] = houseDetails['house_subtype'].toString();
+      if (houseDetails['parking_type'] != null) rawSpecs['parking_type'] = houseDetails['parking_type'].toString();
+      if (houseDetails['is_corner_plot'] != null) rawSpecs['is_corner_plot'] = houseDetails['is_corner_plot'] == true || houseDetails['is_corner_plot'] == 'true';
+      if (houseDetails['notes'] != null) rawSpecs['house_notes'] = houseDetails['notes'].toString();
+    }
 
     // 3. Helper Parsers
     double parseDouble(dynamic val) {

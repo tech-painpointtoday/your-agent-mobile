@@ -19,7 +19,8 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
   final PropertyApiService _propertyApiService;
   final AddressLookupService _addressLookupService;
   final PropertySpecificationFilters? initialFilters;
-  final List<CondoProject> _allCondoProjects;
+  /// Cache: projects by developerId (null = all projects). Used so we don't refetch when switching back.
+  final Map<int?, List<CondoProject>> _projectsByDeveloper = {};
 
   PropertyFormBloc({
     PropertyApiService? propertyApiService,
@@ -32,7 +33,6 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
            propertyApiService ?? DependencyInjection.propertyApiService,
        _addressLookupService =
            addressLookupService ?? DependencyInjection.addressLookupService,
-       _allCondoProjects = initialCondoProjects ?? const [],
        super(
          initialProperty != null
              ? () {
@@ -344,6 +344,9 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
           propertyId: state.propertyId!,
         );
 
+        // 4. Set condo/house details if present
+        await _setPropertyTypeDetails(state, state.propertyId!);
+
         emit(
           state.copyWith(
             propertyFormStatus: PropertyFormStatus.submissionSuccess,
@@ -434,6 +437,9 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         );
       }
 
+      // Set condo/house details if present
+      await _setPropertyTypeDetails(currentState, propertyId!);
+
       emit(
         state.copyWith(
           propertyFormStatus: PropertyFormStatus.submissionSuccess,
@@ -478,6 +484,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         propertyId = response['data']?['id'] as int?;
       }
 
+      if (propertyId != null) {
+        await _setPropertyTypeDetails(state, propertyId);
+      }
+
       emit(
         state.copyWith(
           propertyFormStatus: PropertyFormStatus.draftSaveSuccess,
@@ -493,6 +503,43 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
           errorMessage: ApiResponseService.getErrorMessage(e),
         ),
       );
+    }
+  }
+
+  /// Calls setCondoDetails or setHouseDetails when the property has condo/house detail data.
+  Future<void> _setPropertyTypeDetails(
+    PropertyFormState state,
+    int propertyId,
+  ) async {
+    final type = state.selectedPropertyType;
+    if (type == PropertyType.condo && state.selectedCondoProjectId != null) {
+      await _propertyApiService.setCondoDetails(
+        propertyId: propertyId,
+        condoProjectId: state.selectedCondoProjectId!,
+        tower: state.tower,
+        floor: state.condoFloor,
+        unitNo: state.unitNo,
+      );
+    } else if (type == PropertyType.house) {
+      final hasHouseDetails =
+          (state.villageName != null && state.villageName!.isNotEmpty) ||
+              (state.moo != null && state.moo!.isNotEmpty) ||
+              (state.houseSubtype != null &&
+                  state.houseSubtype!.isNotEmpty) ||
+              (state.parkingType != null && state.parkingType!.isNotEmpty) ||
+              state.isCornerPlot != null ||
+              (state.houseNotes != null && state.houseNotes!.isNotEmpty);
+      if (hasHouseDetails) {
+        await _propertyApiService.setHouseDetails(
+          propertyId: propertyId,
+          villageName: state.villageName,
+          moo: state.moo,
+          houseSubtype: state.houseSubtype,
+          parkingType: state.parkingType,
+          isCornerPlot: state.isCornerPlot,
+          notes: state.houseNotes,
+        );
+      }
     }
   }
 
@@ -515,78 +562,74 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     }
   }
 
+  /// Loads condo projects for the given developer (null = all).
+  /// Uses cache; only calls API on cache miss.
+  Future<List<CondoProject>> _loadCondoProjectsForDeveloper(int? developerId) async {
+    if (_projectsByDeveloper.containsKey(developerId)) {
+      return _projectsByDeveloper[developerId]!;
+    }
+    try {
+      final projects = await _propertyApiService.getCondoProjects(
+        developerId: developerId,
+      );
+      _projectsByDeveloper[developerId] = projects;
+      return projects;
+    } catch (e) {
+      debugPrint('PropertyFormBloc getCondoProjects error: $e');
+      _projectsByDeveloper[developerId] = const [];
+      return const [];
+    }
+  }
+
   Future<void> _onCondoProjectsFetched(
     PropertyFormCondoProjectsFetched event,
     Emitter<PropertyFormState> emit,
   ) async {
-    // 1. Use cached master list if available
-    if (_allCondoProjects.isNotEmpty) {
-      if (event.developerId == null) {
-        emit(state.copyWith(condoProjects: _allCondoProjects));
-        return;
-      }
-      final filtered = _allCondoProjects
-          .where((p) => p.developerId == event.developerId)
-          .toList();
-      emit(state.copyWith(condoProjects: filtered));
-      return;
-    }
-
-    // 2. Fallback to API
-    try {
-      final projects = await _propertyApiService.getCondoProjects(
-        developerId: event.developerId,
-      );
-      emit(state.copyWith(condoProjects: projects));
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+    final projects = await _loadCondoProjectsForDeveloper(event.developerId);
+    emit(state.copyWith(condoProjects: projects));
   }
 
   Future<void> _onDeveloperChanged(
     PropertyFormDeveloperChanged event,
     Emitter<PropertyFormState> emit,
   ) async {
+    final developerChanged = event.developerId != state.selectedDeveloperId;
     emit(
       state.copyWith(
         selectedDeveloperId: event.developerId,
-        selectedCondoProjectId: null,
+        selectedCondoProjectId:
+            developerChanged ? null : state.selectedCondoProjectId,
       ),
     );
-
-    try {
-      final projects = await _propertyApiService.getCondoProjects(
-        developerId: event.developerId,
-      );
-      emit(state.copyWith(condoProjects: projects));
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+    final projects = await _loadCondoProjectsForDeveloper(event.developerId);
+    emit(state.copyWith(condoProjects: projects));
   }
 
-  void _onCondoProjectChanged(
+  Future<void> _onCondoProjectChanged(
     PropertyFormCondoProjectChanged event,
     Emitter<PropertyFormState> emit,
-  ) {
-    // Bidirectional sync: If project is selected, also select its developer
-    int? devId;
+  ) async {
+    int? devId = state.selectedDeveloperId;
     if (event.projectId != null) {
       try {
         final project = state.condoProjects.firstWhere(
           (p) => p.id == event.projectId,
         );
         devId = project.developerId;
-      } catch (_) {
-        devId = state.selectedDeveloperId;
-      }
+      } catch (_) {}
     }
-
+    final developerChanged = devId != state.selectedDeveloperId;
     emit(
       state.copyWith(
         selectedCondoProjectId: event.projectId,
         selectedDeveloperId: devId ?? state.selectedDeveloperId,
       ),
     );
+    // Keep condoProjects in sync when project's developer differs from current
+    if (developerChanged && devId != null) {
+      final projects = await _loadCondoProjectsForDeveloper(devId);
+      emit(state.copyWith(condoProjects: projects));
+    }
   }
 
   void _onListingTypeChanged(
