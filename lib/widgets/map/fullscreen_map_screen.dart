@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -466,14 +467,21 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
-                                          child: Image.network(
-                                            property.imageUrl!,
+                                          child: CachedNetworkImage(
+                                            imageUrl: property.imageUrl!,
                                             fit: BoxFit.cover,
-                                            errorBuilder:
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                      ),
+                                                ),
+                                            errorWidget:
                                                 (
                                                   context,
+                                                  url,
                                                   error,
-                                                  stackTrace,
                                                 ) => SvgPicture.asset(
                                                   'assets/icons/building.svg',
                                                   width: 24,

@@ -12,6 +12,7 @@ import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PropertyImagesStep extends StatelessWidget {
   final int? step;
@@ -104,8 +105,13 @@ class PropertyImagesStep extends StatelessWidget {
                 child: Text(
                   'อัปโหลดรูปภาพอย่างน้อย 1 รูป (JPEG, PNG, WebP)',
                   style: GoogleFonts.anuphan(
-                    color: AppColors.baseDarkGrey,
+                    color: state.showErrors && state.images.isEmpty
+                        ? AppColors.error
+                        : AppColors.baseDarkGrey,
                     fontSize: 12,
+                    fontWeight: state.showErrors && state.images.isEmpty
+                        ? FontWeight.w600
+                        : FontWeight.w400,
                   ),
                 ),
               ),
@@ -125,7 +131,7 @@ class PropertyImagesStep extends StatelessWidget {
                       ),
                     ),
                     InkWell(
-                      onTap: () => _showDeleteConfirmation(context),
+                      onTap: () => _showDeleteAllConfirmation(context),
                       child: Row(
                         children: [
                           SvgPicture.asset(
@@ -195,59 +201,6 @@ class PropertyImagesStep extends StatelessWidget {
                                   ),
                           ),
                         ),
-                        Positioned.fill(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: image.isNetwork
-                                ? Image.network(
-                                    image.path,
-                                    fit: BoxFit.cover,
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                          if (loadingProgress == null) {
-                                            return child;
-                                          }
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              value:
-                                                  loadingProgress
-                                                          .expectedTotalBytes !=
-                                                      null
-                                                  ? loadingProgress
-                                                            .cumulativeBytesLoaded /
-                                                        loadingProgress
-                                                            .expectedTotalBytes!
-                                                  : null,
-                                            ),
-                                          );
-                                        },
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Container(
-                                              color: Colors.grey[200],
-                                              child: const Icon(
-                                                Icons.image,
-                                                size: 50,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                  )
-                                : Image.file(
-                                    File(image.path),
-                                    fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Container(
-                                              color: Colors.grey[200],
-                                              child: const Icon(
-                                                Icons.image,
-                                                size: 50,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                  ),
-                          ),
-                        ),
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: ClipRRect(
@@ -279,12 +232,7 @@ class PropertyImagesStep extends StatelessWidget {
                           right: 8,
                           child: InkWell(
                             onTap: () {
-                              final newImages = List<PropertyFormImage>.from(
-                                state.images,
-                              )..removeAt(index);
-                              context.read<PropertyFormBloc>().add(
-                                PropertyFormImagesUpdated(newImages),
-                              );
+                              _showDeleteConfirmation(context, index);
                             },
                             child: SvgPicture.asset(
                               'assets/icons/x-circle-filled.svg',
@@ -352,6 +300,33 @@ class PropertyImagesStep extends StatelessWidget {
                 ),
                 onTap: () async {
                   Navigator.pop(context); // Close the modal first
+
+                  final status = await Permission.camera.request();
+                  if (status.isPermanentlyDenied) {
+                    if (context.mounted) {
+                      StatusDialog.showError(
+                        context: context,
+                        title: AppLocalizations.of(context).errorLabel,
+                        message:
+                            'Camera access is permanently denied. Please enable it in settings.',
+                      );
+                      openAppSettings();
+                    }
+                    return;
+                  }
+
+                  if (!status.isGranted) {
+                    if (context.mounted) {
+                      StatusDialog.showError(
+                        context: context,
+                        title: AppLocalizations.of(context).errorLabel,
+                        message:
+                            'Camera access denied. Please allow camera access to take photos.',
+                      );
+                    }
+                    return;
+                  }
+
                   final ImagePicker picker = ImagePicker();
                   final XFile? image = await picker.pickImage(
                     source: ImageSource.camera,
@@ -405,18 +380,38 @@ class PropertyImagesStep extends StatelessWidget {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context) {
+  void _showDeleteConfirmation(BuildContext context, int index) {
+    AppConfirmationBottomSheet.show(
+      context: context,
+      title: AppLocalizations.of(context).deleteImagesConfirmTitle,
+      description: AppLocalizations.of(context).deleteImagesConfirmMessage,
+      confirmLabel: AppLocalizations.of(context).deleteConfirmLabel,
+      cancelLabel: AppLocalizations.of(context).statusCancelled,
+      icon: 'assets/images/dialog/YA_Illustration_ConfirmDelete.png',
+      style: ConfirmationStyle.destructive,
+      onConfirm: () {
+        context.read<PropertyFormBloc>().add(PropertyFormImageDeleted(index));
+        StatusDialog.showSuccess(
+          context: context,
+          title: AppLocalizations.of(context).successTitle,
+          message: AppLocalizations.of(context).imagesDeletedMessage,
+        );
+      },
+    );
+  }
+
+  void _showDeleteAllConfirmation(BuildContext context) {
     AppConfirmationBottomSheet.show(
       context: context,
       title: AppLocalizations.of(context).deleteAllImagesConfirmTitle,
       description: AppLocalizations.of(context).deleteAllImagesConfirmMessage,
       confirmLabel: AppLocalizations.of(context).deleteAllConfirmLabel,
       cancelLabel: AppLocalizations.of(context).statusCancelled,
-      icon: 'assets/icons/trash.svg',
+      icon: 'assets/images/dialog/YA_Illustration_ConfirmDelete.png',
       style: ConfirmationStyle.destructive,
       onConfirm: () {
         context.read<PropertyFormBloc>().add(
-          const PropertyFormImagesUpdated([]),
+          const PropertyFormAllImagesDeleted(),
         );
         StatusDialog.showSuccess(
           context: context,

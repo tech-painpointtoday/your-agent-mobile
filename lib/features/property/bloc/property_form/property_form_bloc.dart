@@ -9,6 +9,7 @@ import '../../../../services/api_response_service.dart';
 import '../../../../domain/entities/property.dart';
 import '../../../../data/models/developer_model.dart';
 import '../../../../data/models/condo_project_model.dart';
+import '../../../../domain/entities/user.dart';
 import 'property_form_event.dart';
 import 'property_form_state.dart';
 
@@ -19,6 +20,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
   final PropertyApiService _propertyApiService;
   final AddressLookupService _addressLookupService;
   final PropertySpecificationFilters? initialFilters;
+
   /// Cache: projects by developerId (null = all projects). Used so we don't refetch when switching back.
   final Map<int?, List<CondoProject>> _projectsByDeveloper = {};
 
@@ -71,6 +73,8 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     on<PropertyFormDetailsUpdated>(_onDetailsUpdated);
     on<PropertyFormAdditionalInfoUpdated>(_onAdditionalInfoUpdated);
     on<PropertyFormImagesUpdated>(_onImagesUpdated);
+    on<PropertyFormImageDeleted>(_onImageDeleted);
+    on<PropertyFormAllImagesDeleted>(_onAllImagesDeleted);
     on<PropertyFormSubmitted>(_onSubmitted);
     on<PropertyFormReset>(_onReset);
 
@@ -87,6 +91,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     on<PropertyFormDynamicMultiSelectToggled>(_onDynamicMultiSelectToggled);
     on<PropertyFormResetStatus>(_onResetStatus);
     on<PropertyFormDraftSaved>(_onDraftSaved);
+    on<PropertyFormValidateRequested>(_onValidateRequested);
   }
 
   void _onResetStatus(
@@ -100,7 +105,14 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     PropertyFormStepChanged event,
     Emitter<PropertyFormState> emit,
   ) {
-    emit(state.copyWith(step: event.step));
+    emit(state.copyWith(step: event.step, showErrors: false));
+  }
+
+  void _onValidateRequested(
+    PropertyFormValidateRequested event,
+    Emitter<PropertyFormState> emit,
+  ) {
+    emit(state.copyWith(showErrors: true));
   }
 
   void _onTypeSelected(
@@ -259,6 +271,22 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     PropertyFormDetailsUpdated event,
     Emitter<PropertyFormState> emit,
   ) {
+    final newSpecs = Map<String, String>.from(state.specifications);
+    if (event.bedrooms != null) {
+      newSpecs['bedrooms'] = event.bedrooms.toString();
+    }
+    if (event.bathrooms != null) {
+      newSpecs['bathrooms'] = event.bathrooms.toString();
+    }
+    if (event.garage != null) {
+      newSpecs['garage'] = event.garage.toString();
+      newSpecs['parking_spaces'] = event.garage.toString();
+    }
+    if (event.totalFloors != null) {
+      newSpecs['total_floors'] = event.totalFloors.toString();
+      newSpecs['floors'] = event.totalFloors.toString();
+    }
+
     emit(
       state.copyWith(
         bedrooms: event.bedrooms,
@@ -268,6 +296,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         buildingSize: event.buildingSize,
         houseColor: event.houseColor,
         totalFloors: event.totalFloors,
+        specifications: newSpecs,
       ),
     );
   }
@@ -290,6 +319,61 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     Emitter<PropertyFormState> emit,
   ) {
     emit(state.copyWith(images: event.images));
+  }
+
+  Future<void> _onImageDeleted(
+    PropertyFormImageDeleted event,
+    Emitter<PropertyFormState> emit,
+  ) async {
+    final index = event.index;
+    if (index < 0 || index >= state.images.length) return;
+
+    final image = state.images[index];
+    final propertyId = state.propertyId;
+
+    // If it's a remote image with an ID and we have a property ID, call the API
+    if (image.isNetwork && image.id != null && propertyId != null) {
+      try {
+        await _propertyApiService.deletePropertyImage(
+          propertyId: propertyId,
+          imageId: image.id!,
+        );
+      } catch (e) {
+        debugPrint('Failed to delete image from API: $e');
+        // We could emit a failure state here, but for now we follow the user's logic
+        // and proceed to remove it from the local state list anyway.
+      }
+    }
+
+    final newImages = List<PropertyFormImage>.from(state.images)
+      ..removeAt(index);
+    emit(state.copyWith(images: newImages));
+  }
+
+  Future<void> _onAllImagesDeleted(
+    PropertyFormAllImagesDeleted event,
+    Emitter<PropertyFormState> emit,
+  ) async {
+    final propertyId = state.propertyId;
+
+    if (propertyId != null) {
+      // Loop and delete all remote images one by one as requested
+      final remoteImages = state.images.where(
+        (img) => img.isNetwork && img.id != null,
+      );
+      for (final image in remoteImages) {
+        try {
+          await _propertyApiService.deletePropertyImage(
+            propertyId: propertyId,
+            imageId: image.id!,
+          );
+        } catch (e) {
+          debugPrint('Failed to delete image ${image.id} from API: $e');
+        }
+      }
+    }
+
+    emit(state.copyWith(images: const []));
   }
 
   Future<void> _onSubmitted(
@@ -316,7 +400,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     try {
       // Check if publishing a draft - Update it first
       if (state.isDraft && state.propertyId != null) {
-        final roleName = state.selectedDeveloperId != null ? 'agency' : 'agent';
+        final roleName =
+            DependencyInjection.authRepository.currentRole == UserRole.agency
+            ? 'agency'
+            : 'agent';
 
         // 1. Update with latest fields
         await _propertyApiService.updateProperty(
@@ -356,7 +443,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       }
 
       // Creating a new property (original logic)
-      final roleName = state.selectedDeveloperId != null ? 'agency' : 'agent';
+      final roleName =
+          DependencyInjection.authRepository.currentRole == UserRole.agency
+          ? 'agency'
+          : 'agent';
 
       // 2. Auto-fill Address Lookup
       PropertyFormState currentState = state;
@@ -484,6 +574,24 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         propertyId = response['data']?['id'] as int?;
       }
 
+      // Upload photos if any (Draft might have new local photos)
+      final localImages = state.images
+          .where((img) => img.isFile)
+          .map((img) => img.file!)
+          .toList();
+      if (localImages.isNotEmpty && propertyId != null) {
+        final roleName =
+            DependencyInjection.authRepository.currentRole == UserRole.agency
+            ? 'agency'
+            : 'agent';
+        await _propertyApiService.uploadPhotosProperty(
+          role: roleName,
+          propertyId: propertyId,
+          photos: localImages,
+          tag: 'gallery',
+        );
+      }
+
       if (propertyId != null) {
         await _setPropertyTypeDetails(state, propertyId);
       }
@@ -523,12 +631,11 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     } else if (type == PropertyType.house) {
       final hasHouseDetails =
           (state.villageName != null && state.villageName!.isNotEmpty) ||
-              (state.moo != null && state.moo!.isNotEmpty) ||
-              (state.houseSubtype != null &&
-                  state.houseSubtype!.isNotEmpty) ||
-              (state.parkingType != null && state.parkingType!.isNotEmpty) ||
-              state.isCornerPlot != null ||
-              (state.houseNotes != null && state.houseNotes!.isNotEmpty);
+          (state.moo != null && state.moo!.isNotEmpty) ||
+          (state.houseSubtype != null && state.houseSubtype!.isNotEmpty) ||
+          (state.parkingType != null && state.parkingType!.isNotEmpty) ||
+          state.isCornerPlot != null ||
+          (state.houseNotes != null && state.houseNotes!.isNotEmpty);
       if (hasHouseDetails) {
         await _propertyApiService.setHouseDetails(
           propertyId: propertyId,
@@ -564,7 +671,9 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
 
   /// Loads condo projects for the given developer (null = all).
   /// Uses cache; only calls API on cache miss.
-  Future<List<CondoProject>> _loadCondoProjectsForDeveloper(int? developerId) async {
+  Future<List<CondoProject>> _loadCondoProjectsForDeveloper(
+    int? developerId,
+  ) async {
     if (_projectsByDeveloper.containsKey(developerId)) {
       return _projectsByDeveloper[developerId]!;
     }
@@ -597,8 +706,9 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     emit(
       state.copyWith(
         selectedDeveloperId: event.developerId,
-        selectedCondoProjectId:
-            developerChanged ? null : state.selectedCondoProjectId,
+        selectedCondoProjectId: developerChanged
+            ? null
+            : state.selectedCondoProjectId,
       ),
     );
     final projects = await _loadCondoProjectsForDeveloper(event.developerId);
@@ -676,15 +786,19 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
 
     switch (event.key) {
       case 'floors':
-        // Try parsing float first then int, "10+" -> 10 ??
-        // The API returns strings like "10+", "1".
-        // State expects Int for totalFloors.
+      case 'total_floors':
         final cleanVal = event.value.replaceAll(RegExp(r'[^0-9]'), '');
-        newState = newState.copyWith(totalFloors: int.tryParse(cleanVal));
+        final intValue = int.tryParse(cleanVal);
+        newSpecs['floors'] = event.value;
+        newSpecs['total_floors'] = event.value;
+        newState = newState.copyWith(
+          totalFloors: intValue,
+          specifications: newSpecs,
+        );
         break;
       case 'bedrooms':
         if (event.value == 'Studio') {
-          newState = newState.copyWith(bedrooms: 0);
+          newState = newState.copyWith(bedrooms: 1);
         } else {
           final cleanVal = event.value.replaceAll(RegExp(r'[^0-9]'), '');
           newState = newState.copyWith(bedrooms: int.tryParse(cleanVal));
@@ -694,9 +808,16 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         final cleanVal = event.value.replaceAll(RegExp(r'[^0-9]'), '');
         newState = newState.copyWith(bathrooms: int.tryParse(cleanVal));
         break;
+      case 'garage':
       case 'parking_spaces':
         final cleanVal = event.value.replaceAll(RegExp(r'[^0-9]'), '');
-        newState = newState.copyWith(garage: int.tryParse(cleanVal));
+        final intValue = int.tryParse(cleanVal);
+        newSpecs['garage'] = event.value;
+        newSpecs['parking_spaces'] = event.value;
+        newState = newState.copyWith(
+          garage: intValue,
+          specifications: newSpecs,
+        );
         break;
       case 'house_color':
         newState = newState.copyWith(

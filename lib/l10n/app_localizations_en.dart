@@ -306,6 +306,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enter_license_number => 'Please enter your license number';
 
   @override
+  String get confirm_register => 'Confirm Registration';
+
+  @override
+  String get confirm_register_description =>
+      'Are you sure you want to register?';
+
+  @override
   String get enter_company_name => 'Please enter your company name';
 
   @override
@@ -1229,7 +1236,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_payment_channel => 'Select payment channel';
 
   @override
-  String get branch => 'Branch';
+  String get branch => 'Bank';
 
   @override
   String get account_name => 'Account Name';
@@ -1577,7 +1584,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get additionalInfoSubtitle => 'Decor style, highlights, and amenities';
 
   @override
-  String get propertyImagesSubtitle => 'Upload at least 5 images';
+  String get propertyImagesSubtitle => 'Upload at least 1 images';
 
   @override
   String get propertyIdPrefix => 'Code: ';
@@ -2402,6 +2409,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectFromAlbumButton => 'Select from Album';
 
   @override
+  String get deleteImagesConfirmTitle => 'Delete Image?';
+
+  @override
+  String get deleteImagesConfirmMessage =>
+      'Are you sure you want to delete this image?';
+
+  @override
+  String get deleteConfirmLabel => 'Delete';
+
+  @override
   String get deleteAllConfirmLabel => 'Delete All';
 
   @override
@@ -2478,6 +2495,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addNowButton => 'Add Now';
+
+  @override
+  String get juristicContactPhoneLabel => 'Juristic Contact Phone';
+
+  @override
+  String get juristicContactEmailLabel => 'Juristic Contact Email';
+
+  @override
+  String get discardConfirmTitle => 'Discard';
 
   @override
   String get deleteAllImagesConfirmTitle => 'Delete All Images?';
@@ -2790,7 +2816,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bahtPerDay => 'Baht/Day';
 
   @override
-  String get enterBranchHint => 'Specify branch';
+  String get enterBranchHint => 'Specify Bank';
 
   @override
   String get enterAccountNumberHint => 'Specify account number';

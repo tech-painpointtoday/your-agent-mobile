@@ -9,6 +9,7 @@ import 'package:youragent/domain/entities/buyer.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
+import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
@@ -189,51 +190,36 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
                   const SizedBox(height: 16),
 
                   // Create New Account Button
-                  SizedBox(
+                  AppButton(
                     width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () async {
-                        final result = await UserRegistrationBottomSheet.show(
-                          context,
-                          RegistrationUserType.buyer,
+                    text: AppLocalizations.of(context).createNewAccountTitle,
+                    style: AppButtonStyle.outline,
+                    backgroundColor: AppColors.brandLightGreen,
+                    textColor: AppColors.brandGreen,
+                    borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
+                    iconPath: 'assets/icons/plus.svg',
+                    onPressed: () async {
+                      final result = await UserRegistrationBottomSheet.show(
+                        context,
+                        RegistrationUserType.buyer,
+                      );
+
+                      if (result != null && mounted) {
+                        // Update text controllers
+                        _nameController.text = result.name;
+                        _emailController.text = result.email;
+                        _phoneController.text = result.phone;
+
+                        // Update BLoC
+                        final bloc = context.read<ContractFormBloc>();
+                        bloc.add(ContractFormBuyerNameUpdated(result.name));
+                        bloc.add(ContractFormBuyerEmailUpdated(result.email));
+                        bloc.add(ContractFormBuyerPhoneUpdated(result.phone));
+                        bloc.add(
+                          ContractFormBuyerPasswordUpdated(result.password),
                         );
-
-                        if (result != null && mounted) {
-                          // Update text controllers
-                          _nameController.text = result.name;
-                          _emailController.text = result.email;
-                          _phoneController.text = result.phone;
-
-                          // Update BLoC
-                          final bloc = context.read<ContractFormBloc>();
-                          bloc.add(ContractFormBuyerNameUpdated(result.name));
-                          bloc.add(ContractFormBuyerEmailUpdated(result.email));
-                          bloc.add(ContractFormBuyerPhoneUpdated(result.phone));
-                          bloc.add(
-                            ContractFormBuyerPasswordUpdated(result.password),
-                          );
-                        }
-                      },
-                      icon: const Icon(Icons.add, size: 20),
-                      label: Text(
-                        AppLocalizations.of(context).createNewAccountTitle,
-                        style: GoogleFonts.anuphan(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.brandGreen,
-                        backgroundColor: AppColors.brandLightGreen,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        side: const BorderSide(
-                          color: AppColors.brandLightGreen,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
+                      }
+                    },
                   ),
                   const SizedBox(height: 24),
 

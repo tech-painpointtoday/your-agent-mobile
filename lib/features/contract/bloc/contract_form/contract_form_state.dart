@@ -9,6 +9,7 @@ import 'package:youragent/domain/entities/furniture_item.dart';
 import 'package:youragent/domain/entities/contract_create_data.dart';
 import 'package:youragent/domain/entities/contract_attachment.dart';
 import 'package:youragent/domain/entities/contract_status.dart';
+import 'package:youragent/domain/entities/contract_item_definition.dart';
 
 enum ContractFormStatus {
   initial,
@@ -56,6 +57,7 @@ class ContractFormState extends Equatable {
   final String ownerPassword; // Added
   final String ownerSignatory;
   final List<Owner> owners;
+  final List<Owner> allOwners; // Full list from API
   final Owner? selectedOwner;
 
   // Step 3 Data
@@ -67,6 +69,7 @@ class ContractFormState extends Equatable {
   final String buyerEmail;
   final String buyerPassword; // Added
   final List<Buyer> buyers;
+  final List<Buyer> allBuyers; // Full list from API
   final Buyer? selectedBuyer;
 
   // Step 4
@@ -76,6 +79,7 @@ class ContractFormState extends Equatable {
   final List<FurnitureItem> furnitureItems;
 
   final ContractCreateData? contractCreateData;
+  final ContractItemDefinitions? itemDefinitions;
 
   // Step 6: Payment Details
   final double price;
@@ -119,6 +123,7 @@ class ContractFormState extends Equatable {
     this.ownerEmail = '',
     this.ownerSignatory = '',
     this.owners = const [],
+    this.allOwners = const [],
     this.selectedOwner,
     this.buyerType = PersonType.individual,
     this.buyerName = '',
@@ -127,6 +132,7 @@ class ContractFormState extends Equatable {
     this.buyerPhone = '',
     this.buyerEmail = '',
     this.buyers = const [],
+    this.allBuyers = const [],
     this.selectedBuyer,
     this.applianceItems = const [],
     this.furnitureItems = const [],
@@ -163,6 +169,7 @@ class ContractFormState extends Equatable {
     this.propertyProjectName = '',
     this.propertyAreaSqm = '',
     this.upfrontFee = 0,
+    this.itemDefinitions,
   });
 
   ContractFormState copyWith({
@@ -183,7 +190,11 @@ class ContractFormState extends Equatable {
     String? ownerPhone,
     String? ownerEmail,
     String? ownerSignatory,
+    List<Buyer>? buyers,
+    List<Buyer>? allBuyers,
+    Buyer? selectedBuyer,
     List<Owner>? owners,
+    List<Owner>? allOwners,
     Owner? selectedOwner,
     PersonType? buyerType,
     String? buyerName,
@@ -191,8 +202,6 @@ class ContractFormState extends Equatable {
     String? buyerAddress,
     String? buyerPhone,
     String? buyerEmail,
-    List<Buyer>? buyers,
-    Buyer? selectedBuyer,
     List<ApplianceItem>? applianceItems,
     List<FurnitureItem>? furnitureItems,
     ContractCreateData? contractCreateData,
@@ -228,6 +237,7 @@ class ContractFormState extends Equatable {
     String? propertyProjectName,
     String? propertyAreaSqm,
     double? upfrontFee,
+    ContractItemDefinitions? itemDefinitions,
     bool clearBankCode = false,
   }) {
     return ContractFormState(
@@ -250,6 +260,7 @@ class ContractFormState extends Equatable {
       ownerPassword: ownerPassword ?? this.ownerPassword,
       ownerSignatory: ownerSignatory ?? this.ownerSignatory,
       owners: owners ?? this.owners,
+      allOwners: allOwners ?? this.allOwners,
       selectedOwner: selectedOwner ?? this.selectedOwner,
       buyerType: buyerType ?? this.buyerType,
       buyerName: buyerName ?? this.buyerName,
@@ -259,6 +270,7 @@ class ContractFormState extends Equatable {
       buyerEmail: buyerEmail ?? this.buyerEmail,
       buyerPassword: buyerPassword ?? this.buyerPassword,
       buyers: buyers ?? this.buyers,
+      allBuyers: allBuyers ?? this.allBuyers,
       selectedBuyer: selectedBuyer ?? this.selectedBuyer,
       applianceItems: applianceItems ?? this.applianceItems,
       furnitureItems: furnitureItems ?? this.furnitureItems,
@@ -293,6 +305,7 @@ class ContractFormState extends Equatable {
       attachments: attachments ?? this.attachments,
       initialData: initialData ?? this.initialData,
       contractStatus: contractStatus ?? this.contractStatus,
+      itemDefinitions: itemDefinitions ?? this.itemDefinitions,
     );
   }
 
@@ -316,6 +329,7 @@ class ContractFormState extends Equatable {
     ownerEmail,
     ownerSignatory,
     owners,
+    allOwners,
     selectedOwner,
     buyerType,
     buyerName,
@@ -324,6 +338,7 @@ class ContractFormState extends Equatable {
     buyerPhone,
     buyerEmail,
     buyers,
+    allBuyers,
     selectedBuyer,
     applianceItems,
     furnitureItems,
@@ -360,5 +375,6 @@ class ContractFormState extends Equatable {
     propertyProjectName,
     propertyAreaSqm,
     upfrontFee,
+    itemDefinitions,
   ];
 }

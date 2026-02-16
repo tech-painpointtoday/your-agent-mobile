@@ -349,27 +349,38 @@ class AppRouter {
       GoRoute(
         path: '/contract/create',
         builder: (context, state) {
-          final contract = state.extra as Contract?;
-          return AddContractScreen(contract: contract);
+          final extra = state.extra;
+          if (extra is Property) {
+            return AddContractScreen(property: extra);
+          } else if (extra is Contract) {
+            return AddContractScreen(contract: extra);
+          }
+          return const AddContractScreen();
         },
       ),
       GoRoute(
         path: '/contract/edit',
         builder: (context, state) {
-          final contract = state.extra as Contract;
-          return EditContractMenuScreen(contract: contract);
+          final extra = state.extra;
+          if (extra is Contract) {
+            return EditContractMenuScreen(contract: extra);
+          }
+          return const DashboardHomeScreen();
         },
       ),
       GoRoute(
         path: '/contract/edit-form',
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>;
-          return EditContractFormScreen(
-            contract: extra['contract'] as Contract,
-            stepType: extra['stepType'] as EditContractStepType,
-            title: extra['title'] as String,
-            bloc: extra['bloc'] as ContractFormBloc?,
-          );
+          final extra = state.extra;
+          if (extra is Map<String, dynamic>) {
+            return EditContractFormScreen(
+              contract: extra['contract'] as Contract,
+              stepType: extra['stepType'] as EditContractStepType,
+              title: extra['title'] as String,
+              bloc: extra['bloc'] as ContractFormBloc?,
+            );
+          }
+          return const DashboardHomeScreen();
         },
       ),
       GoRoute(

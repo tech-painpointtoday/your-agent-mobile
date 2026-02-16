@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/person_type.dart';
@@ -119,6 +120,10 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     on<ContractFormPropertyBuildingUpdated>(_onPropertyBuildingUpdated);
     on<ContractFormPropertyProjectNameUpdated>(_onPropertyProjectNameUpdated);
     on<ContractFormPropertyAreaSqmUpdated>(_onPropertyAreaSqmUpdated);
+    on<ContractFormItemDefinitionsFetched>(_onItemDefinitionsFetched);
+
+    // Initial fetch of item definitions
+    add(const ContractFormItemDefinitionsFetched());
   }
 
   Future<void> _onEditStarted(
@@ -724,25 +729,18 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     Emitter<ContractFormState> emit,
   ) async {
     try {
-      final owners = [
-        const Owner(
-          id: 1,
-          name: 'สมชาย ใจดี',
-          idCard: '1234567890123',
-          address: '123/456 กรุงเทพฯ',
-          phone: '0812345678',
-          email: 'somchai@example.com',
-          type: PersonType.individual,
-        ),
-      ];
+      List<Owner> allOwners = state.allOwners;
+      if (allOwners.isEmpty) {
+        allOwners = await _contractApiService.getSellers();
+      }
 
-      final filtered = owners.where((o) {
+      final filtered = allOwners.where((o) {
         return o.name.toLowerCase().contains(event.query.toLowerCase());
       }).toList();
 
-      emit(state.copyWith(owners: filtered));
+      emit(state.copyWith(allOwners: allOwners, owners: filtered));
     } catch (e) {
-      // Ignore
+      debugPrint('Error fetching owners: $e');
     }
   }
 
@@ -819,26 +817,18 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     Emitter<ContractFormState> emit,
   ) async {
     try {
-      // Mocking for now
-      final buyers = [
-        const Buyer(
-          id: 1,
-          name: 'ใจดี มีสุข',
-          idCard: '9876543210987',
-          address: '456/789 กรุงเทพฯ',
-          phone: '0898765432',
-          email: 'jaidee@example.com',
-          type: PersonType.individual,
-        ),
-      ];
+      List<Buyer> allBuyers = state.allBuyers;
+      if (allBuyers.isEmpty) {
+        allBuyers = await _contractApiService.getBuyers();
+      }
 
-      final filtered = buyers.where((b) {
+      final filtered = allBuyers.where((b) {
         return b.name.toLowerCase().contains(event.query.toLowerCase());
       }).toList();
 
-      emit(state.copyWith(buyers: filtered));
+      emit(state.copyWith(allBuyers: allBuyers, buyers: filtered));
     } catch (e) {
-      // Ignore
+      debugPrint('Error fetching buyers: $e');
     }
   }
 
@@ -1130,6 +1120,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         return {
           'id': item.id,
           'name': item.name,
+          'item_code': item.itemCode,
           'description': item.description,
           'property_image_id': item.propertyImageId,
           'photo_url': item.existingPhotoUrl,
@@ -1149,6 +1140,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         return {
           'id': item.id,
           'name': item.name,
+          'item_code': item.itemCode,
           'description': item.description,
           'property_image_id': item.propertyImageId,
           'photo_url': item.existingPhotoUrl,
@@ -1592,14 +1584,29 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     }
 
     if (monthsToAdd > 0) {
-      // Calculate end date: Start Date + N months - 1 day
-      // Example: Jan 1 + 12 months = Jan 1 next year. Minus 1 day = Dec 31.
+      // Calculate target year and month manually to avoid day overflow
+      int targetYear = start.year;
+      int targetMonth = start.month + monthsToAdd;
+
+      while (targetMonth > 12) {
+        targetYear++;
+        targetMonth -= 12;
+      }
+
+      // Check the maximum days in the target month
+      final lastDayOfTargetMonth = DateTime(targetYear, targetMonth + 1, 0).day;
+
+      // Cap the day to prevent overflow (e.g., Jan 31 -> Feb 28)
+      int dayToUse = start.day;
+      if (dayToUse > lastDayOfTargetMonth) {
+        dayToUse = lastDayOfTargetMonth;
+      }
+
       DateTime endDate = DateTime(
-        start.year,
-        start.month + monthsToAdd,
-        start.day,
-      );
-      endDate = endDate.subtract(const Duration(days: 1));
+        targetYear,
+        targetMonth,
+        dayToUse,
+      ).subtract(const Duration(days: 1));
 
       return currentState.copyWith(leaseEndDate: endDate);
     }
@@ -1901,5 +1908,17 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
       }
     }
     return output;
+  }
+
+  Future<void> _onItemDefinitionsFetched(
+    ContractFormItemDefinitionsFetched event,
+    Emitter<ContractFormState> emit,
+  ) async {
+    try {
+      final definitions = await _contractApiService.getItemDefinitions();
+      emit(state.copyWith(itemDefinitions: definitions));
+    } catch (e) {
+      debugPrint('Failed to fetch item definitions: $e');
+    }
   }
 }

@@ -197,9 +197,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Row(
       children: [
-        buildChip(role: UserRole.agent, selected: _role == UserRole.agent),
-        SizedBox(width: 12),
-        buildChip(role: UserRole.agency, selected: _role == UserRole.agency),
+        // tmp close
+        //buildChip(role: UserRole.agent, selected: _role == UserRole.agent),
+        // SizedBox(width: 12),
+        // buildChip(role: UserRole.agency, selected: _role == UserRole.agency),
       ],
     );
   }
@@ -444,10 +445,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                         ),
-                        SizedBox(height: 18),
-                        SocialLoginSection(role: _role),
-                        SizedBox(height: 14),
-                        SizedBox(height: 14),
+                        // SizedBox(height: 18),
+                        // SocialLoginSection(role: _role),
+                        SizedBox(height: 28),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

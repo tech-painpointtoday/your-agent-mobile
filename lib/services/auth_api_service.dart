@@ -332,7 +332,7 @@ class AuthApiService {
   Future<void> resendVerificationEmailPublic(String email) async {
     try {
       await _apiClient.post(
-        '/api/agent/resend-verification-email',
+        '/agent/resend-verification-email',
         data: {'email': email},
       );
     } catch (e) {

@@ -9,6 +9,7 @@ import 'package:youragent/domain/entities/owner.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
+import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
@@ -208,64 +209,50 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                   const SizedBox(height: 16),
 
                   // Create New Account Button
-                  SizedBox(
+                  AppButton(
                     width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () async {
-                        final result = await UserRegistrationBottomSheet.show(
-                          context,
-                          RegistrationUserType.owner,
+                    text: AppLocalizations.of(context).createNewAccountTitle,
+                    style: AppButtonStyle.outline,
+                    backgroundColor: AppColors.brandLightGreen,
+                    textColor: AppColors.brandGreen,
+                    borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
+                    iconPath: 'assets/icons/plus.svg',
+                    onPressed: () async {
+                      final result = await UserRegistrationBottomSheet.show(
+                        context,
+                        RegistrationUserType.owner,
+                      );
+
+                      if (result != null && mounted) {
+                        // Update text controllers
+                        _nameController.text = result.name;
+                        _signatoryController.text = result.name;
+                        _emailController.text = result.email;
+                        _phoneController.text = result.phone;
+                        if (result.address != null) {
+                          _addressController.text = result.address!;
+                        }
+
+                        // Update BLoC
+                        final bloc = context.read<ContractFormBloc>();
+                        bloc.add(ContractFormOwnerNameUpdated(result.name));
+                        bloc.add(
+                          ContractFormOwnerSignatoryUpdated(result.name),
                         );
-
-                        if (result != null && mounted) {
-                          // Update text controllers
-                          _nameController.text = result.name;
-                          _signatoryController.text = result.name;
-                          _emailController.text = result.email;
-                          _phoneController.text = result.phone;
-                          if (result.address != null) {
-                            _addressController.text = result.address!;
-                          }
-
-                          // Update BLoC
-                          final bloc = context.read<ContractFormBloc>();
-                          bloc.add(ContractFormOwnerNameUpdated(result.name));
+                        bloc.add(ContractFormOwnerEmailUpdated(result.email));
+                        bloc.add(ContractFormOwnerPhoneUpdated(result.phone));
+                        if (result.address != null) {
                           bloc.add(
-                            ContractFormOwnerSignatoryUpdated(result.name),
-                          );
-                          bloc.add(ContractFormOwnerEmailUpdated(result.email));
-                          bloc.add(ContractFormOwnerPhoneUpdated(result.phone));
-                          if (result.address != null) {
-                            bloc.add(
-                              ContractFormOwnerAddressUpdated(result.address!),
-                            );
-                          }
-                          bloc.add(
-                            ContractFormOwnerPasswordUpdated(result.password),
+                            ContractFormOwnerAddressUpdated(result.address!),
                           );
                         }
-                      },
-                      icon: const Icon(Icons.add, size: 20),
-                      label: Text(
-                        AppLocalizations.of(context).createNewAccountTitle,
-                        style: GoogleFonts.anuphan(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.brandGreen,
-                        backgroundColor: AppColors.brandLightGreen,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        side: const BorderSide(
-                          color: AppColors.brandLightGreen,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
+                        bloc.add(
+                          ContractFormOwnerPasswordUpdated(result.password),
+                        );
+                      }
+                    },
                   ),
+
                   const SizedBox(height: 24),
 
                   // ID Card / Tax ID

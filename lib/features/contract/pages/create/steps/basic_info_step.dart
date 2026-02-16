@@ -382,9 +382,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                     ),
                     const SizedBox(height: 24),
                     AppTextField(
-                      label: AppLocalizations.of(
-                        context,
-                      ).twelveMonthLeaseContract,
+                      label: AppLocalizations.of(context).contract_end_date,
                       isRequired: true,
                       readOnly: state.leaseFormat.isNotEmpty,
                       controller: TextEditingController(
@@ -422,7 +420,10 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                       label: AppLocalizations.of(context).totalLeasePeriod,
                       readOnly: true,
                       controller: TextEditingController(
-                        text: _formatDuration(state.leaseDuration),
+                        text: _formatDuration(
+                          state.leaseStartDate,
+                          state.leaseEndDate,
+                        ),
                       ),
                     ),
                   ],
@@ -435,14 +436,8 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
     );
   }
 
-  String _formatDuration(int days) {
-    if (days == 0) return '';
-    final months = days ~/ 30;
-    final remainingDays = days % 30;
-    if (remainingDays == 0) {
-      return '$months เดือน';
-    }
-    return '$months เดือน $remainingDays วัน';
+  String _formatDuration(DateTime? start, DateTime? end) {
+    return AppUtils.formatLeaseDuration(start, end);
   }
 
   Widget _buildDateIcon() {

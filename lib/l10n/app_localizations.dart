@@ -686,6 +686,18 @@ abstract class AppLocalizations {
   /// **'Please enter your license number'**
   String get enter_license_number;
 
+  /// No description provided for @confirm_register.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Registration'**
+  String get confirm_register;
+
+  /// No description provided for @confirm_register_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to register?'**
+  String get confirm_register_description;
+
   /// No description provided for @enter_company_name.
   ///
   /// In en, this message translates to:
@@ -2477,7 +2489,7 @@ abstract class AppLocalizations {
   /// No description provided for @branch.
   ///
   /// In en, this message translates to:
-  /// **'Branch'**
+  /// **'Bank'**
   String get branch;
 
   /// No description provided for @account_name.
@@ -3173,7 +3185,7 @@ abstract class AppLocalizations {
   /// No description provided for @propertyImagesSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Upload at least 5 images'**
+  /// **'Upload at least 1 images'**
   String get propertyImagesSubtitle;
 
   /// No description provided for @propertyIdPrefix.
@@ -4784,6 +4796,24 @@ abstract class AppLocalizations {
   /// **'Select from Album'**
   String get selectFromAlbumButton;
 
+  /// No description provided for @deleteImagesConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Image?'**
+  String get deleteImagesConfirmTitle;
+
+  /// No description provided for @deleteImagesConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this image?'**
+  String get deleteImagesConfirmMessage;
+
+  /// No description provided for @deleteConfirmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteConfirmLabel;
+
   /// No description provided for @deleteAllConfirmLabel.
   ///
   /// In en, this message translates to:
@@ -4933,6 +4963,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add Now'**
   String get addNowButton;
+
+  /// No description provided for @juristicContactPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Juristic Contact Phone'**
+  String get juristicContactPhoneLabel;
+
+  /// No description provided for @juristicContactEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Juristic Contact Email'**
+  String get juristicContactEmailLabel;
+
+  /// No description provided for @discardConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discardConfirmTitle;
 
   /// No description provided for @deleteAllImagesConfirmTitle.
   ///
@@ -5537,7 +5585,7 @@ abstract class AppLocalizations {
   /// No description provided for @enterBranchHint.
   ///
   /// In en, this message translates to:
-  /// **'Specify branch'**
+  /// **'Specify Bank'**
   String get enterBranchHint;
 
   /// No description provided for @enterAccountNumberHint.

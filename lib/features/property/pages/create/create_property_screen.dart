@@ -79,12 +79,12 @@ class _CreatePropertyView extends StatelessWidget {
               description: AppLocalizations.of(
                 context,
               ).discardAllPropertyConfirmMessage,
-              confirmLabel: AppLocalizations.of(context).deleteAllConfirmLabel,
+              confirmLabel: AppLocalizations.of(context).discardConfirmTitle,
               cancelLabel: AppLocalizations.of(context).statusCancelled,
               icon: 'assets/images/dialog/YA_Illustration_ConfirmDiscard.png',
               style: ConfirmationStyle.destructive,
               onConfirm: () {
-                Navigator.of(context).pop();
+                context.pop();
               },
             );
           },
@@ -328,15 +328,7 @@ class _CreatePropertyView extends StatelessWidget {
                         (state.isValid &&
                             state.propertyFormStatus !=
                                 PropertyFormStatus.submissionInProgress)
-                        ? () {
-                            if (isLastStep) {
-                              _onNextPressed(context, state);
-                            } else {
-                              context.read<PropertyFormBloc>().add(
-                                PropertyFormStepChanged(state.step + 1),
-                              );
-                            }
-                          }
+                        ? () => _onNextPressed(context, state)
                         : null,
                   );
                 },
@@ -364,9 +356,15 @@ class _CreatePropertyView extends StatelessWidget {
         },
       );
     } else {
-      context.read<PropertyFormBloc>().add(
-        PropertyFormStepChanged(state.step + 1),
-      );
+      if (state.isValid) {
+        context.read<PropertyFormBloc>().add(
+          PropertyFormStepChanged(state.step + 1),
+        );
+      } else {
+        context.read<PropertyFormBloc>().add(
+          const PropertyFormValidateRequested(),
+        );
+      }
     }
   }
 }

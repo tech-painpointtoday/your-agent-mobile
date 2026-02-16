@@ -894,4 +894,36 @@ class PropertyApiService {
       throw Exception('Failed to get filter info: $e');
     }
   }
+
+  /// Delete a property image
+  /// POST /agent/properties/{propertyId}/images/{imageId}/delete
+  Future<void> deletePropertyImage({
+    String? role,
+    required int propertyId,
+    required int imageId,
+  }) async {
+    try {
+      final actualRole = role ?? _currentRole;
+      final response = await _apiClient.post(
+        '/$actualRole/properties/$propertyId/images/$imageId/delete',
+      );
+
+      final apiResponse = ApiResponseService.parseResponse<void>(
+        response,
+        null,
+      );
+
+      if (!apiResponse.success) {
+        throw Exception(
+          apiResponse.message ?? 'Failed to delete property image',
+        );
+      }
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to delete property image: $e');
+    }
+  }
 }

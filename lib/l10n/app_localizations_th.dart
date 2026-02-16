@@ -306,6 +306,12 @@ class AppLocalizationsTh extends AppLocalizations {
   String get enter_license_number => 'กรุณากรอกหมายเลขใบอนุญาตของคุณ';
 
   @override
+  String get confirm_register => 'ยืนยันการลงทะเบียน';
+
+  @override
+  String get confirm_register_description => 'คุณต้องการลงทะเบียนใช่หรือไม่?';
+
+  @override
   String get enter_company_name => 'กรุณากรอกชื่อบริษัทของคุณ';
 
   @override
@@ -1230,7 +1236,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get select_payment_channel => 'เลือกช่องทางการชำระเงิน';
 
   @override
-  String get branch => 'สาขา';
+  String get branch => 'ธนาคาร';
 
   @override
   String get account_name => 'ชื่อบัญชี';
@@ -1578,7 +1584,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get additionalInfoSubtitle => 'สไตล์การตกแต่ง จุดเด่น และส่วนกลาง';
 
   @override
-  String get propertyImagesSubtitle => 'อัปโหลดรูปภาพอย่างน้อย 5 รูป';
+  String get propertyImagesSubtitle => 'อัปโหลดรูปภาพอย่างน้อย 1 รูป';
 
   @override
   String get propertyIdPrefix => 'รหัส: ';
@@ -2402,6 +2408,15 @@ class AppLocalizationsTh extends AppLocalizations {
   String get selectFromAlbumButton => 'เลือกจากอัลบั้ม';
 
   @override
+  String get deleteImagesConfirmTitle => 'ลบรูปภาพ?';
+
+  @override
+  String get deleteImagesConfirmMessage => 'คุณต้องการลบรูปภาพนี้ใช่หรือไม่';
+
+  @override
+  String get deleteConfirmLabel => 'ลบ';
+
+  @override
   String get deleteAllConfirmLabel => 'ลบทั้งหมด';
 
   @override
@@ -2479,6 +2494,15 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get addNowButton => 'เพิ่มเลย';
+
+  @override
+  String get juristicContactPhoneLabel => 'เบอร์ติดต่อสำนักงานนิติบุคคล';
+
+  @override
+  String get juristicContactEmailLabel => 'อีเมลสำนักงานนิติบุคคล';
+
+  @override
+  String get discardConfirmTitle => 'ละทิ้ง';
 
   @override
   String get deleteAllImagesConfirmTitle => 'ลบรูปภาพทั้งหมด?';
@@ -2791,7 +2815,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get bahtPerDay => 'บาท/วัน';
 
   @override
-  String get enterBranchHint => 'ระบุสาขา';
+  String get enterBranchHint => 'ระบุธนาคาร';
 
   @override
   String get enterAccountNumberHint => 'ระบุเลขบัญชี';
@@ -2911,7 +2935,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get confirmSubmitEmail =>
-      'เราได้ส่งลิงก์ยืนยันไปที่อีเมลของคุณแล้ว\\nกรุณายืนยันอีเมลผ่านลิงก์ที่ส่งไป เพื่อเริ่มต้นใช้งาน';
+      'เราได้ส่งลิงก์ยืนยันไปที่อีเมลของคุณแล้ว\nกรุณายืนยันอีเมลผ่านลิงก์ที่ส่งไป เพื่อเริ่มต้นใช้งาน';
 
   @override
   String get locationProperty => 'ตำแหน่งทรัพย์';

@@ -3,6 +3,9 @@ import '../domain/entities/contract.dart';
 import '../domain/entities/contract_create_data.dart';
 import '../domain/entities/contract_edit_data.dart';
 import '../domain/entities/contract_attachment.dart';
+import '../domain/entities/contract_item_definition.dart';
+import '../domain/entities/buyer.dart';
+import '../domain/entities/owner.dart';
 import 'api_client.dart';
 import 'api_response_service.dart';
 
@@ -530,6 +533,90 @@ class ContractApiService {
         throw Exception(errorMessage);
       }
       throw Exception('Failed to delete furniture photo: $e');
+    }
+  }
+
+  /// Get Contract Item Definitions (Appliances & Furniture)
+  /// GET /public/contracts/item-definitions
+  Future<ContractItemDefinitions> getItemDefinitions() async {
+    try {
+      final response = await _apiClient.get(
+        '/public/contracts/item-definitions',
+      );
+
+      final apiResponse =
+          ApiResponseService.parseResponse<Map<String, dynamic>>(
+            response,
+            (json) => json as Map<String, dynamic>,
+          );
+
+      if (!apiResponse.success || apiResponse.data == null) {
+        throw Exception(
+          apiResponse.message ?? 'Failed to get contract item definitions',
+        );
+      }
+
+      return ContractItemDefinitions.fromJson(apiResponse.data!);
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to get contract item definitions: $e');
+    }
+  }
+
+  /// Get Buyers
+  /// GET /agent/contracts/buyers
+  Future<List<Buyer>> getBuyers() async {
+    try {
+      final response = await _apiClient.get('/agent/contracts/buyers');
+
+      final apiResponse =
+          ApiResponseService.parseResponse<Map<String, dynamic>>(
+            response,
+            (json) => json as Map<String, dynamic>,
+          );
+
+      if (!apiResponse.success || apiResponse.data == null) {
+        throw Exception(apiResponse.message ?? 'Failed to get buyers');
+      }
+
+      final List<dynamic> data = apiResponse.data!['data'] ?? [];
+      return data.map((json) => Buyer.fromJson(json)).toList();
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to get buyers: $e');
+    }
+  }
+
+  /// Get Sellers
+  /// GET /agent/contracts/sellers
+  Future<List<Owner>> getSellers() async {
+    try {
+      final response = await _apiClient.get('/agent/contracts/sellers');
+
+      final apiResponse =
+          ApiResponseService.parseResponse<Map<String, dynamic>>(
+            response,
+            (json) => json as Map<String, dynamic>,
+          );
+
+      if (!apiResponse.success || apiResponse.data == null) {
+        throw Exception(apiResponse.message ?? 'Failed to get sellers');
+      }
+
+      final List<dynamic> data = apiResponse.data!['data'] ?? [];
+      return data.map((json) => Owner.fromJson(json)).toList();
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to get sellers: $e');
     }
   }
 }

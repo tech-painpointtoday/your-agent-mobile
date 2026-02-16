@@ -20,6 +20,9 @@ class AppTextFormField extends StatelessWidget {
   final bool showCursor;
   final List<TextInputFormatter>? inputFormatters;
 
+  final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
+
   const AppTextFormField({
     super.key,
     required this.label,
@@ -37,6 +40,8 @@ class AppTextFormField extends StatelessWidget {
     this.focusNode,
     this.showCursor = true,
     this.inputFormatters,
+    this.validator,
+    this.autovalidateMode,
   });
 
   @override
@@ -57,6 +62,8 @@ class AppTextFormField extends StatelessWidget {
       focusNode: focusNode,
       showCursor: showCursor,
       inputFormatters: inputFormatters,
+      validator: validator,
+      autovalidateMode: autovalidateMode,
     );
   }
 }

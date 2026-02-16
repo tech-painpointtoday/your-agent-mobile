@@ -98,7 +98,46 @@ class _MapViewState extends State<MapView> {
 
   void _createMarkers() {
     _markers.clear();
-    if (widget.initialLocation != null) {
+    bool initialLocationAlreadyAdded = false;
+
+    // First add property markers
+    for (var i = 0; i < widget.properties.length; i++) {
+      final property = widget.properties[i];
+      if (property.latitude == null || property.longitude == null) {
+        continue;
+      }
+
+      final position = LatLng(property.latitude!, property.longitude!);
+
+      // Check if this property location matches the initialLocation
+      if (widget.initialLocation != null) {
+        final latDiff = (position.latitude - widget.initialLocation!.latitude)
+            .abs();
+        final lngDiff = (position.longitude - widget.initialLocation!.longitude)
+            .abs();
+        // Use a small epsilon for coordinate comparison (~1 meter)
+        if (latDiff < 0.00001 && lngDiff < 0.00001) {
+          initialLocationAlreadyAdded = true;
+        }
+      }
+
+      final markerId =
+          property.id?.toString() ?? property.code ?? 'property-$i';
+      _markers.add(
+        Marker(
+          markerId: MarkerId(markerId),
+          position: position,
+          icon: _customMarkerIcon ?? BitmapDescriptor.defaultMarker,
+          infoWindow: InfoWindow(
+            title: property.title,
+            snippet: property.address,
+          ),
+        ),
+      );
+    }
+
+    // Only add the initialLocation marker if it wasn't already covered by a property
+    if (widget.initialLocation != null && !initialLocationAlreadyAdded) {
       _markers.add(
         Marker(
           markerId: const MarkerId('initialLocation'),
@@ -107,27 +146,6 @@ class _MapViewState extends State<MapView> {
           infoWindow: InfoWindow(
             title: widget.title ?? 'Unknown Location',
             snippet: widget.snippet ?? 'Unknown Location address',
-          ),
-        ),
-      );
-    }
-
-    for (var i = 0; i < widget.properties.length; i++) {
-      final property = widget.properties[i];
-      if (property.latitude == null || property.longitude == null) {
-        continue;
-      }
-
-      final markerId =
-          property.id?.toString() ?? property.code ?? 'property-$i';
-      _markers.add(
-        Marker(
-          markerId: MarkerId(markerId),
-          position: LatLng(property.latitude!, property.longitude!),
-          icon: _customMarkerIcon ?? BitmapDescriptor.defaultMarker,
-          infoWindow: InfoWindow(
-            title: property.title,
-            snippet: property.address,
           ),
         ),
       );

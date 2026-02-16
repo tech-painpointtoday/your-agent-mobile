@@ -3,6 +3,7 @@ import 'package:youragent/domain/entities/property.dart';
 
 class PropertyFilter extends Equatable {
   final String? approvalStatus;
+  final bool? isDraft;
   final String? propertyType;
   final String? listingType;
   final String? occupancyStatus;
@@ -21,6 +22,7 @@ class PropertyFilter extends Equatable {
 
   const PropertyFilter({
     this.approvalStatus,
+    this.isDraft,
     this.propertyType,
     this.listingType,
     this.occupancyStatus,
@@ -37,44 +39,70 @@ class PropertyFilter extends Equatable {
     this.multiSelectSpecs = const {},
   });
 
-  bool get isEmpty =>
-      approvalStatus == null &&
-      propertyType == null &&
-      listingType == null &&
-      occupancyStatus == null &&
-      color == null &&
-      minPrice == null &&
-      maxPrice == null &&
-      floors == null &&
-      bedrooms == null &&
-      bathrooms == null &&
-      parkingSpaces == null &&
-      landSize == null &&
-      usableArea == null &&
-      singleSelectSpecs.isEmpty &&
-      multiSelectSpecs.isEmpty;
+  bool get isEmpty {
+    bool isDefault(dynamic value) {
+      if (value == null) return true;
+      if (value is String) {
+        return value == 'ทั้งหมด' || value == 'All' || value.isEmpty;
+      }
+      return false;
+    }
+
+    // Check if all multi-select specs are empty
+    bool allMultiSpecsEmpty = true;
+    for (final spec in multiSelectSpecs.values) {
+      if (spec.isNotEmpty) {
+        allMultiSpecsEmpty = false;
+        break;
+      }
+    }
+
+    return isDefault(approvalStatus) &&
+        isDraft == null &&
+        isDefault(propertyType) &&
+        isDefault(listingType) &&
+        isDefault(occupancyStatus) &&
+        isDefault(color) &&
+        minPrice == null &&
+        maxPrice == null &&
+        floors == null &&
+        bedrooms == null &&
+        bathrooms == null &&
+        parkingSpaces == null &&
+        landSize == null &&
+        usableArea == null &&
+        singleSelectSpecs.isEmpty &&
+        allMultiSpecsEmpty;
+  }
 
   bool matches(Property property) {
     if (isEmpty) return true;
 
+    // Draft
+    if (isDraft != null && property.isDraft != isDraft) return false;
+
+    bool isDefault(String? value) {
+      if (value == null) return true;
+      return value == 'ทั้งหมด' || value == 'All' || value.isEmpty;
+    }
+
     // Approval Status
-    if (approvalStatus != null && approvalStatus != 'ทั้งหมด') {
+    if (!isDefault(approvalStatus)) {
       final statusStr = switch (property.approvalStatus) {
         PropertyApprovalStatus.pending => 'รอการอนุมัติ',
         PropertyApprovalStatus.approved => 'อนุมัติแล้ว',
         PropertyApprovalStatus.rejected => 'ไม่อนุมัติ',
-        PropertyApprovalStatus.draft => 'แบบร่าง',
       };
       if (statusStr != approvalStatus) return false;
     }
 
     // Property Type
-    if (propertyType != null && propertyType != 'ทั้งหมด') {
+    if (!isDefault(propertyType)) {
       if (property.propertyType?.label != propertyType) return false;
     }
 
     // Listing Type
-    if (listingType != null && listingType != 'ทั้งหมด') {
+    if (!isDefault(listingType)) {
       final listingStr = switch (property.listingType) {
         PropertyListingType.sale => 'ขาย',
         PropertyListingType.rent => 'เช่า',
@@ -85,10 +113,7 @@ class PropertyFilter extends Equatable {
     }
 
     // Occupancy Status
-    // Since the filter contains localized strings, we need to check both Thai and English
-    if (occupancyStatus != null &&
-        occupancyStatus != 'ทั้งหมด' &&
-        occupancyStatus != 'All') {
+    if (!isDefault(occupancyStatus)) {
       final isAvailable =
           property.status == PropertyAvailabilityStatus.available;
       // Check if the occupancy status matches "vacancy" (available) or "occupied" (not available)
@@ -181,6 +206,7 @@ class PropertyFilter extends Equatable {
 
   PropertyFilter copyWith({
     String? Function()? approvalStatus,
+    bool? isDraft,
     String? Function()? propertyType,
     String? Function()? listingType,
     String? Function()? occupancyStatus,
@@ -200,6 +226,7 @@ class PropertyFilter extends Equatable {
       approvalStatus: approvalStatus != null
           ? approvalStatus()
           : this.approvalStatus,
+      isDraft: isDraft ?? this.isDraft,
       propertyType: propertyType != null ? propertyType() : this.propertyType,
       listingType: listingType != null ? listingType() : this.listingType,
       occupancyStatus: occupancyStatus != null
@@ -224,6 +251,7 @@ class PropertyFilter extends Equatable {
   @override
   List<Object?> get props => [
     approvalStatus,
+    isDraft,
     propertyType,
     listingType,
     occupancyStatus,

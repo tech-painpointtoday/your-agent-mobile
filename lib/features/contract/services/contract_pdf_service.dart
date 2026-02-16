@@ -11,6 +11,7 @@ import 'package:youragent/domain/entities/contract.dart';
 import 'package:youragent/domain/entities/appliance_item.dart';
 import 'package:youragent/domain/entities/furniture_item.dart';
 import 'package:youragent/domain/entities/contract_attachment.dart';
+import 'package:youragent/utils/app_utils.dart';
 
 class ContractPdfService {
   Future<Uint8List> generate(ContractFormState state) async {
@@ -78,7 +79,6 @@ class ContractPdfService {
             pw.SizedBox(height: 10),
             _buildSectionHeader('ข้อ 3. ระยะเวลาเช่า', fonts.bold),
             _buildClause3(
-              leaseDuration: state.leaseDuration,
               leaseStartDate: state.leaseStartDate,
               leaseEndDate: state.leaseEndDate,
               dateFormat: dateFormat,
@@ -204,8 +204,6 @@ class ContractPdfService {
             pw.SizedBox(height: 10),
             _buildSectionHeader('ข้อ 3. ระยะเวลาเช่า', fonts.bold),
             _buildClause3(
-              leaseDuration:
-                  0, // Not directly in Contract entity as int, but we have dates
               leaseStartDate: null, // Need to find where these are
               leaseEndDate: null,
               dateFormat: dateFormat,
@@ -509,7 +507,6 @@ class ContractPdfService {
   }
 
   pw.Widget _buildClause3({
-    required int leaseDuration,
     DateTime? leaseStartDate,
     DateTime? leaseEndDate,
     required DateFormat dateFormat,
@@ -533,8 +530,10 @@ class ContractPdfService {
           )
         : '....................';
 
+    final duration = AppUtils.formatLeaseDuration(leaseStartDate, leaseEndDate);
+
     return pw.Text(
-      '        มีกำหนดระยะเวลาเช่า $leaseDuration ปี/เดือน เริ่มตั้งแต่วันที่ $start ถึงวันที่ $end',
+      '        มีกำหนดระยะเวลาเช่า $duration เริ่มตั้งแต่วันที่ $start ถึงวันที่ $end',
     );
   }
 

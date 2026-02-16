@@ -67,13 +67,6 @@ class PropertyStatusBadge extends StatelessWidget {
     }
 
     switch (status) {
-      case PropertyApprovalStatus.draft:
-        return _StatusConfig(
-          label: l10n.draftLabel,
-          backgroundColor: AppColors.supportPurpleLight,
-          dotColor: AppColors.supportPurpleDark,
-          textColor: AppColors.supportPurpleDark,
-        );
       case PropertyApprovalStatus.pending:
         return _StatusConfig(
           label: l10n.pendingAt,

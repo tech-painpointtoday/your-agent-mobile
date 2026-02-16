@@ -126,11 +126,13 @@ class EditPropertyFormScreen extends StatelessWidget {
             title: AppLocalizations.of(context).successTitle,
             message: AppLocalizations.of(context).changesSavedMessage,
           );
-          context.pop();
+          context.pop(true);
         } else if (state.propertyFormStatus ==
             PropertyFormStatus.submissionFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage ?? 'Update failed')),
+          StatusDialog.showError(
+            context: context,
+            title: AppLocalizations.of(context).errorOccurredTitle,
+            message: state.errorMessage ?? 'Update failed',
           );
         }
       },

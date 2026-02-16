@@ -4,13 +4,44 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
+import 'package:youragent/core/di/dependency_injection.dart';
 import 'edit_property_form_screen.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
-class EditPropertyMenuScreen extends StatelessWidget {
+class EditPropertyMenuScreen extends StatefulWidget {
   final Property property;
 
   const EditPropertyMenuScreen({super.key, required this.property});
+
+  @override
+  State<EditPropertyMenuScreen> createState() => _EditPropertyMenuScreenState();
+}
+
+class _EditPropertyMenuScreenState extends State<EditPropertyMenuScreen> {
+  late Property _property;
+  bool _hasChanges = false;
+  final _propertyApiService = DependencyInjection.propertyApiService;
+
+  @override
+  void initState() {
+    super.initState();
+    _property = widget.property;
+  }
+
+  Future<void> _refreshProperty() async {
+    if (_property.id == null) return;
+    try {
+      final updated = await _propertyApiService.getPropertyById(_property.id!);
+      if (updated != null && mounted) {
+        setState(() {
+          _property = updated;
+          _hasChanges = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error refreshing property: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +56,6 @@ class EditPropertyMenuScreen extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-
         backgroundColor: AppColors.primary,
         elevation: 0,
         leading: IconButton(
@@ -36,13 +66,13 @@ class EditPropertyMenuScreen extends StatelessWidget {
             fit: BoxFit.contain,
             colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(_hasChanges),
         ),
       ),
       body: Container(
-        margin: EdgeInsets.only(top: 16),
+        margin: const EdgeInsets.only(top: 16),
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(24),
@@ -60,36 +90,20 @@ class EditPropertyMenuScreen extends StatelessWidget {
                 iconPath: 'assets/icons/info.svg',
                 iconColor: AppColors.brandBlue,
                 bgColor: AppColors.supportBlueLight,
-                onTap: () {
-                  context.push(
+                onTap: () async {
+                  final result = await context.push(
                     '/property/edit-form',
                     extra: {
-                      'property': property,
+                      'property': _property,
                       'stepType': EditPropertyStepType.generalInfo,
                       'title': AppLocalizations.of(context).general_information,
                     },
                   );
+                  if (result == true) {
+                    _refreshProperty();
+                  }
                 },
               ),
-              // const SizedBox(height: 16),
-              // _buildMenuItem(
-              //   context,
-              //   title: AppLocalizations.of(context)!.locationProperty,
-              //   subtitle: AppLocalizations.of(context)!.propertyLocationOnMap,
-              //   iconPath: 'assets/icons/map-pin.svg',
-              //   iconColor: AppColors.brandGreen,
-              //   bgColor: AppColors.supportGreenLight,
-              //   onTap: () {
-              //     context.push(
-              //       '/property/edit-form',
-              //       extra: {
-              //         'property': property,
-              //         'stepType': EditPropertyStepType.generalInfo,
-              //         'title': AppLocalizations.of(context)!.locationProperty,
-              //       },
-              //     );
-              //   },
-              // ),
               const SizedBox(height: 16),
               _buildMenuItem(
                 context,
@@ -98,17 +112,20 @@ class EditPropertyMenuScreen extends StatelessWidget {
                 iconPath: 'assets/icons/menu.svg',
                 iconColor: const Color(0xFF7F56D9), // Purple
                 bgColor: const Color(0xFFF9F5FF), // Light Purple
-                onTap: () {
-                  context.push(
+                onTap: () async {
+                  final result = await context.push(
                     '/property/edit-form',
                     extra: {
-                      'property': property,
+                      'property': _property,
                       'stepType': EditPropertyStepType.propertyDetail,
                       'title': AppLocalizations.of(
                         context,
                       ).property_details_section,
                     },
                   );
+                  if (result == true) {
+                    _refreshProperty();
+                  }
                 },
               ),
               const SizedBox(height: 16),
@@ -119,17 +136,20 @@ class EditPropertyMenuScreen extends StatelessWidget {
                 iconPath: 'assets/icons/star-moving.svg',
                 iconColor: const Color(0xFFE94A88), // Pink
                 bgColor: const Color(0xFFFDF2FA), // Light Pink
-                onTap: () {
-                  context.push(
+                onTap: () async {
+                  final result = await context.push(
                     '/property/edit-form',
                     extra: {
-                      'property': property,
+                      'property': _property,
                       'stepType': EditPropertyStepType.additionalInfo,
                       'title': AppLocalizations.of(
                         context,
                       ).additional_details_section,
                     },
                   );
+                  if (result == true) {
+                    _refreshProperty();
+                  }
                 },
               ),
               const SizedBox(height: 16),
@@ -140,15 +160,18 @@ class EditPropertyMenuScreen extends StatelessWidget {
                 iconPath: 'assets/icons/image.svg',
                 iconColor: AppColors.supportOrangeDark,
                 bgColor: AppColors.supportOrangeLight,
-                onTap: () {
-                  context.push(
+                onTap: () async {
+                  final result = await context.push(
                     '/property/edit-form',
                     extra: {
-                      'property': property,
+                      'property': _property,
                       'stepType': EditPropertyStepType.propertyImages,
                       'title': AppLocalizations.of(context).propertyImagesLabel,
                     },
                   );
+                  if (result == true) {
+                    _refreshProperty();
+                  }
                 },
               ),
             ],

@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
+import 'property_image.dart';
 
 /// Represents the status/approval state of a property listing
 enum PropertyApprovalStatus {
   pending, // รอการอนุมัติ
   approved, // อนุมัติแล้ว
   rejected, // ไม่อนุมัติ
-  draft, // แบบร่าง (สำหรับ Preview)
 }
 
 enum PropertyColor {
@@ -264,6 +264,15 @@ class Property extends Equatable {
   final PropertyColor? houseColor;
   final DateTime? built; // Year/Date built
   final PropertyDirection? direction;
+  final String? condoProjectNameTh;
+  final String? condoProjectNameEn;
+  final String? developerNameTh;
+  final String? developerNameEn;
+  final String? villageName;
+  final String? tower;
+  final String? floor;
+  final String? unitNo;
+  final String? moo;
 
   // Dynamic / Collections
   final Map<String, dynamic>
@@ -272,7 +281,7 @@ class Property extends Equatable {
 
   // Images
   final String? imageUrl; // Cover image URL
-  final List<String> imageUrls; // All remote image URLs
+  final List<PropertyImage> images; // All remote image objects
   final List<XFile> imageFiles; // Local image files (for Preview)
 
   // Metadata
@@ -319,15 +328,28 @@ class Property extends Equatable {
     this.houseColor,
     this.built,
     this.direction,
+    this.condoProjectNameTh,
+    this.condoProjectNameEn,
+    this.developerNameTh,
+    this.developerNameEn,
+    this.villageName,
+    this.tower,
+    this.floor,
+    this.unitNo,
+    this.moo,
     this.specifications = const {},
     this.specificationValues = const {},
     this.imageUrl,
-    this.imageUrls = const [],
+    this.images = const [],
     this.imageFiles = const [],
     required this.createdAt,
     this.viewCount = 0,
     this.isDraft = false,
   });
+
+  /// Get image URLs as a list of strings (for compatibility)
+  List<String> get imageUrls =>
+      images.map((e) => e.url).whereType<String>().toList();
 
   /// Factory: Parses Nested API Response (Smart Parser)
   factory Property.fromJson(Map<String, dynamic> json) {
@@ -353,29 +375,63 @@ class Property extends Equatable {
 
     // 2b. Merge condo_details / house details from GET response for edit/draft
     // API: condo_details = { id, property_id, condo_project_id, tower, unit_no, floor, layout_code, condo_project: { id, developer_id, ... } }
+    String? condoProjectNameTh;
+    String? condoProjectNameEn;
+    String? developerNameTh;
+    String? developerNameEn;
+
     final condoDetails = data['condo_details'];
     if (condoDetails is Map<String, dynamic>) {
       final projectId = condoDetails['condo_project_id'];
-      if (projectId != null) rawSpecs['condo_project_id'] = projectId is int ? projectId : int.tryParse(projectId.toString());
+      if (projectId != null) {
+        rawSpecs['condo_project_id'] = projectId is int
+            ? projectId
+            : int.tryParse(projectId.toString());
+      }
       final nestedProject = condoDetails['condo_project'];
       if (nestedProject is Map<String, dynamic>) {
+        condoProjectNameTh = nestedProject['name_th']?.toString();
+        condoProjectNameEn = nestedProject['name_en']?.toString();
+        final developer = nestedProject['developer'];
+        if (developer is Map<String, dynamic>) {
+          developerNameTh = developer['name_th']?.toString();
+          developerNameEn = developer['name_en']?.toString();
+        }
         final devId = nestedProject['developer_id'];
-        if (devId != null) rawSpecs['developer_id'] = devId is int ? devId : int.tryParse(devId.toString());
+        if (devId != null) {
+          rawSpecs['developer_id'] = devId is int
+              ? devId
+              : int.tryParse(devId.toString());
+        }
       }
-      if (condoDetails['tower'] != null) rawSpecs['tower'] = condoDetails['tower'].toString();
-      if (condoDetails['floor'] != null) rawSpecs['floor'] = condoDetails['floor'].toString();
-      if (condoDetails['unit_no'] != null) rawSpecs['unit_no'] = condoDetails['unit_no'].toString();
+      if (condoDetails['tower'] != null) {
+        rawSpecs['tower'] = condoDetails['tower'].toString();
+      }
+      if (condoDetails['floor'] != null) {
+        rawSpecs['floor'] = condoDetails['floor'].toString();
+      }
+      if (condoDetails['unit_no'] != null) {
+        rawSpecs['unit_no'] = condoDetails['unit_no'].toString();
+      }
     }
 
     // API: house_details = { id, property_id, village_name, moo, house_subtype, parking_type, is_corner_plot, notes, ... }
     final houseDetails = data['house_details'];
     if (houseDetails is Map<String, dynamic>) {
-      if (houseDetails['village_name'] != null) rawSpecs['village_name'] = houseDetails['village_name'].toString();
-      if (houseDetails['moo'] != null) rawSpecs['moo'] = houseDetails['moo'].toString();
-      if (houseDetails['house_subtype'] != null) rawSpecs['house_subtype'] = houseDetails['house_subtype'].toString();
-      if (houseDetails['parking_type'] != null) rawSpecs['parking_type'] = houseDetails['parking_type'].toString();
-      if (houseDetails['is_corner_plot'] != null) rawSpecs['is_corner_plot'] = houseDetails['is_corner_plot'] == true || houseDetails['is_corner_plot'] == 'true';
-      if (houseDetails['notes'] != null) rawSpecs['house_notes'] = houseDetails['notes'].toString();
+      if (houseDetails['village_name'] != null)
+        rawSpecs['village_name'] = houseDetails['village_name'].toString();
+      if (houseDetails['moo'] != null)
+        rawSpecs['moo'] = houseDetails['moo'].toString();
+      if (houseDetails['house_subtype'] != null)
+        rawSpecs['house_subtype'] = houseDetails['house_subtype'].toString();
+      if (houseDetails['parking_type'] != null)
+        rawSpecs['parking_type'] = houseDetails['parking_type'].toString();
+      if (houseDetails['is_corner_plot'] != null)
+        rawSpecs['is_corner_plot'] =
+            houseDetails['is_corner_plot'] == true ||
+            houseDetails['is_corner_plot'] == 'true';
+      if (houseDetails['notes'] != null)
+        rawSpecs['house_notes'] = houseDetails['notes'].toString();
     }
 
     // 3. Helper Parsers
@@ -404,19 +460,21 @@ class Property extends Equatable {
     PropertyApprovalStatus parseStatus(String? s) {
       if (s == 'approved') return PropertyApprovalStatus.approved;
       if (s == 'rejected') return PropertyApprovalStatus.rejected;
-      if (s == 'draft') return PropertyApprovalStatus.draft;
       return PropertyApprovalStatus.pending;
     }
 
     // 4. Parse Images
     final imagesList = (data['images'] is List) ? data['images'] as List : [];
-    final parsedImageUrls = imagesList.map((img) {
-      if (img is Map) return (img['validated_url'] ?? img['url']).toString();
-      return img.toString();
-    }).toList();
-    final firstImage = parsedImageUrls.isNotEmpty
-        ? parsedImageUrls.first
-        : null;
+    final parsedImages = imagesList
+        .map((img) {
+          if (img is Map<String, dynamic>) {
+            return PropertyImage.fromJson(img);
+          }
+          return null;
+        })
+        .whereType<PropertyImage>()
+        .toList();
+    final firstImage = parsedImages.isNotEmpty ? parsedImages.first.url : null;
 
     // 5. Construct Entity
     return Property(
@@ -491,6 +549,15 @@ class Property extends Equatable {
       houseColor: PropertyColor.fromLabel(parseString(specs['house_color'])),
       built: DateTime.tryParse(data['built']?.toString() ?? ''),
       direction: PropertyDirection.fromLabel(location['direction']),
+      condoProjectNameTh: condoProjectNameTh,
+      condoProjectNameEn: condoProjectNameEn,
+      developerNameTh: developerNameTh,
+      developerNameEn: developerNameEn,
+      villageName: rawSpecs['village_name']?.toString(),
+      tower: rawSpecs['tower']?.toString(),
+      floor: rawSpecs['floor']?.toString(),
+      unitNo: rawSpecs['unit_no']?.toString(),
+      moo: rawSpecs['moo']?.toString(),
       totalFloors: parseInt(
         specs['total_floors'] ?? rawSpecs['floors'],
       ), // Try spec object then raw map
@@ -500,7 +567,7 @@ class Property extends Equatable {
 
       // Images
       imageUrl: firstImage,
-      imageUrls: parsedImageUrls,
+      images: parsedImages,
 
       // Metadata
       createdAt:
@@ -606,7 +673,7 @@ class Property extends Equatable {
     Map<String, dynamic>? specifications,
     Map<String, dynamic>? specificationValues,
     String? imageUrl,
-    List<String>? imageUrls,
+    List<PropertyImage>? images,
     List<XFile>? imageFiles,
     DateTime? createdAt,
     int? viewCount,
@@ -654,7 +721,7 @@ class Property extends Equatable {
       specifications: specifications ?? this.specifications,
       specificationValues: specificationValues ?? this.specificationValues,
       imageUrl: imageUrl ?? this.imageUrl,
-      imageUrls: imageUrls ?? this.imageUrls,
+      images: images ?? this.images,
       imageFiles: imageFiles ?? this.imageFiles,
       createdAt: createdAt ?? this.createdAt,
       viewCount: viewCount ?? this.viewCount,
@@ -732,8 +799,8 @@ class Property extends Equatable {
           (clean(specifications) as Map?)?.cast<String, dynamic>() ?? {},
       specificationValues:
           (clean(specificationValues) as Map?)?.cast<String, dynamic>() ?? {},
-      imageUrl: clean(imageUrl),
-      imageUrls: (clean(imageUrls) as List?)?.cast<String>() ?? [],
+      imageUrl: imageUrl,
+      images: images,
       imageFiles: imageFiles,
       createdAt: createdAt,
       viewCount: viewCount,

@@ -403,7 +403,7 @@ class _PaymentStepState extends State<PaymentStep> {
         ),
         const SizedBox(height: 20),
 
-        // สาขา Field with TypeAhead
+        // ธนาคาร Field with TypeAhead
         TypeAheadField<Bank>(
           controller: _bankBranchController,
           hideOnEmpty: true,

@@ -4,6 +4,7 @@ class FurnitureItem extends Equatable {
   final String id;
   final String name;
   final String? description;
+  final String? itemCode;
   final List<String> images;
   final int? propertyImageId;
   final String? existingPhotoUrl; // This will hold the raw photo_url
@@ -14,6 +15,7 @@ class FurnitureItem extends Equatable {
   const FurnitureItem({
     required this.id,
     required this.name,
+    this.itemCode,
     this.description,
     this.images = const [],
     this.propertyImageId,
@@ -25,6 +27,7 @@ class FurnitureItem extends Equatable {
 
   FurnitureItem copyWith({
     String? name,
+    String? itemCode,
     String? description,
     List<String>? images,
     int? propertyImageId,
@@ -33,10 +36,12 @@ class FurnitureItem extends Equatable {
     List<String>? existingPhotoUrls,
     List<Map<String, dynamic>>? photos,
     bool clearPropertyImage = false,
+    bool clearItemCode = false,
   }) {
     return FurnitureItem(
       id: id,
       name: name ?? this.name,
+      itemCode: clearItemCode ? null : (itemCode ?? this.itemCode),
       description: description ?? this.description,
       images: images ?? this.images,
       propertyImageId: clearPropertyImage
@@ -67,6 +72,7 @@ class FurnitureItem extends Equatable {
   List<Object?> get props => [
     id,
     name,
+    itemCode,
     description,
     images,
     propertyImageId,

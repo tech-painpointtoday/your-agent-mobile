@@ -23,6 +23,10 @@ class ContractFormInitialized extends ContractFormEvent {
   List<Object?> get props => [contract];
 }
 
+class ContractFormItemDefinitionsFetched extends ContractFormEvent {
+  const ContractFormItemDefinitionsFetched();
+}
+
 class ContractFormEditStarted extends ContractFormEvent {
   final int contractId;
   const ContractFormEditStarted(this.contractId);

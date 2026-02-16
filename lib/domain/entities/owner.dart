@@ -32,7 +32,7 @@ class Owner extends Equatable {
       name: (json['name'] ?? '').toString(),
       idCard: (json['id_card'] ?? json['national_id'])?.toString(),
       address: json['address']?.toString(),
-      phone: json['mobile_number']?.toString(),
+      phone: (json['phone'] ?? json['mobile_number'])?.toString(),
       email: json['email']?.toString(),
       signatory: json['signatory']?.toString(),
       type: json['type'] == 'juristic'

@@ -139,6 +139,18 @@ class PropertyFormImagesUpdated extends PropertyFormEvent {
   List<Object?> get props => [images];
 }
 
+class PropertyFormImageDeleted extends PropertyFormEvent {
+  final int index;
+  const PropertyFormImageDeleted(this.index);
+
+  @override
+  List<Object?> get props => [index];
+}
+
+class PropertyFormAllImagesDeleted extends PropertyFormEvent {
+  const PropertyFormAllImagesDeleted();
+}
+
 class PropertyFormSubmitted extends PropertyFormEvent {
   const PropertyFormSubmitted();
 }
@@ -250,6 +262,13 @@ class PropertyFormResetStatus extends PropertyFormEvent {
 /// Event to save current form data as draft
 class PropertyFormDraftSaved extends PropertyFormEvent {
   const PropertyFormDraftSaved();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class PropertyFormValidateRequested extends PropertyFormEvent {
+  const PropertyFormValidateRequested();
 
   @override
   List<Object?> get props => [];

@@ -94,49 +94,51 @@ class _RegisterFormState extends State<RegisterForm> {
                 ? 'กรุณากรอก${l10n.phone_number}'
                 : null,
           ),
-          LabeledDropdownField<String>(
-            label: l10n.business_type_hint,
-            value: _selectedBusinessType,
-            prefixIconSvg: 'assets/icons/briefcase.svg',
-            items: [
-              DropdownMenuItem(
-                value: 'Real Estate Agency',
-                child: Text(l10n.business_type_agency),
-              ),
-              DropdownMenuItem(
-                value: 'Property Developer',
-                child: Text(l10n.business_type_developer),
-              ),
-              DropdownMenuItem(
-                value: 'Independent Agent',
-                child: Text(l10n.business_type_independent),
-              ),
-              DropdownMenuItem(
-                value: 'Brokerage Firm',
-                child: Text(l10n.business_type_brokerage),
-              ),
-            ],
-            onChanged: (v) {
-              setState(() {
-                _selectedBusinessType = v;
-                if (v == 'Independent Agent') {
-                  widget.companyController.clear();
-                }
-              });
-            },
-          ),
-          if (_selectedBusinessType != 'Independent Agent')
-            LabeledTextFormField(
-              label: l10n.company_name_hint,
-              controller: widget.companyController,
-              prefixIconSvg: 'assets/icons/building.svg',
-              validator: (v) {
-                if (_selectedBusinessType != 'Independent Agent') {
-                  if (v == null || v.isEmpty) return l10n.enter_company_name;
-                }
-                return null;
-              },
-            ),
+
+          // tmp close
+          // LabeledDropdownField<String>(
+          //   label: l10n.business_type_hint,
+          //   value: _selectedBusinessType,
+          //   prefixIconSvg: 'assets/icons/briefcase.svg',
+          //   items: [
+          //     DropdownMenuItem(
+          //       value: 'Real Estate Agency',
+          //       child: Text(l10n.business_type_agency),
+          //     ),
+          //     DropdownMenuItem(
+          //       value: 'Property Developer',
+          //       child: Text(l10n.business_type_developer),
+          //     ),
+          //     DropdownMenuItem(
+          //       value: 'Independent Agent',
+          //       child: Text(l10n.business_type_independent),
+          //     ),
+          //     DropdownMenuItem(
+          //       value: 'Brokerage Firm',
+          //       child: Text(l10n.business_type_brokerage),
+          //     ),
+          //   ],
+          //   onChanged: (v) {
+          //     setState(() {
+          //       _selectedBusinessType = v;
+          //       if (v == 'Independent Agent') {
+          //         widget.companyController.clear();
+          //       }
+          //     });
+          //   },
+          // ),
+          // if (_selectedBusinessType != 'Independent Agent')
+          //   LabeledTextFormField(
+          //     label: l10n.company_name_hint,
+          //     controller: widget.companyController,
+          //     prefixIconSvg: 'assets/icons/building.svg',
+          //     validator: (v) {
+          //       if (_selectedBusinessType != 'Independent Agent') {
+          //         if (v == null || v.isEmpty) return l10n.enter_company_name;
+          //       }
+          //       return null;
+          //     },
+          //   ),
           LabeledPasswordField(
             label: l10n.password,
             controller: widget.passwordController,
@@ -164,15 +166,25 @@ class _RegisterFormState extends State<RegisterForm> {
             checked: widget.termsAccepted,
             onChanged: widget.onTermsChanged,
             linkText: l10n.link_terms_and_conditions,
-            onLinkTap: () => context.push('/policy?type=terms'),
+            onLinkTap: () async {
+              final accepted = await context.push<bool>('/policy?type=terms');
+              if (accepted == true) {
+                widget.onTermsChanged(true);
+              }
+            },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           _policyCheckbox(
             context,
             checked: widget.privacyAccepted,
             onChanged: widget.onPrivacyChanged,
             linkText: l10n.link_privacy_policy,
-            onLinkTap: () => context.push('/policy?type=privacy'),
+            onLinkTap: () async {
+              final accepted = await context.push<bool>('/policy?type=privacy');
+              if (accepted == true) {
+                widget.onPrivacyChanged(true);
+              }
+            },
           ),
           const SizedBox(height: 24),
           AppButton(
@@ -184,8 +196,8 @@ class _RegisterFormState extends State<RegisterForm> {
                 ? () {
                     AppConfirmationBottomSheet.show(
                       context: context,
-                      title: l10n.confirm,
-                      description: 'Do you want to register?',
+                      title: l10n.confirm_register,
+                      description: l10n.confirm_register_description,
                       confirmLabel: l10n.confirm,
                       cancelLabel: l10n.cancel_button,
                       style: ConfirmationStyle.normal,
@@ -195,8 +207,9 @@ class _RegisterFormState extends State<RegisterForm> {
                   }
                 : null,
           ),
-          const SizedBox(height: 24),
-          SocialLoginSection(role: widget.role),
+          // tmp close
+          // const SizedBox(height: 24),
+          // SocialLoginSection(role: widget.role),
         ],
       ),
     );

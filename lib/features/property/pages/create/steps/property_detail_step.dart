@@ -105,262 +105,335 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
       builder: (context, state) {
         final isCondoOrApt = state.isCondoOrApt;
 
-        return SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context).property_details_section,
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.primary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+        return Form(
+          autovalidateMode: state.showErrors
+              ? AutovalidateMode.always
+              : AutovalidateMode.disabled,
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context).property_details_section,
+                        style: GoogleFonts.anuphan(
+                          color: AppColors.primary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                  if (widget.step != null)
-                    AppBadge(
-                      color: BadgeColor.default_,
-                      label: '${widget.step}/5',
-                    ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Listing Type
-              AppSelectionPills<PropertyListingType>(
-                label: AppLocalizations.of(context).listingTypeLabel,
-                value: state.listingType,
-                isRequired: true,
-                options: [
-                  // Tmp Close
-                  // SelectionPillOption(
-                  //   label: AppLocalizations.of(context).listingTypeValueSale,
-                  //   value: PropertyListingType.sale,
-                  // ),
-                  SelectionPillOption(
-                    label: AppLocalizations.of(context).listingTypeValueRent,
-                    value: PropertyListingType.rent,
-                  ),
-                  SelectionPillOption(
-                    label: AppLocalizations.of(
-                      context,
-                    ).listingTypeValueSaleAndRent,
-                    value: PropertyListingType.saleAndRent,
-                  ),
-                ],
-                onChanged: (val) => context.read<PropertyFormBloc>().add(
-                  PropertyFormListingTypeChanged(val),
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Occupancy Status
-              AppSelectionPills<PropertyAvailabilityStatus>(
-                label: AppLocalizations.of(context).occupancyStatusLabel,
-                value: state.status,
-                isRequired: true,
-                options: [
-                  SelectionPillOption(
-                    label: AppLocalizations.of(context).statusValueAvailable,
-                    value: PropertyAvailabilityStatus.available,
-                  ),
-                  SelectionPillOption(
-                    label: AppLocalizations.of(context).statusValueNotAvailable,
-                    value: PropertyAvailabilityStatus.unavailable,
-                  ),
-                ],
-                onChanged: (val) => context.read<PropertyFormBloc>().add(
-                  PropertyFormStatusChanged(val),
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Dynamic Filters or Fallback
-              if (state.specificationFilters.singleSelect.isNotEmpty)
-                ...state.specificationFilters.singleSelect.map((filter) {
-                  if (filter.key == 'style') {
-                    return SizedBox.shrink();
-                  }
-
-                  return Column(
-                    children: [
-                      AppSelectionPills<String>(
-                        label: filter.label,
-                        value: state.specifications[filter.key],
-                        isRequired: true,
-                        options: filter.options
-                            .map(
-                              (opt) =>
-                                  SelectionPillOption(label: opt, value: opt),
-                            )
-                            .toList(),
-                        onChanged: (val) =>
-                            context.read<PropertyFormBloc>().add(
-                              PropertyFormDynamicSingleSelectChanged(
-                                filter.key,
-                                val,
-                              ),
-                            ),
+                    if (widget.step != null)
+                      AppBadge(
+                        color: BadgeColor.default_,
+                        label: '${widget.step}/5',
                       ),
-                      const SizedBox(height: 24),
-                    ],
-                  );
-                })
-              else ...[
-                // Fallback: Total Floors
-                AppSelectionPills<int>(
-                  label: AppLocalizations.of(context).totalFloorsLabel,
-                  value: state.totalFloors,
-                  isRequired: true,
-                  options: List.generate(
-                    5,
-                    (i) => SelectionPillOption(label: '${i + 1}', value: i + 1),
-                  ),
-                  onChanged: (val) => context.read<PropertyFormBloc>().add(
-                    PropertyFormDetailsUpdated(totalFloors: val),
-                  ),
+                  ],
                 ),
                 const SizedBox(height: 24),
 
-                // Fallback: Bedrooms
-                AppSelectionPills<int>(
-                  label: AppLocalizations.of(context).bedroomsLabel,
-                  value: state.bedrooms,
+                // Listing Type
+                AppSelectionPills<PropertyListingType>(
+                  label: AppLocalizations.of(context).listingTypeLabel,
+                  value: state.listingType,
                   isRequired: true,
                   options: [
-                    ...List.generate(
+                    SelectionPillOption(
+                      label: AppLocalizations.of(context).listingTypeValueSale,
+                      value: PropertyListingType.sale,
+                    ),
+                    SelectionPillOption(
+                      label: AppLocalizations.of(context).listingTypeValueRent,
+                      value: PropertyListingType.rent,
+                    ),
+                    SelectionPillOption(
+                      label: AppLocalizations.of(
+                        context,
+                      ).listingTypeValueSaleAndRent,
+                      value: PropertyListingType.saleAndRent,
+                    ),
+                  ],
+                  onChanged: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormListingTypeChanged(val),
+                  ),
+                ),
+                if (state.showErrors && state.listingType == null)
+                  _buildSelectionError(context),
+                const SizedBox(height: 24),
+
+                // Occupancy Status
+                AppSelectionPills<PropertyAvailabilityStatus>(
+                  label: AppLocalizations.of(context).occupancyStatusLabel,
+                  value: state.status,
+                  isRequired: true,
+                  options: [
+                    SelectionPillOption(
+                      label: AppLocalizations.of(context).statusValueAvailable,
+                      value: PropertyAvailabilityStatus.available,
+                    ),
+                    SelectionPillOption(
+                      label: AppLocalizations.of(
+                        context,
+                      ).statusValueNotAvailable,
+                      value: PropertyAvailabilityStatus.unavailable,
+                    ),
+                  ],
+                  onChanged: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormStatusChanged(val),
+                  ),
+                ),
+                if (state.showErrors && state.status == null)
+                  _buildSelectionError(context),
+                const SizedBox(height: 24),
+
+                // Dynamic Filters or Fallback
+                if (state.specificationFilters.singleSelect.isNotEmpty)
+                  ...state.specificationFilters.singleSelect.map((filter) {
+                    if (filter.key == 'style') {
+                      return SizedBox.shrink();
+                    }
+
+                    return Column(
+                      children: [
+                        AppSelectionPills<String>(
+                          label: filter.label,
+                          value: state.specifications[filter.key],
+                          isRequired: true,
+                          options: filter.options
+                              .map(
+                                (opt) =>
+                                    SelectionPillOption(label: opt, value: opt),
+                              )
+                              .toList(),
+                          onChanged: (val) =>
+                              context.read<PropertyFormBloc>().add(
+                                PropertyFormDynamicSingleSelectChanged(
+                                  filter.key,
+                                  val,
+                                ),
+                              ),
+                        ),
+                        if (state.showErrors &&
+                            state.specifications[filter.key] == null)
+                          _buildSelectionError(context),
+                        const SizedBox(height: 24),
+                      ],
+                    );
+                  })
+                else ...[
+                  // Fallback: Total Floors
+                  AppSelectionPills<int>(
+                    label: AppLocalizations.of(context).totalFloorsLabel,
+                    value: state.totalFloors,
+                    isRequired: true,
+                    options: List.generate(
+                      5,
+                      (i) =>
+                          SelectionPillOption(label: '${i + 1}', value: i + 1),
+                    ),
+                    onChanged: (val) => context.read<PropertyFormBloc>().add(
+                      PropertyFormDetailsUpdated(totalFloors: val),
+                    ),
+                  ),
+                  if (state.showErrors && state.totalFloors == null)
+                    _buildSelectionError(context),
+                  const SizedBox(height: 24),
+
+                  // Fallback: Bedrooms
+                  AppSelectionPills<int>(
+                    label: AppLocalizations.of(context).bedroomsLabel,
+                    value: state.bedrooms,
+                    isRequired: true,
+                    options: [
+                      ...List.generate(
+                        8,
+                        (i) => SelectionPillOption(
+                          label: '${i + 1}',
+                          value: i + 1,
+                        ),
+                      ),
+                      const SelectionPillOption(label: 'Studio', value: 0),
+                    ],
+                    onChanged: (val) => context.read<PropertyFormBloc>().add(
+                      PropertyFormDetailsUpdated(bedrooms: val),
+                    ),
+                  ),
+                  if (state.showErrors && state.bedrooms == null)
+                    _buildSelectionError(context),
+                  const SizedBox(height: 24),
+
+                  // Fallback: Bathrooms
+                  AppSelectionPills<int>(
+                    label: AppLocalizations.of(context).bathroomsLabel,
+                    value: state.bathrooms,
+                    isRequired: true,
+                    options: List.generate(
                       8,
                       (i) =>
                           SelectionPillOption(label: '${i + 1}', value: i + 1),
                     ),
-                    const SelectionPillOption(label: 'Studio', value: 0),
-                  ],
-                  onChanged: (val) => context.read<PropertyFormBloc>().add(
-                    PropertyFormDetailsUpdated(bedrooms: val),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Fallback: Bathrooms
-                AppSelectionPills<int>(
-                  label: AppLocalizations.of(context).bathroomsLabel,
-                  value: state.bathrooms,
-                  isRequired: true,
-                  options: List.generate(
-                    8,
-                    (i) => SelectionPillOption(label: '${i + 1}', value: i + 1),
-                  ),
-                  onChanged: (val) => context.read<PropertyFormBloc>().add(
-                    PropertyFormDetailsUpdated(bathrooms: val),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Fallback: Parking
-                AppSelectionPills<int>(
-                  label: AppLocalizations.of(context).parkingLabel,
-                  value: state.garage,
-                  isRequired: true,
-                  options: List.generate(
-                    8,
-                    (i) => SelectionPillOption(label: '${i + 1}', value: i + 1),
-                  ),
-                  onChanged: (val) => context.read<PropertyFormBloc>().add(
-                    PropertyFormDetailsUpdated(garage: val),
-                  ),
-                ),
-                const SizedBox(height: 24),
-              ],
-
-              // Construction Date (Built)
-              AppTextFormField(
-                label: AppLocalizations.of(context).builtLabel,
-                controller: _builtController,
-                isRequired: true,
-                readOnly: false,
-                showCursor: false,
-                hintText: AppLocalizations.of(context).builtHint,
-                suffix: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: SvgPicture.asset(
-                    'assets/icons/calendar.svg',
-                    width: 16,
-                    height: 16,
-                    colorFilter: ColorFilter.mode(
-                      AppColors.baseGrey,
-                      BlendMode.srcIn,
+                    onChanged: (val) => context.read<PropertyFormBloc>().add(
+                      PropertyFormDetailsUpdated(bathrooms: val),
                     ),
                   ),
-                ),
-                onTap: () async {
-                  final picked = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  );
-                  if (picked != null) {
-                    if (!context.mounted) return;
-                    context.read<PropertyFormBloc>().add(
-                      PropertyFormAdditionalInfoUpdated(built: picked),
+                  if (state.showErrors && state.bathrooms == null)
+                    _buildSelectionError(context),
+                  const SizedBox(height: 24),
+
+                  // Fallback: Parking
+                  AppSelectionPills<int>(
+                    label: AppLocalizations.of(context).parkingLabel,
+                    value: state.garage,
+                    isRequired: true,
+                    options: List.generate(
+                      8,
+                      (i) =>
+                          SelectionPillOption(label: '${i + 1}', value: i + 1),
+                    ),
+                    onChanged: (val) => context.read<PropertyFormBloc>().add(
+                      PropertyFormDetailsUpdated(garage: val),
+                    ),
+                  ),
+                  if (state.showErrors && state.garage == null)
+                    _buildSelectionError(context),
+                  const SizedBox(height: 24),
+                ],
+
+                // Construction Date (Built)
+                AppTextFormField(
+                  label: AppLocalizations.of(context).builtLabel,
+                  controller: _builtController,
+                  isRequired: true,
+                  readOnly: false,
+                  showCursor: false,
+                  hintText: AppLocalizations.of(context).builtHint,
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return AppLocalizations.of(context).this_field_required;
+                    }
+                    return null;
+                  },
+                  suffix: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SvgPicture.asset(
+                      'assets/icons/calendar.svg',
+                      width: 16,
+                      height: 16,
+                      colorFilter: ColorFilter.mode(
+                        AppColors.baseGrey,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
                     );
-                  }
-                },
-              ),
-              const SizedBox(height: 24),
-
-              // Property Color (Asset Color) - Updated to use AppDropdownFormField
-              AppDropdownFormField<PropertyColor>(
-                label: AppLocalizations.of(context).propertyColor,
-                value: state.houseColor,
-                isRequired: true,
-                hint: AppLocalizations.of(context).propertyColorHint,
-                items: PropertyColor.values,
-                itemLabel: (color) => color.label,
-                onChanged: (val) => context.read<PropertyFormBloc>().add(
-                  PropertyFormDetailsUpdated(houseColor: val),
+                    if (picked != null) {
+                      if (!context.mounted) return;
+                      context.read<PropertyFormBloc>().add(
+                        PropertyFormAdditionalInfoUpdated(built: picked),
+                      );
+                    }
+                  },
                 ),
-              ),
-              const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-              // Price
-              AppTextFormField(
-                label: AppLocalizations.of(context).priceLabel,
-                controller: _priceController,
-                inputFormatters: [CurrencyInputFormatter()],
-                isRequired: true,
-                hintText: '0',
-                suffix: Text(
-                  AppLocalizations.of(context).currencyUnit,
-                  style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                // Property Color (Asset Color) - Updated to use AppDropdownFormField
+                AppDropdownFormField<PropertyColor>(
+                  label: AppLocalizations.of(context).propertyColor,
+                  value: state.houseColor,
+                  isRequired: true,
+                  hint: AppLocalizations.of(context).propertyColorHint,
+                  items: PropertyColor.values,
+                  itemLabel: (color) => color.label,
+                  onChanged: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormDetailsUpdated(houseColor: val),
+                  ),
                 ),
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 24),
+                if (state.showErrors && state.houseColor == null)
+                  _buildSelectionError(context),
+                const SizedBox(height: 24),
 
-              // Land Size & Building Size
-              Row(
-                children: [
-                  if (!isCondoOrApt) ...[
+                // Price
+                AppTextFormField(
+                  label: AppLocalizations.of(context).priceLabel,
+                  controller: _priceController,
+                  inputFormatters: [CurrencyInputFormatter()],
+                  isRequired: true,
+                  hintText: '0',
+                  validator: (val) {
+                    if (val == null || val.isEmpty || val == '0') {
+                      return AppLocalizations.of(context).this_field_required;
+                    }
+                    return null;
+                  },
+                  suffix: Text(
+                    AppLocalizations.of(context).currencyUnit,
+                    style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 24),
+
+                // Land Size & Building Size
+                Row(
+                  children: [
+                    if (!isCondoOrApt) ...[
+                      Expanded(
+                        child: AppTextFormField(
+                          label: AppLocalizations.of(context).landSizeLabel,
+                          controller: _landSizeController,
+                          maxLength: 6,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d*\.?\d{0,2}'),
+                            ),
+                          ],
+                          isRequired: true,
+                          hintText: '0.00',
+                          validator: (val) {
+                            if (val == null || val.isEmpty || val == '0.00') {
+                              return AppLocalizations.of(
+                                context,
+                              ).this_field_required;
+                            }
+                            return null;
+                          },
+                          suffix: Text(
+                            AppLocalizations.of(context).sqWahUnit,
+                            style: GoogleFonts.anuphan(
+                              color: AppColors.baseGrey,
+                            ),
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: true,
+                            decimal: true,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                    ],
                     Expanded(
                       child: AppTextFormField(
-                        label: AppLocalizations.of(context).landSizeLabel,
-                        controller: _landSizeController,
+                        label: AppLocalizations.of(context).usableAreaLabel,
+                        controller: _buildingSizeController,
                         maxLength: 6,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
@@ -369,8 +442,16 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                         ],
                         isRequired: true,
                         hintText: '0.00',
+                        validator: (val) {
+                          if (val == null || val.isEmpty || val == '0.00') {
+                            return AppLocalizations.of(
+                              context,
+                            ).this_field_required;
+                          }
+                          return null;
+                        },
                         suffix: Text(
-                          AppLocalizations.of(context).sqWahUnit,
+                          AppLocalizations.of(context).sqmUnit,
                           style: GoogleFonts.anuphan(color: AppColors.baseGrey),
                         ),
                         keyboardType: const TextInputType.numberWithOptions(
@@ -379,50 +460,37 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16),
                   ],
-                  Expanded(
-                    child: AppTextFormField(
-                      label: AppLocalizations.of(context).usableAreaLabel,
-                      controller: _buildingSizeController,
-                      maxLength: 6,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'^\d*\.?\d{0,2}'),
-                        ),
-                      ],
-                      isRequired: true,
-                      hintText: '0.00',
-                      suffix: Text(
-                        AppLocalizations.of(context).sqmUnit,
-                        style: GoogleFonts.anuphan(color: AppColors.baseGrey),
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        signed: true,
-                        decimal: true,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Direction - Updated to use AppDropdownFormField
-              AppDropdownFormField<PropertyDirection>(
-                label: AppLocalizations.of(context).propertyDirectionLabel,
-                value: state.direction,
-                hint: AppLocalizations.of(context).propertyDirectionHint,
-                items: PropertyDirection.values,
-                itemLabel: (dir) => dir.label,
-                onChanged: (val) => context.read<PropertyFormBloc>().add(
-                  PropertyFormAdditionalInfoUpdated(direction: val),
                 ),
-              ),
-              const SizedBox(height: 100), // Bottom padding
-            ],
+                const SizedBox(height: 24),
+
+                // Direction - Updated to use AppDropdownFormField
+                AppDropdownFormField<PropertyDirection>(
+                  label: AppLocalizations.of(context).propertyDirectionLabel,
+                  value: state.direction,
+                  hint: AppLocalizations.of(context).propertyDirectionHint,
+                  items: PropertyDirection.values,
+                  itemLabel: (dir) => dir.label,
+                  onChanged: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormAdditionalInfoUpdated(direction: val),
+                  ),
+                ),
+                const SizedBox(height: 100), // Bottom padding
+              ],
+            ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildSelectionError(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, left: 4),
+      child: Text(
+        AppLocalizations.of(context).this_field_required,
+        style: GoogleFonts.anuphan(color: AppColors.error, fontSize: 12),
+      ),
     );
   }
 }

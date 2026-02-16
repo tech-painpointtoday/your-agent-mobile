@@ -45,6 +45,27 @@ class PropertyTypeStep extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           const _PropertyTypeGrid(),
+          const SizedBox(height: 16),
+          BlocBuilder<PropertyFormBloc, PropertyFormState>(
+            buildWhen: (prev, curr) =>
+                prev.showErrors != curr.showErrors ||
+                prev.selectedPropertyType != curr.selectedPropertyType,
+            builder: (context, state) {
+              if (state.showErrors && state.selectedPropertyType == null) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Text(
+                    AppLocalizations.of(context).this_field_required,
+                    style: GoogleFonts.anuphan(
+                      color: AppColors.error,
+                      fontSize: 12,
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ],
       ),
     );

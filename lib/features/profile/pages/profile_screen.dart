@@ -309,8 +309,10 @@ class ProfileView extends StatelessWidget {
               const SizedBox(height: 24),
               _buildPersonalInfoCard(context, agent),
               const SizedBox(height: 16),
-              _buildConnectionCodeCard(context, agent),
-              const SizedBox(height: 16),
+              if (agent.agentCredential.isNotEmpty) ...[
+                _buildConnectionCodeCard(context, agent),
+                const SizedBox(height: 16),
+              ],
               _buildWorkInfoCard(context, agent),
               const SizedBox(height: 16),
               _buildServiceAreaCard(context, agent),
@@ -459,13 +461,9 @@ class ProfileView extends StatelessWidget {
       title: AppLocalizations.of(context).profile_agent_code,
       onCopy: (BuildContext context) {
         Clipboard.setData(ClipboardData(text: agent.agentCredential));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context).connectionCodeCopied,
-              style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.white),
-            ),
-          ),
+        StatusDialog.showSuccess(
+          context: context,
+          title: AppLocalizations.of(context).connectionCodeCopied,
         );
       },
       child: Column(

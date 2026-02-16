@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -40,20 +41,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       listener: (context, state) {
         if (state is AuthOperationState) {
           if (state.forgotPasswordStatus == ForgotPasswordStatus.success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(AppLocalizations.of(context).submitPassword),
-              ),
+            StatusDialog.showSuccess(
+              context: context,
+              title: AppLocalizations.of(context).submitPassword,
             );
           } else if (state.forgotPasswordStatus ==
               ForgotPasswordStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
+            StatusDialog.showError(
+              context: context,
+              title: AppLocalizations.of(context).errorOccurredTitle,
+              message:
                   state.errorMessage ??
-                      AppLocalizations.of(context).submitEmail,
-                ),
-              ),
+                  AppLocalizations.of(context).submitEmail,
             );
           }
         }

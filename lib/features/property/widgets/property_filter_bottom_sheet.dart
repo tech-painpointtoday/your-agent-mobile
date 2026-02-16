@@ -33,6 +33,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
   String? selectedListingType;
   String? selectedStatus;
   String? selectedColor;
+  bool? isDraft;
   final TextEditingController _minPriceController = TextEditingController();
   final TextEditingController _maxPriceController = TextEditingController();
   int? selectedFloors;
@@ -52,7 +53,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
     super.initState();
     final filter = widget.initialFilter;
     if (filter != null) {
-      selectedApprovalStatus = filter.approvalStatus;
+      isDraft = filter.isDraft;
       selectedPropertyType = filter.propertyType;
       selectedListingType = filter.listingType;
       selectedStatus = filter.occupancyStatus;
@@ -79,12 +80,17 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
       // Ensure defaults for sections with "All" option if null
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context);
           _updateFilter(() {
-            selectedApprovalStatus ??= AppLocalizations.of(context).all;
-            selectedPropertyType ??= AppLocalizations.of(context).all;
-            selectedListingType ??= AppLocalizations.of(context).all;
-            selectedStatus ??= AppLocalizations.of(context).all;
-            selectedColor ??= AppLocalizations.of(context).all;
+            if (isDraft == true) {
+              selectedApprovalStatus = l10n.draftLabel;
+            } else {
+              selectedApprovalStatus = filter.approvalStatus ?? l10n.all;
+            }
+            selectedPropertyType ??= l10n.all;
+            selectedListingType ??= l10n.all;
+            selectedStatus ??= l10n.all;
+            selectedColor ??= l10n.all;
           });
         }
       });
@@ -101,7 +107,6 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
         }
       });
     }
-    _updateMatchingCount();
     _minPriceController.addListener(_updateMatchingCount);
     _maxPriceController.addListener(_updateMatchingCount);
     _landSizeController.addListener(_updateMatchingCount);
@@ -109,8 +114,24 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
   }
 
   void _updateMatchingCount() {
+    final l10n = AppLocalizations.of(context);
+    bool? filterIsDraft;
+    String? filterApprovalStatus;
+
+    if (selectedApprovalStatus == l10n.draftLabel) {
+      filterIsDraft = true;
+      filterApprovalStatus = null;
+    } else if (selectedApprovalStatus == l10n.all) {
+      filterIsDraft = null;
+      filterApprovalStatus = null;
+    } else {
+      filterIsDraft = false;
+      filterApprovalStatus = selectedApprovalStatus;
+    }
+
     final filter = PropertyFilter(
-      approvalStatus: selectedApprovalStatus,
+      isDraft: filterIsDraft,
+      approvalStatus: filterApprovalStatus,
       propertyType: selectedPropertyType,
       listingType: selectedListingType,
       occupancyStatus: selectedStatus,
@@ -234,6 +255,18 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                                   AppLocalizations.of(context).all,
                               onTap: () => _onChipTap(
                                 AppLocalizations.of(context).all,
+                                selectedApprovalStatus,
+                                AppLocalizations.of(context).all,
+                                (v) => selectedApprovalStatus = v,
+                              ),
+                            ),
+                            _buildChip(
+                              AppLocalizations.of(context).draftLabel,
+                              isSelected:
+                                  selectedApprovalStatus ==
+                                  AppLocalizations.of(context).draftLabel,
+                              onTap: () => _onChipTap(
+                                AppLocalizations.of(context).draftLabel,
                                 selectedApprovalStatus,
                                 AppLocalizations.of(context).all,
                                 (v) => selectedApprovalStatus = v,
@@ -676,19 +709,12 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 20,
-            child: Row(
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.anuphan(
-                    color: const Color(0xFF181D27),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+          Text(
+            title,
+            style: GoogleFonts.anuphan(
+              color: const Color(0xFF181D27),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 8),
@@ -983,10 +1009,24 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
   }
 
   void _applyFilters() {
+    final l10n = AppLocalizations.of(context);
+    bool? filterIsDraft;
+    String? filterApprovalStatus;
+
+    if (selectedApprovalStatus == l10n.draftLabel) {
+      filterIsDraft = true;
+      filterApprovalStatus = null;
+    } else if (selectedApprovalStatus == l10n.all) {
+      filterIsDraft = null;
+      filterApprovalStatus = null;
+    } else {
+      filterIsDraft = false;
+      filterApprovalStatus = selectedApprovalStatus;
+    }
+
     final filter = PropertyFilter(
-      approvalStatus: selectedApprovalStatus == AppLocalizations.of(context).all
-          ? null
-          : selectedApprovalStatus,
+      isDraft: filterIsDraft,
+      approvalStatus: filterApprovalStatus,
       propertyType: selectedPropertyType == AppLocalizations.of(context).all
           ? null
           : selectedPropertyType,

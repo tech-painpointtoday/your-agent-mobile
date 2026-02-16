@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/appliance_item.dart';
+import 'package:youragent/domain/entities/contract_item_definition.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
@@ -200,6 +201,8 @@ class _ApplianceStepState extends State<ApplianceStep> {
                         _ApplianceItemCard(
                           index: index + 1,
                           item: item,
+                          itemDefinitions:
+                              state.itemDefinitions?.appliances ?? const [],
                           onDelete: () {
                             if (item.hasData) {
                               AppConfirmationBottomSheet.show(
@@ -309,6 +312,7 @@ class _ApplianceStepState extends State<ApplianceStep> {
 class _ApplianceItemCard extends StatefulWidget {
   final int index;
   final ApplianceItem item;
+  final List<ContractItemDefinition> itemDefinitions;
   final VoidCallback onDelete;
   final Function(ApplianceItem) onUpdate;
   final VoidCallback onPickImage;
@@ -316,19 +320,10 @@ class _ApplianceItemCard extends StatefulWidget {
   final Function(String) onRemoveImage;
   final VoidCallback onDeleteAllImages;
 
-  static const List<String> commonAppliances = [
-    'ตู้เย็น',
-    'ทีวี',
-    'เครื่องปรับอากาศ',
-    'เครื่องซักผ้า',
-    'ไมโครเวฟ',
-    'พัดลม',
-    'เครื่องทำน้ำอุ่น',
-  ];
-
   const _ApplianceItemCard({
     required this.index,
     required this.item,
+    required this.itemDefinitions,
     required this.onDelete,
     required this.onUpdate,
     required this.onPickImage,
@@ -347,41 +342,84 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
   @override
   void initState() {
     super.initState();
-    _isOtherSelected =
-        widget.item.name.isNotEmpty &&
-        !_ApplianceItemCard.commonAppliances.contains(widget.item.name);
+    _isOtherSelected = _checkIsOtherSelected();
+  }
+
+  bool _isOther(ContractItemDefinition d) {
+    final val = d.value.toLowerCase();
+    return val == 'other' ||
+        val == 'อื่นๆ' ||
+        d.labelEn.toLowerCase() == 'other' ||
+        d.labelTh == 'อื่น ๆ' ||
+        (widget.itemDefinitions.isNotEmpty &&
+            d.value == widget.itemDefinitions.last.value &&
+            (d.labelEn.toLowerCase().contains('other') ||
+                d.labelTh.contains('อื่น')));
+  }
+
+  bool _checkIsOtherSelected() {
+    final itemCode = widget.item.itemCode;
+
+    // Check if itemCode matches any definition that is "Other"
+    if (itemCode != null) {
+      final definition = widget.itemDefinitions
+          .cast<ContractItemDefinition?>()
+          .firstWhere((d) => d?.value == itemCode, orElse: () => null);
+      if (definition != null && _isOther(definition)) {
+        return true;
+      }
+    }
+
+    // If it has a name but no itemCode, check if it's NOT a predefined item
+    if (widget.item.name.isNotEmpty && itemCode == null) {
+      final matchesAny = widget.itemDefinitions.any(
+        (d) =>
+            !_isOther(d) &&
+            (d.labelEn == widget.item.name ||
+                d.labelTh == widget.item.name ||
+                d.value == widget.item.name),
+      );
+      return !matchesAny;
+    }
+
+    return false;
   }
 
   @override
   void didUpdateWidget(_ApplianceItemCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.item.name != oldWidget.item.name) {
-      final isCommon = _ApplianceItemCard.commonAppliances.contains(
-        widget.item.name,
-      );
-      if (isCommon) {
-        _isOtherSelected = false;
-      } else if (widget.item.name.isNotEmpty) {
-        _isOtherSelected = true;
-      }
-      // If name is empty, keep current _isOtherSelected state
+    if (widget.item.name != oldWidget.item.name ||
+        widget.item.itemCode != oldWidget.item.itemCode ||
+        widget.itemDefinitions != oldWidget.itemDefinitions) {
+      _isOtherSelected = _checkIsOtherSelected();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final options = [
-      ..._ApplianceItemCard.commonAppliances.map(
-        (a) => AppChipOption(label: a, value: a),
-      ),
-      const AppChipOption(label: 'อื่น ๆ', value: '__other__'),
-    ];
+    final currentLanguage = Localizations.localeOf(context).languageCode;
+
+    final options = widget.itemDefinitions.map((d) {
+      final label = currentLanguage == 'en' ? d.labelEn : d.labelTh;
+      return AppChipOption(label: label, value: d.value);
+    }).toList();
 
     String? selectedValue;
-    if (_isOtherSelected) {
-      selectedValue = '__other__';
-    } else if (_ApplianceItemCard.commonAppliances.contains(widget.item.name)) {
-      selectedValue = widget.item.name;
+    if (widget.item.itemCode != null) {
+      selectedValue = widget.item.itemCode;
+    } else if (widget.item.name.isNotEmpty) {
+      final definition = widget.itemDefinitions
+          .cast<ContractItemDefinition?>()
+          .firstWhere(
+            (d) =>
+                d?.labelEn == widget.item.name ||
+                d?.labelTh == widget.item.name ||
+                d?.value == widget.item.name,
+            orElse: () => null,
+          );
+      if (definition != null) {
+        selectedValue = definition.value;
+      }
     }
 
     return Column(
@@ -420,17 +458,25 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
           options: options,
           onChanged: (val) {
             setState(() {
-              if (val == '__other__') {
+              final definition = widget.itemDefinitions.firstWhere(
+                (d) => d.value == val,
+              );
+              final isOtherSelected = _isOther(definition);
+
+              if (isOtherSelected) {
                 _isOtherSelected = true;
-                // Don't clear name immediately if it was already something custom
-                if (_ApplianceItemCard.commonAppliances.contains(
-                  widget.item.name,
-                )) {
-                  widget.onUpdate(widget.item.copyWith(name: ''));
-                }
+                // If switching to "Other", clear name but keep itemCode
+                widget.onUpdate(
+                  widget.item.copyWith(name: '', itemCode: definition.value),
+                );
               } else {
                 _isOtherSelected = false;
-                widget.onUpdate(widget.item.copyWith(name: val));
+                final label = currentLanguage == 'en'
+                    ? definition.labelEn
+                    : definition.labelTh;
+                widget.onUpdate(
+                  widget.item.copyWith(name: label, itemCode: definition.value),
+                );
               }
             });
           },
@@ -627,37 +673,23 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: isNetwork
-                          ? Image.network(
-                              path,
+                          ? CachedNetworkImage(
+                              imageUrl: path,
                               fit: BoxFit.cover,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                    if (loadingProgress == null) {
-                                      return child;
-                                    }
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value:
-                                            loadingProgress
-                                                    .expectedTotalBytes !=
-                                                null
-                                            ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  loadingProgress
-                                                      .expectedTotalBytes!
-                                            : null,
-                                      ),
-                                    );
-                                  },
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Container(
-                                    color: Colors.grey[200],
-                                    child: const Icon(
-                                      Icons.image,
-                                      size: 50,
-                                      color: Colors.grey,
+                              progressIndicatorBuilder:
+                                  (context, url, progress) => Center(
+                                    child: CircularProgressIndicator(
+                                      value: progress.progress,
                                     ),
                                   ),
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors.grey[200],
+                                child: const Icon(
+                                  Icons.image,
+                                  size: 50,
+                                  color: Colors.grey,
+                                ),
+                              ),
                             )
                           : Image.file(
                               File(path),

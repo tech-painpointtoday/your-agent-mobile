@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:youragent/domain/entities/property.dart';
+import 'package:youragent/domain/entities/property_image.dart';
 import '../../../../data/models/developer_model.dart';
 import '../../../../data/models/condo_project_model.dart';
 import '../../../../data/models/property_specification_filters.dart';
@@ -16,14 +17,16 @@ enum PropertyFormStatus {
 }
 
 class PropertyFormImage extends Equatable {
+  final int? id;
   final XFile? file;
   final String? url;
 
-  const PropertyFormImage({this.file, this.url});
+  const PropertyFormImage({this.id, this.file, this.url});
 
   factory PropertyFormImage.fromXFile(XFile file) =>
       PropertyFormImage(file: file);
-  factory PropertyFormImage.fromUrl(String url) => PropertyFormImage(url: url);
+  factory PropertyFormImage.fromUrl(String url, {int? id}) =>
+      PropertyFormImage(url: url, id: id);
 
   bool get isNetwork => url != null;
   bool get isFile => file != null;
@@ -32,7 +35,7 @@ class PropertyFormImage extends Equatable {
   String get path => isFile ? file!.path : (url ?? '');
 
   @override
-  List<Object?> get props => [file, url];
+  List<Object?> get props => [id, file, url];
 }
 
 class PropertyFormState extends Equatable {
@@ -41,6 +44,7 @@ class PropertyFormState extends Equatable {
   final String? errorMessage;
   final int? propertyId; // Resulting property ID after success
   final bool isDraft; // Indicates if editing a draft property
+  final bool showErrors; // Whether to show validation errors on fields
 
   // Data fields
   final PropertyType? selectedPropertyType;
@@ -118,6 +122,7 @@ class PropertyFormState extends Equatable {
     this.errorMessage,
     this.propertyId,
     this.isDraft = false,
+    this.showErrors = false,
     this.selectedPropertyType,
     this.name,
     this.price,
@@ -190,13 +195,12 @@ class PropertyFormState extends Equatable {
         property.propertyType == PropertyType.condo ||
         property.propertyType == PropertyType.apartment;
 
-    final baseValid =
-        property.number != null &&
-        property.name != null &&
-        property.address != null &&
-        property.formattedAddressTh != null;
+    final baseValid = property.name != null && property.address != null;
 
     if (!baseValid) return 2;
+
+    print("isCondoOrApt: $isCondoOrApt");
+    print("property.number: ${property.number}");
 
     if (isCondoOrApt) {
       final developerId = safeNum(specs['developer_id']);
@@ -210,6 +214,8 @@ class PropertyFormState extends Equatable {
           unitNo == null) {
         return 2;
       }
+    } else {
+      if (property.number == null) return 2;
     }
 
     // Step 3: Property Details (price, bedrooms, bathrooms, etc.)
@@ -287,6 +293,7 @@ class PropertyFormState extends Equatable {
     return PropertyFormState(
       step: initialStep,
       isDraft: isDraft,
+      showErrors: false,
       propertyId: p.id,
       selectedPropertyType: p.propertyType,
       name: p.name,
@@ -304,7 +311,14 @@ class PropertyFormState extends Equatable {
       built: p.built,
       direction: p.direction,
       availableFrom: p.availableFrom,
-      images: p.imageUrls.map((url) => PropertyFormImage.fromUrl(url)).toList(),
+      images: p.images
+          .map(
+            (img) => img.url != null
+                ? PropertyFormImage.fromUrl(img.url!, id: img.id)
+                : null,
+          )
+          .whereType<PropertyFormImage>()
+          .toList(),
 
       // Location
       number: p.number,
@@ -379,7 +393,7 @@ class PropertyFormState extends Equatable {
       'available_from': availableFrom,
       'listing_type': listingType?.value,
       'status': status?.value,
-      'total_floors': totalFloors,
+      'floors': totalFloors,
       'style': propertyStyle?.id,
       'location_set': latitude != null && longitude != null,
       'number': number,
@@ -480,8 +494,7 @@ class PropertyFormState extends Equatable {
           garage != null &&
           built != null &&
           houseColor != null &&
-          (price != null && price! > 0) &&
-          direction != null;
+          (price != null && price! > 0);
 
       if (isCondoOrApt) {
         return baseValid && (buildingSize != null && buildingSize! > 0);
@@ -492,7 +505,7 @@ class PropertyFormState extends Equatable {
       }
     }
     if (step == 4) {
-      return propertyStyle != null && description?.isNotEmpty == true;
+      return description?.isNotEmpty == true;
     }
     if (step == 5) {
       return images.isNotEmpty;
@@ -506,6 +519,7 @@ class PropertyFormState extends Equatable {
     String? errorMessage,
     int? propertyId,
     bool? isDraft,
+    bool? showErrors,
     PropertyType? selectedPropertyType,
     String? name,
     double? price,
@@ -563,6 +577,7 @@ class PropertyFormState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       propertyId: propertyId ?? this.propertyId,
       isDraft: isDraft ?? this.isDraft,
+      showErrors: showErrors ?? this.showErrors,
       selectedPropertyType: selectedPropertyType ?? this.selectedPropertyType,
       name: name ?? this.name,
       price: price ?? this.price,
@@ -625,6 +640,9 @@ class PropertyFormState extends Equatable {
     };
     specsMap['floors'] = totalFloors?.toString();
     specsMap['bedrooms'] = bedrooms?.toString();
+    specsMap['bathrooms'] = bathrooms?.toString();
+    specsMap['parking_spaces'] = garage?.toString();
+    specsMap['garage'] = garage?.toString();
     final specValuesMap = Map<String, dynamic>.from(specificationValues);
 
     // 3. Create Entity
@@ -638,7 +656,7 @@ class PropertyFormState extends Equatable {
       price: price ?? 0,
 
       // Status
-      approvalStatus: PropertyApprovalStatus.draft, // Mark as draft for UI
+      approvalStatus: PropertyApprovalStatus.pending, // Mark as draft for UI
       listingType: listingType,
       status: status, // mapped from state.status field
       availableFrom: availableFrom,
@@ -684,9 +702,9 @@ class PropertyFormState extends Equatable {
           .where((img) => img.isFile)
           .map((img) => img.file!)
           .toList(),
-      imageUrls: images
+      images: images
           .where((img) => img.isNetwork)
-          .map((img) => img.url!)
+          .map((img) => PropertyImage(id: img.id ?? 0, url: img.url!))
           .toList(),
 
       createdAt: DateTime.now(),
@@ -700,6 +718,7 @@ class PropertyFormState extends Equatable {
     errorMessage,
     propertyId,
     isDraft,
+    showErrors,
     selectedPropertyType,
     name,
     price,

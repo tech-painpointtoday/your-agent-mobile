@@ -146,103 +146,104 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 18),
                   // Role segmented switch (same style as login)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () => _handleRoleChange(UserRole.agent),
-                          child: Container(
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: _role == UserRole.agent
-                                  ? AppColors.buttonLightGreen
-                                  : AppColors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: _role == UserRole.agent
-                                  ? Border.all(color: const Color(0xFF32A792))
-                                  : null,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/icons/user.svg',
-                                  width: 16,
-                                  height: 16,
-                                  colorFilter: ColorFilter.mode(
-                                    _role == UserRole.agent
-                                        ? AppColors.jungleGreen
-                                        : AppColors.baseDarkGrey,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
+                  // tmp close
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: InkWell(
+                  //         borderRadius: BorderRadius.circular(12),
+                  //         onTap: () => _handleRoleChange(UserRole.agent),
+                  //         child: Container(
+                  //           height: 44,
+                  //           decoration: BoxDecoration(
+                  //             color: _role == UserRole.agent
+                  //                 ? AppColors.buttonLightGreen
+                  //                 : AppColors.white,
+                  //             borderRadius: BorderRadius.circular(12),
+                  //             border: _role == UserRole.agent
+                  //                 ? Border.all(color: const Color(0xFF32A792))
+                  //                 : null,
+                  //           ),
+                  //           child: Row(
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             children: [
+                  //               SvgPicture.asset(
+                  //                 'assets/icons/user.svg',
+                  //                 width: 16,
+                  //                 height: 16,
+                  //                 colorFilter: ColorFilter.mode(
+                  //                   _role == UserRole.agent
+                  //                       ? AppColors.jungleGreen
+                  //                       : AppColors.baseDarkGrey,
+                  //                   BlendMode.srcIn,
+                  //                 ),
+                  //               ),
 
-                                const SizedBox(width: 8),
-                                Text(
-                                  AppLocalizations.of(context).forAgent,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: _role == UserRole.agent
-                                        ? AppColors.jungleGreen
-                                        : AppColors.baseDarkGrey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () => _handleRoleChange(UserRole.agency),
-                          child: Container(
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: _role == UserRole.agency
-                                  ? AppColors.buttonLightGreen
-                                  : AppColors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: _role == UserRole.agency
-                                  ? Border.all(color: const Color(0xFF32A792))
-                                  : null,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/icons/building.svg',
-                                  width: 16,
-                                  height: 16,
-                                  colorFilter: ColorFilter.mode(
-                                    _role == UserRole.agency
-                                        ? AppColors.jungleGreen
-                                        : AppColors.baseDarkGrey,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  AppLocalizations.of(context).forAgency,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: _role == UserRole.agency
-                                        ? AppColors.jungleGreen
-                                        : AppColors.baseDarkGrey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 18),
+                  //               const SizedBox(width: 8),
+                  //               Text(
+                  //                 AppLocalizations.of(context).forAgent,
+                  //                 style: TextStyle(
+                  //                   fontSize: 16,
+                  //                   fontWeight: FontWeight.w500,
+                  //                   color: _role == UserRole.agent
+                  //                       ? AppColors.jungleGreen
+                  //                       : AppColors.baseDarkGrey,
+                  //                 ),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     const SizedBox(width: 12),
+                  //     Expanded(
+                  //       child: InkWell(
+                  //         borderRadius: BorderRadius.circular(12),
+                  //         onTap: () => _handleRoleChange(UserRole.agency),
+                  //         child: Container(
+                  //           height: 44,
+                  //           decoration: BoxDecoration(
+                  //             color: _role == UserRole.agency
+                  //                 ? AppColors.buttonLightGreen
+                  //                 : AppColors.white,
+                  //             borderRadius: BorderRadius.circular(12),
+                  //             border: _role == UserRole.agency
+                  //                 ? Border.all(color: const Color(0xFF32A792))
+                  //                 : null,
+                  //           ),
+                  //           child: Row(
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             children: [
+                  //               SvgPicture.asset(
+                  //                 'assets/icons/building.svg',
+                  //                 width: 16,
+                  //                 height: 16,
+                  //                 colorFilter: ColorFilter.mode(
+                  //                   _role == UserRole.agency
+                  //                       ? AppColors.jungleGreen
+                  //                       : AppColors.baseDarkGrey,
+                  //                   BlendMode.srcIn,
+                  //                 ),
+                  //               ),
+                  //               const SizedBox(width: 8),
+                  //               Text(
+                  //                 AppLocalizations.of(context).forAgency,
+                  //                 style: TextStyle(
+                  //                   fontSize: 16,
+                  //                   fontWeight: FontWeight.w500,
+                  //                   color: _role == UserRole.agency
+                  //                       ? AppColors.jungleGreen
+                  //                       : AppColors.baseDarkGrey,
+                  //                 ),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 18),
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
                       final loading = state is AuthLoading;

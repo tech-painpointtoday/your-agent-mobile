@@ -202,11 +202,11 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Property Count or Empty State Title
-                      if (_allProperties.isNotEmpty)
+                      if (_filteredProperties.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                           child: AppBadges.plain(
-                            label: '${_allProperties.length} รายการ',
+                            label: '${_filteredProperties.length} รายการ',
                             color: BadgeColor.blue,
                           ),
                         )
@@ -271,8 +271,10 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                                   width: 16,
                                   height: 16,
                                   fit: BoxFit.scaleDown,
-                                  colorFilter: const ColorFilter.mode(
-                                    AppColors.baseDarkGrey,
+                                  colorFilter: ColorFilter.mode(
+                                    !_currentFilter.isEmpty
+                                        ? AppColors.primary
+                                        : AppColors.baseDarkGrey,
                                     BlendMode.srcIn,
                                   ),
                                 ),

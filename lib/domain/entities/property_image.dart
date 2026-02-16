@@ -33,7 +33,7 @@ class PropertyImage extends Equatable {
       propertyId: json['property_id'] is int
           ? json['property_id']
           : int.tryParse(json['property_id']?.toString() ?? ''),
-      url: json['url'] as String?, // Assuming API returns 'url'
+      url: (json['validated_url'] ?? json['url']) as String?,
       path: json['path'] as String?,
       fileName: json['file_name'] as String?,
       isPrimary: json['is_primary'] == 1 || json['is_primary'] == true,

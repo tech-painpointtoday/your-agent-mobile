@@ -14,6 +14,9 @@ class ContractFilter {
 
   ContractFilter({this.status, this.propertyType, this.contractType});
 
+  bool get isEmpty =>
+      status == null && propertyType == null && contractType == null;
+
   @override
   String toString() {
     return 'ContractFilter(status: $status, propertyType: $propertyType, contractType: $contractType)';
@@ -346,19 +349,12 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 20,
-            child: Row(
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.anuphan(
-                    color: const Color(0xFF181D27),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+          Text(
+            title,
+            style: GoogleFonts.anuphan(
+              color: const Color(0xFF181D27),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
           ),
           SizedBox(height: 8),

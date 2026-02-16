@@ -19,6 +19,9 @@ import 'package:youragent/features/property/bloc/property_metadata/property_meta
 import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
+import 'package:go_router/go_router.dart';
+import 'package:youragent/widgets/painters/dashed_border_painter.dart';
+
 const double carouselHeight = 280;
 const double overlap = 40;
 const double contentStartTop = carouselHeight - overlap;
@@ -55,12 +58,64 @@ class _PropertyDetailState extends State<PropertyDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final isTh = Localizations.localeOf(context).languageCode == 'th';
+    final devName = isTh ? property.developerNameTh : property.developerNameEn;
+    final projectName = isTh
+        ? property.condoProjectNameTh
+        : property.condoProjectNameEn;
+
+    // Header logic: Condo info or Village Name
+    String? headerDisplayInfo;
+    if (property.propertyType == PropertyType.condo) {
+      if (devName != null && projectName != null) {
+        headerDisplayInfo = '$devName | $projectName';
+      } else if (projectName != null) {
+        headerDisplayInfo = projectName;
+      } else if (devName != null) {
+        headerDisplayInfo = devName;
+      }
+    } else if (property.propertyType == PropertyType.house) {
+      headerDisplayInfo = property.villageName;
+    }
+
+    // Complete Address Logic
+    String completeAddress = property.address ?? '';
+    if (property.propertyType == PropertyType.condo) {
+      final room = property.unitNo;
+      final floor = property.floor;
+      final building = property.tower;
+      String prefix = '';
+      if (room != null && room.isNotEmpty) {
+        prefix += '${AppLocalizations.of(context).roomNoLabel} $room ';
+      }
+      if (floor != null && floor.isNotEmpty) {
+        prefix += '${AppLocalizations.of(context).floorLabel} $floor ';
+      }
+      if (building != null && building.isNotEmpty) {
+        prefix += '${AppLocalizations.of(context).buildingLabel} $building ';
+      }
+      completeAddress = prefix.isNotEmpty
+          ? '$prefix$completeAddress'
+          : completeAddress;
+    } else if (property.propertyType == PropertyType.house) {
+      final houseNo = property.number;
+      final village = property.villageName;
+      String prefix = '';
+      if (houseNo != null && houseNo.isNotEmpty) {
+        prefix += '${AppLocalizations.of(context).houseNoLabel} $houseNo ';
+      }
+      if (village != null && village.isNotEmpty) prefix += '$village ';
+      completeAddress = prefix.isNotEmpty
+          ? '$prefix$completeAddress'
+          : completeAddress;
+    }
+
     return SingleChildScrollView(
       physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 100),
       child: Stack(
         children: [
-          // Background Image Layer
+          // 1. Background Image Layer
           SizedBox(
             height: carouselHeight,
             width: double.infinity,
@@ -72,79 +127,123 @@ class _PropertyDetailState extends State<PropertyDetail> {
             ),
           ),
 
-          // Content Layer (Spacer + Card + Rest)
+          // 2. Content Layer
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Spacer to push content down to the overlap point
               const SizedBox(height: contentStartTop),
 
-              // 2. Property Header Card
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        width: 1,
-                        color: AppColors.baseLightGrey,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+              // Property Information Card (Header Section)
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x0A000000),
+                      blurRadius: 12,
+                      offset: Offset(0, 4),
                     ),
-                    shadows: const [
-                      BoxShadow(
-                        color: Color(0x0A000000),
-                        blurRadius: 12,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (property.id != null)
-                        Text(
-                          '${AppLocalizations.of(context).labelCode}: ${AppUtils.generatePropertyCode(property)}',
-                          style: GoogleFonts.anuphan(
-                            color: AppColors.baseGrey,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      const SizedBox(height: 6),
+                  ],
+                  border: Border.all(width: 1, color: AppColors.baseLightGrey),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (property.id != null)
                       Text(
-                        property.title,
+                        '${AppLocalizations.of(context).labelCode}: ${AppUtils.generatePropertyCode(property)}',
+                        style: GoogleFonts.anuphan(
+                          color: AppColors.baseGrey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    const SizedBox(height: 6),
+                    Text(
+                      property.title,
+                      style: GoogleFonts.anuphan(
+                        color: AppColors.baseBlack,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (headerDisplayInfo != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        headerDisplayInfo,
                         style: GoogleFonts.anuphan(
                           color: AppColors.baseBlack,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
                         ),
-                      ),
-
-                      if (property.address != null) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          property.address!,
-                          style: GoogleFonts.anuphan(
-                            color: AppColors.baseBlack,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-
-                      const SizedBox(height: 12),
-                      PropertyStatusBadge(
-                        status: property.approvalStatus,
-                        isDraft: property.isDraft,
                       ),
                     ],
-                  ),
+                    const SizedBox(height: 12),
+                    PropertyStatusBadge(
+                      status: property.approvalStatus,
+                      isDraft: property.isDraft,
+                    ),
+                  ],
                 ),
               ),
+
+              if (property.approvalStatus ==
+                  PropertyApprovalStatus.approved) ...[
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: InkWell(
+                    onTap: () {
+                      context.push('/contract/create', extra: property);
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: CustomPaint(
+                      painter: const DashedBorderPainter(
+                        color: AppColors.baseLightGrey,
+                        strokeWidth: 1,
+                        dashWidth: 6,
+                        dashSpace: 4,
+                        radius: 12,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        height: 44,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              '+',
+                              style: TextStyle(
+                                color: AppColors.baseDarkGrey,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              AppLocalizations.of(context).createContractButton,
+                              style: GoogleFonts.anuphan(
+                                color: AppColors.baseDarkGrey,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
 
               const SizedBox(height: 32),
 
@@ -162,11 +261,10 @@ class _PropertyDetailState extends State<PropertyDetail> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    if (property.address != null &&
-                        property.address!.isNotEmpty) ...[
+                    if (completeAddress.isNotEmpty) ...[
                       const SizedBox(height: 12),
                       Text(
-                        property.address!,
+                        completeAddress,
                         style: GoogleFonts.anuphan(
                           color: AppColors.baseBlack,
                           fontSize: 16,

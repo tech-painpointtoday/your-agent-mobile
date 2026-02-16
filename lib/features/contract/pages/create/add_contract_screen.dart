@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/domain/entities/contract.dart';
+import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
@@ -27,7 +28,8 @@ import 'package:youragent/l10n/app_localizations.dart';
 
 class AddContractScreen extends StatelessWidget {
   final Contract? contract;
-  const AddContractScreen({super.key, this.contract});
+  final Property? property;
+  const AddContractScreen({super.key, this.contract, this.property});
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,8 @@ class AddContractScreen extends StatelessWidget {
         );
         if (contract != null) {
           bloc.add(ContractFormEditStarted(contract!.id!));
+        } else if (property != null) {
+          bloc.add(ContractFormPropertySelected(property!));
         }
         return bloc;
       },

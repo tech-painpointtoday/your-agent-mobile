@@ -59,92 +59,106 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
         }
       },
       builder: (context, state) {
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context).additional_info_section,
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.primary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+        return Form(
+          autovalidateMode: state.showErrors
+              ? AutovalidateMode.always
+              : AutovalidateMode.disabled,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ... (lines 67-137)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context).additional_info_section,
+                        style: GoogleFonts.anuphan(
+                          color: AppColors.primary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                  if (widget.step != null)
-                    AppBadge(
-                      color: BadgeColor.default_,
-                      label: '${widget.step}/5',
-                    ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Property Style
-              AppSelectableGrid<StyleProperty>(
-                label: AppLocalizations.of(context).propertyStyleLabel,
-                value: state.propertyStyle,
-                isRequired: true,
-                items: PropertyFormState.mockStyles.map((style) {
-                  return GridItem(
-                    label: Localizations.localeOf(context).languageCode == 'th'
-                        ? style.nameTh
-                        : style.nameEn,
-                    value: style,
-                    imagePath: style.imagePath,
-                  );
-                }).toList(),
-                onChanged: (val) => context.read<PropertyFormBloc>().add(
-                  PropertyFormStyleChanged(val),
+                    if (widget.step != null)
+                      AppBadge(
+                        color: BadgeColor.default_,
+                        label: '${widget.step}/5',
+                      ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-              // Dynamic Multi-Select Filters or Fallback
-              if (state.specificationFilters.multiSelect.isNotEmpty)
-                ...state.specificationFilters.multiSelect.map((filter) {
-                  return Column(
-                    children: [
-                      AppMultiSelectChips<String>(
-                        label: filter.label,
-                        values: state.specificationValues[filter.key] ?? [],
-                        options: filter.options,
-                        onSelected: (val) =>
-                            context.read<PropertyFormBloc>().add(
-                              PropertyFormDynamicMultiSelectToggled(
-                                filter.key,
-                                val,
+                // Property Style
+                AppSelectableGrid<StyleProperty>(
+                  label: AppLocalizations.of(context).propertyStyleLabel,
+                  value: state.propertyStyle,
+                  items: PropertyFormState.mockStyles.map((style) {
+                    return GridItem(
+                      label:
+                          Localizations.localeOf(context).languageCode == 'th'
+                          ? style.nameTh
+                          : style.nameEn,
+                      value: style,
+                      imagePath: style.imagePath,
+                    );
+                  }).toList(),
+                  onChanged: (val) => context.read<PropertyFormBloc>().add(
+                    PropertyFormStyleChanged(val),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Dynamic Multi-Select Filters or Fallback
+                if (state.specificationFilters.multiSelect.isNotEmpty)
+                  ...state.specificationFilters.multiSelect.map((filter) {
+                    return Column(
+                      children: [
+                        AppMultiSelectChips<String>(
+                          label: filter.label,
+                          values: state.specificationValues[filter.key] ?? [],
+                          options: filter.options,
+                          onSelected: (val) =>
+                              context.read<PropertyFormBloc>().add(
+                                PropertyFormDynamicMultiSelectToggled(
+                                  filter.key,
+                                  val,
+                                ),
                               ),
-                            ),
-                      ),
-                      const SizedBox(height: 24),
-                    ],
-                  );
-                }),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    );
+                  }),
 
-              // Description
-              AppTextFormField(
-                label: AppLocalizations.of(context).additional_details_section,
-                controller: _descriptionController,
-                maxLines: 5,
-                isRequired: true,
-              ),
-              const SizedBox(height: 100),
-            ],
+                // Description
+                AppTextFormField(
+                  label: AppLocalizations.of(
+                    context,
+                  ).additional_details_section,
+                  controller: _descriptionController,
+                  maxLines: 5,
+                  isRequired: true,
+                  validator: (val) {
+                    if (val == null || val.trim().isEmpty) {
+                      return AppLocalizations.of(context).this_field_required;
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 100),
+              ],
+            ),
           ),
         );
       },

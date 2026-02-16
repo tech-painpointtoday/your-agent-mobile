@@ -13,6 +13,7 @@ import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/widgets/modals/app_status_bottom_sheet.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/contract_status.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 
 /// Screen showing all contract documents in a list
 class ContractScreen extends StatefulWidget {
@@ -166,9 +167,11 @@ class _ContractScreenState extends State<ContractScreen> {
       }
 
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to check properties: $e')));
+      StatusDialog.showError(
+        context: context,
+        title: AppLocalizations.of(context).errorOccurredTitle,
+        message: 'Failed to check properties: $e',
+      );
     }
   }
 
@@ -332,8 +335,10 @@ class _ContractScreenState extends State<ContractScreen> {
                                   width: 16,
                                   height: 16,
                                   fit: BoxFit.scaleDown,
-                                  colorFilter: const ColorFilter.mode(
-                                    AppColors.baseDarkGrey,
+                                  colorFilter: ColorFilter.mode(
+                                    !_currentFilter.isEmpty
+                                        ? AppColors.primary
+                                        : AppColors.baseDarkGrey,
                                     BlendMode.srcIn,
                                   ),
                                 ),
