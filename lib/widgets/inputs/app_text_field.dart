@@ -101,8 +101,8 @@ class _AppTextFieldState extends State<AppTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.label.isNotEmpty) ...[
-          RichText(
-            text: TextSpan(
+          Text.rich(
+            TextSpan(
               text: widget.label,
               style: GoogleFonts.anuphan(
                 color: AppColors.baseBlack,

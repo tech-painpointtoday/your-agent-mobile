@@ -2477,7 +2477,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'If you add a new project name, the system will save the information and you can easily search for it next time.';
 
   @override
-  String get addNowButton => 'Add Now!!!';
+  String get addNowButton => 'Add Now';
 
   @override
   String get deleteAllImagesConfirmTitle => 'Delete All Images?';

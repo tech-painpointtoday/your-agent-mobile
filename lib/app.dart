@@ -59,14 +59,19 @@ class _AppState extends State<App> {
         ],
         routerConfig: _router.router,
         builder: (context, child) {
-          // Add debug log floating button overlay
-          return Stack(
-            children: [
-              child ?? const SizedBox.shrink(),
-              kDebugMode
-                  ? const DebugLogFloatingButton()
-                  : const SizedBox.shrink(),
-            ],
+          final mediaQueryData = MediaQuery.of(context);
+          return MediaQuery(
+            data: mediaQueryData.copyWith(
+              textScaler: mediaQueryData.textScaler,
+            ),
+            child: Stack(
+              children: [
+                child ?? const SizedBox.shrink(),
+                kDebugMode
+                    ? const DebugLogFloatingButton()
+                    : const SizedBox.shrink(),
+              ],
+            ),
           );
         },
       ),

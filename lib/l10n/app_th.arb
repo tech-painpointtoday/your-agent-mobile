@@ -829,7 +829,7 @@
   "propertyDetailFallback": "รายละเอียดทรัพย์สิน",
   "addDeveloperDescription": "ถ้าคุณเพิ่มผู้พัฒนาโครงการใหม่ ระบบจะเก็บข้อมูลไว้ให้ และคุณสามารถค้นหาได้ง่ายๆ ในครั้งถัดไปเลย",
   "addProjectNameDescription": "ถ้าคุณเพิ่มชื่อโครงการใหม่ ระบบจะเก็บข้อมูลไว้ให้ และคุณสามารถค้นหาได้ง่ายๆ ในครั้งถัดไปเลย",
-  "addNowButton": "เพิ่มเลย!!!",
+  "addNowButton": "เพิ่มเลย",
   "deleteAllImagesConfirmTitle": "ลบรูปภาพทั้งหมด?",
   "deleteAllImagesConfirmMessage": "หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้",
   "discardAllPropertyConfirmTitle": "ละทิ้งการสร้างทรัพย์?",

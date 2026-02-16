@@ -173,8 +173,8 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                         return const SizedBox.shrink();
                       }
                       return ListTile(
-                        title: RichText(
-                          text: TextSpan(
+                        title: Text.rich(
+                          TextSpan(
                             children: [
                               TextSpan(
                                 text: property.name ?? property.title,

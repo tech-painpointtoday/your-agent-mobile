@@ -253,8 +253,8 @@ class _AttachmentItemCard extends StatelessWidget {
         const Divider(height: 0),
         const SizedBox(height: 24),
         // Manual Label for Name
-        RichText(
-          text: TextSpan(
+        Text.rich(
+          TextSpan(
             text: AppLocalizations.of(context).nameFile,
             style: GoogleFonts.anuphan(
               color: AppColors.baseBlack,

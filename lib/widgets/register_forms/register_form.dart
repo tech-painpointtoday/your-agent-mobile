@@ -221,8 +221,8 @@ class _RegisterFormState extends State<RegisterForm> {
         Expanded(
           child: GestureDetector(
             onTap: () => onChanged(!checked),
-            child: RichText(
-              text: TextSpan(
+            child: Text.rich(
+              TextSpan(
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseGrey,
                   fontSize: 14,

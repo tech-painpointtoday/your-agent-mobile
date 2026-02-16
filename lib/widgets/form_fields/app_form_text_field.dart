@@ -18,9 +18,9 @@ class FormFieldLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return RichText(
+    return Text.rich(
       maxLines: maxLines,
-      text: TextSpan(
+      TextSpan(
         style: theme.textTheme.labelLarge,
         children: [
           TextSpan(text: label),

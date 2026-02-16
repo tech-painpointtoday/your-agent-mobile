@@ -73,14 +73,12 @@ class _CreatePropertyView extends StatelessWidget {
 
             AppConfirmationBottomSheet.show(
               context: context,
-              title: property?.isDraft == true
-                  ? AppLocalizations.of(context).discardAllPropertyConfirmTitle
-                  : AppLocalizations.of(context).confirmInfo,
-              description: property?.isDraft == true
-                  ? AppLocalizations.of(
-                      context,
-                    ).discardAllPropertyConfirmMessage
-                  : AppLocalizations.of(context).deleteAllImagesConfirmMessage,
+              title: AppLocalizations.of(
+                context,
+              ).discardAllPropertyConfirmTitle,
+              description: AppLocalizations.of(
+                context,
+              ).discardAllPropertyConfirmMessage,
               confirmLabel: AppLocalizations.of(context).deleteAllConfirmLabel,
               cancelLabel: AppLocalizations.of(context).statusCancelled,
               icon: 'assets/images/dialog/YA_Illustration_ConfirmDiscard.png',

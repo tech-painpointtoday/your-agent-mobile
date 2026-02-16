@@ -325,9 +325,9 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
               SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: RichText(
+                child: Text.rich(
                   textAlign: TextAlign.center,
-                  text: TextSpan(
+                  TextSpan(
                     style: GoogleFonts.anuphan(
                       fontSize: 14,
                       color: AppColors.baseGrey,

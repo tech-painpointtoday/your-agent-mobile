@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
-import '../../../../../domain/entities/property.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../features/property/bloc/property_form/property_form_bloc.dart';
 import '../../../../../widgets/form_fields/app_text_form_field.dart';
@@ -96,58 +95,19 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
               const SizedBox(height: 24),
 
               // Property Style
-              AppSelectableGrid<PropertyStyle>(
+              AppSelectableGrid<StyleProperty>(
                 label: AppLocalizations.of(context).propertyStyleLabel,
                 value: state.propertyStyle,
                 isRequired: true,
-                items: [
-                  GridItem(
-                    label: AppLocalizations.of(context).colonialStyle,
-                    value: PropertyStyle.colonial,
-                    imagePath: 'assets/images/property_styles/colonial.jpg',
-                  ),
-                  GridItem(
-                    label: AppLocalizations.of(context).contemporary,
-                    value: PropertyStyle.contemporary,
-                    imagePath: 'assets/images/property_styles/contemporary.jpg',
-                  ),
-                  GridItem(
-                    label: AppLocalizations.of(context).loft,
-                    value: PropertyStyle.loft,
-                    imagePath: 'assets/images/property_styles/loft.jpg',
-                  ),
-                  GridItem(
-                    label: AppLocalizations.of(context).minimal,
-                    value: PropertyStyle.minimal,
-                    imagePath: 'assets/images/property_styles/minimal.jpg',
-                  ),
-                  GridItem(
-                    label: AppLocalizations.of(context).natural,
-                    value: PropertyStyle.natural,
-                    imagePath: 'assets/images/property_styles/natural.jpg',
-                  ),
-                  GridItem(
-                    label: AppLocalizations.of(context).nordicStyle,
-                    value: PropertyStyle.nordic,
-                    imagePath: 'assets/images/property_styles/nordic.jpg',
-                  ),
-                  GridItem(
-                    label: AppLocalizations.of(context).thaiContemporary,
-                    value: PropertyStyle.thaiContemporary,
-                    imagePath:
-                        'assets/images/property_styles/thai_contemporary.jpg',
-                  ),
-                  GridItem(
-                    label: AppLocalizations.of(context).vintage,
-                    value: PropertyStyle.vintage,
-                    imagePath: 'assets/images/property_styles/vintage.jpg',
-                  ),
-                  GridItem(
-                    label: AppLocalizations.of(context).styleOther,
-                    value: PropertyStyle.other,
-                    imagePath: 'assets/images/property_styles/other.jpg',
-                  ),
-                ],
+                items: PropertyFormState.mockStyles.map((style) {
+                  return GridItem(
+                    label: Localizations.localeOf(context).languageCode == 'th'
+                        ? style.nameTh
+                        : style.nameEn,
+                    value: style,
+                    imagePath: style.imagePath,
+                  );
+                }).toList(),
                 onChanged: (val) => context.read<PropertyFormBloc>().add(
                   PropertyFormStyleChanged(val),
                 ),

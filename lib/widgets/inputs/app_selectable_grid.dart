@@ -32,8 +32,8 @@ class AppSelectableGrid<T> extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label.isNotEmpty) ...[
-          RichText(
-            text: TextSpan(
+          Text.rich(
+            TextSpan(
               text: label,
               style: GoogleFonts.anuphan(
                 color: AppColors.baseBlack,

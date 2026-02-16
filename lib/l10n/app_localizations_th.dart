@@ -2478,7 +2478,7 @@ class AppLocalizationsTh extends AppLocalizations {
       'ถ้าคุณเพิ่มชื่อโครงการใหม่ ระบบจะเก็บข้อมูลไว้ให้ และคุณสามารถค้นหาได้ง่ายๆ ในครั้งถัดไปเลย';
 
   @override
-  String get addNowButton => 'เพิ่มเลย!!!';
+  String get addNowButton => 'เพิ่มเลย';
 
   @override
   String get deleteAllImagesConfirmTitle => 'ลบรูปภาพทั้งหมด?';

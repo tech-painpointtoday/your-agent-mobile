@@ -812,7 +812,7 @@
   "propertyDetailFallback": "Property Details",
   "addDeveloperDescription": "If you add a new project developer, the system will save the information and you can easily search for it next time.",
   "addProjectNameDescription": "If you add a new project name, the system will save the information and you can easily search for it next time.",
-  "addNowButton": "Add Now!!!",
+  "addNowButton": "Add Now",
   "deleteAllImagesConfirmTitle": "Delete All Images?",
   "deleteAllImagesConfirmMessage": "Once you delete, it cannot be undone",
   "discardAllPropertyConfirmTitle": "Discard All Property Information Changes?",

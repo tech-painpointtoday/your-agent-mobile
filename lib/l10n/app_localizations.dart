@@ -4931,7 +4931,7 @@ abstract class AppLocalizations {
   /// No description provided for @addNowButton.
   ///
   /// In en, this message translates to:
-  /// **'Add Now!!!'**
+  /// **'Add Now'**
   String get addNowButton;
 
   /// No description provided for @deleteAllImagesConfirmTitle.

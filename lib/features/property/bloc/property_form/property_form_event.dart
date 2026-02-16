@@ -192,7 +192,7 @@ class PropertyFormStatusChanged extends PropertyFormEvent {
 }
 
 class PropertyFormStyleChanged extends PropertyFormEvent {
-  final PropertyStyle? style;
+  final StyleProperty? style;
   const PropertyFormStyleChanged(this.style);
 
   @override

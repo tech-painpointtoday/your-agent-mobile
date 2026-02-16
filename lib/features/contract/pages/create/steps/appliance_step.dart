@@ -14,6 +14,7 @@ import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
+import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/modals/app_image_picker_bottom_sheet.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
@@ -145,8 +146,8 @@ class _ApplianceStepState extends State<ApplianceStep> {
       style: ConfirmationStyle.destructive,
       onConfirm: () {
         context.read<ContractFormBloc>().add(
-              ContractFormApplianceAllImagesDeleted(applianceId),
-            );
+          ContractFormApplianceAllImagesDeleted(applianceId),
+        );
         StatusDialog.showSuccess(
           context: context,
           title: AppLocalizations.of(context).successTitle,
@@ -244,10 +245,7 @@ class _ApplianceStepState extends State<ApplianceStep> {
                               : null,
                           onRemoveImage: (path) {
                             context.read<ContractFormBloc>().add(
-                              ContractFormApplianceImageRemoved(
-                                item.id,
-                                path,
-                              ),
+                              ContractFormApplianceImageRemoved(item.id, path),
                             );
                           },
                           onDeleteAllImages: () =>
@@ -308,7 +306,7 @@ class _ApplianceStepState extends State<ApplianceStep> {
   }
 }
 
-class _ApplianceItemCard extends StatelessWidget {
+class _ApplianceItemCard extends StatefulWidget {
   final int index;
   final ApplianceItem item;
   final VoidCallback onDelete;
@@ -317,6 +315,16 @@ class _ApplianceItemCard extends StatelessWidget {
   final VoidCallback? onPickPropertyImage;
   final Function(String) onRemoveImage;
   final VoidCallback onDeleteAllImages;
+
+  static const List<String> commonAppliances = [
+    'ตู้เย็น',
+    'ทีวี',
+    'เครื่องปรับอากาศ',
+    'เครื่องซักผ้า',
+    'ไมโครเวฟ',
+    'พัดลม',
+    'เครื่องทำน้ำอุ่น',
+  ];
 
   const _ApplianceItemCard({
     required this.index,
@@ -330,7 +338,52 @@ class _ApplianceItemCard extends StatelessWidget {
   });
 
   @override
+  State<_ApplianceItemCard> createState() => _ApplianceItemCardState();
+}
+
+class _ApplianceItemCardState extends State<_ApplianceItemCard> {
+  late bool _isOtherSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    _isOtherSelected =
+        widget.item.name.isNotEmpty &&
+        !_ApplianceItemCard.commonAppliances.contains(widget.item.name);
+  }
+
+  @override
+  void didUpdateWidget(_ApplianceItemCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.item.name != oldWidget.item.name) {
+      final isCommon = _ApplianceItemCard.commonAppliances.contains(
+        widget.item.name,
+      );
+      if (isCommon) {
+        _isOtherSelected = false;
+      } else if (widget.item.name.isNotEmpty) {
+        _isOtherSelected = true;
+      }
+      // If name is empty, keep current _isOtherSelected state
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final options = [
+      ..._ApplianceItemCard.commonAppliances.map(
+        (a) => AppChipOption(label: a, value: a),
+      ),
+      const AppChipOption(label: 'อื่น ๆ', value: '__other__'),
+    ];
+
+    String? selectedValue;
+    if (_isOtherSelected) {
+      selectedValue = '__other__';
+    } else if (_ApplianceItemCard.commonAppliances.contains(widget.item.name)) {
+      selectedValue = widget.item.name;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -338,7 +391,7 @@ class _ApplianceItemCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'รายการที่ $index',
+              'รายการที่ ${widget.index}',
               style: GoogleFonts.anuphan(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -346,7 +399,7 @@ class _ApplianceItemCard extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: onDelete,
+              onPressed: widget.onDelete,
               icon: SvgPicture.asset(
                 'assets/icons/x-circle-filled.svg',
                 colorFilter: const ColorFilter.mode(
@@ -360,31 +413,58 @@ class _ApplianceItemCard extends StatelessWidget {
           ],
         ),
         const Divider(height: 32),
-        AppTextField(
+        AppChipSelection<String>(
           label: AppLocalizations.of(context).full_name,
           isRequired: true,
-          hintText: AppLocalizations.of(context).applianceExampleHint,
-          controller: TextEditingController(text: item.name)
-            ..selection = TextSelection.fromPosition(
-              TextPosition(offset: item.name.length),
-            ),
-          onChanged: (val) => onUpdate(item.copyWith(name: val)),
+          value: selectedValue,
+          options: options,
+          onChanged: (val) {
+            setState(() {
+              if (val == '__other__') {
+                _isOtherSelected = true;
+                // Don't clear name immediately if it was already something custom
+                if (_ApplianceItemCard.commonAppliances.contains(
+                  widget.item.name,
+                )) {
+                  widget.onUpdate(widget.item.copyWith(name: ''));
+                }
+              } else {
+                _isOtherSelected = false;
+                widget.onUpdate(widget.item.copyWith(name: val));
+              }
+            });
+          },
         ),
+        if (_isOtherSelected) ...[
+          const SizedBox(height: 12),
+          AppTextField(
+            label: '',
+            hintText: AppLocalizations.of(context).applianceExampleHint,
+            controller: TextEditingController(text: widget.item.name)
+              ..selection = TextSelection.fromPosition(
+                TextPosition(offset: widget.item.name.length),
+              ),
+            onChanged: (val) {
+              widget.onUpdate(widget.item.copyWith(name: val));
+            },
+          ),
+        ],
         const SizedBox(height: 20),
         AppTextField(
           label: AppLocalizations.of(context).descriptionLabel,
           hintText: AppLocalizations.of(context).applianceDescExampleHint,
-          controller: TextEditingController(text: item.description ?? '')
+          controller: TextEditingController(text: widget.item.description ?? '')
             ..selection = TextSelection.fromPosition(
-              TextPosition(offset: (item.description ?? '').length),
+              TextPosition(offset: (widget.item.description ?? '').length),
             ),
-          onChanged: (val) => onUpdate(item.copyWith(description: val)),
+          onChanged: (val) =>
+              widget.onUpdate(widget.item.copyWith(description: val)),
         ),
         const SizedBox(height: 24),
 
-        if (onPickPropertyImage != null) ...[
+        if (widget.onPickPropertyImage != null) ...[
           InkWell(
-            onTap: onPickPropertyImage,
+            onTap: widget.onPickPropertyImage,
             child: CustomPaint(
               painter: DashedBorderPainter(
                 color: AppColors.baseLightGrey,
@@ -428,7 +508,7 @@ class _ApplianceItemCard extends StatelessWidget {
 
         // Upload Button
         InkWell(
-          onTap: onPickImage,
+          onTap: widget.onPickImage,
           child: CustomPaint(
             painter: DashedBorderPainter(
               color: AppColors.baseLightGrey,
@@ -478,8 +558,8 @@ class _ApplianceItemCard extends StatelessWidget {
           ),
         ),
 
-        if (item.images.isNotEmpty ||
-            item.existingPhotoUrls.isNotEmpty) ...[
+        if (widget.item.images.isNotEmpty ||
+            widget.item.existingPhotoUrls.isNotEmpty) ...[
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -493,7 +573,7 @@ class _ApplianceItemCard extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: onDeleteAllImages,
+                onTap: widget.onDeleteAllImages,
                 child: Row(
                   children: [
                     SvgPicture.asset(
@@ -529,17 +609,17 @@ class _ApplianceItemCard extends StatelessWidget {
               mainAxisSpacing: 12,
               childAspectRatio: 1.3,
             ),
-            itemCount: item.existingPhotoUrls.length + item.images.length,
+            itemCount:
+                widget.item.existingPhotoUrls.length +
+                widget.item.images.length,
             itemBuilder: (context, imgIndex) {
-              final networkCount = item.existingPhotoUrls.length;
+              final networkCount = widget.item.existingPhotoUrls.length;
               final isNetwork = imgIndex < networkCount;
               final path = isNetwork
-                  ? item.existingPhotoUrls[imgIndex]
-                  : item.images[imgIndex - networkCount];
+                  ? widget.item.existingPhotoUrls[imgIndex]
+                  : widget.item.images[imgIndex - networkCount];
 
-              final fileName = isNetwork
-                  ? 'รูปภาพสัญญา'
-                  : path.split('/').last;
+              final fileName = isNetwork ? 'รูปภาพสัญญา' : path.split('/').last;
 
               return Stack(
                 children: [
@@ -603,7 +683,7 @@ class _ApplianceItemCard extends StatelessWidget {
                       ),
                       child: Container(
                         width: double.infinity,
-                        color: Colors.black.withValues(alpha: 0.5),
+                        color: Colors.black.withOpacity(0.5),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 6,
@@ -624,7 +704,7 @@ class _ApplianceItemCard extends StatelessWidget {
                     top: 8,
                     right: 8,
                     child: InkWell(
-                      onTap: () => onRemoveImage(path),
+                      onTap: () => widget.onRemoveImage(path),
                       child: SvgPicture.asset(
                         'assets/icons/x-circle-filled.svg',
                         width: 16,
