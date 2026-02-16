@@ -23,6 +23,8 @@ class Contract extends Equatable {
   final DateTime? sellerSignedAt;
   final String? buyerSignedContractUrl;
   final DateTime? buyerSignedAt;
+  final DateTime? startDate;
+  final DateTime? endDate;
 
   // Additional fields for detail
   final String? monthlyRentalCost;
@@ -63,6 +65,8 @@ class Contract extends Equatable {
     this.sellerSignedAt,
     this.buyerSignedContractUrl,
     this.buyerSignedAt,
+    this.startDate,
+    this.endDate,
     this.monthlyRentalCost,
     this.upfrontFee,
     this.rentalPaymentDate,
@@ -159,6 +163,12 @@ class Contract extends Equatable {
       buyerSignedAt: json['buyer_signed_at'] != null
           ? DateTime.parse(json['buyer_signed_at'].toString()).toLocal()
           : null,
+      startDate: json['start_date'] != null
+          ? DateTime.parse(json['start_date'].toString()).toLocal()
+          : null,
+      endDate: json['end_date'] != null
+          ? DateTime.parse(json['end_date'].toString()).toLocal()
+          : null,
       monthlyRentalCost: json['monthly_rental_cost']?.toString(),
       upfrontFee: json['upfront_fee']?.toString(),
       rentalPaymentDate: json['rental_payment_date'] is int
@@ -179,40 +189,56 @@ class Contract extends Equatable {
       commonFee: json['common_fee']?.toString(),
       commonTerms: json['common_terms']?.toString(),
       flexibleTerms: json['flexible_terms']?.toString(),
-      appliances: (json['appliances'] as List? ?? [])
-          .map(
-            (e) => ApplianceItem(
-              id: e['id'].toString(),
-              name: e['name'].toString(),
-              description: e['description']?.toString(),
-              existingPhotoUrl: e['photo_url']?.toString(),
-              validatedPhotoUrl: e['validated_photo_url']?.toString(),
-              existingPhotoUrls: (e['validated_photo_urls'] as List? ?? [])
-                  .map((url) => url.toString())
-                  .toList(),
-              photos: (e['photos'] as List? ?? [])
-                  .map((p) => Map<String, dynamic>.from(p as Map))
-                  .toList(),
-            ),
-          )
-          .toList(),
-      furniture: (json['furniture'] as List? ?? [])
-          .map(
-            (e) => FurnitureItem(
-              id: e['id'].toString(),
-              name: e['name'].toString(),
-              description: e['description']?.toString(),
-              existingPhotoUrl: e['photo_url']?.toString(),
-              validatedPhotoUrl: e['validated_photo_url']?.toString(),
-              existingPhotoUrls: (e['validated_photo_urls'] as List? ?? [])
-                  .map((url) => url.toString())
-                  .toList(),
-              photos: (e['photos'] as List? ?? [])
-                  .map((p) => Map<String, dynamic>.from(p as Map))
-                  .toList(),
-            ),
-          )
-          .toList(),
+      appliances: (json['appliances'] as List? ?? []).map((e) {
+        final photoUrl = e['photo_url']?.toString();
+        final validatedPhotoUrls = (e['validated_photo_urls'] as List? ?? [])
+            .map((url) => url.toString())
+            .toList();
+
+        // If plural list is empty but singular is present, add it to plural for display
+        if (validatedPhotoUrls.isEmpty &&
+            photoUrl != null &&
+            photoUrl.isNotEmpty) {
+          validatedPhotoUrls.add(photoUrl);
+        }
+
+        return ApplianceItem(
+          id: e['id'].toString(),
+          name: e['name'].toString(),
+          description: e['description']?.toString(),
+          existingPhotoUrl: photoUrl,
+          validatedPhotoUrl: e['validated_photo_url']?.toString(),
+          existingPhotoUrls: validatedPhotoUrls,
+          photos: (e['photos'] as List? ?? [])
+              .map((p) => Map<String, dynamic>.from(p as Map))
+              .toList(),
+        );
+      }).toList(),
+      furniture: (json['furniture'] as List? ?? []).map((e) {
+        final photoUrl = e['photo_url']?.toString();
+        final validatedPhotoUrls = (e['validated_photo_urls'] as List? ?? [])
+            .map((url) => url.toString())
+            .toList();
+
+        // If plural list is empty but singular is present, add it to plural for display
+        if (validatedPhotoUrls.isEmpty &&
+            photoUrl != null &&
+            photoUrl.isNotEmpty) {
+          validatedPhotoUrls.add(photoUrl);
+        }
+
+        return FurnitureItem(
+          id: e['id'].toString(),
+          name: e['name'].toString(),
+          description: e['description']?.toString(),
+          existingPhotoUrl: photoUrl,
+          validatedPhotoUrl: e['validated_photo_url']?.toString(),
+          existingPhotoUrls: validatedPhotoUrls,
+          photos: (e['photos'] as List? ?? [])
+              .map((p) => Map<String, dynamic>.from(p as Map))
+              .toList(),
+        );
+      }).toList(),
       bankAccounts: (json['bank_accounts'] as List? ?? [])
           .map((e) => BankAccount.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -267,6 +293,8 @@ class Contract extends Equatable {
     sellerSignedAt,
     buyerSignedContractUrl,
     buyerSignedAt,
+    startDate,
+    endDate,
     owner,
   ];
 }

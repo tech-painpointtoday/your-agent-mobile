@@ -228,7 +228,7 @@ class ContractPdfPreviewPage extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -248,7 +248,7 @@ class ContractPdfPreviewPage extends StatelessWidget {
             child: BlocBuilder<ContractFormBloc, ContractFormState>(
               builder: (context, state) {
                 return AppButton(
-                  text: 'สร้าง',
+                  text: AppLocalizations.of(context).createLabel,
                   style: AppButtonStyle.primary,
                   isLoading: state.status == ContractFormStatus.submitting,
                   onPressed: () {

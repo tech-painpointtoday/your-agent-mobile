@@ -71,7 +71,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
             ),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context).select,
+              AppLocalizations.of(context).selectImageFromProperty,
               style: GoogleFonts.anuphan(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -91,12 +91,13 @@ class _FurnitureStepState extends State<FurnitureStep> {
                   final photo = photos[index];
                   return InkWell(
                     onTap: () {
-                      if (photo.id != null && photo.url != null) {
+                      final url = photo.url ?? photo.displayUrl;
+                      if (photo.id != null && url.isNotEmpty) {
                         bloc.add(
                           ContractFormFurniturePropertyImageSelected(
                             furnitureId: furnitureId,
                             propertyImageId: photo.id!,
-                            url: photo.url!,
+                            url: url,
                           ),
                         );
                       }
@@ -179,7 +180,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
                       ),
                       AppBadge(
                         color: BadgeColor.default_,
-                        label: '${state.step}/7',
+                        label: '${state.step}/8',
                         fontSize: 16,
                       ),
                     ],
@@ -448,7 +449,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
         ),
         const Divider(height: 32),
         AppChipSelection<String>(
-          label: AppLocalizations.of(context).full_name,
+          label: AppLocalizations.of(context).furnitureTitle,
           isRequired: true,
           value: selectedValue,
           options: options,
@@ -533,7 +534,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      AppLocalizations.of(context).select,
+                      AppLocalizations.of(context).selectImageFromProperty,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseDarkGrey,
                         fontSize: 16,

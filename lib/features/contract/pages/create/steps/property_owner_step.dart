@@ -67,270 +67,282 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ContractFormBloc, ContractFormState>(
-      listenWhen: (prev, curr) => prev.selectedOwner != curr.selectedOwner,
-      listener: (context, state) {
-        if (state.selectedOwner != null) {
-          _nameController.text = state.ownerName;
-          _idCardController.text = state.ownerIdCard;
-          _addressController.text = state.ownerAddress;
-          _phoneController.text = state.ownerPhone;
-          _emailController.text = state.ownerEmail;
-          _signatoryController.text = state.ownerSignatory.isNotEmpty
-              ? state.ownerSignatory
-              : state.ownerName;
-        }
-      },
-      child: BlocBuilder<ContractFormBloc, ContractFormState>(
-        builder: (context, state) {
-          return SizedBox(
-            height: double.infinity,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header Badge & Step
-                  if (!widget.hideHeader)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AppBadge(
-                          label: AppLocalizations.of(context).dataProperty,
-                          fontSize: 16,
-                          color: BadgeColor.blue,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      behavior: HitTestBehavior.translucent,
+      child: BlocListener<ContractFormBloc, ContractFormState>(
+        listenWhen: (prev, curr) => prev.selectedOwner != curr.selectedOwner,
+        listener: (context, state) {
+          if (state.selectedOwner != null) {
+            _nameController.text = state.ownerName;
+            _idCardController.text = state.ownerIdCard;
+            _addressController.text = state.ownerAddress;
+            _phoneController.text = state.ownerPhone;
+            _emailController.text = state.ownerEmail;
+            _signatoryController.text = state.ownerSignatory.isNotEmpty
+                ? state.ownerSignatory
+                : state.ownerName;
+          }
+        },
+        child: BlocBuilder<ContractFormBloc, ContractFormState>(
+          builder: (context, state) {
+            return SizedBox(
+              height: double.infinity,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header Badge & Step
+                    if (!widget.hideHeader)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          AppBadge(
+                            label: AppLocalizations.of(context).dataProperty,
+                            fontSize: 16,
+                            color: BadgeColor.blue,
+                          ),
+                          AppBadge(
+                            color: BadgeColor.default_,
+                            label: '${state.step}/8',
+                            fontSize: 16,
+                          ),
+                        ],
+                      ),
+                    if (!widget.hideHeader) const SizedBox(height: 32),
+
+                    // Person Type Selection
+                    AppChipSelection<PersonType>(
+                      label: AppLocalizations.of(context).personTypeLabel,
+                      isRequired: true,
+                      value: state.ownerType,
+                      options: [
+                        AppChipOption(
+                          label: AppLocalizations.of(context).individual,
+                          value: PersonType.individual,
                         ),
-                        AppBadge(
-                          color: BadgeColor.default_,
-                          label: '${state.step}/7',
-                          fontSize: 16,
+                        AppChipOption(
+                          label: AppLocalizations.of(context).juristic_person,
+                          value: PersonType.juristic,
                         ),
                       ],
-                    ),
-                  if (!widget.hideHeader) const SizedBox(height: 32),
-
-                  // Person Type Selection
-                  AppChipSelection<PersonType>(
-                    label: AppLocalizations.of(context).personTypeLabel,
-                    isRequired: true,
-                    value: state.ownerType,
-                    options: [
-                      AppChipOption(
-                        label: AppLocalizations.of(context).individual,
-                        value: PersonType.individual,
+                      onChanged: (type) => context.read<ContractFormBloc>().add(
+                        ContractFormOwnerTypeUpdated(type),
                       ),
-                      AppChipOption(
-                        label: AppLocalizations.of(context).juristic_person,
-                        value: PersonType.juristic,
-                      ),
-                    ],
-                    onChanged: (type) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerTypeUpdated(type),
                     ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // Owner Name with TypeAhead
-                  TypeAheadField<Owner>(
-                    controller: _nameController,
-                    builder: (context, controller, focusNode) => AppTextField(
-                      label: AppLocalizations.of(context).full_name_or_company,
-                      controller: controller,
-                      focusNode: focusNode,
-                      isRequired: true,
-                      hintText: AppLocalizations.of(
-                        context,
-                      ).full_name_or_company,
-                      onChanged: (value) {
-                        context.read<ContractFormBloc>().add(
-                          ContractFormOwnerNameUpdated(value),
-                        );
-                        // Sync signatory if it's currently empty or same as previous name
-                        if (_signatoryController.text.isEmpty ||
-                            _signatoryController.text == state.ownerName) {
-                          _signatoryController.text = value;
+                    // Owner Name with TypeAhead
+                    TypeAheadField<Owner>(
+                      controller: _nameController,
+                      builder: (context, controller, focusNode) => AppTextField(
+                        label: AppLocalizations.of(
+                          context,
+                        ).full_name_or_company,
+                        controller: controller,
+                        focusNode: focusNode,
+                        isRequired: true,
+                        hintText: AppLocalizations.of(
+                          context,
+                        ).full_name_or_company,
+                        onChanged: (value) {
                           context.read<ContractFormBloc>().add(
-                            ContractFormOwnerSignatoryUpdated(value),
+                            ContractFormOwnerNameUpdated(value),
                           );
-                        }
-                      },
-                      suffix: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 16.0,
-                          horizontal: 8,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/icons/search.svg',
-                          width: 16,
-                          height: 16,
-                          colorFilter: const ColorFilter.mode(
-                            AppColors.baseGrey,
-                            BlendMode.srcIn,
+                          // Sync signatory if it's currently empty or same as previous name
+                          if (_signatoryController.text.isEmpty ||
+                              _signatoryController.text == state.ownerName) {
+                            _signatoryController.text = value;
+                            context.read<ContractFormBloc>().add(
+                              ContractFormOwnerSignatoryUpdated(value),
+                            );
+                          }
+                        },
+                        suffix: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16.0,
+                            horizontal: 8,
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/icons/search.svg',
+                            width: 16,
+                            height: 16,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.baseGrey,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    suggestionsCallback: (pattern) {
-                      context.read<ContractFormBloc>().add(
-                        ContractFormOwnersFetched(pattern),
-                      );
-                      return state.owners;
-                    },
-                    itemBuilder: (context, owner) {
-                      return ListTile(
-                        title: Text(owner.name),
-                        subtitle: Text(owner.email ?? owner.phone ?? ''),
-                      );
-                    },
-                    onSelected: (owner) {
-                      context.read<ContractFormBloc>().add(
-                        ContractFormOwnerSelected(owner),
-                      );
+                      suggestionsCallback: (pattern) {
+                        context.read<ContractFormBloc>().add(
+                          ContractFormOwnersFetched(pattern),
+                        );
+                        return state.owners;
+                      },
+                      itemBuilder: (context, owner) {
+                        return ListTile(
+                          title: Text(owner.name),
+                          subtitle: Text(owner.email ?? owner.phone ?? ''),
+                        );
+                      },
+                      onSelected: (owner) {
+                        context.read<ContractFormBloc>().add(
+                          ContractFormOwnerSelected(owner),
+                        );
 
-                      FocusScope.of(context).unfocus();
-                    },
-                    emptyBuilder: (context) => Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        AppLocalizations.of(context).propertyOwnerNotFound,
-                        style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                        FocusScope.of(context).unfocus();
+                      },
+                      emptyBuilder: (context) => Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          AppLocalizations.of(context).propertyOwnerNotFound,
+                          style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    AppLocalizations.of(context).searchDataNameProperty,
-                    style: GoogleFonts.anuphan(
-                      color: AppColors.baseGrey,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
+                    const SizedBox(height: 8),
+                    Text(
+                      AppLocalizations.of(context).searchDataNameProperty,
+                      style: GoogleFonts.anuphan(
+                        color: AppColors.baseGrey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                  // Create New Account Button
-                  AppButton(
-                    width: double.infinity,
-                    text: AppLocalizations.of(context).createNewAccountTitle,
-                    style: AppButtonStyle.outline,
-                    backgroundColor: AppColors.brandLightGreen,
-                    textColor: AppColors.brandGreen,
-                    borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
-                    iconPath: 'assets/icons/plus.svg',
-                    onPressed: () async {
-                      final result = await UserRegistrationBottomSheet.show(
-                        context,
-                        RegistrationUserType.owner,
-                      );
-
-                      if (result != null && mounted) {
-                        // Update text controllers
-                        _nameController.text = result.name;
-                        _signatoryController.text = result.name;
-                        _emailController.text = result.email;
-                        _phoneController.text = result.phone;
-                        if (result.address != null) {
-                          _addressController.text = result.address!;
-                        }
-
-                        // Update BLoC
-                        final bloc = context.read<ContractFormBloc>();
-                        bloc.add(ContractFormOwnerNameUpdated(result.name));
-                        bloc.add(
-                          ContractFormOwnerSignatoryUpdated(result.name),
+                    // Create New Account Button
+                    AppButton(
+                      width: double.infinity,
+                      text: AppLocalizations.of(context).createNewAccountTitle,
+                      style: AppButtonStyle.outline,
+                      backgroundColor: AppColors.brandLightGreen,
+                      textColor: AppColors.brandGreen,
+                      borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
+                      iconPath: 'assets/icons/plus.svg',
+                      onPressed: () async {
+                        final result = await UserRegistrationBottomSheet.show(
+                          context,
+                          RegistrationUserType.owner,
                         );
-                        bloc.add(ContractFormOwnerEmailUpdated(result.email));
-                        bloc.add(ContractFormOwnerPhoneUpdated(result.phone));
-                        if (result.address != null) {
+
+                        if (result != null && mounted) {
+                          // Update text controllers
+                          _nameController.text = result.name;
+                          _signatoryController.text = result.name;
+                          _emailController.text = result.email;
+                          _phoneController.text = result.phone;
+                          if (result.address != null) {
+                            _addressController.text = result.address!;
+                          }
+
+                          // Update BLoC
+                          final bloc = context.read<ContractFormBloc>();
+                          bloc.add(ContractFormOwnerNameUpdated(result.name));
                           bloc.add(
-                            ContractFormOwnerAddressUpdated(result.address!),
+                            ContractFormOwnerSignatoryUpdated(result.name),
+                          );
+                          bloc.add(ContractFormOwnerEmailUpdated(result.email));
+                          bloc.add(ContractFormOwnerPhoneUpdated(result.phone));
+                          if (result.address != null) {
+                            bloc.add(
+                              ContractFormOwnerAddressUpdated(result.address!),
+                            );
+                          }
+                          bloc.add(
+                            ContractFormOwnerPasswordUpdated(result.password),
                           );
                         }
-                        bloc.add(
-                          ContractFormOwnerPasswordUpdated(result.password),
-                        );
-                      }
-                    },
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // ID Card / Tax ID
-                  AppTextField(
-                    label: AppLocalizations.of(context).id_card_or_tax_id,
-                    controller: _idCardController,
-                    isRequired: true,
-                    hintText: 'x-xxxx-xxxxx-xx-x',
-                    inputFormatters: [ThaiIdInputFormatter()],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return null;
-                      if (!ThaiIdInputFormatter.isValidThaiID(value)) {
-                        return AppLocalizations.of(context).invalidThaiIdError;
-                      }
-                      return null;
-                    },
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerIdCardUpdated(value),
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 24),
 
-                  // Address
-                  AppTextField(
-                    label: AppLocalizations.of(context).currentAddressLabel,
-                    controller: _addressController,
-                    isRequired: true,
-                    hintText: AppLocalizations.of(context).currentAddressLabel,
-                    onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerAddressUpdated(value),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // Phone
-                  AppTextField(
-                    label: AppLocalizations.of(context).phone_number,
-                    controller: _phoneController,
-                    isRequired: true,
-                    hintText: AppLocalizations.of(context).phone_number,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [ThaiPhoneInputFormatter()],
-                    onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerPhoneUpdated(value),
+                    // ID Card / Tax ID
+                    AppTextField(
+                      label: AppLocalizations.of(context).id_card_or_tax_id,
+                      controller: _idCardController,
+                      isRequired: true,
+                      hintText: 'x-xxxx-xxxxx-xx-x',
+                      inputFormatters: [ThaiIdInputFormatter()],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return null;
+                        if (!ThaiIdInputFormatter.isValidThaiID(value)) {
+                          return AppLocalizations.of(
+                            context,
+                          ).invalidThaiIdError;
+                        }
+                        return null;
+                      },
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onChanged: (value) => context
+                          .read<ContractFormBloc>()
+                          .add(ContractFormOwnerIdCardUpdated(value)),
                     ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // Email
-                  AppTextField(
-                    label: AppLocalizations.of(context).email,
-                    controller: _emailController,
-                    isRequired: true,
-                    hintText: AppLocalizations.of(context).email,
-                    keyboardType: TextInputType.emailAddress,
-                    onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerEmailUpdated(value),
+                    // Address
+                    AppTextField(
+                      label: AppLocalizations.of(context).currentAddressLabel,
+                      controller: _addressController,
+                      isRequired: true,
+                      hintText: AppLocalizations.of(
+                        context,
+                      ).currentAddressLabel,
+                      onChanged: (value) => context
+                          .read<ContractFormBloc>()
+                          .add(ContractFormOwnerAddressUpdated(value)),
                     ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // Signatory
-                  AppTextField(
-                    label: AppLocalizations.of(context).authorized_signatory,
-                    controller: _signatoryController,
-                    isRequired: false,
-                    hintText: AppLocalizations.of(context).authorized_signatory,
-                    onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormOwnerSignatoryUpdated(value),
+                    // Phone
+                    AppTextField(
+                      label: AppLocalizations.of(context).phone_number,
+                      controller: _phoneController,
+                      isRequired: true,
+                      hintText: AppLocalizations.of(context).phone_number,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [ThaiPhoneInputFormatter()],
+                      onChanged: (value) => context
+                          .read<ContractFormBloc>()
+                          .add(ContractFormOwnerPhoneUpdated(value)),
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                ],
+                    const SizedBox(height: 24),
+
+                    // Email
+                    AppTextField(
+                      label: AppLocalizations.of(context).email,
+                      controller: _emailController,
+                      isRequired: true,
+                      hintText: AppLocalizations.of(context).email,
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: (value) => context
+                          .read<ContractFormBloc>()
+                          .add(ContractFormOwnerEmailUpdated(value)),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Signatory
+                    AppTextField(
+                      label: AppLocalizations.of(context).authorized_signatory,
+                      controller: _signatoryController,
+                      isRequired: false,
+                      hintText: AppLocalizations.of(
+                        context,
+                      ).authorized_signatory,
+                      onChanged: (value) => context
+                          .read<ContractFormBloc>()
+                          .add(ContractFormOwnerSignatoryUpdated(value)),
+                    ),
+                    const SizedBox(height: 32),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

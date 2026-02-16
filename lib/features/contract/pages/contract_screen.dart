@@ -280,7 +280,7 @@ class _ContractScreenState extends State<ContractScreen> {
                           child: AppBadges.plain(
                             label: AppLocalizations.of(
                               context,
-                            ).contractDocument,
+                            ).contractDocumentNotFound,
                             color: BadgeColor.default_,
                           ),
                         ),
@@ -451,7 +451,7 @@ class _ContractScreenState extends State<ContractScreen> {
               child: Image.asset(
                 'assets/images/contract/YA_Illustration_EmptyState_NoContract.png',
                 fit: BoxFit.fitWidth,
-                errorBuilder: (context, error, stackTrace) {
+                errorBuilder: (context, error, srtackTrace) {
                   return const Icon(
                     Icons.image_not_supported,
                     size: 60,

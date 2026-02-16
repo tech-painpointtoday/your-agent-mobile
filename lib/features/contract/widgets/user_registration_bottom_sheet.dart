@@ -65,6 +65,43 @@ class _UserRegistrationBottomSheetState
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    _nameController.addListener(_onFormFieldChanged);
+    _phoneController.addListener(_onFormFieldChanged);
+    _emailController.addListener(_onFormFieldChanged);
+    _addressController.addListener(_onFormFieldChanged);
+    _passwordController.addListener(_onFormFieldChanged);
+    _confirmPasswordController.addListener(_onFormFieldChanged);
+  }
+
+  void _onFormFieldChanged() {
+    setState(() {});
+  }
+
+  bool get _isFormValid {
+    final name = _nameController.text.trim();
+    final phone = _phoneController.text.trim().replaceAll('-', '');
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (name.isEmpty) return false;
+    if (phone.isEmpty || phone.length < 10) return false;
+    if (email.isEmpty ||
+        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      return false;
+    }
+    if (widget.type == RegistrationUserType.owner &&
+        _addressController.text.trim().isEmpty) {
+      return false;
+    }
+    if (password.isEmpty || password.length < 8) return false;
+    if (confirmPassword.isEmpty || password != confirmPassword) return false;
+    return true;
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
@@ -211,6 +248,12 @@ class _UserRegistrationBottomSheetState
                     hintText: AppLocalizations.of(context).phone_number,
                     keyboardType: TextInputType.phone,
                     inputFormatters: [ThaiPhoneInputFormatter()],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return null;
+                      final phone = value.replaceAll('-', '');
+                      if (phone.length < 10) return 'หมายเลขโทรศัพท์ไม่ถูกต้อง';
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
@@ -219,6 +262,15 @@ class _UserRegistrationBottomSheetState
                     isRequired: true,
                     hintText: AppLocalizations.of(context).email,
                     keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return null;
+                      if (!RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      ).hasMatch(value.trim())) {
+                        return 'รูปแบบอีเมลไม่ถูกต้อง';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   if (widget.type == RegistrationUserType.owner) ...[
@@ -238,6 +290,12 @@ class _UserRegistrationBottomSheetState
                     isRequired: true,
                     hintText: AppLocalizations.of(context).password,
                     obscureText: _obscurePassword,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return null;
+                      if (value.length < 8)
+                        return 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร';
+                      return null;
+                    },
                     suffix: IconButton(
                       icon: Icon(
                         _obscurePassword
@@ -259,6 +317,13 @@ class _UserRegistrationBottomSheetState
                       context,
                     ).confirm_password_hint,
                     obscureText: _obscureConfirmPassword,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return null;
+                      if (value != _passwordController.text) {
+                        return 'รหัสผ่านไม่ตรงกัน';
+                      }
+                      return null;
+                    },
                     suffix: IconButton(
                       icon: SvgPicture.asset(
                         _obscureConfirmPassword
@@ -282,15 +347,26 @@ class _UserRegistrationBottomSheetState
             ),
             const SizedBox(height: 32),
 
-            SizedBox(
-              width: double.infinity,
-              child: AppButton(
-                text: _isLoading
-                    ? AppLocalizations.of(context).registering
-                    : AppLocalizations.of(context).registerMember,
-                style: AppButtonStyle.primary,
-                onPressed: _isLoading ? null : _handleRegister,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: AppButton(
+                    text: AppLocalizations.of(context).cancel_button,
+                    style: AppButtonStyle.outline,
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AppButton(
+                    text: AppLocalizations.of(context).createAccount,
+                    style: AppButtonStyle.primary,
+                    isLoading: _isLoading,
+                    enabled: !_isLoading && _isFormValid,
+                    onPressed: _handleRegister,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

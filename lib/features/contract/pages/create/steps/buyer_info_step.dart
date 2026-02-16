@@ -60,233 +60,243 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ContractFormBloc, ContractFormState>(
-      listenWhen: (prev, curr) => prev.selectedBuyer != curr.selectedBuyer,
-      listener: (context, state) {
-        if (state.selectedBuyer != null) {
-          _nameController.text = state.buyerName;
-          _idCardController.text = state.buyerIdCard;
-          _addressController.text = state.buyerAddress;
-          _phoneController.text = state.buyerPhone;
-          _emailController.text = state.buyerEmail;
-        }
-      },
-      child: BlocBuilder<ContractFormBloc, ContractFormState>(
-        builder: (context, state) {
-          return SizedBox(
-            height: double.infinity,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header Badge & Step
-                  if (!widget.hideHeader)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AppBadge(
-                          label: AppLocalizations.of(context).buyerInfo,
-                          fontSize: 16,
-                          color: BadgeColor.blue,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      behavior: HitTestBehavior.translucent,
+      child: BlocListener<ContractFormBloc, ContractFormState>(
+        listenWhen: (prev, curr) => prev.selectedBuyer != curr.selectedBuyer,
+        listener: (context, state) {
+          if (state.selectedBuyer != null) {
+            _nameController.text = state.buyerName;
+            _idCardController.text = state.buyerIdCard;
+            _addressController.text = state.buyerAddress;
+            _phoneController.text = state.buyerPhone;
+            _emailController.text = state.buyerEmail;
+          }
+        },
+        child: BlocBuilder<ContractFormBloc, ContractFormState>(
+          builder: (context, state) {
+            return SizedBox(
+              height: double.infinity,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header Badge & Step
+                    if (!widget.hideHeader)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          AppBadge(
+                            label: AppLocalizations.of(context).buyerInfo,
+                            fontSize: 16,
+                            color: BadgeColor.blue,
+                          ),
+                          AppBadge(
+                            color: BadgeColor.default_,
+                            fontSize: 16,
+                            label: '${state.step}/8',
+                          ),
+                        ],
+                      ),
+                    if (!widget.hideHeader) const SizedBox(height: 32),
+
+                    // Person Type Selection
+                    AppChipSelection<PersonType>(
+                      label: AppLocalizations.of(context).personTypeLabel,
+                      isRequired: true,
+                      value: state.buyerType,
+                      options: [
+                        AppChipOption(
+                          label: AppLocalizations.of(context).individual,
+                          value: PersonType.individual,
                         ),
-                        AppBadge(
-                          color: BadgeColor.default_,
-                          fontSize: 16,
-                          label: '${state.step}/7',
+                        AppChipOption(
+                          label: AppLocalizations.of(context).juristic_person,
+                          value: PersonType.juristic,
                         ),
                       ],
-                    ),
-                  if (!widget.hideHeader) const SizedBox(height: 32),
-
-                  // Person Type Selection
-                  AppChipSelection<PersonType>(
-                    label: AppLocalizations.of(context).personTypeLabel,
-                    isRequired: true,
-                    value: state.buyerType,
-                    options: [
-                      AppChipOption(
-                        label: AppLocalizations.of(context).individual,
-                        value: PersonType.individual,
+                      onChanged: (type) => context.read<ContractFormBloc>().add(
+                        ContractFormBuyerTypeUpdated(type),
                       ),
-                      AppChipOption(
-                        label: AppLocalizations.of(context).juristic_person,
-                        value: PersonType.juristic,
-                      ),
-                    ],
-                    onChanged: (type) => context.read<ContractFormBloc>().add(
-                      ContractFormBuyerTypeUpdated(type),
                     ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // Buyer Name with TypeAhead
-                  TypeAheadField<Buyer>(
-                    controller: _nameController,
-                    builder: (context, controller, focusNode) => AppTextField(
-                      label: AppLocalizations.of(context).full_name_or_company,
-                      controller: controller,
-                      focusNode: focusNode,
-                      isRequired: true,
-                      hintText: AppLocalizations.of(
-                        context,
-                      ).full_name_or_company,
-                      onChanged: (value) => context
-                          .read<ContractFormBloc>()
-                          .add(ContractFormBuyerNameUpdated(value)),
-                      suffix: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 16.0,
-                          horizontal: 8,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/icons/search.svg',
-                          width: 16,
-                          height: 16,
-                          colorFilter: const ColorFilter.mode(
-                            AppColors.baseGrey,
-                            BlendMode.srcIn,
+                    // Buyer Name with TypeAhead
+                    TypeAheadField<Buyer>(
+                      controller: _nameController,
+                      builder: (context, controller, focusNode) => AppTextField(
+                        label: AppLocalizations.of(
+                          context,
+                        ).full_name_or_company,
+                        controller: controller,
+                        focusNode: focusNode,
+                        isRequired: true,
+                        hintText: AppLocalizations.of(
+                          context,
+                        ).full_name_or_company,
+                        onChanged: (value) => context
+                            .read<ContractFormBloc>()
+                            .add(ContractFormBuyerNameUpdated(value)),
+                        suffix: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16.0,
+                            horizontal: 8,
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/icons/search.svg',
+                            width: 16,
+                            height: 16,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.baseGrey,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    suggestionsCallback: (pattern) {
-                      context.read<ContractFormBloc>().add(
-                        ContractFormBuyersFetched(pattern),
-                      );
-                      return state.buyers;
-                    },
-                    itemBuilder: (context, buyer) {
-                      return ListTile(
-                        title: Text(buyer.name),
-                        subtitle: Text(buyer.email ?? buyer.phone ?? ''),
-                      );
-                    },
-                    onSelected: (buyer) {
-                      context.read<ContractFormBloc>().add(
-                        ContractFormBuyerSelected(buyer),
-                      );
-                      FocusScope.of(context).unfocus();
-                    },
-                    emptyBuilder: (context) => Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        AppLocalizations.of(context).buyerDataNotFound,
-                        style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                      suggestionsCallback: (pattern) {
+                        context.read<ContractFormBloc>().add(
+                          ContractFormBuyersFetched(pattern),
+                        );
+                        return state.buyers;
+                      },
+                      itemBuilder: (context, buyer) {
+                        return ListTile(
+                          title: Text(buyer.name),
+                          subtitle: Text(buyer.email ?? buyer.phone ?? ''),
+                        );
+                      },
+                      onSelected: (buyer) {
+                        context.read<ContractFormBloc>().add(
+                          ContractFormBuyerSelected(buyer),
+                        );
+                        FocusScope.of(context).unfocus();
+                      },
+                      emptyBuilder: (context) => Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          AppLocalizations.of(context).buyerDataNotFound,
+                          style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    AppLocalizations.of(
-                      context,
-                    ).searchDataNameProperty, // Hint text from image
-                    style: GoogleFonts.anuphan(
-                      color: AppColors.baseGrey,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Create New Account Button
-                  AppButton(
-                    width: double.infinity,
-                    text: AppLocalizations.of(context).createNewAccountTitle,
-                    style: AppButtonStyle.outline,
-                    backgroundColor: AppColors.brandLightGreen,
-                    textColor: AppColors.brandGreen,
-                    borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
-                    iconPath: 'assets/icons/plus.svg',
-                    onPressed: () async {
-                      final result = await UserRegistrationBottomSheet.show(
+                    const SizedBox(height: 8),
+                    Text(
+                      AppLocalizations.of(
                         context,
-                        RegistrationUserType.buyer,
-                      );
+                      ).searchDataNameProperty, // Hint text from image
+                      style: GoogleFonts.anuphan(
+                        color: AppColors.baseGrey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
 
-                      if (result != null && mounted) {
-                        // Update text controllers
-                        _nameController.text = result.name;
-                        _emailController.text = result.email;
-                        _phoneController.text = result.phone;
-
-                        // Update BLoC
-                        final bloc = context.read<ContractFormBloc>();
-                        bloc.add(ContractFormBuyerNameUpdated(result.name));
-                        bloc.add(ContractFormBuyerEmailUpdated(result.email));
-                        bloc.add(ContractFormBuyerPhoneUpdated(result.phone));
-                        bloc.add(
-                          ContractFormBuyerPasswordUpdated(result.password),
+                    // Create New Account Button
+                    AppButton(
+                      width: double.infinity,
+                      text: AppLocalizations.of(context).createNewAccountTitle,
+                      style: AppButtonStyle.outline,
+                      backgroundColor: AppColors.brandLightGreen,
+                      textColor: AppColors.brandGreen,
+                      borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
+                      iconPath: 'assets/icons/plus.svg',
+                      onPressed: () async {
+                        final result = await UserRegistrationBottomSheet.show(
+                          context,
+                          RegistrationUserType.buyer,
                         );
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 24),
 
-                  // ID Card / Tax ID
-                  AppTextField(
-                    label: AppLocalizations.of(context).id_card_or_tax_id,
-                    controller: _idCardController,
-                    isRequired: true,
-                    hintText: 'x-xxxx-xxxxx-xx-x',
-                    inputFormatters: [ThaiIdInputFormatter()],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return null;
-                      if (!ThaiIdInputFormatter.isValidThaiID(value)) {
-                        return AppLocalizations.of(context).invalidThaiIdError;
-                      }
-                      return null;
-                    },
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormBuyerIdCardUpdated(value),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
+                        if (result != null && mounted) {
+                          // Update text controllers
+                          _nameController.text = result.name;
+                          _emailController.text = result.email;
+                          _phoneController.text = result.phone;
 
-                  // Address
-                  AppTextField(
-                    label: AppLocalizations.of(context).currentAddressLabel,
-                    controller: _addressController,
-                    isRequired: true,
-                    hintText: AppLocalizations.of(context).currentAddressLabel,
-                    onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormBuyerAddressUpdated(value),
+                          // Update BLoC
+                          final bloc = context.read<ContractFormBloc>();
+                          bloc.add(ContractFormBuyerNameUpdated(result.name));
+                          bloc.add(ContractFormBuyerEmailUpdated(result.email));
+                          bloc.add(ContractFormBuyerPhoneUpdated(result.phone));
+                          bloc.add(
+                            ContractFormBuyerPasswordUpdated(result.password),
+                          );
+                        }
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // Phone
-                  AppTextField(
-                    label: AppLocalizations.of(context).phone_number,
-                    controller: _phoneController,
-                    isRequired: true,
-                    hintText: AppLocalizations.of(context).phone_number,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [ThaiPhoneInputFormatter()],
-                    onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormBuyerPhoneUpdated(value),
+                    // ID Card / Tax ID
+                    AppTextField(
+                      label: AppLocalizations.of(context).id_card_or_tax_id,
+                      controller: _idCardController,
+                      isRequired: true,
+                      hintText: 'x-xxxx-xxxxx-xx-x',
+                      inputFormatters: [ThaiIdInputFormatter()],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return null;
+                        if (!ThaiIdInputFormatter.isValidThaiID(value)) {
+                          return AppLocalizations.of(
+                            context,
+                          ).invalidThaiIdError;
+                        }
+                        return null;
+                      },
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onChanged: (value) => context
+                          .read<ContractFormBloc>()
+                          .add(ContractFormBuyerIdCardUpdated(value)),
                     ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // Email
-                  AppTextField(
-                    label: AppLocalizations.of(context).email,
-                    controller: _emailController,
-                    isRequired: true,
-                    hintText: AppLocalizations.of(context).email,
-                    keyboardType: TextInputType.emailAddress,
-                    onChanged: (value) => context.read<ContractFormBloc>().add(
-                      ContractFormBuyerEmailUpdated(value),
+                    // Address
+                    AppTextField(
+                      label: AppLocalizations.of(context).currentAddressLabel,
+                      controller: _addressController,
+                      isRequired: true,
+                      hintText: AppLocalizations.of(
+                        context,
+                      ).currentAddressLabel,
+                      onChanged: (value) => context
+                          .read<ContractFormBloc>()
+                          .add(ContractFormBuyerAddressUpdated(value)),
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                ],
+                    const SizedBox(height: 24),
+
+                    // Phone
+                    AppTextField(
+                      label: AppLocalizations.of(context).phone_number,
+                      controller: _phoneController,
+                      isRequired: true,
+                      hintText: AppLocalizations.of(context).phone_number,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [ThaiPhoneInputFormatter()],
+                      onChanged: (value) => context
+                          .read<ContractFormBloc>()
+                          .add(ContractFormBuyerPhoneUpdated(value)),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Email
+                    AppTextField(
+                      label: AppLocalizations.of(context).email,
+                      controller: _emailController,
+                      isRequired: true,
+                      hintText: AppLocalizations.of(context).email,
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: (value) => context
+                          .read<ContractFormBloc>()
+                          .add(ContractFormBuyerEmailUpdated(value)),
+                    ),
+                    const SizedBox(height: 32),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -1,6 +1,5 @@
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/contract.dart';
-import 'package:youragent/domain/entities/contract_type.dart';
 
 class AppUtils {
   /// Generate a human‑readable unique code for a property.
@@ -37,25 +36,17 @@ class AppUtils {
   /// Format: YH + YY + typeDigit + 6‑digit ID
   /// - typeDigit: 1 = buy, 2 = rent, 3 = unknown/other.
   static String generateContractCode(Contract contract) {
-    // Brand prefix
-    const prefix = 'YH';
+    // 5‑digit zero‑padded ID
+    final idFormatted = (contract.id ?? 0).toString().padLeft(5, '0');
 
-    // Use contractDate first, then createdAt, then current year
+    // Use createdAt first, then contractDate, then current date
     final baseDate =
-        contract.contractDate ?? contract.createdAt ?? DateTime.now();
+        contract.createdAt ?? contract.contractDate ?? DateTime.now();
     final yearSuffix = (baseDate.year % 100).toString().padLeft(2, '0');
+    final month = baseDate.month.toString().padLeft(2, '0');
+    final day = baseDate.day.toString().padLeft(2, '0');
 
-    // Map contract type to numeric code
-    final typeDigit = switch (contract.contractType) {
-      ContractType.buy => '1',
-      ContractType.rent => '2',
-      null => '3',
-    };
-
-    // 6‑digit zero‑padded ID
-    final idFormatted = (contract.id ?? 0).toString().padLeft(6, '0');
-
-    return '$prefix$yearSuffix$typeDigit$idFormatted';
+    return '$idFormatted$yearSuffix$month$day';
   }
 
   /// Format lease duration in months and days accurately based on calendar.
@@ -68,14 +59,14 @@ class AppUtils {
 
     int years = inclusiveEnd.year - start.year;
     int months = inclusiveEnd.month - start.month;
-    int days = inclusiveEnd.day - start.day;
+    //int days = inclusiveEnd.day - start.day;
 
-    if (days < 0) {
-      months -= 1;
-      // Get the number of days in the month before inclusiveEnd
-      final prevMonthEnd = DateTime(inclusiveEnd.year, inclusiveEnd.month, 0);
-      days += prevMonthEnd.day;
-    }
+    // if (days < 0) {
+    //   months -= 1;
+    //   // Get the number of days in the month before inclusiveEnd
+    //   final prevMonthEnd = DateTime(inclusiveEnd.year, inclusiveEnd.month, 0);
+    //   days += prevMonthEnd.day;
+    // }
 
     if (months < 0) {
       years -= 1;
@@ -88,9 +79,9 @@ class AppUtils {
     if (totalMonths > 0) {
       parts.add('$totalMonths เดือน');
     }
-    if (days > 0) {
-      parts.add('$days วัน');
-    }
+    // if (days > 0) {
+    //   parts.add('$days วัน');
+    // }
 
     return parts.join(' ');
   }

@@ -90,7 +90,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
           return SizedBox(
             height: double.infinity,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -105,7 +105,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                       ),
                       AppBadge(
                         color: BadgeColor.default_,
-                        label: '${state.step}/7',
+                        label: '${state.step}/8',
                         fontSize: 16,
                       ),
                     ],

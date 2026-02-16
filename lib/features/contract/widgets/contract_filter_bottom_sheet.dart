@@ -161,6 +161,14 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
                             ),
                           ),
                           _buildChip(
+                            AppLocalizations.of(context).statusSigned,
+                            isSelected:
+                                _selectedStatus == ContractStatus.signed,
+                            onTap: () => setState(
+                              () => _selectedStatus = ContractStatus.signed,
+                            ),
+                          ),
+                          _buildChip(
                             AppLocalizations.of(context).statusComplete,
                             isSelected:
                                 _selectedStatus == ContractStatus.completed,
@@ -262,38 +270,39 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
                     SizedBox(height: 24),
 
                     // ประเภทสัญญา
-                    _buildFilterSection(
-                      title: AppLocalizations.of(context).contractTypeTitle,
-                      child: Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          _buildChip(
-                            AppLocalizations.of(context).all,
-                            isSelected: _selectedContractType == null,
-                            onTap: () =>
-                                setState(() => _selectedContractType = null),
-                          ),
-                          _buildChip(
-                            AppLocalizations.of(context).saleContractType,
-                            isSelected:
-                                _selectedContractType == ContractType.buy,
-                            onTap: () => setState(
-                              () => _selectedContractType = ContractType.buy,
-                            ),
-                          ),
-                          _buildChip(
-                            AppLocalizations.of(context).rentContractType,
-                            isSelected:
-                                _selectedContractType == ContractType.rent,
-                            onTap: () => setState(
-                              () => _selectedContractType = ContractType.rent,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 32),
+                    // tmp close
+                    // _buildFilterSection(
+                    //   title: AppLocalizations.of(context).contractTypeTitle,
+                    //   child: Wrap(
+                    //     spacing: 8,
+                    //     runSpacing: 8,
+                    //     children: [
+                    //       _buildChip(
+                    //         AppLocalizations.of(context).all,
+                    //         isSelected: _selectedContractType == null,
+                    //         onTap: () =>
+                    //             setState(() => _selectedContractType = null),
+                    //       ),
+                    //       _buildChip(
+                    //         AppLocalizations.of(context).saleContractType,
+                    //         isSelected:
+                    //             _selectedContractType == ContractType.buy,
+                    //         onTap: () => setState(
+                    //           () => _selectedContractType = ContractType.buy,
+                    //         ),
+                    //       ),
+                    //       _buildChip(
+                    //         AppLocalizations.of(context).rentContractType,
+                    //         isSelected:
+                    //             _selectedContractType == ContractType.rent,
+                    //         onTap: () => setState(
+                    //           () => _selectedContractType = ContractType.rent,
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    // SizedBox(height: 32),
                   ],
                 ),
               ),

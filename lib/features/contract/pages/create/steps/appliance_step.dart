@@ -74,7 +74,7 @@ class _ApplianceStepState extends State<ApplianceStep> {
             ),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context).select,
+              AppLocalizations.of(context).selectImageFromProperty,
               style: GoogleFonts.anuphan(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
@@ -93,12 +93,13 @@ class _ApplianceStepState extends State<ApplianceStep> {
                   final photo = photos[index];
                   return InkWell(
                     onTap: () {
-                      if (photo.id != null && photo.url != null) {
+                      final url = photo.url ?? photo.displayUrl;
+                      if (photo.id != null && url.isNotEmpty) {
                         bloc.add(
                           ContractFormAppliancePropertyImageSelected(
                             applianceId: applianceId,
                             propertyImageId: photo.id!,
-                            url: photo.url!,
+                            url: url,
                           ),
                         );
                       }
@@ -184,7 +185,7 @@ class _ApplianceStepState extends State<ApplianceStep> {
                       AppBadge(
                         color: BadgeColor.default_,
                         fontSize: 16,
-                        label: '${state.step}/7',
+                        label: '${state.step}/8',
                       ),
                     ],
                   ),
@@ -452,7 +453,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
         ),
         const Divider(height: 32),
         AppChipSelection<String>(
-          label: AppLocalizations.of(context).full_name,
+          label: AppLocalizations.of(context).applianceTitle,
           isRequired: true,
           value: selectedValue,
           options: options,
@@ -537,7 +538,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      AppLocalizations.of(context).select,
+                      AppLocalizations.of(context).selectImageFromProperty,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseDarkGrey,
                         fontSize: 16,
@@ -715,7 +716,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
                       ),
                       child: Container(
                         width: double.infinity,
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withValues(alpha: 0.5),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 6,

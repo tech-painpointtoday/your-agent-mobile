@@ -572,17 +572,16 @@ class ContractApiService {
     try {
       final response = await _apiClient.get('/agent/contracts/buyers');
 
-      final apiResponse =
-          ApiResponseService.parseResponse<Map<String, dynamic>>(
-            response,
-            (json) => json as Map<String, dynamic>,
-          );
+      final apiResponse = ApiResponseService.parseResponse<List<dynamic>>(
+        response,
+        (json) => json is List ? json : [],
+      );
 
       if (!apiResponse.success || apiResponse.data == null) {
         throw Exception(apiResponse.message ?? 'Failed to get buyers');
       }
 
-      final List<dynamic> data = apiResponse.data!['data'] ?? [];
+      final List<dynamic> data = apiResponse.data!;
       return data.map((json) => Buyer.fromJson(json)).toList();
     } catch (e) {
       if (e is DioException && e.response != null) {
@@ -599,17 +598,16 @@ class ContractApiService {
     try {
       final response = await _apiClient.get('/agent/contracts/sellers');
 
-      final apiResponse =
-          ApiResponseService.parseResponse<Map<String, dynamic>>(
-            response,
-            (json) => json as Map<String, dynamic>,
-          );
+      final apiResponse = ApiResponseService.parseResponse<List<dynamic>>(
+        response,
+        (json) => json is List ? json : [],
+      );
 
       if (!apiResponse.success || apiResponse.data == null) {
         throw Exception(apiResponse.message ?? 'Failed to get sellers');
       }
 
-      final List<dynamic> data = apiResponse.data!['data'] ?? [];
+      final List<dynamic> data = apiResponse.data!;
       return data.map((json) => Owner.fromJson(json)).toList();
     } catch (e) {
       if (e is DioException && e.response != null) {

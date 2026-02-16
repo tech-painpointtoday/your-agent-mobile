@@ -105,8 +105,19 @@ class _PropertyTypeGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PropertyFormBloc, PropertyFormState>(
-      buildWhen: (previous, current) =>
-          previous.selectedPropertyType != current.selectedPropertyType,
+      buildWhen: (previous, current) {
+        final bool hasDifferentSelection =
+            previous.selectedPropertyType != current.selectedPropertyType;
+        if (hasDifferentSelection) {
+          context.read<PropertyFormBloc>().add(
+            PropertyFormDeveloperChanged(null),
+          );
+          context.read<PropertyFormBloc>().add(
+            PropertyFormDeveloperChanged(null),
+          );
+        }
+        return hasDifferentSelection;
+      },
       builder: (context, state) {
         return GridView.builder(
           shrinkWrap: true,

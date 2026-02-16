@@ -14,6 +14,7 @@ import 'package:youragent/utils/currency_input_formatter.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_dropdown.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
+import 'package:youragent/utils/range_input_formatter.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
 class PaymentStep extends StatefulWidget {
@@ -68,7 +69,7 @@ class _PaymentStepState extends State<PaymentStep> {
                       ),
                       AppBadge(
                         color: BadgeColor.default_,
-                        label: '${state.step}/7',
+                        label: '${state.step}/8',
                         fontSize: 16,
                       ),
                     ],
@@ -190,7 +191,6 @@ class _PaymentStepState extends State<PaymentStep> {
             Expanded(
               child: AppTextField(
                 label: AppLocalizations.of(context).other_service_fee,
-                isRequired: true,
                 hintText: '0',
                 suffix: _buildSuffix(AppLocalizations.of(context).currencyUnit),
                 keyboardType: TextInputType.number,
@@ -319,7 +319,7 @@ class _PaymentStepState extends State<PaymentStep> {
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(2),
-                  FilteringTextInputFormatter.allow(RegExp(r'[1-31]')),
+                  RangeInputFormatter(min: 1, max: 31),
                 ],
                 controller:
                     TextEditingController(text: state.dueDate?.toString() ?? '')
@@ -330,15 +330,9 @@ class _PaymentStepState extends State<PaymentStep> {
                       ),
                 onChanged: (val) {
                   final day = int.tryParse(val);
-                  if (day != null && day >= 1 && day <= 31) {
-                    context.read<ContractFormBloc>().add(
-                      ContractFormDueDateUpdated(day),
-                    );
-                  } else if (val.isEmpty) {
-                    context.read<ContractFormBloc>().add(
-                      const ContractFormDueDateUpdated(null),
-                    );
-                  }
+                  context.read<ContractFormBloc>().add(
+                    ContractFormDueDateUpdated(day),
+                  );
                 },
               ),
             ),
@@ -346,7 +340,6 @@ class _PaymentStepState extends State<PaymentStep> {
             Expanded(
               child: AppTextField(
                 label: AppLocalizations.of(context).latePaymentPenalty,
-                isRequired: true,
                 hintText: '0',
                 suffix: _buildSuffix(AppLocalizations.of(context).bahtPerDay),
                 keyboardType: TextInputType.number,
@@ -433,7 +426,12 @@ class _PaymentStepState extends State<PaymentStep> {
             }).toList();
           },
           itemBuilder: (context, suggestion) {
-            return ListTile(title: Text(suggestion.name));
+            return ListTile(
+              title: Text(
+                suggestion.name,
+                style: const TextStyle(color: AppColors.baseBlack),
+              ),
+            );
           },
           onSelected: (suggestion) {
             _bankBranchController.text = suggestion.name;

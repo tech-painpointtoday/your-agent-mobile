@@ -53,7 +53,7 @@ class _AdditionalConditionsStepState extends State<AdditionalConditionsStep> {
                         AppBadge(
                           color: BadgeColor.default_,
                           fontSize: 16,
-                          label: '${state.step}/7',
+                          label: '${state.step}/8',
                         ),
                       ],
                     ),

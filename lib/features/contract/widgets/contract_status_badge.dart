@@ -72,6 +72,12 @@ class ContractStatusBadge extends StatelessWidget {
           textColor: AppColors.supportOrangeDark,
         );
       case ContractStatus.signed:
+        return _StatusConfig(
+          label: l10n.statusSigned,
+          backgroundColor: AppColors.supportGreenLight,
+          dotColor: AppColors.supportGreenDark,
+          textColor: AppColors.supportGreenDark,
+        );
       case ContractStatus.completed:
         return _StatusConfig(
           label: l10n.statusComplete,

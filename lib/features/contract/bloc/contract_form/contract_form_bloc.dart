@@ -162,77 +162,85 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         }
       }
 
-      emit(
-        state.copyWith(
-          // Basic Info
-          contractId: contract.id,
-          contractStatus: contract.status,
-          selectedProperty: effectiveProperty,
-          propertyName: effectivePropertyName,
-          contractDate: contract.contractDate,
-          contractType: contract.contractType,
-          leaseFormat: contract.commonTerms ?? '',
+      final updatedState = state.copyWith(
+        // Basic Info
+        contractId: contract.id,
+        contractStatus: contract.status,
+        selectedProperty: effectiveProperty,
+        propertyName: effectivePropertyName,
+        contractDate: contract.contractDate,
+        contractType: contract.contractType,
+        leaseFormat: contract.commonTerms ?? '',
+        leaseStartDate: contract.startDate,
+        leaseEndDate: contract.endDate,
+        leaseDuration: (contract.startDate != null && contract.endDate != null)
+            ? contract.endDate!.difference(contract.startDate!).inDays
+            : 0,
 
-          // Owner
-          ownerType: contract.owner?.type ?? PersonType.individual,
-          ownerName: contract.owner?.name ?? '',
-          ownerIdCard: contract.owner?.idCard ?? '',
-          ownerAddress: contract.owner?.address ?? '',
-          ownerPhone: contract.owner?.phone ?? '',
-          ownerEmail: contract.owner?.email ?? '',
-          ownerSignatory: contract.owner?.signatory ?? '',
+        // Owner
+        ownerType: contract.owner?.type ?? PersonType.individual,
+        ownerName: contract.owner?.name ?? '',
+        ownerIdCard: contract.owner?.idCard ?? '',
+        ownerAddress: contract.owner?.address ?? '',
+        ownerPhone: contract.owner?.phone ?? '',
+        ownerEmail: contract.owner?.email ?? '',
+        ownerSignatory: contract.owner?.signatory ?? '',
 
-          // Buyer
-          buyerType: contract.buyer?.type ?? PersonType.individual,
-          buyerName: contract.buyer?.name ?? '',
-          buyerIdCard: contract.buyer?.idCard ?? '',
-          buyerAddress: contract.buyer?.address ?? '',
-          buyerPhone: contract.buyer?.phone ?? '',
-          buyerEmail: contract.buyer?.email ?? '',
+        // Buyer
+        buyerType: contract.buyer?.type ?? PersonType.individual,
+        buyerName: contract.buyer?.name ?? '',
+        buyerIdCard: contract.buyer?.idCard ?? '',
+        buyerAddress: contract.buyer?.address ?? '',
+        buyerPhone: contract.buyer?.phone ?? '',
+        buyerEmail: contract.buyer?.email ?? '',
 
-          // Items
-          applianceItems: contract.appliances,
-          furnitureItems: contract.furniture,
+        // Items
+        applianceItems: contract.appliances,
+        furnitureItems: contract.furniture,
 
-          // Payment
-          price: parseDouble(contract.monthlyRentalCost),
-          upfrontFee: parseDouble(contract.upfrontFee),
-          commonFee: parseDouble(contract.commonFee),
-          advanceRent: parseDouble(contract.advanceRent),
-          securityDeposit: parseDouble(contract.securityDeposit),
-          dueDate: contract.rentalPaymentDate,
-          paymentMethod: contract.paymentMethod ?? 'Bank',
+        // Payment
+        price: parseDouble(contract.monthlyRentalCost),
+        upfrontFee: parseDouble(contract.upfrontFee),
+        commonFee: parseDouble(contract.commonFee),
+        advanceRent: parseDouble(contract.advanceRent),
+        securityDeposit: parseDouble(contract.securityDeposit),
+        dueDate: contract.rentalPaymentDate,
+        paymentMethod: contract.paymentMethod ?? 'Bank',
 
-          // Bank Details
-          bankBranch: contract.bankAccounts.isNotEmpty
-              ? contract.bankAccounts.first.branch ?? ''
-              : '',
-          accountName: contract.bankAccounts.isNotEmpty
-              ? contract.bankAccounts.first.accountHolderName
-              : '',
-          accountNumber: contract.bankAccounts.isNotEmpty
-              ? contract.bankAccounts.first.accountNumber
-              : '',
-          bankCode: contract.bankAccounts.isNotEmpty
-              ? contract.bankAccounts.first.bankCode
-              : '',
-          bankName: contract.bankAccounts.isNotEmpty
-              ? contract.bankAccounts.first.bankName
-              : '',
+        // Bank Details
+        bankBranch: contract.bankAccounts.isNotEmpty
+            ? contract.bankAccounts.first.branch ?? ''
+            : '',
+        accountName: contract.bankAccounts.isNotEmpty
+            ? contract.bankAccounts.first.accountHolderName
+            : '',
+        accountNumber: contract.bankAccounts.isNotEmpty
+            ? contract.bankAccounts.first.accountNumber
+            : '',
+        bankCode: contract.bankAccounts.isNotEmpty
+            ? contract.bankAccounts.first.bankCode
+            : '',
+        bankName: contract.bankAccounts.isNotEmpty
+            ? contract.bankAccounts.first.bankName
+            : '',
 
-          // Additional
-          additionalConditions: contract.flexibleTerms ?? '',
-          signingPlace: contract.signingPlace ?? '',
-          propertyUnitNo: contract.propertyUnitNo ?? '',
-          propertyFloor: contract.propertyFloor ?? '',
-          propertyBuilding: contract.propertyBuilding ?? '',
-          propertyProjectName: contract.propertyProjectName ?? '',
-          propertyAreaSqm: contract.propertyAreaSqm ?? '',
+        // Additional
+        additionalConditions: contract.flexibleTerms ?? '',
+        signingPlace: contract.signingPlace ?? '',
+        propertyUnitNo: contract.propertyUnitNo ?? '',
+        propertyFloor: contract.propertyFloor ?? '',
+        propertyBuilding: contract.propertyBuilding ?? '',
+        propertyProjectName: contract.propertyProjectName ?? '',
+        propertyAreaSqm: contract.propertyAreaSqm ?? '',
 
-          // Config Data
-          contractCreateData: createData,
-        ),
+        // Config Data
+        contractCreateData: createData,
       );
+
+      emit(updatedState);
+
+      // Initialize totals
+      _calculateTotals(updatedState, emit);
 
       _validateCurrentStep(emit);
 
@@ -606,7 +614,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         isValid = state.applianceItems.every(
           (item) =>
               item.name.isNotEmpty &&
-              (item.images.isNotEmpty || item.propertyImageId != null),
+              (item.images.isNotEmpty || item.existingPhotoUrls.isNotEmpty),
         );
       }
     } else if (state.step == 5) {
@@ -617,7 +625,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         isValid = state.furnitureItems.every(
           (item) =>
               item.name.isNotEmpty &&
-              (item.images.isNotEmpty || item.propertyImageId != null),
+              (item.images.isNotEmpty || item.existingPhotoUrls.isNotEmpty),
         );
       }
     } else if (state.step == 6) {
@@ -1001,10 +1009,8 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         // Upload attachments
         await _uploadAttachments(state.contractId!);
 
-        // If it's a draft, publish it. Otherwise, normal update.
-        if (state.contractStatus == ContractStatus.draft) {
-          await _contractApiService.publishContract(id: state.contractId!);
-        }
+        // Publish contract
+        await _contractApiService.publishContract(id: state.contractId!);
 
         emit(state.copyWith(status: ContractFormStatus.success));
       } else {
@@ -1105,7 +1111,6 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
       'buyer_phone': state.buyerPhone,
 
       // Property Details
-      'signing_place': state.signingPlace,
       'property_unit_no': state.propertyUnitNo,
       'property_floor': state.propertyFloor,
       'property_building': state.propertyBuilding,
@@ -1254,9 +1259,16 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   ) {
     final newList = state.applianceItems.map((item) {
       if (item.id == event.applianceId) {
+        // Add the new property photo URL to the display list if it's not already there
+        final currentUrls = List<String>.from(item.existingPhotoUrls);
+        if (!currentUrls.contains(event.url)) {
+          currentUrls.add(event.url);
+        }
+
         return item.copyWith(
           propertyImageId: event.propertyImageId,
           existingPhotoUrl: event.url,
+          existingPhotoUrls: currentUrls,
         );
       }
       return item;
@@ -1401,9 +1413,16 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   ) {
     final newList = state.furnitureItems.map((item) {
       if (item.id == event.furnitureId) {
+        // Add the new property photo URL to the display list if it's not already there
+        final currentUrls = List<String>.from(item.existingPhotoUrls);
+        if (!currentUrls.contains(event.url)) {
+          currentUrls.add(event.url);
+        }
+
         return item.copyWith(
           propertyImageId: event.propertyImageId,
           existingPhotoUrl: event.url,
+          existingPhotoUrls: currentUrls,
         );
       }
       return item;
@@ -1463,7 +1482,8 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         stateBeforeCalculation.otherServiceFee;
     final totalUpfront =
         stateBeforeCalculation.advanceRent +
-        stateBeforeCalculation.securityDeposit;
+        stateBeforeCalculation.securityDeposit +
+        stateBeforeCalculation.upfrontFee;
 
     emit(
       stateBeforeCalculation.copyWith(
@@ -1602,11 +1622,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         dayToUse = lastDayOfTargetMonth;
       }
 
-      DateTime endDate = DateTime(
-        targetYear,
-        targetMonth,
-        dayToUse,
-      ).subtract(const Duration(days: 1));
+      DateTime endDate = DateTime(targetYear, targetMonth, dayToUse);
 
       return currentState.copyWith(leaseEndDate: endDate);
     }

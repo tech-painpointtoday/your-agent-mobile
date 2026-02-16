@@ -1185,7 +1185,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get select_date => 'เลือกวันที่';
 
   @override
-  String get contract_end_date => 'วันที่สิ้นสุด';
+  String get contract_end_date => 'วันที่สิ้นสุดสัญญา';
 
   @override
   String get lease_renewal_format => 'รูปแบบการต่อสัญญา';
@@ -1386,7 +1386,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get select_property_type_contract => 'เลือกประเภทอสังหาฯ';
 
   @override
-  String get contract_status_incomplete => 'ยังไม่สมบูรณ์';
+  String get contract_status_incomplete => 'รอการลงนาม';
 
   @override
   String get contract_status_complete => 'สมบูรณ์';
@@ -2531,7 +2531,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get approvalStatusTitle => 'สถานะการอนุมัติ';
 
   @override
-  String get statusIncomplete => 'ยังไม่สมบูรณ์';
+  String get statusIncomplete => 'รอการลงนาม';
+
+  @override
+  String get statusSigned => 'ลงนามแล้ว';
 
   @override
   String get statusComplete => 'สมบูรณ์';
@@ -2742,7 +2745,7 @@ class AppLocalizationsTh extends AppLocalizations {
       'คุณต้องการลบสัญญานี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้';
 
   @override
-  String get contractDocument => 'ไม่พบเอกสารสัญญา';
+  String get contractDocumentNotFound => 'ไม่พบเอกสารสัญญา';
 
   @override
   String get dataContract => 'ขณะนี้ยังไม่มีข้อมูลสัญญาในระบบ';
@@ -3427,4 +3430,16 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get warning => 'คำเตือน';
+
+  @override
+  String get createAccount => 'สร้างบัญชี';
+
+  @override
+  String get applianceTitle => 'เครื่องใช้ไฟฟ้า';
+
+  @override
+  String get furnitureTitle => 'เฟอร์นิเจอร์';
+
+  @override
+  String get selectImageFromProperty => 'เลือกรูปจากอสังหาฯ';
 }

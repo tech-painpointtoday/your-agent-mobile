@@ -68,18 +68,16 @@ class _AddContractView extends StatelessWidget {
       },
       listener: (context, state) {
         if (state.status == ContractFormStatus.success) {
-          Navigator.of(context).pop(true);
+          context.pop(true);
         } else if (state.status == ContractFormStatus.draftSaveSuccess) {
           StatusDialog.showSuccess(
             context: context,
             title: AppLocalizations.of(context).successTitle,
             message: AppLocalizations.of(context).draftSavedMessage,
           );
-          Future.delayed(const Duration(milliseconds: 500), () {
-            if (context.mounted) {
-              Navigator.of(context).pop(true);
-            }
-          });
+          if (context.mounted) {
+            context.pop(true);
+          }
         } else if (state.status == ContractFormStatus.draftSaveFailure) {
           StatusDialog.showError(
             context: context,
@@ -308,9 +306,7 @@ class _AddContractView extends StatelessWidget {
                       state.status == ContractFormStatus.submitting;
 
                   return AppButton(
-                    text: isLastStep
-                        ? 'Preview Contract'
-                        : AppLocalizations.of(context).nextButton,
+                    text: AppLocalizations.of(context).nextButton,
                     style: AppButtonStyle.primary,
                     onPressed: (state.isValid && !isLoading)
                         ? () {

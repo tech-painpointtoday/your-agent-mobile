@@ -5033,8 +5033,14 @@ abstract class AppLocalizations {
   /// No description provided for @statusIncomplete.
   ///
   /// In en, this message translates to:
-  /// **'Incomplete'**
+  /// **'Pending Signature'**
   String get statusIncomplete;
+
+  /// No description provided for @statusSigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed'**
+  String get statusSigned;
 
   /// No description provided for @statusComplete.
   ///
@@ -5438,11 +5444,11 @@ abstract class AppLocalizations {
   /// **'Delete back contract'**
   String get deleteBackContract;
 
-  /// No description provided for @contractDocument.
+  /// No description provided for @contractDocumentNotFound.
   ///
   /// In en, this message translates to:
   /// **'Contract document'**
-  String get contractDocument;
+  String get contractDocumentNotFound;
 
   /// No description provided for @dataContract.
   ///
@@ -6733,6 +6739,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Warning'**
   String get warning;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
+
+  /// No description provided for @applianceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Appliance'**
+  String get applianceTitle;
+
+  /// No description provided for @furnitureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Furniture'**
+  String get furnitureTitle;
+
+  /// No description provided for @selectImageFromProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Select image from property'**
+  String get selectImageFromProperty;
 }
 
 class _AppLocalizationsDelegate

@@ -208,11 +208,12 @@ class _HomeHeaderState extends State<HomeHeader> {
           onTap: () => context.push('/notifications'),
           showBadge: true,
         ),
-        SizedBox(width: 10),
-        _HeaderActionIcon(
-          svgPath: 'assets/icons/message-round.svg',
-          onTap: () => context.push('/chat'),
-        ),
+        // tmp close
+        // SizedBox(width: 10),
+        // _HeaderActionIcon(
+        //   svgPath: 'assets/icons/message-round.svg',
+        //   onTap: () => context.push('/chat'),
+        // ),
       ],
     );
   }
@@ -352,6 +353,7 @@ class MenuGridCard extends StatelessWidget {
         imagePath: 'assets/images/home/money.png',
         route: '/money',
         accent: const Color(0xFF10B981),
+        enable: false,
       ),
       HomeMenuItem(
         label: 'Calendar',
@@ -359,6 +361,7 @@ class MenuGridCard extends StatelessWidget {
         imagePath: 'assets/images/home/calendar.png',
         route: '/calendar',
         accent: const Color(0xFFF59E0B),
+        enable: false,
       ),
       HomeMenuItem(
         label: 'Contact',
@@ -366,6 +369,7 @@ class MenuGridCard extends StatelessWidget {
         imagePath: 'assets/images/home/contact.png',
         route: '/contact',
         accent: const Color(0xFF22C55E),
+        enable: false,
       ),
       HomeMenuItem(
         label: 'Dashboard',

@@ -2533,7 +2533,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get approvalStatusTitle => 'Approval Status';
 
   @override
-  String get statusIncomplete => 'Incomplete';
+  String get statusIncomplete => 'Pending Signature';
+
+  @override
+  String get statusSigned => 'Signed';
 
   @override
   String get statusComplete => 'Complete';
@@ -2744,7 +2747,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteBackContract => 'Delete back contract';
 
   @override
-  String get contractDocument => 'Contract document';
+  String get contractDocumentNotFound => 'Contract document';
 
   @override
   String get dataContract => 'Data contract';
@@ -3414,4 +3417,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get warning => 'Warning';
+
+  @override
+  String get createAccount => 'Create Account';
+
+  @override
+  String get applianceTitle => 'Appliance';
+
+  @override
+  String get furnitureTitle => 'Furniture';
+
+  @override
+  String get selectImageFromProperty => 'Select image from property';
 }

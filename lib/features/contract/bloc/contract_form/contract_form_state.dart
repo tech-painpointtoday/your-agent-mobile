@@ -92,7 +92,7 @@ class ContractFormState extends Equatable {
   final int? dueDate;
   final double lateFee;
   final String paymentMethod;
-  final double upfrontFee; // Added
+  final double upfrontFee;
   final String? bankCode;
   final String bankName;
   final String bankBranch;
@@ -214,9 +214,9 @@ class ContractFormState extends Equatable {
     double? commonFee,
     double? otherServiceFee,
     double? totalMonthlyPayment,
+    double? totalUpfrontPayment,
     double? advanceRent,
     double? securityDeposit,
-    double? totalUpfrontPayment,
     int? dueDate,
     double? lateFee,
     String? paymentMethod,
@@ -291,9 +291,9 @@ class ContractFormState extends Equatable {
       commonFee: commonFee ?? this.commonFee,
       otherServiceFee: otherServiceFee ?? this.otherServiceFee,
       totalMonthlyPayment: totalMonthlyPayment ?? this.totalMonthlyPayment,
+      totalUpfrontPayment: totalUpfrontPayment ?? this.totalUpfrontPayment,
       advanceRent: advanceRent ?? this.advanceRent,
       securityDeposit: securityDeposit ?? this.securityDeposit,
-      totalUpfrontPayment: totalUpfrontPayment ?? this.totalUpfrontPayment,
       dueDate: dueDate ?? this.dueDate,
       lateFee: lateFee ?? this.lateFee,
       paymentMethod: paymentMethod ?? this.paymentMethod,
@@ -352,9 +352,9 @@ class ContractFormState extends Equatable {
     commonFee,
     otherServiceFee,
     totalMonthlyPayment,
+    totalUpfrontPayment,
     advanceRent,
     securityDeposit,
-    totalUpfrontPayment,
     dueDate,
     lateFee,
     paymentMethod,

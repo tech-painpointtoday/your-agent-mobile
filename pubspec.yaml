@@ -127,6 +127,7 @@ flutter:
     - assets/images/dialog/
     - assets/images/sign_in/
     - assets/images/sign_up/
+    - assets/images/contract/
     - assets/country/
     - assets/fonts/
     - assets/etc/

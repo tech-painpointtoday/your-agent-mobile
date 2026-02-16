@@ -829,7 +829,8 @@
   "imagesDeletedMessage": "All images deleted successfully",
   "searchFilterLabel": "Search Filter",
   "approvalStatusTitle": "Approval Status",
-  "statusIncomplete": "Incomplete",
+  "statusIncomplete": "Pending Signature",
+  "statusSigned": "Signed",
   "statusComplete": "Complete",
   "contractTypeTitle": "Contract Type",
   "saleContractType": "Sale Contract",
@@ -897,7 +898,7 @@
   "editContract": "Edit contract",
   "deleteContract": "Delete contract",
   "deleteBackContract": "Delete back contract",
-  "contractDocument": "Contract document",
+  "contractDocumentNotFound": "Contract document",
   "dataContract": "Data contract",
   "errorLabel": "Error",
   "saveDataSuccess": "Save data success",
@@ -1113,5 +1114,9 @@
   "yesterday": "Yesterday",
   "time_unit_th": "",
   "warning": "Warning",
-  "select": "Select"
+  "select": "Select",
+  "createAccount": "Create Account",
+  "applianceTitle": "Appliance",
+  "furnitureTitle": "Furniture",
+  "selectImageFromProperty": "Select image from property"
 }
