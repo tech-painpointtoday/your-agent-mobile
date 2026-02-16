@@ -9,6 +9,7 @@ import 'package:youragent/data/models/api_response.dart';
 import 'package:youragent/data/models/developer_model.dart';
 import 'package:youragent/data/models/condo_project_model.dart';
 import 'package:youragent/data/models/property_specification_filters.dart';
+import 'package:youragent/data/models/house_project_model.dart';
 import 'package:image_picker/image_picker.dart';
 
 /// Photo upload data structure
@@ -829,6 +830,7 @@ class PropertyApiService {
   /// POST /agent/properties/{propertyId}/house-details
   Future<void> setHouseDetails({
     required int propertyId,
+    int? houseProjectId,
     String? villageName,
     String? moo,
     String? houseSubtype,
@@ -838,6 +840,7 @@ class PropertyApiService {
   }) async {
     try {
       final data = <String, dynamic>{};
+      if (houseProjectId != null) data['house_project_id'] = houseProjectId;
       if (villageName != null && villageName.isNotEmpty) {
         data['village_name'] = villageName;
       }
@@ -924,6 +927,150 @@ class PropertyApiService {
         throw Exception(errorMessage);
       }
       throw Exception('Failed to delete property image: $e');
+    }
+  }
+
+  /// Create a new developer
+  /// POST /agent/developers
+  Future<Map<String, dynamic>> createDeveloper({
+    required String nameEn,
+    required String nameTh,
+  }) async {
+    try {
+      final response = await _apiClient.post(
+        '/agent/developers',
+        data: {'name_en': nameEn, 'name_th': nameTh, 'is_active': true},
+      );
+
+      if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['success'] == true && data['data'] != null) {
+          return data['data'] as Map<String, dynamic>;
+        }
+      }
+      throw Exception('Invalid response format');
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to create developer: $e');
+    }
+  }
+
+  /// Create a new condo project
+  /// POST /agent/condo-projects
+  Future<Map<String, dynamic>> createCondoProject({
+    required int developerId,
+    required String nameEn,
+    required String nameTh,
+    String? juristicContactPhone,
+    String? juristicContactEmail,
+  }) async {
+    try {
+      final response = await _apiClient.post(
+        '/agent/condo-projects',
+        data: {
+          'developer_id': developerId,
+          'name_en': nameEn,
+          'name_th': nameTh,
+          'juristic_contact_phone': juristicContactPhone,
+          'juristic_contact_email': juristicContactEmail,
+          'is_active': true,
+        },
+      );
+
+      if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['success'] == true && data['data'] != null) {
+          return data['data'] as Map<String, dynamic>;
+        }
+      }
+      throw Exception('Invalid response format');
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to create condo project: $e');
+    }
+  }
+
+  /// Create a new house project
+  /// POST /agent/house-projects
+  Future<Map<String, dynamic>> createHouseProject({
+    required int developerId,
+    required String nameEn,
+    required String nameTh,
+    String? juristicContactPhone,
+    String? juristicContactEmail,
+  }) async {
+    try {
+      final response = await _apiClient.post(
+        '/agent/house-projects',
+        data: {
+          'developer_id': developerId,
+          'name_en': nameEn,
+          'name_th': nameTh,
+          'juristic_contact_phone': juristicContactPhone,
+          'juristic_contact_email': juristicContactEmail,
+          'is_active': true,
+        },
+      );
+
+      if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['success'] == true && data['data'] != null) {
+          return data['data'] as Map<String, dynamic>;
+        }
+      }
+      throw Exception('Invalid response format');
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to create house project: $e');
+    }
+  }
+
+  /// Get all house projects
+  /// GET /public/house-projects
+  /// Optional developerId parameter to filter by developer
+  Future<List<HouseProject>> getHouseProjects({int? developerId}) async {
+    try {
+      final queryParams = <String, dynamic>{};
+      if (developerId != null) {
+        queryParams['developer_id'] = developerId;
+      }
+
+      final response = await _apiClient.get(
+        '/public/house-projects',
+        queryParameters: queryParams.isNotEmpty ? queryParams : null,
+      );
+      final data = response.data;
+
+      List<dynamic> projectsList = [];
+      if (data is Map<String, dynamic>) {
+        if (data['data'] is List) {
+          projectsList = data['data'] as List;
+        } else if (data['data'] is Map &&
+            data['data']['house_projects'] is List) {
+          projectsList = data['data']['house_projects'] as List;
+        }
+      } else if (data is List) {
+        projectsList = data;
+      }
+
+      return projectsList
+          .map((json) => HouseProject.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        final errorMessage = ApiResponseService.getErrorMessage(e);
+        throw Exception(errorMessage);
+      }
+      throw Exception('Failed to get house projects: $e');
     }
   }
 }

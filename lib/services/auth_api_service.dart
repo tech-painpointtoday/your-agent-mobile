@@ -415,4 +415,17 @@ class AuthApiService {
     );
     return response.data as Map<String, dynamic>;
   }
+
+  Future<void> deleteAccount() async {
+    try {
+      await _apiClient.delete('/api/agent/account');
+      // Clear auth token after successful deletion
+      await _apiClient.clearAuthToken();
+    } catch (e) {
+      if (e is DioException) {
+        throw Exception(_extractErrorMessage(e));
+      }
+      throw Exception('Failed to delete account: $e');
+    }
+  }
 }

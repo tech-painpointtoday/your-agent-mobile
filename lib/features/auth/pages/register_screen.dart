@@ -83,7 +83,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     if (state is Authenticated) {
-      // Show success dialog before redirecting
+      // After successful registration, redirect to email verification screen
+
       StatusDialog.showSuccess(
         context: context,
         title: AppLocalizations.of(context).register_success,
@@ -95,8 +96,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               '/email-verification-pending?email=${Uri.encodeComponent(email)}',
             );
           } else {
-            // Social login might not have email in controller
-            context.go('/'); // Or to home
+            // Fallback to home if email is empty
+            context.go('/');
           }
         },
       );

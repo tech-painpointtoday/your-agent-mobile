@@ -842,6 +842,7 @@
   "juristicContactEmailLabel": "อีเมลสำนักงานนิติบุคคล",
   "discardAllPropertyConfirmTitle": "ละทิ้งการสร้างทรัพย์?",
   "discardAllPropertyConfirmMessage": "หากคุณละทิ้งแล้ว จะไม่สามารถย้อนกลับได้",
+  "imageDeletedMessage": "ลบรูปภาพเรียบร้อยแล้ว",
   "imagesDeletedMessage": "ลบรูปภาพทั้งหมดเรียบร้อยแล้ว",
   "searchFilterLabel": "ตัวกรองการค้นหา",
   "approvalStatusTitle": "สถานะการอนุมัติ",

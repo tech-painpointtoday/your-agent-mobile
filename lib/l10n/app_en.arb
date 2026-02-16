@@ -825,6 +825,7 @@
   "deleteAllImagesConfirmMessage": "Once you delete, it cannot be undone",
   "discardAllPropertyConfirmTitle": "Discard All Property Information Changes?",
   "discardAllPropertyConfirmMessage": "Once you discard, it cannot be undone",
+  "imageDeletedMessage": "Image deleted successfully",
   "imagesDeletedMessage": "All images deleted successfully",
   "searchFilterLabel": "Search Filter",
   "approvalStatusTitle": "Approval Status",

@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
             //   padding: EdgeInsets.symmetric(horizontal: 16),
             //   child: ActivitiesSection(),
             // ),
-            SizedBox(height: 16),
+            SizedBox(height: 512),
           ],
         ),
       ),

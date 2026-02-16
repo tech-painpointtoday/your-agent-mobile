@@ -2521,6 +2521,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Once you discard, it cannot be undone';
 
   @override
+  String get imageDeletedMessage => 'Image deleted successfully';
+
+  @override
   String get imagesDeletedMessage => 'All images deleted successfully';
 
   @override

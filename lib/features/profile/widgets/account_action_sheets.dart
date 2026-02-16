@@ -7,6 +7,8 @@ import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/utils/thai_phone_input_formatter.dart';
+import 'package:youragent/core/di/dependency_injection.dart';
+import 'package:go_router/go_router.dart';
 
 class AccountActionSheets {
   static Future<void> showChangeEmail(BuildContext context) {
@@ -269,11 +271,16 @@ class _DeleteAccountSheet extends StatefulWidget {
 class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
   final TextEditingController _controller = TextEditingController();
   bool _canDelete = false;
+  bool _isDeleting = false;
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _deleteAccount() async {
+    await DependencyInjection.authApiService.deleteAccount();
   }
 
   @override
@@ -373,9 +380,30 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                 width: double.infinity,
                 text: AppLocalizations.of(context).yesDeleteImmediately,
                 style: AppButtonStyle.destructive,
-                onPressed: _canDelete
-                    ? () {
-                        Navigator.pop(context);
+                isLoading: _isDeleting,
+                onPressed: (_canDelete && !_isDeleting)
+                    ? () async {
+                        setState(() => _isDeleting = true);
+                        try {
+                          await _deleteAccount();
+                          if (mounted) {
+                            Navigator.pop(context);
+                            // Navigate to login screen after successful deletion
+                            context.go('/login');
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            setState(() => _isDeleting = false);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  e.toString().replaceFirst('Exception: ', ''),
+                                ),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          }
+                        }
                       }
                     : null,
               ),

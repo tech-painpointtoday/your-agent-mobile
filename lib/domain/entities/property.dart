@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
+import 'property_details.dart';
 import 'property_image.dart';
 
 /// Represents the status/approval state of a property listing
@@ -141,46 +142,6 @@ enum PropertyType {
   }
 }
 
-enum PropertyStyle {
-  colonial,
-  contemporary,
-  loft,
-  minimal,
-  natural,
-  nordic,
-  thaiContemporary,
-  vintage,
-  other;
-
-  String get label => switch (this) {
-    colonial => 'โคโลเนียล',
-    contemporary => 'ร่วมสมัย',
-    loft => 'ลอฟท์',
-    minimal => 'มินิมอล',
-    natural => 'เนเชอรัล',
-    nordic => 'นอร์ดิก',
-    thaiContemporary => 'ไทยร่วมสมัย',
-    vintage => 'วินเทจ',
-    other => 'อื่นๆ',
-  };
-
-  String get value => switch (this) {
-    thaiContemporary => 'thai_contemporary',
-    _ => name,
-  };
-
-  static PropertyStyle? fromValue(String? value) {
-    if (value == null) return null;
-    try {
-      return PropertyStyle.values.firstWhere(
-        (e) => e.value == value || e.label == value,
-      );
-    } catch (_) {
-      return null;
-    }
-  }
-}
-
 enum PropertyListingType {
   sale,
   rent,
@@ -255,11 +216,9 @@ class Property extends Equatable {
   final int bedrooms;
   final int bathrooms;
   final int? garage;
-  final double area; // Usable area (sqm)
   final double? landSize; // Land area (sq wah)
   final double? buildingSize;
   final PropertyType? propertyType;
-  final PropertyStyle? propertyStyle;
   final int? totalFloors; // Total floors of the property
   final PropertyColor? houseColor;
   final DateTime? built; // Year/Date built
@@ -278,6 +237,8 @@ class Property extends Equatable {
   final Map<String, dynamic>
   specifications; // raw dynamic specs (e.g. "floors": "2")
   final Map<String, dynamic> specificationValues; // raw dynamic values
+  final CondoDetails? condoDetails;
+  final HouseDetails? houseDetails;
 
   // Images
   final String? imageUrl; // Cover image URL
@@ -319,11 +280,9 @@ class Property extends Equatable {
     this.bedrooms = 0,
     this.bathrooms = 0,
     this.garage,
-    this.area = 0,
     this.landSize,
     this.buildingSize,
     this.propertyType,
-    this.propertyStyle,
     this.totalFloors,
     this.houseColor,
     this.built,
@@ -339,6 +298,8 @@ class Property extends Equatable {
     this.moo,
     this.specifications = const {},
     this.specificationValues = const {},
+    this.condoDetails,
+    this.houseDetails,
     this.imageUrl,
     this.images = const [],
     this.imageFiles = const [],
@@ -366,10 +327,11 @@ class Property extends Equatable {
     final Map<String, dynamic> location = data['location'] is Map
         ? Map<String, dynamic>.from(data['location'] as Map)
         : <String, dynamic>{};
-    final Map<String, dynamic> specValues = specs['specification_values'] is Map
+    final Map<String, dynamic> specificationValues =
+        specs['specification_values'] is Map
         ? Map<String, dynamic>.from(specs['specification_values'] as Map)
         : <String, dynamic>{};
-    Map<String, dynamic> rawSpecs = specs['specifications'] is Map
+    Map<String, dynamic> specifications = specs['specifications'] is Map
         ? Map<String, dynamic>.from(specs['specifications'] as Map)
         : <String, dynamic>{};
 
@@ -384,7 +346,7 @@ class Property extends Equatable {
     if (condoDetails is Map<String, dynamic>) {
       final projectId = condoDetails['condo_project_id'];
       if (projectId != null) {
-        rawSpecs['condo_project_id'] = projectId is int
+        specifications['condo_project_id'] = projectId is int
             ? projectId
             : int.tryParse(projectId.toString());
       }
@@ -399,39 +361,91 @@ class Property extends Equatable {
         }
         final devId = nestedProject['developer_id'];
         if (devId != null) {
-          rawSpecs['developer_id'] = devId is int
+          specifications['developer_id'] = devId is int
               ? devId
               : int.tryParse(devId.toString());
         }
       }
       if (condoDetails['tower'] != null) {
-        rawSpecs['tower'] = condoDetails['tower'].toString();
+        specifications['tower'] = condoDetails['tower'].toString();
       }
       if (condoDetails['floor'] != null) {
-        rawSpecs['floor'] = condoDetails['floor'].toString();
+        specifications['floor'] = condoDetails['floor'].toString();
       }
       if (condoDetails['unit_no'] != null) {
-        rawSpecs['unit_no'] = condoDetails['unit_no'].toString();
+        specifications['unit_no'] = condoDetails['unit_no'].toString();
       }
     }
 
     // API: house_details = { id, property_id, village_name, moo, house_subtype, parking_type, is_corner_plot, notes, ... }
+    // API: house_details = { id, developer, house_project_id, village_name, ... }
     final houseDetails = data['house_details'];
     if (houseDetails is Map<String, dynamic>) {
-      if (houseDetails['village_name'] != null)
-        rawSpecs['village_name'] = houseDetails['village_name'].toString();
-      if (houseDetails['moo'] != null)
-        rawSpecs['moo'] = houseDetails['moo'].toString();
-      if (houseDetails['house_subtype'] != null)
-        rawSpecs['house_subtype'] = houseDetails['house_subtype'].toString();
-      if (houseDetails['parking_type'] != null)
-        rawSpecs['parking_type'] = houseDetails['parking_type'].toString();
-      if (houseDetails['is_corner_plot'] != null)
-        rawSpecs['is_corner_plot'] =
+      // 1. House Project ID
+      final projectId = houseDetails['house_project_id'];
+      if (projectId != null) {
+        specifications['house_project_id'] = projectId is int
+            ? projectId
+            : int.tryParse(projectId.toString());
+      }
+
+      // 2. Developer (directly in house_details or nested house_project)
+      var developer = houseDetails['developer'];
+      final nestedProject = houseDetails['house_project'];
+
+      if (developer == null && nestedProject is Map<String, dynamic>) {
+        developer = nestedProject['developer'];
+      }
+
+      if (developer is Map<String, dynamic>) {
+        developerNameTh ??= developer['name_th']?.toString();
+        developerNameEn ??= developer['name_en']?.toString();
+
+        final devId = developer['id'];
+        if (devId != null) {
+          specifications['developer_id'] = devId is int
+              ? devId
+              : int.tryParse(devId.toString());
+        }
+      }
+
+      // 3. House Project Name
+      // Use house_project name if available, otherwise village_name
+      if (nestedProject is Map<String, dynamic>) {
+        // If needed, we could map this to a specific field.
+        // For now, village_name usually holds the project name for display.
+        // If village_name is null but we have a project, maybe use project name?
+        if (houseDetails['village_name'] == null) {
+          final hpName = nestedProject['name_th'] ?? nestedProject['name'];
+          if (hpName != null) {
+            specifications['village_name'] = hpName.toString();
+          }
+        }
+      }
+
+      if (houseDetails['village_name'] != null) {
+        specifications['village_name'] = houseDetails['village_name']
+            .toString();
+      }
+      if (houseDetails['moo'] != null) {
+        specifications['moo'] = houseDetails['moo'].toString();
+      }
+      if (houseDetails['house_subtype'] != null) {
+        specifications['house_subtype'] = houseDetails['house_subtype']
+            .toString();
+      }
+      if (houseDetails['parking_type'] != null) {
+        specifications['parking_type'] = houseDetails['parking_type']
+            .toString();
+      }
+      if (houseDetails['is_corner_plot'] != null) {
+        specifications['is_corner_plot'] =
             houseDetails['is_corner_plot'] == true ||
             houseDetails['is_corner_plot'] == 'true';
-      if (houseDetails['notes'] != null)
-        rawSpecs['house_notes'] = houseDetails['notes'].toString();
+      }
+      if (houseDetails['notes'] != null) {
+        specifications['house_notes'] = houseDetails['notes'].toString();
+      }
     }
 
     // 3. Helper Parsers
@@ -539,13 +553,8 @@ class Property extends Equatable {
       bedrooms: parseInt(specs['bedrooms']),
       bathrooms: parseInt(specs['bathrooms']),
       garage: parseInt(specs['garage']),
-      area: parseDouble(specs['building_size'] ?? specs['area']),
       landSize: parseDouble(specs['land_size']),
       buildingSize: parseDouble(specs['building_size']),
-      propertyStyle: PropertyStyle.fromValue(
-        parseString(specs['property_style']) ??
-            parseString(data['property_style']),
-      ),
       houseColor: PropertyColor.fromLabel(parseString(specs['house_color'])),
       built: DateTime.tryParse(data['built']?.toString() ?? ''),
       direction: PropertyDirection.fromLabel(location['direction']),
@@ -553,17 +562,23 @@ class Property extends Equatable {
       condoProjectNameEn: condoProjectNameEn,
       developerNameTh: developerNameTh,
       developerNameEn: developerNameEn,
-      villageName: rawSpecs['village_name']?.toString(),
-      tower: rawSpecs['tower']?.toString(),
-      floor: rawSpecs['floor']?.toString(),
-      unitNo: rawSpecs['unit_no']?.toString(),
-      moo: rawSpecs['moo']?.toString(),
+      villageName: specifications['village_name']?.toString(),
+      tower: specifications['tower']?.toString(),
+      floor: specifications['floor']?.toString(),
+      unitNo: specifications['unit_no']?.toString(),
+      moo: specifications['moo']?.toString(),
       totalFloors: parseInt(
-        specs['total_floors'] ?? rawSpecs['floors'],
+        specs['total_floors'] ?? specifications['floors'],
       ), // Try spec object then raw map
       // Dynamic Values
-      specifications: Map<String, dynamic>.from(rawSpecs),
-      specificationValues: Map<String, dynamic>.from(specValues),
+      specifications: Map<String, dynamic>.from(specifications),
+      specificationValues: Map<String, dynamic>.from(specificationValues),
+      condoDetails: condoDetails is Map<String, dynamic>
+          ? CondoDetails.fromJson(condoDetails)
+          : null,
+      houseDetails: houseDetails is Map<String, dynamic>
+          ? HouseDetails.fromJson(houseDetails)
+          : null,
 
       // Images
       imageUrl: firstImage,
@@ -587,7 +602,6 @@ class Property extends Equatable {
       'description': description,
       'listing_type': listingType?.value,
       'status': status?.value,
-      'property_style': propertyStyle?.value,
       'built': built?.toUtc().toIso8601String(),
       'available_from': availableFrom,
       'house_color': houseColor?.value,
@@ -623,7 +637,7 @@ class Property extends Equatable {
         'floors': totalFloors?.toString(),
         'bedrooms': bedrooms.toString(),
         'bathrooms': bathrooms.toString(),
-        'parking_spaces': garage?.toString(),
+        'garage': garage?.toString(),
       },
 
       // Dynamic Values Map (Multi-selects)
@@ -661,17 +675,17 @@ class Property extends Equatable {
     int? bedrooms,
     int? bathrooms,
     int? garage,
-    double? area,
     double? landSize,
     double? buildingSize,
     PropertyType? propertyType,
-    PropertyStyle? propertyStyle,
     int? totalFloors,
     PropertyColor? houseColor,
     DateTime? built,
     PropertyDirection? direction,
     Map<String, dynamic>? specifications,
     Map<String, dynamic>? specificationValues,
+    CondoDetails? condoDetails,
+    HouseDetails? houseDetails,
     String? imageUrl,
     List<PropertyImage>? images,
     List<XFile>? imageFiles,
@@ -709,17 +723,17 @@ class Property extends Equatable {
       bedrooms: bedrooms ?? this.bedrooms,
       bathrooms: bathrooms ?? this.bathrooms,
       garage: garage ?? this.garage,
-      area: area ?? this.area,
       landSize: landSize ?? this.landSize,
       buildingSize: buildingSize ?? this.buildingSize,
       propertyType: propertyType ?? this.propertyType,
-      propertyStyle: propertyStyle ?? this.propertyStyle,
       totalFloors: totalFloors ?? this.totalFloors,
       houseColor: houseColor ?? this.houseColor,
       built: built ?? this.built,
       direction: direction ?? this.direction,
       specifications: specifications ?? this.specifications,
       specificationValues: specificationValues ?? this.specificationValues,
+      condoDetails: condoDetails ?? this.condoDetails,
+      houseDetails: houseDetails ?? this.houseDetails,
       imageUrl: imageUrl ?? this.imageUrl,
       images: images ?? this.images,
       imageFiles: imageFiles ?? this.imageFiles,
@@ -786,11 +800,9 @@ class Property extends Equatable {
       bedrooms: bedrooms,
       bathrooms: bathrooms,
       garage: garage,
-      area: area,
       landSize: landSize,
       buildingSize: buildingSize,
       propertyType: propertyType,
-      propertyStyle: propertyStyle,
       totalFloors: totalFloors,
       houseColor: houseColor,
       built: built,
@@ -799,6 +811,8 @@ class Property extends Equatable {
           (clean(specifications) as Map?)?.cast<String, dynamic>() ?? {},
       specificationValues:
           (clean(specificationValues) as Map?)?.cast<String, dynamic>() ?? {},
+      condoDetails: condoDetails,
+      houseDetails: houseDetails,
       imageUrl: imageUrl,
       images: images,
       imageFiles: imageFiles,
@@ -817,10 +831,13 @@ class Property extends Equatable {
     address,
     approvalStatus,
     imageUrls,
+    images,
     imageFiles,
     bedrooms,
     bathrooms,
     specifications,
+    condoDetails,
+    houseDetails,
     createdAt,
   ];
 }

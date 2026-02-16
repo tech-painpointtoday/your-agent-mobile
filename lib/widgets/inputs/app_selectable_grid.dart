@@ -6,8 +6,14 @@ class GridItem<T> {
   final String label;
   final T value;
   final String? imagePath;
+  final String? imageUrl;
 
-  const GridItem({required this.label, required this.value, this.imagePath});
+  const GridItem({
+    required this.label,
+    required this.value,
+    this.imagePath,
+    this.imageUrl,
+  });
 }
 
 class AppSelectableGrid<T> extends StatelessWidget {
@@ -16,6 +22,7 @@ class AppSelectableGrid<T> extends StatelessWidget {
   final List<GridItem<T>> items;
   final ValueChanged<T> onChanged;
   final bool isRequired;
+  final bool Function(T itemValue, T? currentValue)? isSelected;
 
   const AppSelectableGrid({
     super.key,
@@ -24,6 +31,7 @@ class AppSelectableGrid<T> extends StatelessWidget {
     required this.items,
     required this.onChanged,
     this.isRequired = false,
+    this.isSelected,
   });
 
   @override
@@ -67,7 +75,9 @@ class AppSelectableGrid<T> extends StatelessWidget {
           itemCount: items.length,
           itemBuilder: (context, index) {
             final item = items[index];
-            final isSelected = item.value == value;
+            final isSelected = this.isSelected != null
+                ? this.isSelected!(item.value, value)
+                : item.value == value;
 
             final hasSelection = value != null;
 
@@ -103,7 +113,24 @@ class AppSelectableGrid<T> extends StatelessWidget {
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(14),
                           ),
-                          child: item.imagePath != null
+                          child: item.imageUrl != null
+                              ? Image.network(
+                                  item.imageUrl!,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.grey[100],
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.broken_image,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : item.imagePath != null
                               ? Image.asset(
                                   item.imagePath!,
                                   width: double.infinity,

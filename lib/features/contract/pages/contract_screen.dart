@@ -266,15 +266,15 @@ class _ContractScreenState extends State<ContractScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Contract Count
-                      if (_allContracts.isNotEmpty)
+                      if (_filteredContracts.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                           child: AppBadges.plain(
-                            label: '${_allContracts.length} รายการ',
+                            label: '${_filteredContracts.length} รายการ',
                             color: BadgeColor.blue,
                           ),
                         )
-                      else if (_allContracts.isEmpty)
+                      else if (_filteredContracts.isEmpty)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                           child: AppBadges.plain(

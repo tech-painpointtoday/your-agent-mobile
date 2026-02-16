@@ -440,7 +440,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
             '${event.property.name ?? event.property.title} (${AppUtils.generatePropertyCode(event.property)})',
         propertyUnitNo: event.property.number ?? '',
         propertyProjectName: event.property.name ?? event.property.title,
-        propertyAreaSqm: event.property.area.toString(),
+        propertyAreaSqm: event.property.buildingSize.toString(),
         propertyFloor: event.property.totalFloors?.toString() ?? '',
       ),
     );

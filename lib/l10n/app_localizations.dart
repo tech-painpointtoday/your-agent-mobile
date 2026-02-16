@@ -5006,6 +5006,12 @@ abstract class AppLocalizations {
   /// **'Once you discard, it cannot be undone'**
   String get discardAllPropertyConfirmMessage;
 
+  /// No description provided for @imageDeletedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Image deleted successfully'**
+  String get imageDeletedMessage;
+
   /// No description provided for @imagesDeletedMessage.
   ///
   /// In en, this message translates to:

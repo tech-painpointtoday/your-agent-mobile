@@ -59,9 +59,8 @@ class _RegisterFormState extends State<RegisterForm> {
     final l10n = AppLocalizations.of(context);
 
     final canSubmit =
-        _selectedBusinessType != null &&
-        widget.termsAccepted &&
-        widget.privacyAccepted;
+        // _selectedBusinessType != null &&
+        widget.termsAccepted && widget.privacyAccepted;
 
     return Form(
       key: widget.formKey,

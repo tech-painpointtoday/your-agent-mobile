@@ -74,7 +74,7 @@ class ContractPdfService {
               address: state.selectedProperty?.address,
               number: state.selectedProperty?.number,
               floor: state.selectedProperty?.specifications['floor'],
-              area: state.selectedProperty?.area ?? 0,
+              area: state.selectedProperty?.buildingSize ?? 0,
             ),
             pw.SizedBox(height: 10),
             _buildSectionHeader('ข้อ 3. ระยะเวลาเช่า', fonts.bold),

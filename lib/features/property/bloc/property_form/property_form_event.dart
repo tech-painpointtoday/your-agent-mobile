@@ -187,6 +187,22 @@ class PropertyFormCondoProjectChanged extends PropertyFormEvent {
   List<Object?> get props => [projectId];
 }
 
+class PropertyFormHouseProjectChanged extends PropertyFormEvent {
+  final int? projectId;
+  const PropertyFormHouseProjectChanged(this.projectId);
+
+  @override
+  List<Object?> get props => [projectId];
+}
+
+class PropertyFormHouseProjectsFetched extends PropertyFormEvent {
+  final int? developerId;
+  const PropertyFormHouseProjectsFetched({this.developerId});
+
+  @override
+  List<Object?> get props => [developerId];
+}
+
 class PropertyFormListingTypeChanged extends PropertyFormEvent {
   final PropertyListingType listingType;
   const PropertyFormListingTypeChanged(this.listingType);

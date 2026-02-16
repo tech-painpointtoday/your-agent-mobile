@@ -15,7 +15,7 @@ class PropertyFilter extends Equatable {
   final int? bathrooms;
   final int? parkingSpaces;
   final double? landSize;
-  final double? usableArea;
+  final double? buildingSize;
   // Dynamic specification filters
   final Map<String, String> singleSelectSpecs; // key => selected value
   final Map<String, Set<String>> multiSelectSpecs; // key => selected values
@@ -34,7 +34,7 @@ class PropertyFilter extends Equatable {
     this.bathrooms,
     this.parkingSpaces,
     this.landSize,
-    this.usableArea,
+    this.buildingSize,
     this.singleSelectSpecs = const {},
     this.multiSelectSpecs = const {},
   });
@@ -70,7 +70,7 @@ class PropertyFilter extends Equatable {
         bathrooms == null &&
         parkingSpaces == null &&
         landSize == null &&
-        usableArea == null &&
+        buildingSize == null &&
         singleSelectSpecs.isEmpty &&
         allMultiSpecsEmpty;
   }
@@ -175,7 +175,9 @@ class PropertyFilter extends Equatable {
 
     // Sizes
     if (landSize != null && (property.landSize ?? 0) < landSize!) return false;
-    if (usableArea != null && property.area < usableArea!) return false;
+    if (buildingSize != null && (property.buildingSize ?? 0) < buildingSize!) {
+      return false;
+    }
 
     // Dynamic Single-Select Specifications
     for (final entry in singleSelectSpecs.entries) {
@@ -218,7 +220,7 @@ class PropertyFilter extends Equatable {
     int? Function()? bathrooms,
     int? Function()? parkingSpaces,
     double? Function()? landSize,
-    double? Function()? usableArea,
+    double? Function()? buildingSize,
     Map<String, String>? singleSelectSpecs,
     Map<String, Set<String>>? multiSelectSpecs,
   }) {
@@ -242,7 +244,7 @@ class PropertyFilter extends Equatable {
           ? parkingSpaces()
           : this.parkingSpaces,
       landSize: landSize != null ? landSize() : this.landSize,
-      usableArea: usableArea != null ? usableArea() : this.usableArea,
+      buildingSize: buildingSize != null ? buildingSize() : this.buildingSize,
       singleSelectSpecs: singleSelectSpecs ?? this.singleSelectSpecs,
       multiSelectSpecs: multiSelectSpecs ?? this.multiSelectSpecs,
     );
@@ -263,7 +265,7 @@ class PropertyFilter extends Equatable {
     bathrooms,
     parkingSpaces,
     landSize,
-    usableArea,
+    buildingSize,
     singleSelectSpecs,
     multiSelectSpecs,
   ];

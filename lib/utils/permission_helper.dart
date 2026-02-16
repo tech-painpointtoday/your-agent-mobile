@@ -14,32 +14,43 @@ class PermissionHelper {
     String? message,
     String? deniedForeverMessage,
   }) async {
-    var status = await permission.status;
+    PermissionStatus status = await permission.status;
 
-    if (status.isPermanentlyDenied) {
-      if (!context.mounted) return false;
-      await AppConfirmationBottomSheet.show(
-        context: context,
-        title: title ?? 'ไม่ได้รับอนุญาต',
-        description:
-            deniedForeverMessage ??
-            'คุณปิดสิทธิ์การเข้าถึงถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์',
-        confirmLabel: 'ไปที่ตั้งค่า',
-        cancelLabel: 'ยกเลิก',
-        style: ConfirmationStyle.normal,
-        onConfirm: () => openAppSettings(),
-      );
-      return false;
-    }
-
-    if (status.isDenied) {
-      status = await permission.request();
-    }
-
-    if (status.isGranted) {
+    if (status.isGranted || status.isLimited) {
       return true;
     }
 
+    if (status.isPermanentlyDenied) {
+      if (!context.mounted) return false;
+
+      // Use StatusDialog for cleaner UI or confirmation sheet
+      bool openSettings = false;
+      await AppConfirmationBottomSheet.show(
+        context: context,
+        title: title ?? 'Permission Required',
+        description:
+            deniedForeverMessage ?? 'Please enable permission in settings.',
+        confirmLabel: 'Open Settings',
+        cancelLabel: 'Cancel',
+        onConfirm: () {
+          openSettings = true;
+        },
+      );
+
+      if (openSettings) {
+        await openAppSettings();
+      }
+      return false;
+    }
+
+    // Request permission if not determined/denied
+    status = await permission.request();
+
+    if (status.isGranted || status.isLimited) {
+      return true;
+    }
+
+    // If still denied after request (but not permanently yet)
     if (!context.mounted) return false;
     StatusDialog.showWarning(
       context: context,
@@ -64,6 +75,7 @@ class PermissionHelper {
     }
 
     // 2. Check Permissions
+    if (!context.mounted) return false;
     return await ensurePermission(
       context,
       Permission.location,
@@ -105,18 +117,35 @@ class PermissionHelper {
 
   /// Ensures Photo/Gallery permission is ready
   static Future<bool> ensurePhotosReady(BuildContext context) async {
-    // Storage permission is used on older Android, Photos on iOS and newer Android
-    Permission photoPermission = Permission.photos;
+    // On Android 13+ use Permission.photos, older use storage
+    // On iOS use Permission.photos
+    // You might need check device info, but typically checking both or specific one is good.
+    // Simple approach: Request photos, if not applicable, try storage.
+    // BUT permission_handler handles this logic usually if configured correctly in AndroidManifest.
+    // Let's check photos first.
 
-    // Check status
-    return await ensurePermission(
+    // Ideally check platform version, but for simplicity we can check Permission.photos first.
+    // If that returns permanently denied or restricted on Android < 13 immediately, it might be wrong.
+    // Code below handles generic "photos" permission.
+
+    if (await Permission.photos.status.isGranted) return true;
+
+    // If photos not granted, try requesting it
+    if (!context.mounted) return false;
+    bool photosGranted = await ensurePermission(
       context,
-      photoPermission,
-      title: 'เข้าถึงรูปภาพ',
-      message: 'กรุณาอนุญาตการเข้าถึงรูปภาพเพื่อเลือกภาพจากอัลบั้ม',
-      deniedForeverMessage:
-          'คุณปิดสิทธิ์การเข้าถึงรูปภาพถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์',
+      Permission.photos,
+      title: 'Access Photos',
+      message: 'Allow app to access your photos.',
     );
+
+    if (photosGranted) return true;
+
+    // Fallback for older Android if needed (Storage) - only if photos didn't work/not applicable
+    // This part is tricky without device info. Assuming modern flutter env.
+    // If permission.photos is permanently denied, ensurePermission above would have shown dialog.
+
+    return false;
   }
 
   /// Ensures Notification permission is ready

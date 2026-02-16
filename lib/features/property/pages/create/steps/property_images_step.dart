@@ -175,7 +175,7 @@ class PropertyImagesStep extends StatelessWidget {
                         Positioned.fill(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: image.isNetwork
+                            child: image.isNetwork && image.path.isNotEmpty
                                 ? CachedNetworkImage(
                                     imageUrl: image.path,
                                     fit: BoxFit.cover,
@@ -394,7 +394,7 @@ class PropertyImagesStep extends StatelessWidget {
         StatusDialog.showSuccess(
           context: context,
           title: AppLocalizations.of(context).successTitle,
-          message: AppLocalizations.of(context).imagesDeletedMessage,
+          message: AppLocalizations.of(context).imageDeletedMessage,
         );
       },
     );

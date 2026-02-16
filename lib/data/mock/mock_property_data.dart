@@ -17,7 +17,7 @@ class MockPropertyData {
       createdAt: DateTime.now().subtract(const Duration(days: 1)),
       bedrooms: 3,
       bathrooms: 2,
-      area: 150,
+      buildingSize: 150,
       propertyType: PropertyType.house,
       imageUrl: 'https://placehold.co/600x400',
     ),

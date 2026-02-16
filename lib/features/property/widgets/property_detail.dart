@@ -391,11 +391,12 @@ class _PropertyDetailState extends State<PropertyDetail> {
                         value:
                             '${property.landSize} ${AppLocalizations.of(context).sq_wa}',
                       ),
-                    if (property.area > 0)
+                    if (property.buildingSize != null &&
+                        property.buildingSize! > 0)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).usableAreaSize,
                         value:
-                            '${property.area} ${AppLocalizations.of(context).sq_m}',
+                            '${property.buildingSize} ${AppLocalizations.of(context).sq_m}',
                       ),
                     if (property.direction != null)
                       PropertyDetailRow(

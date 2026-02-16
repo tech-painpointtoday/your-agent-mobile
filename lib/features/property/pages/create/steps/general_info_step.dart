@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:youragent/data/models/developer_model.dart';
 import 'package:youragent/data/models/condo_project_model.dart';
+import 'package:youragent/data/models/house_project_model.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
@@ -18,6 +19,7 @@ import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/features/property/widgets/add_property_info_bottom_sheets.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/domain/entities/property.dart';
 
 class GeneralInfoStep extends StatefulWidget {
   final int? step;
@@ -40,15 +42,20 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   late final TextEditingController _juristicPhoneController;
   late final TextEditingController _juristicEmailController;
   late final FocusNode _projectFocusNode;
+  late final FocusNode _developerFocusNode;
   bool _inlineMapUpdating = false;
   final SuggestionsController<CondoProject> _projectSuggestionsController =
       SuggestionsController<CondoProject>();
+  final SuggestionsController<HouseProject> _houseProjectSuggestionsController =
+      SuggestionsController<HouseProject>();
   int _lastCondoProjectsLength = -1;
+  int _lastHouseProjectsLength = -1;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     _projectFocusNode = FocusNode();
+    _developerFocusNode = FocusNode();
     super.initState();
     final state = context.read<PropertyFormBloc>().state;
     _nameController = TextEditingController(text: state.name);
@@ -80,7 +87,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     _developerController = TextEditingController(text: developerName);
     _buildingController = TextEditingController(text: state.tower);
     _floorController = TextEditingController(text: state.condoFloor);
-    _roomNoController = TextEditingController(text: state.unitNo);
+    _roomNoController = TextEditingController(text: state.number);
     _juristicPhoneController = TextEditingController();
     _juristicEmailController = TextEditingController();
 
@@ -118,7 +125,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       () => _updateData('floor', _floorController.text),
     );
     _roomNoController.addListener(
-      () => _updateData('unit_no', _roomNoController.text),
+      () => _updateData('number', _roomNoController.text),
     );
 
     // Initial fetch for developers and all condo projects if empty
@@ -318,24 +325,102 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   Future<void> _addDeveloper() async {
     final result = await AddDeveloperBottomSheet.show(context);
     if (result != null && mounted) {
-      final name = result['name_th'] ?? '';
-      _developerController.text = name;
-      _updateData('developer', name);
+      if (result['developer'] != null) {
+        // Show success dialog
+        if (mounted) {
+          StatusDialog.showSuccess(
+            context: context,
+            title: AppLocalizations.of(context).savedSuccessfully,
+            message: AppLocalizations.of(context).savedSuccessfully,
+            actionLabel: AppLocalizations.of(context).statusClose,
+            onAction: () {
+              // Refresh developers list
+              context.read<PropertyFormBloc>().add(
+                const PropertyFormDevelopersFetched(),
+              );
+
+              final developer = result['developer'] as Map<String, dynamic>;
+              final isTh = Localizations.localeOf(context).languageCode == 'th';
+              final developerId = developer['id'];
+
+              _developerController.text = isTh
+                  ? developer['name_th']
+                  : developer['name_en'];
+              _updateData(
+                'developer',
+                isTh ? developer['name_th'] : developer['name_en'],
+              );
+
+              // Update BLoC state with the new developer ID
+              if (developerId != null) {
+                context.read<PropertyFormBloc>().add(
+                  PropertyFormDeveloperChanged(developerId as int),
+                );
+              }
+            },
+          );
+        }
+      }
     }
   }
 
   Future<void> _addProject() async {
-    final result = await AddProjectBottomSheet.show(context);
+    final bloc = context.read<PropertyFormBloc>();
+    final state = bloc.state;
+    final developerId = state.selectedDeveloperId;
+
+    if (developerId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('กรุณาเลือกผู้พัฒนาก่อน'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    final isCondoOrApt =
+        state.selectedPropertyType == PropertyType.condo ||
+        state.selectedPropertyType == PropertyType.apartment;
+
+    final result = await AddProjectBottomSheet.show(
+      context,
+      developerId: developerId,
+      isCondoOrApt: isCondoOrApt,
+    );
+
     if (result != null && mounted) {
-      final name = result['name_th'] ?? '';
-      _projectController.text = name;
-      _updateData('project', name);
+      // Result structure varies: condo_project or house_project
+      final projectKey = isCondoOrApt ? 'condo_project' : 'house_project';
+      final project = result[projectKey] as Map<String, dynamic>?;
+
+      if (project != null) {
+        final nameTh = project['name_th'] ?? project['name'] ?? '';
+        final projectId = project['id'];
+
+        _projectController.text = nameTh;
+        _updateData('project', nameTh);
+
+        // Update BLoC state with the new project ID
+        if (projectId != null) {
+          if (isCondoOrApt) {
+            context.read<PropertyFormBloc>().add(
+              PropertyFormCondoProjectChanged(projectId as int),
+            );
+          } else {
+            context.read<PropertyFormBloc>().add(
+              PropertyFormHouseProjectChanged(projectId as int),
+            );
+          }
+        }
+      }
     }
   }
 
   @override
   void dispose() {
     _projectFocusNode.dispose();
+    _developerFocusNode.dispose();
     _projectSuggestionsController.dispose();
     _nameController.dispose();
     _addressController.dispose();
@@ -347,6 +432,75 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     _juristicPhoneController.dispose();
     _juristicEmailController.dispose();
     super.dispose();
+  }
+
+  Widget _buildMasterDataTypeAhead<T>({
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required String label,
+    required String hintText,
+    required List<T> items,
+    required String Function(T) nameSelector,
+    required void Function(T) onSelected,
+    String Function(T)? subtitleSelector,
+    SuggestionsController<T>? suggestionsController,
+    bool isRequired = false,
+    String? Function(String?)? validator,
+    VoidCallback? onFetchNeeded,
+  }) {
+    return TypeAheadField<T>(
+      controller: controller,
+      focusNode: focusNode,
+      suggestionsController: suggestionsController,
+      builder: (context, controller, focusNode) => AppTextFormField(
+        label: label,
+        controller: controller,
+        focusNode: focusNode,
+        hintText: hintText,
+        isRequired: isRequired,
+        validator: validator,
+        suffix: Padding(
+          padding: const EdgeInsets.all(16),
+          child: SvgPicture.asset(
+            'assets/icons/search.svg',
+            width: 16,
+            height: 16,
+            colorFilter: const ColorFilter.mode(
+              AppColors.baseGrey,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
+      suggestionsCallback: (pattern) {
+        if (items.isEmpty && onFetchNeeded != null && context.mounted) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) onFetchNeeded();
+          });
+          return <T>[];
+        }
+        if (pattern.isEmpty) return items;
+        final lower = pattern.toLowerCase();
+        return items.where((item) {
+          final name = nameSelector(item).toLowerCase();
+          final sub = subtitleSelector?.call(item).toLowerCase() ?? '';
+          return name.contains(lower) || sub.contains(lower);
+        }).toList();
+      },
+      itemBuilder: (context, item) {
+        return ListTile(
+          title: Text(nameSelector(item)),
+          subtitle: subtitleSelector != null
+              ? Text(subtitleSelector(item))
+              : null,
+        );
+      },
+      onSelected: onSelected,
+      emptyBuilder: (context) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Text(AppLocalizations.of(context).noDataFound),
+      ),
+    );
   }
 
   @override
@@ -393,6 +547,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         }
       },
       builder: (context, state) {
+        final isTh = Localizations.localeOf(context).languageCode == 'th';
         final isCondoOrApt = state.isCondoOrApt;
 
         LatLng? currentLatLng;
@@ -472,71 +627,59 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 // Developer
                 BlocBuilder<PropertyFormBloc, PropertyFormState>(
                   builder: (context, state) {
-                    return TypeAheadField<Developer>(
+                    return _buildMasterDataTypeAhead<Developer>(
                       controller: _developerController,
-                      builder: (context, controller, focusNode) =>
-                          AppTextFormField(
-                            label: AppLocalizations.of(context).developerHint,
-                            controller: controller,
-                            focusNode: focusNode,
-                            hintText: AppLocalizations.of(
-                              context,
-                            ).searchDeveloper,
-                            isRequired: isCondoOrApt,
-                            validator: isCondoOrApt
-                                ? (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return AppLocalizations.of(
-                                        context,
-                                      ).this_field_required;
-                                    }
-                                    if (state.selectedDeveloperId == null) {
-                                      return AppLocalizations.of(
-                                        context,
-                                      ).please_select;
-                                    }
-                                    return null;
-                                  }
-                                : null,
-                            suffix: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: SvgPicture.asset(
-                                'assets/icons/search.svg',
-                                width: 16,
-                                height: 16,
-                                colorFilter: const ColorFilter.mode(
-                                  AppColors.baseGrey,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                            ),
-                          ),
-                      suggestionsCallback: (pattern) {
-                        final developers = state.developers;
-                        if (pattern.isEmpty) return developers;
-                        final lower = pattern.toLowerCase();
-                        return developers.where((dev) {
-                          return dev.nameTh.toLowerCase().contains(lower) ||
-                              dev.nameEn.toLowerCase().contains(lower);
-                        }).toList();
-                      },
-                      itemBuilder: (context, developer) {
-                        return ListTile(
-                          title: Text(developer.nameTh),
-                          subtitle: Text(developer.nameEn),
-                        );
-                      },
+                      focusNode: _developerFocusNode,
+                      label: AppLocalizations.of(context).developerHint,
+                      hintText: AppLocalizations.of(context).searchDeveloper,
+                      items: state.developers,
+                      isRequired: isCondoOrApt,
+                      validator: isCondoOrApt
+                          ? (value) {
+                              if (value == null || value.isEmpty) {
+                                return AppLocalizations.of(
+                                  context,
+                                ).this_field_required;
+                              }
+                              if (state.selectedDeveloperId == null) {
+                                return AppLocalizations.of(
+                                  context,
+                                ).please_select;
+                              }
+                              return null;
+                            }
+                          : null,
+                      nameSelector: (d) => isTh ? d.nameTh : d.nameEn,
+                      subtitleSelector: (d) => isTh ? d.nameEn : d.nameTh,
                       onSelected: (developer) {
-                        _developerController.text = developer.nameTh;
+                        _developerController.text = isTh
+                            ? developer.nameTh
+                            : developer.nameEn;
                         final bloc = context.read<PropertyFormBloc>();
-                        final currentDevId = bloc.state.selectedDeveloperId;
+                        final pState = bloc.state;
+                        final currentDevId = pState.selectedDeveloperId;
+
                         if (developer.id != currentDevId) {
                           _projectController.clear();
                           bloc.add(PropertyFormDeveloperChanged(developer.id));
-                          FocusScope.of(context).unfocus();
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (mounted) _projectFocusNode.requestFocus();
-                          });
+
+                          // If Condo/Apt, clear project and show suggestions again
+                          if (pState.isCondoOrApt) {
+                            FocusScope.of(context).unfocus();
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted) {
+                                _projectController.clear();
+                                _updateData('project', '');
+                                _projectFocusNode.requestFocus();
+                                _projectSuggestionsController.refresh();
+                              }
+                            });
+                            return;
+                          } else {
+                            // For houses, also clear project text
+                            _projectController.clear();
+                            _updateData('project', '');
+                          }
                         } else {
                           bloc.add(PropertyFormDeveloperChanged(developer.id));
                         }
@@ -544,10 +687,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         // Unfocus to hide keyboard
                         FocusScope.of(context).unfocus();
                       },
-                      emptyBuilder: (context) => Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(AppLocalizations.of(context).noDataFound),
-                      ),
                     );
                   },
                 ),
@@ -576,7 +715,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                 BlocBuilder<PropertyFormBloc, PropertyFormState>(
                   builder: (context, state) {
                     // When condo projects load (e.g. after API returns), refresh typeahead so overlay shows data
-                    if (state.condoProjects.isNotEmpty &&
+                    if (isCondoOrApt &&
+                        state.condoProjects.isNotEmpty &&
                         state.condoProjects.length !=
                             _lastCondoProjectsLength) {
                       _lastCondoProjectsLength = state.condoProjects.length;
@@ -586,101 +726,138 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                     } else if (state.condoProjects.isEmpty) {
                       _lastCondoProjectsLength = 0;
                     }
-                    return TypeAheadField<CondoProject>(
-                      controller: _projectController,
-                      focusNode: _projectFocusNode,
-                      suggestionsController: _projectSuggestionsController,
-                      builder: (context, controller, focusNode) =>
-                          AppTextFormField(
-                            label: AppLocalizations.of(context).projectNameHint,
-                            controller: controller,
-                            focusNode: focusNode,
-                            hintText: AppLocalizations.of(
-                              context,
-                            ).projectNameHint,
-                            isRequired: isCondoOrApt,
-                            validator: isCondoOrApt
-                                ? (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return AppLocalizations.of(
-                                        context,
-                                      ).this_field_required;
-                                    }
-                                    if (state.selectedCondoProjectId == null) {
-                                      return AppLocalizations.of(
-                                        context,
-                                      ).please_select;
-                                    }
-                                    return null;
-                                  }
-                                : null,
-                            suffix: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: SvgPicture.asset(
-                                'assets/icons/search.svg',
-                                width: 16,
-                                height: 16,
-                                colorFilter: const ColorFilter.mode(
-                                  AppColors.baseGrey,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                            ),
-                          ),
-                      suggestionsCallback: (pattern) {
-                        // state.condoProjects is always "projects for current developer" (set by bloc)
-                        final projects = state.condoProjects;
-                        if (projects.isEmpty && context.mounted) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (context.mounted) {
-                              context.read<PropertyFormBloc>().add(
-                                PropertyFormCondoProjectsFetched(
-                                  developerId: state.selectedDeveloperId,
-                                ),
-                              );
-                            }
-                          });
-                          return <CondoProject>[];
-                        }
-                        if (pattern.isEmpty) return projects;
-                        final lower = pattern.toLowerCase();
-                        return projects
-                            .where((p) => p.name.toLowerCase().contains(lower))
-                            .toList();
-                      },
-                      itemBuilder: (context, project) {
-                        return ListTile(title: Text(project.name));
-                      },
-                      onSelected: (project) {
-                        _projectController.text = project.name;
 
-                        // Auto-fill developer if currently empty OR if we want to force match
-                        // Checking empty is safer to avoid overwriting user's specific choice if they made one
-                        // asking for "still empty" implies we only fill if it's blank.
-                        if (_developerController.text.isEmpty) {
+                    // Show condo project for condos/apartments, simple text field for houses
+                    // Show condo project for condos/apartments, simple text field for houses
+                    if (isCondoOrApt) {
+                      return _buildMasterDataTypeAhead<CondoProject>(
+                        controller: _projectController,
+                        focusNode: _projectFocusNode,
+                        suggestionsController: _projectSuggestionsController,
+                        label: AppLocalizations.of(context).projectNameHint,
+                        hintText: AppLocalizations.of(context).projectNameHint,
+                        items: state.condoProjects,
+                        isRequired: isCondoOrApt,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppLocalizations.of(
+                              context,
+                            ).this_field_required;
+                          }
+                          if (state.selectedCondoProjectId == null) {
+                            return AppLocalizations.of(context).please_select;
+                          }
+                          return null;
+                        },
+                        nameSelector: (p) => isTh ? p.nameTh : p.nameEn,
+                        subtitleSelector: (p) => isTh ? p.nameEn : p.nameTh,
+                        onSelected: (project) {
+                          _projectController.text = isTh
+                              ? project.nameTh
+                              : project.nameEn;
+                          final bloc = context.read<PropertyFormBloc>();
+
+                          // Auto-fill developer if empty or mismatch
                           final dev = state.developers
                               .where((d) => d.id == project.developerId)
                               .firstOrNull;
-                          if (dev != null) {
-                            _developerController.text = dev.nameTh;
-                            // Trigger update data to ensure state is consistent
-                            _updateData('developer', dev.nameTh);
+                          if (dev != null &&
+                              (_developerController.text.isEmpty ||
+                                  state.selectedDeveloperId != dev.id)) {
+                            _developerController.text = isTh
+                                ? dev.nameTh
+                                : dev.nameEn;
+                            // Update name for consistency
+                            _updateData(
+                              'developer',
+                              isTh ? dev.nameTh : dev.nameEn,
+                            );
+                            bloc.add(PropertyFormDeveloperChanged(dev.id));
                           }
-                        }
 
-                        context.read<PropertyFormBloc>().add(
-                          PropertyFormCondoProjectChanged(project.id),
-                        );
+                          bloc.add(PropertyFormCondoProjectChanged(project.id));
 
-                        // Unfocus to hide keyboard
-                        _projectFocusNode.unfocus();
-                        FocusScope.of(context).unfocus();
-                      },
-                      emptyBuilder: (context) => Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(AppLocalizations.of(context).noDataFound),
-                      ),
-                    );
+                          _projectFocusNode.unfocus();
+                          FocusScope.of(context).unfocus();
+                        },
+                        onFetchNeeded: () {
+                          context.read<PropertyFormBloc>().add(
+                            PropertyFormCondoProjectsFetched(
+                              developerId: state.selectedDeveloperId,
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      // Refresh logic for House Projects
+                      if (state.houseProjects.isNotEmpty &&
+                          state.houseProjects.length !=
+                              _lastHouseProjectsLength) {
+                        _lastHouseProjectsLength = state.houseProjects.length;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (mounted) {
+                            _houseProjectSuggestionsController.refresh();
+                          }
+                        });
+                      } else if (state.houseProjects.isEmpty) {
+                        _lastHouseProjectsLength = 0;
+                      }
+
+                      return _buildMasterDataTypeAhead<HouseProject>(
+                        controller: _projectController,
+                        focusNode: _projectFocusNode,
+                        suggestionsController:
+                            _houseProjectSuggestionsController,
+                        label: AppLocalizations.of(context).projectNameHint,
+                        hintText: AppLocalizations.of(context).projectNameHint,
+                        items: state.houseProjects,
+                        isRequired: false,
+                        nameSelector: (p) => isTh ? p.nameTh : p.nameEn,
+                        subtitleSelector: (p) => isTh ? p.nameEn : p.nameTh,
+                        onSelected: (project) {
+                          _projectController.text = isTh
+                              ? project.nameTh
+                              : project.nameEn;
+                          // Update village name string
+                          _updateData(
+                            'project',
+                            isTh ? project.nameTh : project.nameEn,
+                          );
+
+                          final bloc = context.read<PropertyFormBloc>();
+                          // Auto-fill developer if empty or mismatch
+                          final dev = state.developers
+                              .where((d) => d.id == project.developerId)
+                              .firstOrNull;
+                          if (dev != null &&
+                              (_developerController.text.isEmpty ||
+                                  state.selectedDeveloperId != dev.id)) {
+                            _developerController.text = isTh
+                                ? dev.nameTh
+                                : dev.nameEn;
+                            _updateData(
+                              'developer',
+                              isTh ? dev.nameTh : dev.nameEn,
+                            );
+                            bloc.add(PropertyFormDeveloperChanged(dev.id));
+                          }
+
+                          bloc.add(PropertyFormHouseProjectChanged(project.id));
+
+                          _projectFocusNode.unfocus();
+                          FocusScope.of(context).unfocus();
+                        },
+                        onFetchNeeded: state.selectedDeveloperId == null
+                            ? () {
+                                context.read<PropertyFormBloc>().add(
+                                  const PropertyFormHouseProjectsFetched(
+                                    developerId: null,
+                                  ),
+                                );
+                              }
+                            : null,
+                      );
+                    }
                   },
                 ),
                 const SizedBox(height: 8),

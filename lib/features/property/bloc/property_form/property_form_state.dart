@@ -1,9 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:youragent/domain/entities/property.dart';
+import 'package:youragent/domain/entities/property_details.dart';
 import 'package:youragent/domain/entities/property_image.dart';
 import '../../../../data/models/developer_model.dart';
 import '../../../../data/models/condo_project_model.dart';
+import '../../../../data/models/house_project_model.dart';
 import '../../../../data/models/property_specification_filters.dart';
 
 enum PropertyFormStatus {
@@ -86,6 +88,8 @@ class PropertyFormState extends Equatable {
   final String? formattedAddressEn;
   final String? formattedAddressTh;
   final String? province;
+  final CondoDetails? condoDetails;
+  final HouseDetails? houseDetails;
 
   // Condo Details
   final int? condoProjectId;
@@ -104,8 +108,10 @@ class PropertyFormState extends Equatable {
   // Selection Data
   final List<Developer> developers;
   final List<CondoProject> condoProjects;
+  final List<HouseProject> houseProjects;
   final int? selectedDeveloperId;
   final int? selectedCondoProjectId;
+  final int? selectedHouseProjectId;
 
   // Dynamic Filters
   final PropertySpecificationFilters specificationFilters;
@@ -152,6 +158,8 @@ class PropertyFormState extends Equatable {
     this.formattedAddressEn,
     this.formattedAddressTh,
     this.province,
+    this.condoDetails,
+    this.houseDetails,
     this.condoProjectId,
     this.tower,
     this.condoFloor,
@@ -164,8 +172,10 @@ class PropertyFormState extends Equatable {
     this.houseNotes,
     this.developers = const [],
     this.condoProjects = const [],
+    this.houseProjects = const [],
     this.selectedDeveloperId,
     this.selectedCondoProjectId,
+    this.selectedHouseProjectId,
     this.listingType,
     this.status,
     this.totalFloors,
@@ -195,16 +205,16 @@ class PropertyFormState extends Equatable {
         property.propertyType == PropertyType.condo ||
         property.propertyType == PropertyType.apartment;
 
-    final baseValid = property.name != null && property.address != null;
+    final baseValid =
+        property.name != null &&
+        property.number != null &&
+        property.address != null;
 
     if (!baseValid) return 2;
 
-    print("isCondoOrApt: $isCondoOrApt");
-    print("property.number: ${property.number}");
-
     if (isCondoOrApt) {
-      final developerId = safeNum(specs['developer_id']);
-      final condoProjectId = safeNum(specs['condo_project_id']);
+      final developerId = safeNum(property.condoDetails?.developerId);
+      final condoProjectId = safeNum(property.condoDetails?.condoProjectId);
       final floor = specs['floor']?.toString();
       final unitNo = specs['unit_no']?.toString();
 
@@ -228,16 +238,16 @@ class PropertyFormState extends Equatable {
         property.garage == null ||
         property.built == null ||
         property.houseColor == null ||
-        property.landSize == null ||
-        property.landSize == 0 ||
+        (isCondoOrApt == false &&
+            (property.landSize == null || property.landSize == 0)) ||
         property.buildingSize == null ||
         property.buildingSize == 0 ||
         property.direction == null) {
       return 3;
     }
 
-    // Step 4: Additional Info (style, description)
-    if (property.propertyStyle == null || property.description.isEmpty) {
+    // Step 4: Additional Info (description)
+    if (property.description.isEmpty) {
       return 4;
     }
 
@@ -328,7 +338,9 @@ class PropertyFormState extends Equatable {
       postalCode: p.postalCode,
       subdistrict: p.subdistrict,
       district: p.district,
-      province: p.state, // Map state to province
+      province: p.province ?? p.state, // Map state to province
+      condoDetails: p.condoDetails,
+      houseDetails: p.houseDetails,
       road: p.road,
       soi: p.soi,
       formattedAddressEn: p.formattedAddressEn,
@@ -338,13 +350,36 @@ class PropertyFormState extends Equatable {
       listingType: p.listingType,
       status: p.status,
       totalFloors: p.totalFloors,
-      propertyStyle: p.propertyStyle != null
-          ? PropertyFormState.mockStyles.firstWhere(
-              (s) => s.id == p.propertyStyle!.value,
-              orElse: () => PropertyFormState.mockStyles.last,
-            )
-          : null,
+      propertyStyle: () {
+        if (filters == null) return null;
+        try {
+          final styleSpec = filters.singleSelect.firstWhere(
+            (s) => s.key == 'style',
+          );
+          // Check both 'style' (standard) and 'property_style' (legacy/API variance)
+          final styleValue = (specs['style'] ?? specs['property_style'])
+              ?.toString();
 
+          if (styleValue == null || styleValue.isEmpty) return null;
+
+          // Try to fuzzy match by value, labelEn, or labelTh
+          final option = styleSpec.optionsWithImages.firstWhere(
+            (opt) =>
+                opt.value == styleValue ||
+                opt.label == styleValue || // EN label
+                opt.labelTh == styleValue, // TH label
+          );
+          return StyleProperty(
+            id: option.value,
+            value: option.value,
+            nameEn: option.label,
+            nameTh: option.labelTh,
+            imageUrl: option.imageUrl,
+          );
+        } catch (_) {
+          return null;
+        }
+      }(),
       specificationFilters: filters ?? const PropertySpecificationFilters(),
       specifications: specsMap,
       specificationValues: specValuesMap,
@@ -394,7 +429,7 @@ class PropertyFormState extends Equatable {
       'listing_type': listingType?.value,
       'status': status?.value,
       'floors': totalFloors,
-      'style': propertyStyle?.id,
+      'style': propertyStyle?.nameEn,
       'location_set': latitude != null && longitude != null,
       'number': number,
       'city': city,
@@ -420,10 +455,7 @@ class PropertyFormState extends Equatable {
       if (selectedDeveloperId != null) 'developer_id': selectedDeveloperId,
       if (selectedCondoProjectId != null)
         'condo_project_id': selectedCondoProjectId,
-      'specifications': {
-        ...specifications,
-        if (propertyStyle != null) 'style': propertyStyle!.id,
-      },
+      'specifications': {...specifications, 'style': propertyStyle?.value},
       'specification_values': specificationValues,
     };
 
@@ -439,8 +471,8 @@ class PropertyFormState extends Equatable {
       // Skip empty strings
       if (value is String && value.trim().isEmpty) return;
 
-      // Skip zero values (int/double)
-      if (value is num && value == 0) return;
+      // Skip zero values (int/double) - REMOVED to allow saving 0 (e.g. 0 bedrooms, ground floor)
+      // if (value is num && value == 0) return;
 
       if (value is Map<String, dynamic>) {
         final filteredMap = _filterNulls(value);
@@ -470,16 +502,17 @@ class PropertyFormState extends Equatable {
     if (step == 2) {
       final isCondoOrApt = this.isCondoOrApt;
       final baseValid =
-          (name?.isNotEmpty == true) && (latitude != null && longitude != null);
+          (number?.isNotEmpty == true) &&
+          (name?.isNotEmpty == true) &&
+          (latitude != null && longitude != null);
 
       if (isCondoOrApt) {
         return baseValid &&
             selectedDeveloperId != null &&
             selectedCondoProjectId != null &&
-            (condoFloor?.isNotEmpty == true) &&
-            (unitNo?.isNotEmpty == true);
+            (condoFloor?.isNotEmpty == true);
       } else {
-        return baseValid && (number?.isNotEmpty == true);
+        return baseValid;
       }
     }
     if (step == 3) {
@@ -561,8 +594,10 @@ class PropertyFormState extends Equatable {
     String? houseNotes,
     List<Developer>? developers,
     List<CondoProject>? condoProjects,
+    List<HouseProject>? houseProjects,
     int? selectedDeveloperId,
     int? selectedCondoProjectId,
+    int? selectedHouseProjectId,
     PropertyListingType? listingType,
     PropertyAvailabilityStatus? status,
     int? totalFloors,
@@ -603,6 +638,8 @@ class PropertyFormState extends Equatable {
       subdistrict: subdistrict ?? this.subdistrict,
       district: district ?? this.district,
       province: province ?? this.province,
+      condoDetails: condoDetails ?? this.condoDetails,
+      houseDetails: houseDetails ?? this.houseDetails,
       road: road ?? this.road,
       soi: soi ?? this.soi,
       formattedAddressEn: formattedAddressEn ?? this.formattedAddressEn,
@@ -619,9 +656,12 @@ class PropertyFormState extends Equatable {
       houseNotes: houseNotes ?? this.houseNotes,
       developers: developers ?? this.developers,
       condoProjects: condoProjects ?? this.condoProjects,
+      houseProjects: houseProjects ?? this.houseProjects,
       selectedDeveloperId: selectedDeveloperId ?? this.selectedDeveloperId,
       selectedCondoProjectId:
           selectedCondoProjectId ?? this.selectedCondoProjectId,
+      selectedHouseProjectId:
+          selectedHouseProjectId ?? this.selectedHouseProjectId,
       listingType: listingType ?? this.listingType,
       status: status ?? this.status,
       totalFloors: totalFloors ?? this.totalFloors,
@@ -636,7 +676,7 @@ class PropertyFormState extends Equatable {
     // specifications (single-select) + style for API
     final specsMap = <String, dynamic>{
       ...specifications,
-      if (propertyStyle != null) 'style': propertyStyle!.id,
+      'style': propertyStyle?.value,
     };
     specsMap['floors'] = totalFloors?.toString();
     specsMap['bedrooms'] = bedrooms?.toString();
@@ -680,9 +720,6 @@ class PropertyFormState extends Equatable {
 
       // Physical Details
       propertyType: selectedPropertyType,
-      propertyStyle: propertyStyle != null
-          ? PropertyStyle.fromValue(propertyStyle!.id)
-          : null,
       bedrooms: bedrooms ?? 0,
       bathrooms: bathrooms ?? 0,
       garage: garage,
@@ -702,6 +739,90 @@ class PropertyFormState extends Equatable {
           .where((img) => img.isFile)
           .map((img) => img.file!)
           .toList(),
+      condoDetails: selectedPropertyType == PropertyType.condo
+          ? (condoDetails?.copyWith(
+                  condoProjectId: selectedCondoProjectId,
+                  tower: tower,
+                  unitNo: unitNo,
+                  floor: condoFloor,
+                  // Ensure developerId getter works by providing basic project info if missing
+                  condoProject:
+                      condoDetails?.condoProject ??
+                      (selectedCondoProjectId != null
+                          ? CondoProject(
+                              id: selectedCondoProjectId!,
+                              name: '',
+                              nameTh: '',
+                              nameEn: '',
+                              developerId: selectedDeveloperId,
+                            )
+                          : null),
+                ) ??
+                CondoDetails(
+                  id: 0,
+                  propertyId: propertyId ?? 0,
+                  condoProjectId: selectedCondoProjectId,
+                  tower: tower,
+                  unitNo: unitNo,
+                  floor: condoFloor,
+                  condoProject: selectedCondoProjectId != null
+                      ? CondoProject(
+                          id: selectedCondoProjectId!,
+                          name: '',
+                          nameTh: '',
+                          nameEn: '',
+                          developerId: selectedDeveloperId,
+                        )
+                      : null,
+                ))
+          : null,
+      houseDetails:
+          selectedPropertyType == PropertyType.house ||
+              selectedPropertyType == PropertyType.townhome ||
+              selectedPropertyType == PropertyType.homeOffice
+          ? (houseDetails?.copyWith(
+                  houseProjectId: selectedHouseProjectId,
+                  villageName: villageName,
+                  moo: moo,
+                  houseSubtype: houseSubtype,
+                  parkingType: parkingType,
+                  isCornerPlot: isCornerPlot,
+                  notes: houseNotes,
+                  // Ensure developerId getter works
+                  developer:
+                      houseDetails?.developer ??
+                      (selectedDeveloperId != null
+                          ? Developer(
+                              id: selectedDeveloperId!,
+                              nameTh: '',
+                              nameEn: '',
+                              slug: '',
+                            )
+                          : null),
+                ) ??
+                HouseDetails(
+                  id: 0,
+                  propertyId: propertyId ?? 0,
+                  houseProjectId: selectedHouseProjectId,
+                  villageName: villageName,
+                  moo: moo,
+                  houseSubtype: houseSubtype,
+                  parkingType: parkingType,
+                  isCornerPlot: isCornerPlot,
+                  notes: houseNotes,
+                  developer: selectedDeveloperId != null
+                      ? Developer(
+                          id: selectedDeveloperId!,
+                          nameTh: '',
+                          nameEn: '',
+                          slug: '',
+                        )
+                      : null,
+                ))
+          : null,
+      imageUrl: images.any((img) => img.isNetwork)
+          ? images.firstWhere((img) => img.isNetwork).url
+          : null,
       images: images
           .where((img) => img.isNetwork)
           .map((img) => PropertyImage(id: img.id ?? 0, url: img.url!))
@@ -744,6 +865,8 @@ class PropertyFormState extends Equatable {
     subdistrict,
     district,
     province,
+    condoDetails,
+    houseDetails,
     road,
     soi,
     formattedAddressEn,
@@ -760,8 +883,10 @@ class PropertyFormState extends Equatable {
     houseNotes,
     developers,
     condoProjects,
+    houseProjects,
     selectedDeveloperId,
     selectedCondoProjectId,
+    selectedHouseProjectId,
     listingType,
     status,
     totalFloors,
@@ -774,78 +899,30 @@ class PropertyFormState extends Equatable {
   bool get isCondoOrApt =>
       selectedPropertyType == PropertyType.condo ||
       selectedPropertyType == PropertyType.apartment;
-
-  static const List<StyleProperty> mockStyles = [
-    StyleProperty(
-      id: 'colonial',
-      nameEn: 'Colonial',
-      nameTh: 'โคโลเนียล',
-      imagePath: 'assets/images/property_styles/colonial.jpg',
-    ),
-    StyleProperty(
-      id: 'contemporary',
-      nameEn: 'Contemporary',
-      nameTh: 'ร่วมสมัย',
-      imagePath: 'assets/images/property_styles/contemporary.jpg',
-    ),
-    StyleProperty(
-      id: 'loft',
-      nameEn: 'Loft',
-      nameTh: 'ลอฟท์',
-      imagePath: 'assets/images/property_styles/loft.jpg',
-    ),
-    StyleProperty(
-      id: 'minimal',
-      nameEn: 'Minimal',
-      nameTh: 'มินิมอล',
-      imagePath: 'assets/images/property_styles/minimal.jpg',
-    ),
-    StyleProperty(
-      id: 'natural',
-      nameEn: 'Natural',
-      nameTh: 'เนเชอรัล',
-      imagePath: 'assets/images/property_styles/natural.jpg',
-    ),
-    StyleProperty(
-      id: 'nordic',
-      nameEn: 'Nordic Style',
-      nameTh: 'นอร์ดิก',
-      imagePath: 'assets/images/property_styles/nordic.jpg',
-    ),
-    StyleProperty(
-      id: 'thai_contemporary',
-      nameEn: 'Thai Contemporary',
-      nameTh: 'ไทยร่วมสมัย',
-      imagePath: 'assets/images/property_styles/thai_contemporary.jpg',
-    ),
-    StyleProperty(
-      id: 'vintage',
-      nameEn: 'Vintage',
-      nameTh: 'วินเทจ',
-      imagePath: 'assets/images/property_styles/vintage.jpg',
-    ),
-    StyleProperty(
-      id: 'other',
-      nameEn: 'Other',
-      nameTh: 'อื่นๆ',
-      imagePath: 'assets/images/property_styles/other.jpg',
-    ),
-  ];
 }
 
 class StyleProperty extends Equatable {
   final String id;
+  final String value;
   final String nameEn;
   final String nameTh;
-  final String imagePath;
+  final String? imagePath;
+  final String? imageUrl;
 
   const StyleProperty({
     required this.id,
+    required this.value,
     required this.nameEn,
     required this.nameTh,
-    required this.imagePath,
+    this.imagePath,
+    this.imageUrl,
   });
 
   @override
-  List<Object?> get props => [id, nameEn, nameTh, imagePath];
+  List<Object?> get props => [id, value, nameEn, nameTh, imagePath, imageUrl];
+}
+
+extension PropertySpecificationOptionX on PropertySpecificationOption {
+  // Helper if needed, but we used direct mapping above
+  String get labelEn => label; // label corresponds to label_en/name_en
 }

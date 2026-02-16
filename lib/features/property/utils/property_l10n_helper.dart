@@ -15,24 +15,6 @@ class PropertyL10n {
     };
   }
 
-  static String getPropertyStyleLabel(
-    BuildContext context,
-    PropertyStyle style,
-  ) {
-    final l10n = AppLocalizations.of(context);
-    return switch (style) {
-      PropertyStyle.colonial => l10n.styleColonial,
-      PropertyStyle.contemporary => l10n.styleContemporary,
-      PropertyStyle.loft => l10n.styleLoft,
-      PropertyStyle.minimal => l10n.styleMinimal,
-      PropertyStyle.natural => l10n.styleNatural,
-      PropertyStyle.nordic => l10n.styleNordic,
-      PropertyStyle.thaiContemporary => l10n.styleThaiContemporary,
-      PropertyStyle.vintage => l10n.styleVintage,
-      PropertyStyle.other => l10n.styleOther,
-    };
-  }
-
   static String getPropertyColorLabel(
     BuildContext context,
     PropertyColor color,

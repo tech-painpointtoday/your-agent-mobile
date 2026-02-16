@@ -100,22 +100,52 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                 const SizedBox(height: 24),
 
                 // Property Style
-                AppSelectableGrid<StyleProperty>(
-                  label: AppLocalizations.of(context).propertyStyleLabel,
-                  value: state.propertyStyle,
-                  items: PropertyFormState.mockStyles.map((style) {
-                    return GridItem(
-                      label:
-                          Localizations.localeOf(context).languageCode == 'th'
-                          ? style.nameTh
-                          : style.nameEn,
-                      value: style,
-                      imagePath: style.imagePath,
+                Builder(
+                  builder: (context) {
+                    final styleFilter = state.specificationFilters.singleSelect
+                        .where((f) => f.key == 'style')
+                        .firstOrNull;
+
+                    if (styleFilter == null ||
+                        styleFilter.optionsWithImages.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+
+                    final styles = styleFilter.optionsWithImages.map((opt) {
+                      return StyleProperty(
+                        id: opt.value,
+                        nameEn: opt.value,
+                        nameTh: opt.labelTh,
+                        imageUrl: opt.imageUrl,
+                        value: opt.value,
+                      );
+                    }).toList();
+
+                    return AppSelectableGrid<StyleProperty>(
+                      label: AppLocalizations.of(context).propertyStyleLabel,
+                      value: state.propertyStyle,
+                      items: styles.map((style) {
+                        return GridItem(
+                          label:
+                              Localizations.localeOf(context).languageCode ==
+                                  'th'
+                              ? style.nameTh
+                              : style.nameEn,
+                          value: style,
+                          imagePath: style.imagePath,
+                          imageUrl: style.imageUrl,
+                        );
+                      }).toList(),
+                      onChanged: (val) => context.read<PropertyFormBloc>().add(
+                        PropertyFormStyleChanged(val),
+                      ),
+                      isSelected: (itemValue, currentValue) {
+                        if (currentValue == null) return false;
+                        return itemValue.id == currentValue.id ||
+                            itemValue.value == currentValue.value;
+                      },
                     );
-                  }).toList(),
-                  onChanged: (val) => context.read<PropertyFormBloc>().add(
-                    PropertyFormStyleChanged(val),
-                  ),
+                  },
                 ),
                 const SizedBox(height: 24),
 

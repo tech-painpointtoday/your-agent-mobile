@@ -71,8 +71,8 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
       if (filter.landSize != null) {
         _landSizeController.text = filter.landSize!.toString();
       }
-      if (filter.usableArea != null) {
-        _usableAreaController.text = filter.usableArea!.toString();
+      if (filter.buildingSize != null) {
+        _usableAreaController.text = filter.buildingSize!.toString();
       }
       selectedSingleSelectSpecs = Map.from(filter.singleSelectSpecs);
       selectedMultiSelectSpecs = Map.from(filter.multiSelectSpecs);
@@ -143,7 +143,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
       bathrooms: selectedBathrooms,
       parkingSpaces: selectedParkingSpaces,
       landSize: double.tryParse(_landSizeController.text),
-      usableArea: double.tryParse(_usableAreaController.text),
+      buildingSize: double.tryParse(_usableAreaController.text),
       singleSelectSpecs: selectedSingleSelectSpecs.map(
         (k, v) => MapEntry(k, v ?? ''),
       ),
@@ -1046,7 +1046,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
       bathrooms: selectedBathrooms,
       parkingSpaces: selectedParkingSpaces,
       landSize: double.tryParse(_landSizeController.text),
-      usableArea: double.tryParse(_usableAreaController.text),
+      buildingSize: double.tryParse(_usableAreaController.text),
       singleSelectSpecs: selectedSingleSelectSpecs.map(
         (k, v) => MapEntry(k, v ?? ''),
       ),

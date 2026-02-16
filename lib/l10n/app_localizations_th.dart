@@ -2519,6 +2519,9 @@ class AppLocalizationsTh extends AppLocalizations {
       'หากคุณละทิ้งแล้ว จะไม่สามารถย้อนกลับได้';
 
   @override
+  String get imageDeletedMessage => 'ลบรูปภาพเรียบร้อยแล้ว';
+
+  @override
   String get imagesDeletedMessage => 'ลบรูปภาพทั้งหมดเรียบร้อยแล้ว';
 
   @override

@@ -1,5 +1,5 @@
-/// Condo Project model for master data
-class CondoProject {
+/// House Project model for master data
+class HouseProject {
   final int id;
   final String name;
   final String nameTh;
@@ -8,7 +8,7 @@ class CondoProject {
   final String? juristicContactPhone;
   final String? juristicContactEmail;
 
-  CondoProject({
+  HouseProject({
     required this.id,
     required this.name,
     required this.nameTh,
@@ -18,14 +18,13 @@ class CondoProject {
     this.juristicContactEmail,
   });
 
-  factory CondoProject.fromJson(Map<String, dynamic> json) {
+  factory HouseProject.fromJson(Map<String, dynamic> json) {
     final String nameTh = json['name_th'] as String? ?? '';
     final String nameEn = json['name_en'] as String? ?? '';
-    // Original fallback logic for 'name' property
     final String name =
         (json['name_th'] as String?) ?? (json['name_en'] as String?) ?? '';
 
-    return CondoProject(
+    return HouseProject(
       id: json['id'] as int,
       name: name,
       nameTh: nameTh,
