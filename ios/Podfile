@@ -50,6 +50,15 @@ post_install do |installer|
     # 2. บังคับให้ทุก Pods ใช้ iOS 15.0 เพื่อลบ Warning "set to 9.0" ทั้งหมด
     target.build_configurations.each do |config|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      
+      # permission_handler macros
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        'PERMISSION_LOCATION=1',
+        'PERMISSION_CAMERA=1',
+        'PERMISSION_PHOTOS=1',
+        'PERMISSION_NOTIFICATIONS=1'
+      ]
     end
   end
 end

@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:youragent/features/property/pages/create/property_location_picker_screen.dart';
-import 'package:youragent/utils/location_permission_helper.dart';
+import 'package:youragent/utils/permission_helper.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
 import 'package:youragent/widgets/map/map_view.dart';
 
@@ -365,7 +365,7 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
   }
 
   Future<void> _useCurrentLocation() async {
-    final pos = await LocationPermissionHelper.getCurrentPosition(context);
+    final pos = await PermissionHelper.getCurrentPosition(context);
     if (pos == null || !mounted) return;
     // Open picker centered at current position so user can confirm
     final result = await PropertyLocationPickerScreen.open(

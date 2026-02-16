@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger.dart';
-
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'app.dart';
 import 'core/config/app_config.dart';
 import 'core/di/dependency_injection.dart';
@@ -14,7 +14,7 @@ import 'flavors.dart';
 /// Use `--dart-define=FLAVOR=dev|staging|prod` to select environment.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  usePathUrlStrategy();
   const flavorString = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
   F.appFlavor = Flavor.values.firstWhere(
     (f) => f.name == flavorString,

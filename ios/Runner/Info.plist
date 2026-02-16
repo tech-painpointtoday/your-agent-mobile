@@ -78,6 +78,8 @@
 	<string>Your location is used to show location point of interest and improve navigation.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Your location is used to show location point of interest and improve navigation.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is used to show location point of interest and improve navigation.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Your photo is used to upload a picture</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

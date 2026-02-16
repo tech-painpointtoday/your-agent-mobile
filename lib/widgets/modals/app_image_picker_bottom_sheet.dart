@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:youragent/core/theme/app_colors.dart';
+import 'package:youragent/utils/permission_helper.dart';
 
 class AppImagePickerBottomSheet extends StatelessWidget {
   final Function(List<String> paths) onImagesPicked;
@@ -64,7 +65,12 @@ class AppImagePickerBottomSheet extends StatelessWidget {
               ),
             ),
             onTap: () async {
-              Navigator.pop(context);
+              final hasPermission = await PermissionHelper.ensureCameraReady(
+                context,
+              );
+              if (!hasPermission) return;
+
+              if (context.mounted) Navigator.pop(context);
               final XFile? image = await picker.pickImage(
                 source: ImageSource.camera,
               );
@@ -89,7 +95,12 @@ class AppImagePickerBottomSheet extends StatelessWidget {
               ),
             ),
             onTap: () async {
-              Navigator.pop(context);
+              final hasPermission = await PermissionHelper.ensurePhotosReady(
+                context,
+              );
+              if (!hasPermission) return;
+
+              if (context.mounted) Navigator.pop(context);
               if (isMultiImage) {
                 final List<XFile> images = await picker.pickMultiImage();
                 if (images.isNotEmpty) {

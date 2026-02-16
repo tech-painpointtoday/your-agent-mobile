@@ -7,7 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/services/google_places_service.dart';
-import 'package:youragent/utils/location_permission_helper.dart';
+import 'package:youragent/utils/permission_helper.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
 
 class LocationResult {
@@ -259,7 +259,7 @@ class _MapSelectionState extends State<MapSelection> {
   }
 
   Future<void> _useCurrentLocation() async {
-    final pos = await LocationPermissionHelper.getCurrentPosition(context);
+    final pos = await PermissionHelper.getCurrentPosition(context);
     if (pos == null) return;
     final latLng = LatLng(pos.latitude, pos.longitude);
 

@@ -11,7 +11,7 @@ import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
 import 'package:youragent/features/property/pages/create/property_location_picker_screen.dart';
-import 'package:youragent/utils/location_permission_helper.dart';
+import 'package:youragent/utils/permission_helper.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
@@ -169,7 +169,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
   }
 
   Future<void> _useCurrentLocation() async {
-    final pos = await LocationPermissionHelper.getCurrentPosition(context);
+    final pos = await PermissionHelper.getCurrentPosition(context);
     if (pos == null || !mounted) return;
     // Open picker centered at current position so user can confirm
     final result = await PropertyLocationPickerScreen.open(

@@ -14,6 +14,7 @@ import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/widgets/modals/app_status_bottom_sheet.dart';
 
 class BasicInfoStep extends StatefulWidget {
   const BasicInfoStep({super.key});
@@ -55,8 +56,25 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
     return BlocListener<ContractFormBloc, ContractFormState>(
       listenWhen: (prev, curr) =>
           prev.propertyName != curr.propertyName ||
-          prev.signingPlace != curr.signingPlace,
+          prev.signingPlace != curr.signingPlace ||
+          prev.status != curr.status ||
+          prev.errorMessage != curr.errorMessage,
       listener: (context, state) {
+        if (state.status == ContractFormStatus.failure &&
+            state.errorMessage == 'no_approved_properties') {
+          AppStatusBottomSheet.showWarning(
+            context: context,
+            iconPath: 'assets/images/YA_Illustration_ConfirmWarning.png',
+            title: 'ไม่สามารถสร้างสัญญาได้',
+            message:
+                'คุณต้องมีทรัพย์ที่ผ่านการอนุมัติแล้วในระบบก่อน\nจึงจะสามารถสร้างเอกสารสัญญาได้',
+            onOk: () {
+              Navigator.of(context).pop(); // Pop bottom sheet
+              Navigator.of(context).pop(); // Pop AddContractScreen
+            },
+          );
+        }
+
         if (_propertyNameController.text != state.propertyName) {
           _propertyNameController.text = state.propertyName;
         }
@@ -128,7 +146,14 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                       ),
                     ),
                     suggestionsCallback: (pattern) {
-                      if (pattern.isEmpty) return state.properties;
+                      if (pattern.isEmpty) {
+                        if (state.properties.isEmpty) {
+                          context.read<ContractFormBloc>().add(
+                            const ContractFormPropertiesFetched(''),
+                          );
+                        }
+                        return state.properties;
+                      }
 
                       final query = pattern.toLowerCase();
                       return state.properties.where((p) {
@@ -162,7 +187,7 @@ class _BasicInfoStepState extends State<BasicInfoStep> {
                               const WidgetSpan(child: SizedBox(width: 8)),
                               TextSpan(
                                 text:
-                                '(${AppUtils.generatePropertyCode(property)})',
+                                    '(${AppUtils.generatePropertyCode(property)})',
                                 style: GoogleFonts.anuphan(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 12,

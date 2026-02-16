@@ -85,6 +85,7 @@ dependencies:
   printing: ^5.11.0
   pusher_channels_flutter: ^2.4.0
   flutter_line_sdk: ^2.6.2
+  permission_handler: ^12.0.1
 
 dev_dependencies:
   flutter_test:

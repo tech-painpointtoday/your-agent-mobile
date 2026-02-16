@@ -43,7 +43,11 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
     _addressController = TextEditingController(text: state.ownerAddress);
     _phoneController = TextEditingController(text: state.ownerPhone);
     _emailController = TextEditingController(text: state.ownerEmail);
-    _signatoryController = TextEditingController(text: state.ownerSignatory);
+    _signatoryController = TextEditingController(
+      text: state.ownerSignatory.isNotEmpty
+          ? state.ownerSignatory
+          : state.ownerName,
+    );
 
     // Initial fetch for owners if needed
     context.read<ContractFormBloc>().add(const ContractFormOwnersFetched(''));
@@ -71,7 +75,9 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
           _addressController.text = state.ownerAddress;
           _phoneController.text = state.ownerPhone;
           _emailController.text = state.ownerEmail;
-          _signatoryController.text = state.ownerSignatory;
+          _signatoryController.text = state.ownerSignatory.isNotEmpty
+              ? state.ownerSignatory
+              : state.ownerName;
         }
       },
       child: BlocBuilder<ContractFormBloc, ContractFormState>(
@@ -134,9 +140,19 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                       hintText: AppLocalizations.of(
                         context,
                       ).full_name_or_company,
-                      onChanged: (value) => context
-                          .read<ContractFormBloc>()
-                          .add(ContractFormOwnerNameUpdated(value)),
+                      onChanged: (value) {
+                        context.read<ContractFormBloc>().add(
+                          ContractFormOwnerNameUpdated(value),
+                        );
+                        // Sync signatory if it's currently empty or same as previous name
+                        if (_signatoryController.text.isEmpty ||
+                            _signatoryController.text == state.ownerName) {
+                          _signatoryController.text = value;
+                          context.read<ContractFormBloc>().add(
+                            ContractFormOwnerSignatoryUpdated(value),
+                          );
+                        }
+                      },
                       suffix: Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: 16.0,
@@ -204,6 +220,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                         if (result != null && mounted) {
                           // Update text controllers
                           _nameController.text = result.name;
+                          _signatoryController.text = result.name;
                           _emailController.text = result.email;
                           _phoneController.text = result.phone;
                           if (result.address != null) {
@@ -213,6 +230,9 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                           // Update BLoC
                           final bloc = context.read<ContractFormBloc>();
                           bloc.add(ContractFormOwnerNameUpdated(result.name));
+                          bloc.add(
+                            ContractFormOwnerSignatoryUpdated(result.name),
+                          );
                           bloc.add(ContractFormOwnerEmailUpdated(result.email));
                           bloc.add(ContractFormOwnerPhoneUpdated(result.phone));
                           if (result.address != null) {
