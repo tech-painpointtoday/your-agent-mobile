@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/router.dart';
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../data/models/user_profile_model.dart';
@@ -63,14 +64,41 @@ class HomeHeader extends StatefulWidget {
   State<HomeHeader> createState() => _HomeHeaderState();
 }
 
-class _HomeHeaderState extends State<HomeHeader> {
+class _HomeHeaderState extends State<HomeHeader> with RouteAware {
   UserProfileModel? _profileData;
   bool _isLoadingProfile = false;
   String? _fetchingUserId;
+  bool _isObserved = false;
 
   @override
   void initState() {
     super.initState();
+    _fetchUserProfile();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isObserved) {
+      final route = ModalRoute.of(context);
+      if (route is ModalRoute<dynamic>) {
+        profileRouteObserver.subscribe(this, route);
+        _isObserved = true;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_isObserved) {
+      profileRouteObserver.unsubscribe(this);
+    }
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // Refresh user profile when returning to this screen
     _fetchUserProfile();
   }
 

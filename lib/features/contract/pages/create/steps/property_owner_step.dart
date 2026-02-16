@@ -176,10 +176,20 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                         ),
                       ),
                       suggestionsCallback: (pattern) {
-                        context.read<ContractFormBloc>().add(
-                          ContractFormOwnersFetched(pattern),
-                        );
-                        return state.owners;
+                        // Use local filtering on allOwners for faster response
+                        final allOwners = state.allOwners;
+                        if (allOwners.isEmpty) {
+                          context.read<ContractFormBloc>().add(
+                            ContractFormOwnersFetched(pattern),
+                          );
+                          return state.owners;
+                        }
+
+                        return allOwners.where((owner) {
+                          final name = owner.name.toLowerCase();
+                          final query = pattern.toLowerCase();
+                          return name.contains(query);
+                        }).toList();
                       },
                       itemBuilder: (context, owner) {
                         return ListTile(

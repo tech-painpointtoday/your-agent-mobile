@@ -156,9 +156,15 @@ class ApiClient {
 
   Future<Response> delete(
     String path, {
+    dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) {
-    return dio.delete(path, queryParameters: queryParameters, options: options);
+    return dio.delete(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+    );
   }
 }

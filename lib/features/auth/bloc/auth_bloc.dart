@@ -92,7 +92,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.fold((failure) => emit(AuthError(failure.message)), (user) {
       // Tmp disable device registration
       //DependencyInjection.deviceService.registerDevice();
-      emit(Authenticated(user));
+      emit(RegistrationSuccess(user: user, message: 'Success'));
     });
   }
 

@@ -2640,6 +2640,16 @@ class AppLocalizationsTh extends AppLocalizations {
   String get deleteAccountConfirmSuffix => ' เพื่อยืนยันการลบบัญชี';
 
   @override
+  String get deleteAccountWarning =>
+      'เมื่อลบบัญชีแล้ว ข้อมูลทั้งหมดของคุณจะถูกลบอย่างถาวรและไม่สามารถกู้คืนได้';
+
+  @override
+  String get reasonForDeleting => 'เหตุผลในการลบ';
+
+  @override
+  String get confirmDelete => 'ยืนยันการลบ';
+
+  @override
   String get typeToDeleteHint => 'พิมพ์ข้อความที่นี่...';
 
   @override
@@ -2825,9 +2835,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get enterAccountNumberHint => 'ระบุเลขบัญชี';
-
-  @override
-  String get select => 'เลือก';
 
   @override
   String get furnitureExampleHint => 'เช่น เตียงนอน, โซฟา';
@@ -3430,6 +3437,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get warning => 'คำเตือน';
+
+  @override
+  String get select => 'เลือก';
 
   @override
   String get createAccount => 'สร้างบัญชี';

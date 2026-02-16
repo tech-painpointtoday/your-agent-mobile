@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/utils/permission_helper.dart';
 
+import 'package:youragent/l10n/app_localizations.dart';
+
 class AppImagePickerBottomSheet extends StatelessWidget {
   final Function(List<String> paths) onImagesPicked;
   final bool isMultiImage;
@@ -54,7 +56,10 @@ class AppImagePickerBottomSheet extends StatelessWidget {
           ),
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-            title: Text('ถ่ายรูปภาพ', style: GoogleFonts.anuphan(fontSize: 16)),
+            title: Text(
+              AppLocalizations.of(context).takePhotoButton,
+              style: GoogleFonts.anuphan(fontSize: 16),
+            ),
             trailing: SvgPicture.asset(
               'assets/icons/camera.svg',
               width: 24,
@@ -73,6 +78,9 @@ class AppImagePickerBottomSheet extends StatelessWidget {
               if (context.mounted) Navigator.pop(context);
               final XFile? image = await picker.pickImage(
                 source: ImageSource.camera,
+                maxWidth: 1920,
+                maxHeight: 1920,
+                imageQuality: 80,
               );
               if (image != null) {
                 onImagesPicked([image.path]);
@@ -82,7 +90,7 @@ class AppImagePickerBottomSheet extends StatelessWidget {
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 24),
             title: Text(
-              'เลือกจากอัลบั้ม',
+              AppLocalizations.of(context).selectFromAlbumButton,
               style: GoogleFonts.anuphan(fontSize: 16),
             ),
             trailing: SvgPicture.asset(
@@ -102,13 +110,20 @@ class AppImagePickerBottomSheet extends StatelessWidget {
 
               if (context.mounted) Navigator.pop(context);
               if (isMultiImage) {
-                final List<XFile> images = await picker.pickMultiImage();
+                final List<XFile> images = await picker.pickMultiImage(
+                  maxWidth: 1920,
+                  maxHeight: 1920,
+                  imageQuality: 80,
+                );
                 if (images.isNotEmpty) {
                   onImagesPicked(images.map((img) => img.path).toList());
                 }
               } else {
                 final XFile? image = await picker.pickImage(
                   source: ImageSource.gallery,
+                  maxWidth: 1920,
+                  maxHeight: 1920,
+                  imageQuality: 80,
                 );
                 if (image != null) {
                   onImagesPicked([image.path]);

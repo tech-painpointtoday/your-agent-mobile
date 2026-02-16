@@ -10,6 +10,7 @@ import 'package:youragent/domain/entities/contract_create_data.dart';
 import 'package:youragent/domain/entities/contract_attachment.dart';
 import 'package:youragent/domain/entities/contract_status.dart';
 import 'package:youragent/domain/entities/contract_item_definition.dart';
+import 'package:youragent/domain/entities/contract.dart'; // Added import for Contract
 
 enum ContractFormStatus {
   initial,
@@ -103,6 +104,90 @@ class ContractFormState extends Equatable {
   final List<ContractAttachment> attachments;
 
   final Map<String, dynamic>? initialData;
+
+  /// Smart resume logic to calculate the starting step for a draft contract
+  static int calculateResumeStep(Contract contract) {
+    // Step 1: Basic Info
+    final baseValid =
+        contract.contractType != null &&
+        contract.property != null &&
+        contract.contractDate != null;
+
+    if (contract.contractType == ContractType.rent) {
+      final rentValid =
+          baseValid && contract.startDate != null && contract.endDate != null;
+      if (!rentValid) return 1;
+    } else {
+      if (!baseValid) return 1;
+    }
+
+    // Step 2: Property Owner
+    final owner = contract.owner;
+    final ownerValid =
+        owner != null &&
+        owner.name.isNotEmpty &&
+        (owner.idCard?.isNotEmpty ?? false) &&
+        (owner.address?.isNotEmpty ?? false) &&
+        (owner.phone?.isNotEmpty ?? false) &&
+        (owner.email?.isNotEmpty ?? false);
+    if (!ownerValid) return 2;
+
+    // Step 3: Buyer Info
+    final buyer = contract.buyer;
+    final buyerValid =
+        buyer != null &&
+        buyer.name.isNotEmpty &&
+        (buyer.idCard?.isNotEmpty ?? false) &&
+        (buyer.address?.isNotEmpty ?? false) &&
+        (buyer.phone?.isNotEmpty ?? false) &&
+        (buyer.email?.isNotEmpty ?? false);
+    if (!buyerValid) return 3;
+
+    // Step 4: Appliances (Always valid to skip)
+    // Step 5: Furniture (Always valid to skip)
+
+    // Step 6: Payment Details
+    double parseDouble(String? val) {
+      if (val == null) return 0.0;
+      return double.tryParse(val.replaceAll(',', '')) ?? 0.0;
+    }
+
+    final price = parseDouble(contract.monthlyRentalCost);
+    final bank = contract.bankAccounts.isNotEmpty
+        ? contract.bankAccounts.first
+        : null;
+    final bankValid =
+        bank != null &&
+        bank.bankName.isNotEmpty &&
+        bank.accountHolderName.isNotEmpty &&
+        bank.accountNumber.isNotEmpty;
+
+    final paymentMethodValid = (contract.paymentMethod?.isNotEmpty ?? false);
+
+    if (contract.contractType == ContractType.rent) {
+      final rentPaymentValid =
+          price > 0 &&
+          parseDouble(contract.commonFee) > 0 &&
+          parseDouble(contract.advanceRent) > 0 &&
+          parseDouble(contract.securityDeposit) > 0 &&
+          contract.rentalPaymentDate != null &&
+          paymentMethodValid &&
+          bankValid;
+
+      if (!rentPaymentValid) return 6;
+    } else {
+      // Buy Type
+      final buyPaymentValid =
+          price > 0 &&
+          paymentMethodValid &&
+          (contract.paymentMethod == 'Cash' || bankValid);
+
+      if (!buyPaymentValid) return 6;
+    }
+
+    // Steps 7-8 are additional/optional, resume at step 7 if all above are valid
+    return 7;
+  }
 
   const ContractFormState({
     this.step = 1,

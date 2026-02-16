@@ -291,10 +291,7 @@ class AuthApiService {
   /// NOTE: This path matches `old_lib/` exactly.
   Future<void> forgotPassword({required String email}) async {
     try {
-      await _apiClient.post(
-        '/api/agent/forgot-password',
-        data: {'email': email},
-      );
+      await _apiClient.post('/agent/forgot-password', data: {'email': email});
     } catch (e) {
       if (e is DioException) {
         throw Exception(_extractErrorMessage(e));
@@ -401,10 +398,7 @@ class AuthApiService {
       'profile_photo': await MultipartFile.fromFile(filePath),
     });
 
-    final response = await _apiClient.post(
-      '/agent/profile/update-photo',
-      data: formData,
-    );
+    final response = await _apiClient.post('/agent/profile', data: formData);
     return response.data as Map<String, dynamic>;
   }
 
@@ -416,9 +410,15 @@ class AuthApiService {
     return response.data as Map<String, dynamic>;
   }
 
-  Future<void> deleteAccount() async {
+  Future<void> deleteAccount({
+    required String password,
+    required String reason,
+  }) async {
     try {
-      await _apiClient.delete('/api/agent/account');
+      await _apiClient.delete(
+        '/agent/account',
+        data: {'password': password, 'reason': reason},
+      );
       // Clear auth token after successful deletion
       await _apiClient.clearAuthToken();
     } catch (e) {

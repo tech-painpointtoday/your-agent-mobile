@@ -6,77 +6,120 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/features/profile/widgets/account_action_sheets.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/profile_bloc.dart';
+import '../pages/profile_screen.dart';
+import '../../../widgets/dialogs/status_dialog.dart';
+import '../../../core/di/dependency_injection.dart';
+
 class AccountManagementScreen extends StatelessWidget {
   const AccountManagementScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primary,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-        centerTitle: false,
-        title: Text(
-          AppLocalizations.of(context).accountManagementTitle,
-          style: GoogleFonts.anuphan(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ),
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/icons/chevron-left.svg',
-            width: 18,
-            height: 18,
-            fit: BoxFit.contain,
-            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-          ),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      body: Container(
-        margin: const EdgeInsets.only(top: 16),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-        ),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-          child: ListView(
-            physics: const ClampingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(vertical: 24),
-            children: [
-              _AccountItem(
-                icon: 'assets/icons/email.svg',
-                label: AppLocalizations.of(context).requestChangeEmailLabel,
-                onTap: () => AccountActionSheets.showChangeEmail(context),
-              ),
-              _AccountItem(
-                icon: 'assets/icons/phone.svg',
-                label: AppLocalizations.of(context).requestChangePhoneLabel,
-                onTap: () => AccountActionSheets.showChangePhone(context),
-              ),
-              const SizedBox(height: 8),
-              _AccountItem(
-                icon: 'assets/icons/user.svg',
-                label: AppLocalizations.of(context).deleteAccountLabel,
-                labelColor: AppColors.supportRedDark,
-                iconColor: AppColors.supportRedDark,
-                backgroundColor: AppColors.supportRedLight.withValues(
-                  alpha: 0.5,
+    return BlocProvider(
+      create: (context) => ProfileBloc(DependencyInjection.authApiService),
+      child: Builder(
+        builder: (context) => BlocListener<ProfileBloc, ProfileState>(
+          listener: (context, state) {
+            if (state is ProfileUpdateSuccess) {
+              ProfileScreen.needsRefresh = true;
+              StatusDialog.showSuccess(
+                context: context,
+                title: AppLocalizations.of(context).successTitle,
+                message: AppLocalizations.of(context).profileUpdated,
+              );
+            } else if (state is ProfileError) {
+              StatusDialog.showError(
+                context: context,
+                title: AppLocalizations.of(context).errorOccurredTitle,
+                message: state.message,
+              );
+            }
+          },
+          child: Scaffold(
+            backgroundColor: AppColors.primary,
+            appBar: AppBar(
+              backgroundColor: AppColors.primary,
+              elevation: 0,
+              centerTitle: false,
+              title: Text(
+                AppLocalizations.of(context).accountManagementTitle,
+                style: GoogleFonts.anuphan(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
                 ),
-                showChevron: false,
-                onTap: () => AccountActionSheets.showDeleteAccount(context),
               ),
-            ],
+              leading: IconButton(
+                icon: SvgPicture.asset(
+                  'assets/icons/chevron-left.svg',
+                  width: 18,
+                  height: 18,
+                  fit: BoxFit.contain,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                onPressed: () => context.pop(),
+              ),
+            ),
+            body: Container(
+              margin: const EdgeInsets.only(top: 16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+                child: ListView(
+                  physics: const ClampingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  children: [
+                    _AccountItem(
+                      icon: 'assets/icons/email.svg',
+                      label: AppLocalizations.of(
+                        context,
+                      ).requestChangeEmailLabel,
+                      onTap: () => AccountActionSheets.showChangeEmail(
+                        context,
+                        context.read<ProfileBloc>(),
+                      ),
+                    ),
+                    _AccountItem(
+                      icon: 'assets/icons/phone.svg',
+                      label: AppLocalizations.of(
+                        context,
+                      ).requestChangePhoneLabel,
+                      onTap: () => AccountActionSheets.showChangePhone(
+                        context,
+                        context.read<ProfileBloc>(),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _AccountItem(
+                      icon: 'assets/icons/user.svg',
+                      label: AppLocalizations.of(context).deleteAccountLabel,
+                      labelColor: AppColors.supportRedDark,
+                      iconColor: AppColors.supportRedDark,
+                      backgroundColor: AppColors.supportRedLight.withValues(
+                        alpha: 0.5,
+                      ),
+                      showChevron: false,
+                      onTap: () =>
+                          AccountActionSheets.showDeleteAccount(context),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -117,7 +160,8 @@ class _AccountItem extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color:
-                    backgroundColor ?? AppColors.basePaleGrey.withOpacity(0.5),
+                    backgroundColor ??
+                    AppColors.basePaleGrey.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: SvgPicture.asset(

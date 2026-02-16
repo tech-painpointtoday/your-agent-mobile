@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -7,6 +8,8 @@ import '../../../l10n/app_localizations.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -102,31 +105,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   const SizedBox(height: 20),
                   Form(
                     key: _formKey,
-                    child: TextFormField(
+                    child: AppTextField(
+                      label: l10n.email,
+                      hintText: l10n.email,
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        hintText: l10n.email,
-                        prefixIcon: const Icon(
-                          Icons.email_outlined,
-                          color: AppColors.baseGrey,
-                        ),
-                        filled: true,
-                        fillColor: AppColors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: AppColors.baseGrey,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: AppColors.baseGrey,
+                      prefix: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: SvgPicture.asset(
+                          'assets/icons/email.svg',
+                          width: 16,
+                          height: 16,
+                          fit: BoxFit.scaleDown,
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.baseGrey,
+                            BlendMode.srcIn,
                           ),
                         ),
                       ),
@@ -144,40 +137,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           state is AuthOperationState &&
                           state.forgotPasswordStatus ==
                               ForgotPasswordStatus.loading;
-                      return SizedBox(
+                      return AppButton(
                         width: double.infinity,
                         height: 52,
-                        child: ElevatedButton(
-                          onPressed: loading ? null : _submit,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: loading
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      AppColors.white,
-                                    ),
-                                  ),
-                                )
-                              : Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  ).sendResetPasswordLink,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.white,
-                                  ),
-                                ),
-                        ),
+                        isLoading: loading,
+                        style: AppButtonStyle.primary,
+                        text: AppLocalizations.of(
+                          context,
+                        ).sendResetPasswordLink,
+                        onPressed: _submit,
                       );
                     },
                   ),

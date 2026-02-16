@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../widgets/buttons/app_button.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -38,14 +40,22 @@ class EmailVerificationPendingScreen extends StatelessWidget {
         backgroundColor: AppColors.white,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+            padding: const EdgeInsets.all(16),
             child: Column(
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
                   child: IconButton(
                     onPressed: () => context.go('/login'),
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                    icon: SvgPicture.asset(
+                      'assets/icons/chevron-left.svg',
+                      width: 24,
+                      height: 24,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.baseGrey,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
                 ),
                 const Spacer(),
@@ -83,42 +93,12 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                     final isLoading =
                         state is AuthOperationState &&
                         state.resendEmailStatus == ResendEmailStatus.loading;
-                    return SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: isLoading
-                            ? null
-                            : () => context.read<AuthBloc>().add(
-                                AuthResendVerificationPublicRequested(
-                                  email: email,
-                                ),
-                              ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: isLoading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    AppColors.white,
-                                  ),
-                                ),
-                              )
-                            : Text(
-                                AppLocalizations.of(context).resendLink,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.white,
-                                ),
-                              ),
+                    return AppButton(
+                      text: AppLocalizations.of(context).resendLink,
+                      style: AppButtonStyle.primary,
+                      isLoading: isLoading,
+                      onPressed: () => context.read<AuthBloc>().add(
+                        AuthResendVerificationPublicRequested(email: email),
                       ),
                     );
                   },

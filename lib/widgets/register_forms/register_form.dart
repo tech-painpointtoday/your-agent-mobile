@@ -7,11 +7,9 @@ import '../../domain/entities/user.dart';
 import '../../utils/thai_phone_input_formatter.dart';
 import '../../l10n/app_localizations.dart';
 import '../buttons/app_button.dart';
-import '../form_fields/labeled_dropdown_field.dart';
 import '../modals/app_confirmation_bottom_sheet.dart';
 import '../form_fields/labeled_password_field.dart';
 import '../form_fields/labeled_text_form_field.dart';
-import '../form_fields/social_login_section.dart';
 
 class RegisterForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -21,7 +19,7 @@ class RegisterForm extends StatefulWidget {
   final TextEditingController companyController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
-  final Function(String businessType) onRegister;
+  final Function(String? businessType) onRegister;
   final UserRole role;
   final bool termsAccepted;
   final bool privacyAccepted;
@@ -200,8 +198,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       confirmLabel: l10n.confirm,
                       cancelLabel: l10n.cancel_button,
                       style: ConfirmationStyle.normal,
-                      onConfirm: () =>
-                          widget.onRegister(_selectedBusinessType!),
+                      onConfirm: () => widget.onRegister(_selectedBusinessType),
                     );
                   }
                 : null,

@@ -5240,6 +5240,24 @@ abstract class AppLocalizations {
   /// **' to confirm account deletion'**
   String get deleteAccountConfirmSuffix;
 
+  /// No description provided for @deleteAccountWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Once your account is deleted, all your data will be permanently removed and cannot be recovered.'**
+  String get deleteAccountWarning;
+
+  /// No description provided for @reasonForDeleting.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for deleting'**
+  String get reasonForDeleting;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Delete'**
+  String get confirmDelete;
+
   /// No description provided for @typeToDeleteHint.
   ///
   /// In en, this message translates to:
@@ -5605,12 +5623,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Specify account number'**
   String get enterAccountNumberHint;
-
-  /// No description provided for @select.
-  ///
-  /// In en, this message translates to:
-  /// **'Select'**
-  String get select;
 
   /// No description provided for @furnitureExampleHint.
   ///
@@ -6739,6 +6751,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Warning'**
   String get warning;
+
+  /// No description provided for @select.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get select;
 
   /// No description provided for @createAccount.
   ///

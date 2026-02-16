@@ -89,6 +89,16 @@ class DependencyInjection {
 
   static final ChatSearchService _chatSearchService = ChatSearchService();
 
+  static final AuthBloc _authBloc = AuthBloc(
+    signInWithEmailUseCase: signInWithEmailUseCase,
+    registerWithEmailUseCase: registerWithEmailUseCase,
+    registerAgentUseCase: registerAgentUseCase,
+    signInWithGoogleUseCase: signInWithGoogleUseCase,
+    signInWithFacebookUseCase: signInWithFacebookUseCase,
+    signOutUseCase: signOutUseCase,
+    authRepository: authRepository,
+  );
+
   static void init(BuildContext context) {
     // This function can be called during app startup to register dependencies
     _addressLookupService.loadData();
@@ -142,13 +152,5 @@ class DependencyInjection {
 
   static SignOut get signOutUseCase => SignOut(authRepository);
 
-  static AuthBloc get authBloc => AuthBloc(
-    signInWithEmailUseCase: signInWithEmailUseCase,
-    registerWithEmailUseCase: registerWithEmailUseCase,
-    registerAgentUseCase: registerAgentUseCase,
-    signInWithGoogleUseCase: signInWithGoogleUseCase,
-    signInWithFacebookUseCase: signInWithFacebookUseCase,
-    signOutUseCase: signOutUseCase,
-    authRepository: authRepository,
-  );
+  static AuthBloc get authBloc => _authBloc;
 }

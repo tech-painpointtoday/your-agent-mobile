@@ -12,7 +12,7 @@ import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 import 'package:youragent/l10n/app_localizations.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:youragent/widgets/modals/app_image_picker_bottom_sheet.dart';
 
 class PropertyImagesStep extends StatelessWidget {
   final int? step;
@@ -259,123 +259,18 @@ class PropertyImagesStep extends StatelessWidget {
   }
 
   void _showImageSourceSheet(BuildContext context, PropertyFormState state) {
-    final bloc = context.read<PropertyFormBloc>();
-
-    showModalBottomSheet(
+    AppImagePickerBottomSheet.show(
       context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 12),
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 24),
-                title: Text(
-                  AppLocalizations.of(context).takePhotoButton,
-                  style: GoogleFonts.anuphan(fontSize: 16),
-                ),
-                trailing: SvgPicture.asset(
-                  'assets/icons/camera.svg',
-                  width: 24,
-                  height: 24,
-                  colorFilter: ColorFilter.mode(
-                    AppColors.baseDarkGrey,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                onTap: () async {
-                  Navigator.pop(context); // Close the modal first
-
-                  final status = await Permission.camera.request();
-                  if (status.isPermanentlyDenied) {
-                    if (context.mounted) {
-                      StatusDialog.showError(
-                        context: context,
-                        title: AppLocalizations.of(context).errorLabel,
-                        message:
-                            'Camera access is permanently denied. Please enable it in settings.',
-                      );
-                      openAppSettings();
-                    }
-                    return;
-                  }
-
-                  if (!status.isGranted) {
-                    if (context.mounted) {
-                      StatusDialog.showError(
-                        context: context,
-                        title: AppLocalizations.of(context).errorLabel,
-                        message:
-                            'Camera access denied. Please allow camera access to take photos.',
-                      );
-                    }
-                    return;
-                  }
-
-                  final ImagePicker picker = ImagePicker();
-                  final XFile? image = await picker.pickImage(
-                    source: ImageSource.camera,
-                  );
-                  if (image != null && context.mounted) {
-                    context.read<PropertyFormBloc>().add(
-                      PropertyFormImagesUpdated([
-                        ...state.images,
-                        PropertyFormImage.fromXFile(image),
-                      ]),
-                    );
-                  }
-                },
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 24),
-                title: Text(
-                  AppLocalizations.of(context).selectFromAlbumButton,
-                  style: GoogleFonts.anuphan(fontSize: 16),
-                ),
-                trailing: SvgPicture.asset(
-                  'assets/icons/image.svg',
-                  width: 24,
-                  height: 24,
-                  colorFilter: ColorFilter.mode(
-                    AppColors.baseDarkGrey,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final ImagePicker picker = ImagePicker();
-                  final List<XFile> images = await picker.pickMultiImage();
-                  if (images.isNotEmpty) {
-                    bloc.add(
-                      PropertyFormImagesUpdated([
-                        ...state.images,
-                        ...images.map(
-                          (img) => PropertyFormImage.fromXFile(img),
-                        ),
-                      ]),
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 24),
-            ],
-          ),
-        );
+      isMultiImage: true,
+      onImagesPicked: (paths) {
+        if (paths.isNotEmpty) {
+          final newImages = paths
+              .map((path) => PropertyFormImage.fromXFile(XFile(path)))
+              .toList();
+          context.read<PropertyFormBloc>().add(
+            PropertyFormImagesUpdated([...state.images, ...newImages]),
+          );
+        }
       },
     );
   }

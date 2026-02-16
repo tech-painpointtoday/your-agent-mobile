@@ -156,10 +156,20 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
                         ),
                       ),
                       suggestionsCallback: (pattern) {
-                        context.read<ContractFormBloc>().add(
-                          ContractFormBuyersFetched(pattern),
-                        );
-                        return state.buyers;
+                        // Use local filtering on allBuyers for faster response
+                        final allBuyers = state.allBuyers;
+                        if (allBuyers.isEmpty) {
+                          context.read<ContractFormBloc>().add(
+                            ContractFormBuyersFetched(pattern),
+                          );
+                          return state.buyers;
+                        }
+
+                        return allBuyers.where((buyer) {
+                          final name = buyer.name.toLowerCase();
+                          final query = pattern.toLowerCase();
+                          return name.contains(query);
+                        }).toList();
                       },
                       itemBuilder: (context, buyer) {
                         return ListTile(

@@ -162,7 +162,14 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         }
       }
 
+      final initialStep = (contract.status == ContractStatus.draft)
+          ? ContractFormState.calculateResumeStep(contract)
+          : 1;
+
       final updatedState = state.copyWith(
+        // Step Configuration
+        step: initialStep,
+
         // Basic Info
         contractId: contract.id,
         contractStatus: contract.status,
@@ -688,7 +695,11 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     ContractFormOwnerNameUpdated event,
     Emitter<ContractFormState> emit,
   ) {
-    emit(state.copyWith(ownerName: event.name));
+    if (state.selectedOwner?.name == event.name) {
+      emit(state.copyWith(ownerName: event.name));
+    } else {
+      emit(state.copyWith(ownerName: event.name, selectedOwner: null));
+    }
     _validateCurrentStep(emit);
   }
 
@@ -784,7 +795,11 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     ContractFormBuyerNameUpdated event,
     Emitter<ContractFormState> emit,
   ) {
-    emit(state.copyWith(buyerName: event.name));
+    if (state.selectedBuyer?.name == event.name) {
+      emit(state.copyWith(buyerName: event.name));
+    } else {
+      emit(state.copyWith(buyerName: event.name, selectedBuyer: null));
+    }
     _validateCurrentStep(emit);
   }
 

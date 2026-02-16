@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../models/agent_profile.dart';
@@ -176,6 +177,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     emit(ProfileUpdateLoading());
     try {
+      final file = File(event.filePath);
+      final sizeInBytes = await file.length();
+      final sizeInMb = sizeInBytes / (1024 * 1024);
+
+      if (sizeInMb > 2) {
+        emit(const ProfileError('Image size must be less than 2MB'));
+        return;
+      }
+
       final json = await _authApiService.updateProfilePhoto(event.filePath);
       if (json['success'] == true) {
         emit(ProfileUpdateSuccess());

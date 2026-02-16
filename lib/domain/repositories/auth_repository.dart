@@ -47,4 +47,10 @@ abstract class AuthRepository {
 
   /// Restore authentication state from stored token
   Future<void> restoreAuthState();
+
+  /// Delete account
+  Future<Either<Failure, void>> deleteAccount({
+    required String password,
+    required String reason,
+  });
 }

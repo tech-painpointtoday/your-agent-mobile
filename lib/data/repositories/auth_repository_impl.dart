@@ -164,7 +164,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
           ? data['user'] as Map<String, dynamic>
           : data;
 
-      _currentUser = User(
+      final user = User(
         id: userData['id']?.toString(),
         email: userData['email']?.toString() ?? email,
         displayName: userData['name']?.toString() ?? name,
@@ -173,10 +173,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
         provider: 'email',
       );
 
-      await SessionService().initializeSession();
-      notifyListeners();
-
-      return Right(_currentUser!);
+      return Right(user);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -204,7 +201,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
           ? data['user'] as Map<String, dynamic>
           : data;
 
-      _currentUser = User(
+      final user = User(
         id: userData['id']?.toString(),
         email: userData['email']?.toString() ?? email,
         displayName: userData['name']?.toString() ?? name,
@@ -213,10 +210,11 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
         provider: 'email',
       );
 
-      await SessionService().initializeSession();
-      notifyListeners();
+      // Do NOT set _currentUser or initialize session here.
+      // Registration success != Authenticated state if email verification is pending.
+      // We return the user object so the BLoC can emit a success state with user info.
 
-      return Right(_currentUser!);
+      return Right(user);
     } catch (e) {
       return Left(ServerFailure(e.toString().replaceFirst('Exception: ', '')));
     }
@@ -317,6 +315,28 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
       return const Right(null);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteAccount({
+    required String password,
+    required String reason,
+  }) async {
+    try {
+      await _authApiService.deleteAccount(password: password, reason: reason);
+
+      // Perform same cleanup as signOut
+      await _googleSignIn.signOut();
+      await FacebookAuth.instance.logOut();
+      await SessionService().clearSession();
+      await UserProfileStorageService().clearProfile();
+      _currentUser = null;
+      notifyListeners();
+
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString().replaceFirst('Exception: ', '')));
     }
   }
 }

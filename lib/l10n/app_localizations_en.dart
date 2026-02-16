@@ -2643,6 +2643,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAccountConfirmSuffix => ' to confirm account deletion';
 
   @override
+  String get deleteAccountWarning =>
+      'Once your account is deleted, all your data will be permanently removed and cannot be recovered.';
+
+  @override
+  String get reasonForDeleting => 'Reason for deleting';
+
+  @override
+  String get confirmDelete => 'Confirm Delete';
+
+  @override
   String get typeToDeleteHint => 'Type message here...';
 
   @override
@@ -2826,9 +2836,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterAccountNumberHint => 'Specify account number';
-
-  @override
-  String get select => 'Select';
 
   @override
   String get furnitureExampleHint => 'Example: bed, sofa';
@@ -3417,6 +3424,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get warning => 'Warning';
+
+  @override
+  String get select => 'Select';
 
   @override
   String get createAccount => 'Create Account';

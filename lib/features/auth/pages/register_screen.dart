@@ -57,11 +57,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
     context.read<AuthBloc>().add(SetRoleEvent(role: _role));
   }
 
-  void _register(String businessType) {
+  void _register(String? businessType) {
     if (!_formKey.currentState!.validate()) return;
     if (!_termsAccepted || !_privacyAccepted) return;
     // For now, API only accepts name, email, password, passwordConfirmation
     // Phone, business type, and company name are collected but not sent yet
+
+    print('Registering agent...');
+    print('Name: ${_nameController.text.trim()}');
+    print('Email: ${_emailController.text.trim()}');
+    print('Password: ${_passwordController.text}');
+    print('Confirm Password: ${_confirmPasswordController.text}');
     context.read<AuthBloc>().add(
       RegisterAgentEvent(
         name: _nameController.text.trim(),
@@ -82,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    if (state is Authenticated) {
+    if (state is RegistrationSuccess) {
       // After successful registration, redirect to email verification screen
 
       StatusDialog.showSuccess(
@@ -256,7 +262,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         companyController: _companyController,
                         passwordController: _passwordController,
                         confirmPasswordController: _confirmPasswordController,
-                        onRegister: _register,
+                        onRegister: (v) => _register(v),
                         role: _role,
                         termsAccepted: _termsAccepted,
                         privacyAccepted: _privacyAccepted,

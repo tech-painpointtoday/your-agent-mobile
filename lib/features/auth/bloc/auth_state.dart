@@ -36,6 +36,15 @@ class AuthError extends AuthState {
   List<Object?> get props => [message];
 }
 
+class RegistrationSuccess extends AuthState {
+  final User user;
+  final String message;
+  const RegistrationSuccess({required this.user, required this.message});
+
+  @override
+  List<Object?> get props => [user, message];
+}
+
 class EmailNotVerified extends AuthState {
   final String email;
   final String message;
@@ -54,7 +63,9 @@ class RoleSelected extends AuthState {
 }
 
 enum ForgotPasswordStatus { initial, loading, success, failure }
+
 enum ResetPasswordStatus { initial, loading, success, failure }
+
 enum ResendEmailStatus { initial, loading, success, failure }
 
 class AuthOperationState extends AuthState {
@@ -90,11 +101,10 @@ class AuthOperationState extends AuthState {
 
   @override
   List<Object?> get props => [
-        forgotPasswordStatus,
-        resetPasswordStatus,
-        resendEmailStatus,
-        errorMessage,
-        resendEmailError,
-      ];
+    forgotPasswordStatus,
+    resetPasswordStatus,
+    resendEmailStatus,
+    errorMessage,
+    resendEmailError,
+  ];
 }
-
