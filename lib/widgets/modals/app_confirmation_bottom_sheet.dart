@@ -7,6 +7,7 @@ import 'package:youragent/widgets/buttons/app_button.dart';
 enum ConfirmationStyle {
   normal, // Blue
   destructive, // Red
+  warning, // Orange
 }
 
 class AppConfirmationBottomSheet extends StatelessWidget {
@@ -61,17 +62,29 @@ class AppConfirmationBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageAsset =
-        icon ??
-        (style == ConfirmationStyle.destructive
-            ? 'assets/images/dialog/YA_Illustration_ConfirmDelete.png'
-            : 'assets/images/dialog/YA_Illustration_ConfirmSave.png');
+    String defaultImage;
+    switch (style) {
+      case ConfirmationStyle.destructive:
+        defaultImage = 'assets/images/dialog/YA_Illustration_ConfirmDelete.png';
+        break;
+      case ConfirmationStyle.warning:
+        defaultImage =
+            'assets/images/dialog/YA_Illustration_ConfirmWarning.png';
+        break;
+      case ConfirmationStyle.normal:
+        defaultImage = 'assets/images/dialog/YA_Illustration_ConfirmSave.png';
+        break;
+    }
+    final imageAsset = icon ?? defaultImage;
 
-    // The primary button style for "Destructive" is red, for "Normal" is blue (typically primary).
-    // AppButtonStyle.destructive usually maps to red. AppButtonStyle.primary usually maps to blue/brand.
     final buttonStyle = style == ConfirmationStyle.destructive
         ? AppButtonStyle.destructive
         : AppButtonStyle.primary;
+
+    Color? buttonBgColor;
+    if (style == ConfirmationStyle.warning) {
+      buttonBgColor = AppColors.supportOrangeDark;
+    }
 
     return Stack(
       children: [
@@ -130,6 +143,7 @@ class AppConfirmationBottomSheet extends StatelessWidget {
                 child: AppButton(
                   text: confirmLabel,
                   style: buttonStyle,
+                  backgroundColor: buttonBgColor,
                   textStyle: GoogleFonts.anuphan(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

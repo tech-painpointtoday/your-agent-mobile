@@ -6727,6 +6727,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **''**
   String get time_unit_th;
+
+  /// No description provided for @warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get warning;
 }
 
 class _AppLocalizationsDelegate

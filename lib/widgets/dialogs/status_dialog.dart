@@ -279,8 +279,8 @@ class StatusDialog {
     required BuildContext context,
     required String title,
     String? message,
-    String buttonText = 'OK',
-    VoidCallback? onOk,
+    String? actionLabel,
+    VoidCallback? onAction,
   }) async {
     await _enqueue(
       context: context,
@@ -290,11 +290,11 @@ class StatusDialog {
           builder: (context) => BaseStatusDialog(
             title: title,
             message: message,
-            confirmText: buttonText,
+            confirmText: actionLabel ?? 'OK',
             confirmColor: AppColors.supportOrangeDark,
             isSingleAction: true,
             type: DialogType.warning,
-            onConfirm: onOk,
+            onConfirm: onAction,
           ),
         );
       },
@@ -378,16 +378,12 @@ class StatusDialog {
             Positioned.fill(
               child: BackdropFilter(
                 filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  color: Colors.black.withOpacity(0.25),
-                ),
+                child: Container(color: Colors.black.withOpacity(0.25)),
               ),
             ),
             // Centered loading spinner
             const Center(
-              child: CircularProgressIndicator(
-                color: AppColors.primary,
-              ),
+              child: CircularProgressIndicator(color: AppColors.primary),
             ),
           ],
         );

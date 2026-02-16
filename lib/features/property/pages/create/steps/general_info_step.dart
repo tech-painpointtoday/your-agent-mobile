@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -18,8 +19,10 @@ import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/features/property/widgets/add_property_info_bottom_sheets.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/domain/entities/property.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 class GeneralInfoStep extends StatefulWidget {
   final int? step;
@@ -115,9 +118,16 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     _projectController.addListener(
       () => _updateData('project', _projectController.text),
     );
-    _developerController.addListener(
-      () => _updateData('developer', _developerController.text),
-    );
+    _developerController.addListener(() {
+      final text = _developerController.text;
+      _updateData('developer', text);
+      if (text.isEmpty &&
+          context.read<PropertyFormBloc>().state.selectedDeveloperId != null) {
+        context.read<PropertyFormBloc>().add(
+          const PropertyFormDeveloperChanged(null),
+        );
+      }
+    });
     _buildingController.addListener(
       () => _updateData('building', _buildingController.text),
     );
@@ -330,35 +340,34 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         if (mounted) {
           StatusDialog.showSuccess(
             context: context,
-            title: AppLocalizations.of(context).savedSuccessfully,
-            message: AppLocalizations.of(context).savedSuccessfully,
-            actionLabel: AppLocalizations.of(context).statusClose,
-            onAction: () {
-              // Refresh developers list
-              context.read<PropertyFormBloc>().add(
-                const PropertyFormDevelopersFetched(),
-              );
-
-              final developer = result['developer'] as Map<String, dynamic>;
-              final isTh = Localizations.localeOf(context).languageCode == 'th';
-              final developerId = developer['id'];
-
-              _developerController.text = isTh
-                  ? developer['name_th']
-                  : developer['name_en'];
-              _updateData(
-                'developer',
-                isTh ? developer['name_th'] : developer['name_en'],
-              );
-
-              // Update BLoC state with the new developer ID
-              if (developerId != null) {
-                context.read<PropertyFormBloc>().add(
-                  PropertyFormDeveloperChanged(developerId as int),
-                );
-              }
-            },
+            title: AppLocalizations.of(context).success,
+            message: AppLocalizations.of(
+              context,
+            ).register_success, // Using a generic success message
           );
+          // Refresh developers list
+          context.read<PropertyFormBloc>().add(
+            const PropertyFormDevelopersFetched(),
+          );
+
+          final developer = result['developer'] as Map<String, dynamic>;
+          final isTh = Localizations.localeOf(context).languageCode == 'th';
+          final developerId = developer['id'];
+
+          _developerController.text = isTh
+              ? developer['name_th']
+              : developer['name_en'];
+          _updateData(
+            'developer',
+            isTh ? developer['name_th'] : developer['name_en'],
+          );
+
+          // Update BLoC state with the new developer ID
+          if (developerId != null) {
+            context.read<PropertyFormBloc>().add(
+              PropertyFormDeveloperChanged(developerId as int),
+            );
+          }
         }
       }
     }
@@ -370,11 +379,17 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     final developerId = state.selectedDeveloperId;
 
     if (developerId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('กรุณาเลือกผู้พัฒนาก่อน'),
-          backgroundColor: AppColors.error,
-        ),
+      await AppConfirmationBottomSheet.show(
+        context: context,
+        icon: 'assets/images/YA_Illustration_ConfirmWarning.png',
+        title: 'ไม่สามารถเพิ่มโครงการได้',
+        description: 'กรุณาเลือกผู้พัฒนาก่อน',
+        confirmLabel: AppLocalizations.of(context).select,
+        cancelLabel: '',
+        style: ConfirmationStyle.warning,
+        onConfirm: () {
+          _developerFocusNode.requestFocus();
+        },
       );
       return;
     }
@@ -386,6 +401,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     final result = await AddProjectBottomSheet.show(
       context,
       developerId: developerId,
+      developerName: _developerController.text,
       isCondoOrApt: isCondoOrApt,
     );
 
@@ -394,12 +410,31 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       final projectKey = isCondoOrApt ? 'condo_project' : 'house_project';
       final project = result[projectKey] as Map<String, dynamic>?;
 
-      if (project != null) {
+      if (project != null && mounted) {
+        StatusDialog.showSuccess(
+          context: context,
+          title: AppLocalizations.of(context).success,
+          message: AppLocalizations.of(context).property_created_success,
+        );
+
         final nameTh = project['name_th'] ?? project['name'] ?? '';
         final projectId = project['id'];
+        final isTh = Localizations.localeOf(context).languageCode == 'th';
+        final nameEn = project['name_en'] ?? '';
 
-        _projectController.text = nameTh;
-        _updateData('project', nameTh);
+        _projectController.text = isTh ? nameTh : nameEn;
+        _updateData('project', isTh ? nameTh : nameEn);
+
+        // Trigger refresh based on type
+        if (isCondoOrApt) {
+          context.read<PropertyFormBloc>().add(
+            PropertyFormCondoProjectsFetched(developerId: developerId),
+          );
+        } else {
+          context.read<PropertyFormBloc>().add(
+            const PropertyFormHouseProjectsFetched(developerId: null),
+          );
+        }
 
         // Update BLoC state with the new project ID
         if (projectId != null) {

@@ -1111,5 +1111,7 @@
   "no_conversations_found": "No conversations found",
   "no_messages": "No messages",
   "yesterday": "Yesterday",
-  "time_unit_th": ""
+  "time_unit_th": "",
+  "warning": "Warning",
+  "select": "Select"
 }

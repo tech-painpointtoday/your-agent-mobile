@@ -160,7 +160,8 @@ class PropertyFormReset extends PropertyFormEvent {
 }
 
 class PropertyFormDevelopersFetched extends PropertyFormEvent {
-  const PropertyFormDevelopersFetched();
+  final bool refresh;
+  const PropertyFormDevelopersFetched({this.refresh = false});
 }
 
 class PropertyFormCondoProjectsFetched extends PropertyFormEvent {

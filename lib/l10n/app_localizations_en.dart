@@ -3411,4 +3411,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get time_unit_th => '';
+
+  @override
+  String get warning => 'Warning';
 }

@@ -670,7 +670,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     Emitter<PropertyFormState> emit,
   ) async {
     // 1. Use cached if available
-    if (state.developers.isNotEmpty) return;
+    if (state.developers.isNotEmpty && !event.refresh) return;
 
     try {
       final developers = await _propertyApiService.getDevelopers();

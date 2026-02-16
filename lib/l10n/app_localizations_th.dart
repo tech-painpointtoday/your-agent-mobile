@@ -2824,7 +2824,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get enterAccountNumberHint => 'ระบุเลขบัญชี';
 
   @override
-  String get select => 'เลือกจากรูปอสังหาฯ';
+  String get select => 'เลือก';
 
   @override
   String get furnitureExampleHint => 'เช่น เตียงนอน, โซฟา';
@@ -3424,4 +3424,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get time_unit_th => 'น.';
+
+  @override
+  String get warning => 'คำเตือน';
 }

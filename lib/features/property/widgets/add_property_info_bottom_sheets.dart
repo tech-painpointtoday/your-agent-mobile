@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 
 /// Entry point for adding a developer
 class AddDeveloperBottomSheet {
-  static Future<Map<String, String>?> show(BuildContext context) {
+  static Future<Map<String, dynamic>?> show(BuildContext context) {
     return PropertyInfoBottomSheet.show(
       context: context,
       title: AppLocalizations.of(context).addDeveloperTitle,
@@ -24,6 +26,7 @@ class AddProjectBottomSheet {
   static Future<Map<String, dynamic>?> show(
     BuildContext context, {
     required int developerId,
+    required String developerName,
     required bool isCondoOrApt,
   }) {
     return showModalBottomSheet<Map<String, dynamic>>(
@@ -32,6 +35,7 @@ class AddProjectBottomSheet {
       backgroundColor: Colors.transparent,
       builder: (context) => _AddProjectBottomSheetContent(
         developerId: developerId,
+        developerName: developerName,
         isCondoOrApt: isCondoOrApt,
       ),
     );
@@ -41,10 +45,12 @@ class AddProjectBottomSheet {
 /// Bottom sheet for adding project with juristic fields
 class _AddProjectBottomSheetContent extends StatefulWidget {
   final int developerId;
+  final String developerName;
   final bool isCondoOrApt;
 
   const _AddProjectBottomSheetContent({
     required this.developerId,
+    required this.developerName,
     required this.isCondoOrApt,
   });
 
@@ -142,13 +148,31 @@ class _AddProjectBottomSheetContentState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 8,
                   children: [
-                    Text(
-                      l10n.addProjectNameTitle,
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.primary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Text(
+                          l10n.addProjectNameTitle,
+                          style: GoogleFonts.anuphan(
+                            color: AppColors.primary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            '(${widget.developerName} #${widget.developerId})',
+                            style: GoogleFonts.anuphan(
+                              color: AppColors.baseGrey,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                     Text(
                       l10n.addProjectNameDescription,
@@ -161,8 +185,9 @@ class _AddProjectBottomSheetContentState
                   ],
                 ),
               ),
+              // ...
 
-              // Project Name (Thai)
+              // Project Name
               AppTextField(
                 label: '${l10n.projectNameHint} (ภาษาไทย)',
                 controller: _nameThController,
@@ -184,6 +209,14 @@ class _AddProjectBottomSheetContentState
                 controller: _juristicPhoneController,
                 hintText: '02-1234567',
                 keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return null;
+                  final phoneRegex = RegExp(r'^[0-9\-]{9,13}$');
+                  if (!phoneRegex.hasMatch(value)) {
+                    return l10n.please_enter_valid_number;
+                  }
+                  return null;
+                },
               ),
 
               // Juristic Contact Email (Optional)
@@ -192,6 +225,16 @@ class _AddProjectBottomSheetContentState
                 controller: _juristicEmailController,
                 hintText: 'juristic@example.com',
                 keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return null;
+                  final emailRegex = RegExp(
+                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                  );
+                  if (!emailRegex.hasMatch(value)) {
+                    return l10n.enter_valid_email;
+                  }
+                  return null;
+                },
               ),
 
               // Action Buttons
@@ -257,21 +300,23 @@ class _AddProjectBottomSheetContentState
                                                     .trim()
                                               : null,
                                         );
-                                  if (mounted) {
-                                    Navigator.pop(context, response);
+                                  if (context.mounted) {
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                          if (context.mounted) {
+                                            context.pop(response);
+                                          }
+                                        });
                                   }
                                 } catch (e) {
-                                  if (mounted) {
+                                  if (context.mounted) {
                                     setState(() => _isLoading = false);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          e.toString().replaceFirst(
-                                            'Exception: ',
-                                            '',
-                                          ),
-                                        ),
-                                        backgroundColor: AppColors.error,
+                                    StatusDialog.showError(
+                                      context: context,
+                                      title: AppLocalizations.of(context).error,
+                                      message: e.toString().replaceFirst(
+                                        'Exception: ',
+                                        '',
                                       ),
                                     );
                                   }
@@ -306,14 +351,14 @@ class PropertyInfoBottomSheet extends StatefulWidget {
     required this.hintText,
   });
 
-  static Future<Map<String, String>?> show({
+  static Future<Map<String, dynamic>?> show({
     required BuildContext context,
     required String title,
     required String description,
     required String labelBase,
     required String hintText,
   }) {
-    return showModalBottomSheet<Map<String, String>>(
+    return showModalBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -483,20 +528,22 @@ class _PropertyInfoBottomSheetState extends State<PropertyInfoBottomSheet> {
                                         nameTh: _nameThController.text.trim(),
                                       );
                                   if (mounted) {
-                                    Navigator.pop(context, response);
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                          if (mounted) {
+                                            Navigator.pop(context, response);
+                                          }
+                                        });
                                   }
                                 } catch (e) {
                                   if (mounted) {
                                     setState(() => _isLoading = false);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          e.toString().replaceFirst(
-                                            'Exception: ',
-                                            '',
-                                          ),
-                                        ),
-                                        backgroundColor: AppColors.error,
+                                    StatusDialog.showError(
+                                      context: context,
+                                      title: AppLocalizations.of(context).error,
+                                      message: e.toString().replaceFirst(
+                                        'Exception: ',
+                                        '',
                                       ),
                                     );
                                   }
