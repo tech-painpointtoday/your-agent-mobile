@@ -21,6 +21,7 @@ done
 
 flutter clean
 flutter pub get
+cd ios && pod install && cd ..
 flutter build ipa --flavor dev -t lib/main_dev.dart --export-method ad-hoc $BUILD_ARGS
 
 # Rename the output IPA
