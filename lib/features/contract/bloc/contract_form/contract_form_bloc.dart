@@ -400,6 +400,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     ContractFormPropertiesFetched event,
     Emitter<ContractFormState> emit,
   ) async {
+    emit(state.copyWith(isFetchingProperties: true));
     try {
       final properties = await _propertyApiService.getProperties();
 
@@ -437,10 +438,10 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
           ),
         );
       } else {
-        emit(state.copyWith(properties: filtered));
+        emit(state.copyWith(properties: filtered, isFetchingProperties: false));
       }
     } catch (e) {
-      // Just log and ignore for now in search
+      emit(state.copyWith(isFetchingProperties: false));
     }
   }
 
@@ -747,6 +748,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     ContractFormOwnersFetched event,
     Emitter<ContractFormState> emit,
   ) async {
+    emit(state.copyWith(isFetchingOwners: true));
     try {
       List<Owner> allOwners = state.allOwners;
       if (allOwners.isEmpty) {
@@ -757,9 +759,16 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         return o.name.toLowerCase().contains(event.query.toLowerCase());
       }).toList();
 
-      emit(state.copyWith(allOwners: allOwners, owners: filtered));
+      emit(
+        state.copyWith(
+          allOwners: allOwners,
+          owners: filtered,
+          isFetchingOwners: false,
+        ),
+      );
     } catch (e) {
       debugPrint('Error fetching owners: $e');
+      emit(state.copyWith(isFetchingOwners: false));
     }
   }
 
@@ -839,6 +848,7 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
     ContractFormBuyersFetched event,
     Emitter<ContractFormState> emit,
   ) async {
+    emit(state.copyWith(isFetchingBuyers: true));
     try {
       List<Buyer> allBuyers = state.allBuyers;
       if (allBuyers.isEmpty) {
@@ -849,9 +859,16 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         return b.name.toLowerCase().contains(event.query.toLowerCase());
       }).toList();
 
-      emit(state.copyWith(allBuyers: allBuyers, buyers: filtered));
+      emit(
+        state.copyWith(
+          allBuyers: allBuyers,
+          buyers: filtered,
+          isFetchingBuyers: false,
+        ),
+      );
     } catch (e) {
       debugPrint('Error fetching buyers: $e');
+      emit(state.copyWith(isFetchingBuyers: false));
     }
   }
 
@@ -1024,8 +1041,9 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
         // Upload attachments
         await _uploadAttachments(state.contractId!);
 
-        // Publish contract
-        await _contractApiService.publishContract(id: state.contractId!);
+        if (state.contractStatus == ContractStatus.draft) {
+          await _contractApiService.publishContract(id: state.contractId!);
+        }
 
         emit(state.copyWith(status: ContractFormStatus.success));
       } else {
@@ -1039,6 +1057,8 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
 
         // Upload attachments
         await _uploadAttachments(newContractId);
+
+        await _contractApiService.publishContract(id: newContractId);
 
         emit(state.copyWith(status: ContractFormStatus.success));
       }

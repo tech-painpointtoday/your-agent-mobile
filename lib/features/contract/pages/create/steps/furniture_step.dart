@@ -18,7 +18,7 @@ import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/modals/app_image_picker_bottom_sheet.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 class FurnitureStep extends StatefulWidget {
   final bool hideHeader;
@@ -71,7 +71,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
             ),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context).selectImageFromProperty,
+              context.l10n.selectImageFromProperty,
               style: GoogleFonts.anuphan(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -139,10 +139,10 @@ class _FurnitureStepState extends State<FurnitureStep> {
   void _showDeleteAllConfirmation(String furnitureId) {
     AppConfirmationBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context).deleteAllImagesConfirmTitle,
-      description: AppLocalizations.of(context).deleteAllImagesConfirmMessage,
-      confirmLabel: AppLocalizations.of(context).deleteAllConfirmLabel,
-      cancelLabel: AppLocalizations.of(context).statusCancelled,
+      title: context.l10n.deleteAllImagesConfirmTitle,
+      description: context.l10n.deleteAllImagesConfirmMessage,
+      confirmLabel: context.l10n.deleteAllConfirmLabel,
+      cancelLabel: context.l10n.statusCancelled,
       style: ConfirmationStyle.destructive,
       onConfirm: () {
         context.read<ContractFormBloc>().add(
@@ -150,8 +150,8 @@ class _FurnitureStepState extends State<FurnitureStep> {
         );
         StatusDialog.showSuccess(
           context: context,
-          title: AppLocalizations.of(context).successTitle,
-          message: AppLocalizations.of(context).imagesDeletedMessage,
+          title: context.l10n.success,
+          message: context.l10n.imagesDeletedMessage,
         );
       },
     );
@@ -175,7 +175,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
                     children: [
                       AppBadge(
                         color: BadgeColor.blue,
-                        label: AppLocalizations.of(context).furniture_photos,
+                        label: context.l10n.furniture_photos,
                         fontSize: 16,
                       ),
                       AppBadge(
@@ -204,18 +204,11 @@ class _FurnitureStepState extends State<FurnitureStep> {
                             if (item.hasData) {
                               AppConfirmationBottomSheet.show(
                                 context: context,
-                                title: AppLocalizations.of(
-                                  context,
-                                ).deleteItemQuestion,
-                                description: AppLocalizations.of(
-                                  context,
-                                ).deleteAllImagesConfirmMessage,
-                                confirmLabel: AppLocalizations.of(
-                                  context,
-                                ).delete,
-                                cancelLabel: AppLocalizations.of(
-                                  context,
-                                ).statusCancelled,
+                                title: context.l10n.deleteItemQuestion,
+                                description:
+                                    context.l10n.deleteAllImagesConfirmMessage,
+                                confirmLabel: context.l10n.delete,
+                                cancelLabel: context.l10n.statusCancelled,
                                 style: ConfirmationStyle.destructive,
                                 onConfirm: () {
                                   context.read<ContractFormBloc>().add(
@@ -291,7 +284,7 @@ class _FurnitureStepState extends State<FurnitureStep> {
               const Icon(Icons.add, color: AppColors.baseGrey, size: 20),
               const SizedBox(width: 8),
               Text(
-                AppLocalizations.of(context).add_item,
+                context.l10n.add_item,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseDarkGrey,
                   fontSize: 16,
@@ -426,7 +419,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'รายการที่ ${widget.index}',
+              context.l10n.itemNumber(widget.index),
               style: GoogleFonts.anuphan(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -449,7 +442,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
         ),
         const Divider(height: 32),
         AppChipSelection<String>(
-          label: AppLocalizations.of(context).furnitureTitle,
+          label: context.l10n.furnitureTitle,
           isRequired: true,
           value: selectedValue,
           options: options,
@@ -482,7 +475,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
           const SizedBox(height: 12),
           AppTextField(
             label: '',
-            hintText: AppLocalizations.of(context).furnitureExampleHint,
+            hintText: context.l10n.furnitureExampleHint,
             controller: TextEditingController(text: widget.item.name)
               ..selection = TextSelection.fromPosition(
                 TextPosition(offset: widget.item.name.length),
@@ -494,8 +487,8 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
         ],
         const SizedBox(height: 20),
         AppTextField(
-          label: AppLocalizations.of(context).descriptionLabel,
-          hintText: AppLocalizations.of(context).furnitureDescExampleHint,
+          label: context.l10n.descriptionLabel,
+          hintText: context.l10n.furnitureDescExampleHint,
           controller: TextEditingController(text: widget.item.description ?? '')
             ..selection = TextSelection.fromPosition(
               TextPosition(offset: (widget.item.description ?? '').length),
@@ -534,7 +527,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      AppLocalizations.of(context).selectImageFromProperty,
+                      context.l10n.selectImageFromProperty,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseDarkGrey,
                         fontSize: 16,
@@ -578,7 +571,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    AppLocalizations.of(context).uploadImagesButton,
+                    context.l10n.uploadImagesButton,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseDarkGrey,
                       fontSize: 16,
@@ -593,7 +586,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
         const SizedBox(height: 12),
         Center(
           child: Text(
-            'อัปโหลดรูปภาพอย่างน้อย 1 รูป (JPEG, PNG, WebP)',
+            context.l10n.uploadImageHint,
             style: GoogleFonts.anuphan(
               color: AppColors.baseDarkGrey,
               fontSize: 12,
@@ -608,7 +601,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                AppLocalizations.of(context).imageSampleLabel,
+                context.l10n.imageSampleLabel,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseBlack,
                   fontSize: 16,
@@ -630,7 +623,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      AppLocalizations.of(context).deleteAllImagesButton,
+                      context.l10n.deleteAllImagesButton,
                       style: GoogleFonts.anuphan(
                         color: AppColors.error,
                         fontSize: 14,
@@ -662,7 +655,9 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
                   ? widget.item.existingPhotoUrls[imgIndex]
                   : widget.item.images[imgIndex - networkCount];
 
-              final fileName = isNetwork ? 'รูปภาพสัญญา' : path.split('/').last;
+              final fileName = isNetwork
+                  ? context.l10n.contractImageName
+                  : path.split('/').last;
 
               return Stack(
                 children: [
@@ -712,7 +707,7 @@ class _FurnitureItemCardState extends State<_FurnitureItemCard> {
                       ),
                       child: Container(
                         width: double.infinity,
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withValues(alpha: 0.5),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 6,

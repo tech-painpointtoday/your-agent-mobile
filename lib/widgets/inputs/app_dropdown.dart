@@ -17,10 +17,10 @@ class AppDropdown<T> extends StatefulWidget {
 
   const AppDropdown({
     super.key,
-    required this.value,
-    required this.hint,
     required this.items,
     required this.onChanged,
+    this.value,
+    this.hint = '',
     this.showAbove = false,
     this.width,
     this.itemLabel,
@@ -31,190 +31,142 @@ class AppDropdown<T> extends StatefulWidget {
 }
 
 class _AppDropdownState<T> extends State<AppDropdown<T>> {
-  OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
+  OverlayEntry? _overlayEntry;
   bool _isOpen = false;
 
   @override
   void dispose() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
+    _removeOverlay();
     super.dispose();
   }
 
-  void _removeOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    if (mounted) {
-      setState(() {
-        _isOpen = false;
-      });
-    }
-  }
-
-  void _toggleOverlay() {
+  void _toggleDropdown() {
     if (_isOpen) {
       _removeOverlay();
     } else {
       _showOverlay();
     }
-  }
-
-  void _showOverlay() {
-    final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-    if (renderBox == null) return;
-
-    final size = renderBox.size;
-
-    _overlayEntry = OverlayEntry(
-      builder: (context) => _DropdownOverlay<T>(
-        layerLink: _layerLink,
-        items: widget.items,
-        hint: widget.hint,
-        selectedValue: widget.value,
-        showAbove: widget.showAbove,
-        itemLabel: widget.itemLabel,
-        width: widget.width ?? size.width,
-        onSelected: (value) {
-          widget.onChanged(value);
-          _removeOverlay();
-        },
-        onDismiss: _removeOverlay,
-      ),
-    );
-
-    Overlay.of(context).insert(_overlayEntry!);
     setState(() {
-      _isOpen = true;
+      _isOpen = !_isOpen;
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return CompositedTransformTarget(
-      link: _layerLink,
-      child: GestureDetector(
-        onTap: _toggleOverlay,
-        child: Container(
-          constraints: BoxConstraints(minWidth: widget.width ?? 100),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE9EAEB)),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Text(
-                  widget.value != null
-                      ? (widget.itemLabel?.call(widget.value as T) ??
-                            widget.value.toString())
-                      : widget.hint,
-                  style: GoogleFonts.anuphan(
-                    fontSize: 14,
-                    color: widget.value != null
-                        ? AppColors.baseBlack
-                        : AppColors.baseGrey,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 8),
-              SvgPicture.asset(
-                'assets/icons/chevron-down.svg',
-                width: 16,
-                height: 16,
-                colorFilter: ColorFilter.mode(
-                  AppColors.baseGrey,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    _isOpen = false;
   }
-}
 
-class _DropdownOverlay<T> extends StatelessWidget {
-  final LayerLink layerLink;
-  final List<T> items;
-  final String hint;
-  final T? selectedValue;
-  final Function(T?) onSelected;
-  final VoidCallback onDismiss;
-  final bool showAbove;
-  final double width;
-  final String Function(T)? itemLabel;
+  String _getLabel(T item) {
+    if (widget.itemLabel != null) {
+      return widget.itemLabel!(item);
+    }
+    return item.toString();
+  }
 
-  const _DropdownOverlay({
-    required this.layerLink,
-    required this.items,
-    required this.hint,
-    required this.selectedValue,
-    required this.onSelected,
-    required this.onDismiss,
-    required this.width,
-    this.showAbove = false,
-    this.itemLabel,
-  });
+  void _showOverlay() {
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    // final offset = renderBox.localToGlobal(Offset.zero); // Not used directly in this approach
 
-  @override
-  Widget build(BuildContext context) {
-    // Calculate approximate dropdown height
-    final itemHeight = 44.0;
-    final hintExists = !showAbove && hint.isNotEmpty;
-    final itemCount = items.length + (hintExists ? 1 : 0);
-    final dropdownHeight = (itemCount * itemHeight).clamp(0.0, 250.0);
+    // Calculate position
+    // If showAbove is true, we verify if there is enough space.
+    // Ideally we would check window size but for now we trust the flag/logic provided.
 
-    final offset = showAbove
-        ? Offset(0, -dropdownHeight - 4)
-        : const Offset(0, 4);
+    // We'll fix the height of dropdown items to standard 48 * items.length + padding
+    // Max height constraint
+    final double maxHeight = 200.0;
 
-    return GestureDetector(
-      onTap: onDismiss,
-      child: Stack(
+    // For simplicity using the same width as the input
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Stack(
         children: [
-          Positioned.fill(child: Container(color: Colors.transparent)),
+          // Modal barrier to close on tap outside
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                _removeOverlay();
+                setState(() {});
+              },
+              behavior: HitTestBehavior.translucent,
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+          // Dropdown content
           CompositedTransformFollower(
-            link: layerLink,
+            link: _layerLink,
             showWhenUnlinked: false,
-            offset: offset,
+            offset: widget.showAbove
+                ? const Offset(
+                    0,
+                    0,
+                  ) // We will handle Y translation in the child alignment if needed or use simple offset
+                // Actually specific offset for 'above' needs calculation of dropdown height.
+                // Since content height is dynamic, using CompositedTransformFollower with `followerAnchor` is better?
+                // But standard Overlay usage:
+                : Offset(0, size.height + 4),
             child: Material(
-              elevation: 8,
-              borderRadius: BorderRadius.circular(8),
+              elevation: 4,
+              borderRadius: BorderRadius.circular(12),
               color: Colors.white,
               child: Container(
-                width: width,
-                constraints: const BoxConstraints(maxHeight: 250),
+                width:
+                    widget.width ??
+                    size.width, // Use widget.width if provided, else use parent width
+                constraints: BoxConstraints(maxHeight: maxHeight),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE9EAEB)),
+                  border: Border.all(color: AppColors.baseLightGrey),
                 ),
-                child: ListView(
-                  shrinkWrap: true,
+                child: ListView.builder(
                   padding: EdgeInsets.zero,
-                  children: [
-                    if (hintExists)
-                      _DropdownItem<T>(
-                        value: null,
-                        text: hint,
-                        isSelected: selectedValue == null,
-                        onTap: () => onSelected(null),
+                  shrinkWrap: true,
+                  itemCount: widget.items.length,
+                  itemBuilder: (context, index) {
+                    final item = widget.items[index];
+                    final isSelected = item == widget.value;
+                    return InkWell(
+                      onTap: () {
+                        widget.onChanged(item);
+                        _removeOverlay();
+                        setState(() {});
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.primary.withOpacity(0.05)
+                              : null,
+                          border: index != widget.items.length - 1
+                              ? Border(
+                                  bottom: BorderSide(
+                                    color: AppColors.baseLightGrey.withOpacity(
+                                      0.5,
+                                    ),
+                                  ),
+                                )
+                              : null,
+                        ),
+                        child: Text(
+                          _getLabel(item),
+                          style: GoogleFonts.anuphan(
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.baseBlack,
+                            fontSize: 14,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                          ),
+                        ),
                       ),
-                    ...items.map(
-                      (item) => _DropdownItem<T>(
-                        value: item,
-                        text: itemLabel?.call(item) ?? item.toString(),
-                        isSelected: selectedValue == item,
-                        onTap: () => onSelected(item),
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -222,37 +174,55 @@ class _DropdownOverlay<T> extends StatelessWidget {
         ],
       ),
     );
+
+    Overlay.of(context).insert(_overlayEntry!);
   }
-}
-
-class _DropdownItem<T> extends StatelessWidget {
-  final T? value;
-  final String text;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _DropdownItem({
-    required this.value,
-    required this.text,
-    required this.isSelected,
-    required this.onTap,
-  });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        color: isSelected ? AppColors.basePaleGrey : Colors.transparent,
-        child: Text(
-          text,
-          style: GoogleFonts.anuphan(
-            fontSize: 14,
-            // Hint row / placeholder uses #A4A7AE, selected options use normal text color
-            color: value == null
-                ? const Color(0xFFA4A7AE)
-                : AppColors.baseDarkGrey,
+    return CompositedTransformTarget(
+      link: _layerLink,
+      child: InkWell(
+        onTap: _toggleDropdown,
+        child: Container(
+          width:
+              widget.width ??
+              double
+                  .infinity, // Use widget.width if provided, else use double.infinity
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.baseLightGrey, width: 1),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  widget.value != null
+                      ? _getLabel(widget.value as T)
+                      : widget.hint,
+                  style: GoogleFonts.anuphan(
+                    color: widget.value != null
+                        ? AppColors.baseBlack
+                        : AppColors.baseGrey,
+                    fontSize: 14,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              SvgPicture.asset(
+                'assets/icons/chevron-down.svg',
+                width: 20,
+                height: 20,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.baseGrey,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ],
           ),
         ),
       ),

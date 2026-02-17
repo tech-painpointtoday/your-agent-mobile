@@ -1,3 +1,5 @@
+import 'package:youragent/core/di/dependency_injection.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/contract.dart';
 
@@ -49,24 +51,21 @@ class AppUtils {
     return '$idFormatted$yearSuffix$month$day';
   }
 
-  /// Format lease duration in months and days accurately based on calendar.
-  /// Treats the end date as inclusive.
+  /// Format lease duration in months accurately based on calendar.
+  /// Treats the duration as inclusive (e.g., 01/01 to 31/12 is 12 full months).
   static String formatLeaseDuration(DateTime? start, DateTime? end) {
     if (start == null || end == null) return '';
 
-    // Add 1 day to make the range inclusive for calculation
-    final inclusiveEnd = end.add(const Duration(days: 1));
+    // Add 1 day to make the duration inclusive (e.g., 01/01/2024 to 31/12/2024 is 12 months)
+    final adjustedEnd = end.add(const Duration(days: 1));
 
-    int years = inclusiveEnd.year - start.year;
-    int months = inclusiveEnd.month - start.month;
-    //int days = inclusiveEnd.day - start.day;
+    int years = adjustedEnd.year - start.year;
+    int months = adjustedEnd.month - start.month;
+    int days = adjustedEnd.day - start.day;
 
-    // if (days < 0) {
-    //   months -= 1;
-    //   // Get the number of days in the month before inclusiveEnd
-    //   final prevMonthEnd = DateTime(inclusiveEnd.year, inclusiveEnd.month, 0);
-    //   days += prevMonthEnd.day;
-    // }
+    if (days < 0) {
+      months -= 1;
+    }
 
     if (months < 0) {
       years -= 1;
@@ -75,14 +74,16 @@ class AppUtils {
 
     final totalMonths = (years * 12) + months;
 
-    final List<String> parts = [];
-    if (totalMonths > 0) {
-      parts.add('$totalMonths เดือน');
+    String monthsLabel = 'เดือน';
+    try {
+      final context = navigatorKey.currentContext;
+      if (context != null) {
+        monthsLabel = AppLocalizations.of(context).months;
+      }
+    } catch (_) {
+      // Fallback to default if context or l10n is not available
     }
-    // if (days > 0) {
-    //   parts.add('$days วัน');
-    // }
 
-    return parts.join(' ');
+    return totalMonths > 0 ? '$totalMonths $monthsLabel' : '';
   }
 }

@@ -6,11 +6,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/contract.dart';
+import 'package:youragent/domain/entities/contract_type.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
 import 'edit_contract_form_screen.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 class EditContractMenuScreen extends StatelessWidget {
   final Contract contract;
@@ -19,6 +20,8 @@ class EditContractMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isRent = contract.contractType == ContractType.rent;
+
     return BlocProvider(
       create: (context) => ContractFormBloc(
         propertyApiService: DependencyInjection.propertyApiService,
@@ -28,7 +31,7 @@ class EditContractMenuScreen extends StatelessWidget {
         backgroundColor: AppColors.primary,
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context).editContract,
+            context.l10n.editContract,
             style: GoogleFonts.anuphan(
               color: Colors.white,
               fontSize: 18,
@@ -68,8 +71,8 @@ class EditContractMenuScreen extends StatelessWidget {
               children: [
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context).dataProperty,
-                  subtitle: AppLocalizations.of(context).dataAddress,
+                  title: context.l10n.dataProperty,
+                  subtitle: context.l10n.dataAddress,
                   iconPath: 'assets/icons/home.svg',
                   iconColor: AppColors.brandGreen,
                   bgColor: AppColors.supportGreenLight,
@@ -79,7 +82,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.ownerInfo,
-                        'title': AppLocalizations.of(context).dataProperty,
+                        'title': context.l10n.dataProperty,
                         'bloc': bloc,
                       },
                     );
@@ -88,8 +91,10 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context).buyerInfo,
-                  subtitle: AppLocalizations.of(context).dataAddress,
+                  title: isRent
+                      ? context.l10n.renterInfo
+                      : context.l10n.buyerInfo,
+                  subtitle: context.l10n.dataAddress,
                   iconPath: 'assets/icons/user.svg', // Using user icon
                   iconColor: const Color(0xFF7F56D9), // Purple
                   bgColor: const Color(0xFFF9F5FF), // Light Purple
@@ -99,7 +104,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.buyerInfo,
-                        'title': AppLocalizations.of(context).buyerInfo,
+                        'title': context.l10n.buyerInfo,
                         'bloc': bloc,
                       },
                     );
@@ -108,10 +113,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(
-                    context,
-                  ).electrical_appliances_photos,
-                  subtitle: AppLocalizations.of(context).addDetails,
+                  title: context.l10n.electrical_appliances_photos,
+                  subtitle: context.l10n.addDetails,
                   iconPath: 'assets/icons/television.svg',
                   iconColor: AppColors.supportOrangeDark,
                   bgColor: AppColors.supportOrangeLight,
@@ -121,9 +124,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.appliances,
-                        'title': AppLocalizations.of(
-                          context,
-                        ).electrical_appliances_photos,
+                        'title': context.l10n.electrical_appliances_photos,
                         'bloc': bloc,
                       },
                     );
@@ -132,8 +133,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context).furniture_photos,
-                  subtitle: AppLocalizations.of(context).addFurnitureDetails,
+                  title: context.l10n.furniture_photos,
+                  subtitle: context.l10n.addFurnitureDetails,
                   iconPath: 'assets/icons/sofa.svg',
                   iconColor: AppColors.supportRedDark,
                   bgColor: AppColors.supportRedLight,
@@ -143,7 +144,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.furniture,
-                        'title': AppLocalizations.of(context).furniture_photos,
+                        'title': context.l10n.furniture_photos,
                         'bloc': bloc,
                       },
                     );
@@ -152,8 +153,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context).payment,
-                  subtitle: AppLocalizations.of(context).paymentMethods,
+                  title: context.l10n.payment,
+                  subtitle: context.l10n.paymentMethods,
                   iconPath: 'assets/icons/dollar.svg',
                   iconColor: AppColors.supportGreenDark,
                   bgColor: AppColors.supportGreenLight,
@@ -163,7 +164,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.payment,
-                        'title': AppLocalizations.of(context).payment,
+                        'title': context.l10n.payment,
                         'bloc': bloc,
                       },
                     );
@@ -172,10 +173,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context).additional_conditions,
-                  subtitle: AppLocalizations.of(
-                    context,
-                  ).addContractConditionsAdditional,
+                  title: context.l10n.additional_conditions,
+                  subtitle: context.l10n.addContractConditionsAdditional,
                   iconPath: 'assets/icons/star-moving.svg',
                   iconColor: AppColors.supportPinkDark,
                   bgColor: AppColors.supportPinkLight,
@@ -185,9 +184,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.additionalConditions,
-                        'title': AppLocalizations.of(
-                          context,
-                        ).additional_conditions,
+                        'title': context.l10n.additional_conditions,
                         'bloc': bloc,
                       },
                     );
@@ -196,8 +193,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: AppLocalizations.of(context).contractFile,
-                  subtitle: AppLocalizations.of(context).editAddContractFile,
+                  title: context.l10n.contractFile,
+                  subtitle: context.l10n.editAddContractFile,
                   iconPath: 'assets/icons/file-2.svg',
                   iconColor: AppColors.primary,
                   bgColor: AppColors.primary.withValues(alpha: 0.1),
@@ -207,7 +204,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.attachments,
-                        'title': AppLocalizations.of(context).contractFile,
+                        'title': context.l10n.contractFile,
                         'bloc': bloc,
                       },
                     );

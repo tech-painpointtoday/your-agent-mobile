@@ -2434,6 +2434,109 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editDataButton => 'Edit Data';
 
   @override
+  String get cannotCreateContractTitle => 'Cannot create contract';
+
+  @override
+  String get cannotCreateContractMessage =>
+      'You must have an approved property in the system before you can create a contract document.';
+
+  @override
+  String itemNumber(int index) {
+    return 'Item $index';
+  }
+
+  @override
+  String get uploadImageHint => 'Upload at least 1 image (JPEG, PNG, WebP)';
+
+  @override
+  String get contractImageName => 'Contract Image';
+
+  @override
+  String get paymentMethodCreditCard => 'Credit Card';
+
+  @override
+  String get paymentMethodPromptPay => 'PromptPay';
+
+  @override
+  String get paymentMethodBankTransfer => 'Bank Transfer';
+
+  @override
+  String get deleteAllImagesConfirmTitle => 'Delete All Images?';
+
+  @override
+  String get deleteAllImagesConfirmMessage =>
+      'Are you sure you want to delete all images? This action cannot be undone.';
+
+  @override
+  String get imagesDeletedMessage => 'Images deleted successfully';
+
+  @override
+  String get deleteItemQuestion => 'Delete Item?';
+
+  @override
+  String get furnitureTitle => 'Furniture';
+
+  @override
+  String get furnitureExampleHint => 'e.g. Sofa, Bed';
+
+  @override
+  String get furnitureDescExampleHint => 'e.g. Brand, Color, Condition';
+
+  @override
+  String get selectImageFromProperty => 'Select from Property Images';
+
+  @override
+  String get sellingPrice => 'Selling Price';
+
+  @override
+  String get rentalPrice => 'Rental Price';
+
+  @override
+  String get latePaymentPenalty => 'Late Payment Penalty';
+
+  @override
+  String get bahtPerDay => 'Baht/Day';
+
+  @override
+  String get enterDateRangeHint => 'e.g. 1-5';
+
+  @override
+  String get enterBranchHint => 'Enter branch';
+
+  @override
+  String get enterAccountNameHint => 'Enter account name';
+
+  @override
+  String get enterAccountNumberHint => 'Enter account number';
+
+  @override
+  String get nameFile => 'File Name';
+
+  @override
+  String get fileNameHint => 'Enter file name';
+
+  @override
+  String get uploadFile => 'Upload File';
+
+  @override
+  String allPropertiesCount(int count) {
+    return 'All property types total $count items';
+  }
+
+  @override
+  String itemCount(int count) {
+    return '$count items';
+  }
+
+  @override
+  String unknownStep(int step) {
+    return 'Step $step Unknown';
+  }
+
+  @override
+  String get emailHintJuristic => 'juristic@example.com';
+
+  @override
   String get selectLocationTitle => 'Select Location';
 
   @override
@@ -2500,17 +2603,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get juristicContactPhoneLabel => 'Juristic Contact Phone';
 
   @override
+  String get furnitureAndAppliance => 'Furniture and Appliance';
+
+  @override
+  String get noFurniture => 'No furniture items';
+
+  @override
+  String get noAppliance => 'No appliance items';
+
+  @override
+  String get deleteItemTitle => 'Delete Item?';
+
+  @override
+  String get deleteItemMessage => 'Are you sure you want to delete this item?';
+
+  @override
+  String get addFurniture => 'Add Furniture';
+
+  @override
+  String get appliance => 'Appliance';
+
+  @override
+  String get additionalConditionsHint => 'Enter additional conditions...';
+
+  @override
   String get juristicContactEmailLabel => 'Juristic Contact Email';
 
   @override
   String get discardConfirmTitle => 'Discard';
-
-  @override
-  String get deleteAllImagesConfirmTitle => 'Delete All Images?';
-
-  @override
-  String get deleteAllImagesConfirmMessage =>
-      'Once you delete, it cannot be undone';
 
   @override
   String get discardAllPropertyConfirmTitle =>
@@ -2522,9 +2642,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get imageDeletedMessage => 'Image deleted successfully';
-
-  @override
-  String get imagesDeletedMessage => 'All images deleted successfully';
 
   @override
   String get searchFilterLabel => 'Search Filter';
@@ -2805,43 +2922,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get currentAddressLabel => 'Current Address';
 
   @override
-  String get deleteItemQuestion => 'Delete this item?';
-
-  @override
-  String get nameFile => 'Name file';
-
-  @override
-  String get uploadFile => 'Upload file';
-
-  @override
-  String get sellingPrice => 'Selling Price';
-
-  @override
-  String get rentalPrice => 'Rental Price';
-
-  @override
   String get paymentDueDateLabel => 'Payment Due Date';
-
-  @override
-  String get enterDateRangeHint => 'Enter date 1-31';
-
-  @override
-  String get latePaymentPenalty => 'Late Payment Penalty';
-
-  @override
-  String get bahtPerDay => 'Baht/Day';
-
-  @override
-  String get enterBranchHint => 'Specify Bank';
-
-  @override
-  String get enterAccountNumberHint => 'Specify account number';
-
-  @override
-  String get furnitureExampleHint => 'Example: bed, sofa';
-
-  @override
-  String get furnitureDescExampleHint => 'Example: 6ft pine wood bed';
 
   @override
   String get propertyPhotos => 'Property Photos';
@@ -2970,7 +3051,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noDataFound => 'Data';
 
   @override
-  String get dateFormat => 'dd Jan yyyy';
+  String dateFormat(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMMMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString';
+  }
 
   @override
   String get demoCompanyName => 'YourHome Platform Co., Ltd.';
@@ -3140,6 +3226,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get buyerInfo => 'Buyer Information';
 
   @override
+  String get renterInfo => 'Renter Information';
+
+  @override
   String get addFurnitureDetails => 'Add furniture items and details';
 
   @override
@@ -3149,13 +3238,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get additionalContractConditions => 'Additional contract conditions';
 
   @override
-  String get fileNameHint => 'File name e.g. ID card copy';
-
-  @override
   String get propertyOwnerNotFound => 'Property owner data not found';
 
   @override
-  String get enterAccountNameHint => 'Specify account name';
+  String get connectPropertyOwnerEmailHint =>
+      'Please specify the property owner\'s email to connect information';
 
   @override
   String get contractFormat => 'Contract format';
@@ -3435,14 +3522,79 @@ class AppLocalizationsEn extends AppLocalizations {
   String get applianceTitle => 'Appliance';
 
   @override
-  String get furnitureTitle => 'Furniture';
-
-  @override
-  String get selectImageFromProperty => 'Select image from property';
-
-  @override
   String get add_developer_success => 'Developer added successfully';
 
   @override
   String get add_project_success => 'Project added successfully';
+
+  @override
+  String get ownerLabel => 'Owner';
+
+  @override
+  String get buyerLabel => 'Buyer';
+
+  @override
+  String get signedSuffix => 'Signed';
+
+  @override
+  String sendDocumentTo(String label) {
+    return 'Send document to $label';
+  }
+
+  @override
+  String resendDocumentConfirm(String label, String email) {
+    return 'Do you want to resend the document to $label ($email) again?';
+  }
+
+  @override
+  String sendDocumentConfirm(String label, String email) {
+    return 'Do you want to send the document to $label ($email)?';
+  }
+
+  @override
+  String get sendToLessorSuccess => 'Document sent to lessor successfully';
+
+  @override
+  String get sendToLesseeSuccess => 'Document sent to lessee successfully';
+
+  @override
+  String get invalidPhoneNumberFormat => 'Invalid phone number';
+
+  @override
+  String get invalidEmailFormat => 'Invalid email format';
+
+  @override
+  String get passwordMinLengthError => 'Password must be at least 8 characters';
+
+  @override
+  String get passwordMismatchError => 'Passwords do not match';
+
+  @override
+  String get addAppliance => 'Add Appliance';
+
+  @override
+  String get furnitureConfirm => 'Confirm Furniture';
+
+  @override
+  String get allowAgentRepresentationLabel => 'Allow Agent';
+
+  @override
+  String licenseNumberWithPrefix(String number) {
+    return 'License Number $number';
+  }
+
+  @override
+  String experienceYears(int years) {
+    return '$years years experience';
+  }
+
+  @override
+  String serviceRadiusWithPrefix(String radius) {
+    return 'Service Radius $radius km';
+  }
+
+  @override
+  String profileLevel(int level) {
+    return 'Lv. $level';
+  }
 }

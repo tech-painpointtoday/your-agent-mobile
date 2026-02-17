@@ -4844,6 +4844,192 @@ abstract class AppLocalizations {
   /// **'Edit Data'**
   String get editDataButton;
 
+  /// No description provided for @cannotCreateContractTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot create contract'**
+  String get cannotCreateContractTitle;
+
+  /// No description provided for @cannotCreateContractMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You must have an approved property in the system before you can create a contract document.'**
+  String get cannotCreateContractMessage;
+
+  /// No description provided for @itemNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Item {index}'**
+  String itemNumber(int index);
+
+  /// No description provided for @uploadImageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload at least 1 image (JPEG, PNG, WebP)'**
+  String get uploadImageHint;
+
+  /// No description provided for @contractImageName.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract Image'**
+  String get contractImageName;
+
+  /// No description provided for @paymentMethodCreditCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit Card'**
+  String get paymentMethodCreditCard;
+
+  /// No description provided for @paymentMethodPromptPay.
+  ///
+  /// In en, this message translates to:
+  /// **'PromptPay'**
+  String get paymentMethodPromptPay;
+
+  /// No description provided for @paymentMethodBankTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank Transfer'**
+  String get paymentMethodBankTransfer;
+
+  /// No description provided for @deleteAllImagesConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All Images?'**
+  String get deleteAllImagesConfirmTitle;
+
+  /// No description provided for @deleteAllImagesConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete all images? This action cannot be undone.'**
+  String get deleteAllImagesConfirmMessage;
+
+  /// No description provided for @imagesDeletedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Images deleted successfully'**
+  String get imagesDeletedMessage;
+
+  /// No description provided for @deleteItemQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Item?'**
+  String get deleteItemQuestion;
+
+  /// No description provided for @furnitureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Furniture'**
+  String get furnitureTitle;
+
+  /// No description provided for @furnitureExampleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Sofa, Bed'**
+  String get furnitureExampleHint;
+
+  /// No description provided for @furnitureDescExampleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Brand, Color, Condition'**
+  String get furnitureDescExampleHint;
+
+  /// No description provided for @selectImageFromProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Select from Property Images'**
+  String get selectImageFromProperty;
+
+  /// No description provided for @sellingPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Selling Price'**
+  String get sellingPrice;
+
+  /// No description provided for @rentalPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Rental Price'**
+  String get rentalPrice;
+
+  /// No description provided for @latePaymentPenalty.
+  ///
+  /// In en, this message translates to:
+  /// **'Late Payment Penalty'**
+  String get latePaymentPenalty;
+
+  /// No description provided for @bahtPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Baht/Day'**
+  String get bahtPerDay;
+
+  /// No description provided for @enterDateRangeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 1-5'**
+  String get enterDateRangeHint;
+
+  /// No description provided for @enterBranchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter branch'**
+  String get enterBranchHint;
+
+  /// No description provided for @enterAccountNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter account name'**
+  String get enterAccountNameHint;
+
+  /// No description provided for @enterAccountNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter account number'**
+  String get enterAccountNumberHint;
+
+  /// No description provided for @nameFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File Name'**
+  String get nameFile;
+
+  /// No description provided for @fileNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter file name'**
+  String get fileNameHint;
+
+  /// No description provided for @uploadFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload File'**
+  String get uploadFile;
+
+  /// No description provided for @allPropertiesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'All property types total {count} items'**
+  String allPropertiesCount(int count);
+
+  /// No description provided for @itemCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} items'**
+  String itemCount(int count);
+
+  /// No description provided for @unknownStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {step} Unknown'**
+  String unknownStep(int step);
+
+  /// No description provided for @emailHintJuristic.
+  ///
+  /// In en, this message translates to:
+  /// **'juristic@example.com'**
+  String get emailHintJuristic;
+
   /// No description provided for @selectLocationTitle.
   ///
   /// In en, this message translates to:
@@ -4970,6 +5156,54 @@ abstract class AppLocalizations {
   /// **'Juristic Contact Phone'**
   String get juristicContactPhoneLabel;
 
+  /// No description provided for @furnitureAndAppliance.
+  ///
+  /// In en, this message translates to:
+  /// **'Furniture and Appliance'**
+  String get furnitureAndAppliance;
+
+  /// No description provided for @noFurniture.
+  ///
+  /// In en, this message translates to:
+  /// **'No furniture items'**
+  String get noFurniture;
+
+  /// No description provided for @noAppliance.
+  ///
+  /// In en, this message translates to:
+  /// **'No appliance items'**
+  String get noAppliance;
+
+  /// No description provided for @deleteItemTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Item?'**
+  String get deleteItemTitle;
+
+  /// No description provided for @deleteItemMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this item?'**
+  String get deleteItemMessage;
+
+  /// No description provided for @addFurniture.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Furniture'**
+  String get addFurniture;
+
+  /// No description provided for @appliance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appliance'**
+  String get appliance;
+
+  /// No description provided for @additionalConditionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter additional conditions...'**
+  String get additionalConditionsHint;
+
   /// No description provided for @juristicContactEmailLabel.
   ///
   /// In en, this message translates to:
@@ -4981,18 +5215,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Discard'**
   String get discardConfirmTitle;
-
-  /// No description provided for @deleteAllImagesConfirmTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete All Images?'**
-  String get deleteAllImagesConfirmTitle;
-
-  /// No description provided for @deleteAllImagesConfirmMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Once you delete, it cannot be undone'**
-  String get deleteAllImagesConfirmMessage;
 
   /// No description provided for @discardAllPropertyConfirmTitle.
   ///
@@ -5011,12 +5233,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Image deleted successfully'**
   String get imageDeletedMessage;
-
-  /// No description provided for @imagesDeletedMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'All images deleted successfully'**
-  String get imagesDeletedMessage;
 
   /// No description provided for @searchFilterLabel.
   ///
@@ -5558,83 +5774,11 @@ abstract class AppLocalizations {
   /// **'Current Address'**
   String get currentAddressLabel;
 
-  /// No description provided for @deleteItemQuestion.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete this item?'**
-  String get deleteItemQuestion;
-
-  /// No description provided for @nameFile.
-  ///
-  /// In en, this message translates to:
-  /// **'Name file'**
-  String get nameFile;
-
-  /// No description provided for @uploadFile.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload file'**
-  String get uploadFile;
-
-  /// No description provided for @sellingPrice.
-  ///
-  /// In en, this message translates to:
-  /// **'Selling Price'**
-  String get sellingPrice;
-
-  /// No description provided for @rentalPrice.
-  ///
-  /// In en, this message translates to:
-  /// **'Rental Price'**
-  String get rentalPrice;
-
   /// No description provided for @paymentDueDateLabel.
   ///
   /// In en, this message translates to:
   /// **'Payment Due Date'**
   String get paymentDueDateLabel;
-
-  /// No description provided for @enterDateRangeHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter date 1-31'**
-  String get enterDateRangeHint;
-
-  /// No description provided for @latePaymentPenalty.
-  ///
-  /// In en, this message translates to:
-  /// **'Late Payment Penalty'**
-  String get latePaymentPenalty;
-
-  /// No description provided for @bahtPerDay.
-  ///
-  /// In en, this message translates to:
-  /// **'Baht/Day'**
-  String get bahtPerDay;
-
-  /// No description provided for @enterBranchHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Specify Bank'**
-  String get enterBranchHint;
-
-  /// No description provided for @enterAccountNumberHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Specify account number'**
-  String get enterAccountNumberHint;
-
-  /// No description provided for @furnitureExampleHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Example: bed, sofa'**
-  String get furnitureExampleHint;
-
-  /// No description provided for @furnitureDescExampleHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Example: 6ft pine wood bed'**
-  String get furnitureDescExampleHint;
 
   /// No description provided for @propertyPhotos.
   ///
@@ -5882,11 +6026,11 @@ abstract class AppLocalizations {
   /// **'Data'**
   String get noDataFound;
 
-  /// No description provided for @dateFormat.
+  /// Standard date format
   ///
   /// In en, this message translates to:
-  /// **'dd Jan yyyy'**
-  String get dateFormat;
+  /// **'{date}'**
+  String dateFormat(DateTime date);
 
   /// No description provided for @demoCompanyName.
   ///
@@ -6212,6 +6356,12 @@ abstract class AppLocalizations {
   /// **'Buyer Information'**
   String get buyerInfo;
 
+  /// No description provided for @renterInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Renter Information'**
+  String get renterInfo;
+
   /// No description provided for @addFurnitureDetails.
   ///
   /// In en, this message translates to:
@@ -6230,23 +6380,17 @@ abstract class AppLocalizations {
   /// **'Additional contract conditions'**
   String get additionalContractConditions;
 
-  /// No description provided for @fileNameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'File name e.g. ID card copy'**
-  String get fileNameHint;
-
   /// No description provided for @propertyOwnerNotFound.
   ///
   /// In en, this message translates to:
   /// **'Property owner data not found'**
   String get propertyOwnerNotFound;
 
-  /// No description provided for @enterAccountNameHint.
+  /// No description provided for @connectPropertyOwnerEmailHint.
   ///
   /// In en, this message translates to:
-  /// **'Specify account name'**
-  String get enterAccountNameHint;
+  /// **'Please specify the property owner\'s email to connect information'**
+  String get connectPropertyOwnerEmailHint;
 
   /// No description provided for @contractFormat.
   ///
@@ -6770,18 +6914,6 @@ abstract class AppLocalizations {
   /// **'Appliance'**
   String get applianceTitle;
 
-  /// No description provided for @furnitureTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Furniture'**
-  String get furnitureTitle;
-
-  /// No description provided for @selectImageFromProperty.
-  ///
-  /// In en, this message translates to:
-  /// **'Select image from property'**
-  String get selectImageFromProperty;
-
   /// No description provided for @add_developer_success.
   ///
   /// In en, this message translates to:
@@ -6793,6 +6925,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Project added successfully'**
   String get add_project_success;
+
+  /// No description provided for @ownerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get ownerLabel;
+
+  /// No description provided for @buyerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer'**
+  String get buyerLabel;
+
+  /// No description provided for @signedSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed'**
+  String get signedSuffix;
+
+  /// No description provided for @sendDocumentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Send document to {label}'**
+  String sendDocumentTo(String label);
+
+  /// No description provided for @resendDocumentConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to resend the document to {label} ({email}) again?'**
+  String resendDocumentConfirm(String label, String email);
+
+  /// No description provided for @sendDocumentConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to send the document to {label} ({email})?'**
+  String sendDocumentConfirm(String label, String email);
+
+  /// No description provided for @sendToLessorSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Document sent to lessor successfully'**
+  String get sendToLessorSuccess;
+
+  /// No description provided for @sendToLesseeSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Document sent to lessee successfully'**
+  String get sendToLesseeSuccess;
+
+  /// No description provided for @invalidPhoneNumberFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid phone number'**
+  String get invalidPhoneNumberFormat;
+
+  /// No description provided for @invalidEmailFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email format'**
+  String get invalidEmailFormat;
+
+  /// No description provided for @passwordMinLengthError.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get passwordMinLengthError;
+
+  /// No description provided for @passwordMismatchError.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordMismatchError;
+
+  /// No description provided for @addAppliance.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Appliance'**
+  String get addAppliance;
+
+  /// No description provided for @furnitureConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Furniture'**
+  String get furnitureConfirm;
+
+  /// No description provided for @allowAgentRepresentationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Agent'**
+  String get allowAgentRepresentationLabel;
+
+  /// No description provided for @licenseNumberWithPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'License Number {number}'**
+  String licenseNumberWithPrefix(String number);
+
+  /// No description provided for @experienceYears.
+  ///
+  /// In en, this message translates to:
+  /// **'{years} years experience'**
+  String experienceYears(int years);
+
+  /// No description provided for @serviceRadiusWithPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Radius {radius} km'**
+  String serviceRadiusWithPrefix(String radius);
+
+  /// No description provided for @profileLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Lv. {level}'**
+  String profileLevel(int level);
 }
 
 class _AppLocalizationsDelegate

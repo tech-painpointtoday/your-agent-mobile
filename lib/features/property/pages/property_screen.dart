@@ -10,7 +10,7 @@ import 'package:youragent/widgets/map/fullscreen_map_screen.dart';
 import 'package:youragent/features/property/widgets/property_list_item.dart';
 import 'package:youragent/widgets/app_bars/silver_app_bar.dart';
 import 'package:youragent/widgets/map/map_view.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 /// Main Property screen used in navigation tabs
 class PropertyScreen extends StatefulWidget {
@@ -95,7 +95,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
     return SilverAppBarScreen(
       onRefresh: _loadProperties,
       hasFilter: true,
-      title: AppLocalizations.of(context).propertiesTitle,
+      title: context.l10n.propertiesTitle,
       actionWidget: InkWell(
         onTap: () async {
           context.push('/property/create').then((_) => _loadProperties());
@@ -167,8 +167,11 @@ class _PropertyScreenState extends State<PropertyScreen> {
       return Center(
         child: Column(
           children: [
-            Text('Error: $_error'),
-            TextButton(onPressed: _loadProperties, child: const Text('Retry')),
+            Text('${context.l10n.errorWithPrefix}$_error'),
+            TextButton(
+              onPressed: _loadProperties,
+              child: Text(context.l10n.retry),
+            ),
           ],
         ),
       );
@@ -181,7 +184,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            AppLocalizations.of(context).myProperties,
+            context.l10n.myProperties,
             style: GoogleFonts.anuphan(
               color: AppColors.primary,
               fontSize: 16,
@@ -193,7 +196,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'อสังหาริมทรัพย์ทุกประเภททั้งหมด ${_filteredProperties.length} รายการ',
+                context.l10n.allPropertiesCount(_filteredProperties.length),
                 style: GoogleFonts.anuphan(
                   color: const Color(0xFF737373),
                   fontSize: 12,
@@ -210,7 +213,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                   );
                 },
                 child: Text(
-                  AppLocalizations.of(context).viewAll,
+                  context.l10n.viewAll,
                   style: GoogleFonts.anuphan(
                     color: AppColors.baseGrey,
                     fontSize: 12,
@@ -227,7 +230,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(32),
                     child: Text(
-                      AppLocalizations.of(context).noPropertiesFoundSearch,
+                      context.l10n.noPropertiesFoundSearch,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseGrey,
                         fontSize: 14,

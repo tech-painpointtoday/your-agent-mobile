@@ -14,7 +14,7 @@ import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import '../../../widgets/user_registration_bottom_sheet.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/utils/thai_phone_input_formatter.dart';
 import 'package:youragent/utils/thai_id_input_formatter.dart';
 
@@ -99,7 +99,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           AppBadge(
-                            label: AppLocalizations.of(context).dataProperty,
+                            label: context.l10n.dataProperty,
                             fontSize: 16,
                             color: BadgeColor.blue,
                           ),
@@ -114,16 +114,16 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                     // Person Type Selection
                     AppChipSelection<PersonType>(
-                      label: AppLocalizations.of(context).personTypeLabel,
+                      label: context.l10n.personTypeLabel,
                       isRequired: true,
                       value: state.ownerType,
                       options: [
                         AppChipOption(
-                          label: AppLocalizations.of(context).individual,
+                          label: context.l10n.individual,
                           value: PersonType.individual,
                         ),
                         AppChipOption(
-                          label: AppLocalizations.of(context).juristic_person,
+                          label: context.l10n.juristic_person,
                           value: PersonType.juristic,
                         ),
                       ],
@@ -137,15 +137,11 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     TypeAheadField<Owner>(
                       controller: _nameController,
                       builder: (context, controller, focusNode) => AppTextField(
-                        label: AppLocalizations.of(
-                          context,
-                        ).full_name_or_company,
+                        label: context.l10n.full_name_or_company,
                         controller: controller,
                         focusNode: focusNode,
                         isRequired: true,
-                        hintText: AppLocalizations.of(
-                          context,
-                        ).full_name_or_company,
+                        hintText: context.l10n.full_name_or_company,
                         onChanged: (value) {
                           context.read<ContractFormBloc>().add(
                             ContractFormOwnerNameUpdated(value),
@@ -175,14 +171,27 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                           ),
                         ),
                       ),
-                      suggestionsCallback: (pattern) {
+                      suggestionsCallback: (pattern) async {
                         // Use local filtering on allOwners for faster response
                         final allOwners = state.allOwners;
                         if (allOwners.isEmpty) {
                           context.read<ContractFormBloc>().add(
                             ContractFormOwnersFetched(pattern),
                           );
-                          return state.owners;
+
+                          // Wait for fetching to start and then finish, or timeout
+                          int retries = 0;
+                          while (retries < 15 && mounted) {
+                            final currentState = context
+                                .read<ContractFormBloc>()
+                                .state;
+                            if (!currentState.isFetchingOwners) break;
+                            await Future.delayed(
+                              const Duration(milliseconds: 200),
+                            );
+                            retries++;
+                          }
+                          return context.read<ContractFormBloc>().state.owners;
                         }
 
                         return allOwners.where((owner) {
@@ -204,17 +213,35 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                         FocusScope.of(context).unfocus();
                       },
-                      emptyBuilder: (context) => Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          AppLocalizations.of(context).propertyOwnerNotFound,
-                          style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                      loadingBuilder: (context) => const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: CircularProgressIndicator(),
                         ),
                       ),
+                      emptyBuilder: (context) {
+                        if (state.isFetchingOwners) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            context.l10n.propertyOwnerNotFound,
+                            style: GoogleFonts.anuphan(
+                              color: AppColors.baseGrey,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      AppLocalizations.of(context).searchDataNameProperty,
+                      context.l10n.searchDataNameProperty,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseGrey,
                         fontSize: 12,
@@ -226,13 +253,14 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                     // Create New Account Button
                     AppButton(
                       width: double.infinity,
-                      text: AppLocalizations.of(context).createNewAccountTitle,
+                      text: context.l10n.createNewAccountTitle,
                       style: AppButtonStyle.outline,
                       backgroundColor: AppColors.brandLightGreen,
                       textColor: AppColors.brandGreen,
                       borderColor: AppColors.brandGreen.withValues(alpha: 0.16),
                       iconPath: 'assets/icons/plus.svg',
                       onPressed: () async {
+                        final bloc = context.read<ContractFormBloc>();
                         final result = await UserRegistrationBottomSheet.show(
                           context,
                           RegistrationUserType.owner,
@@ -249,7 +277,6 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                           }
 
                           // Update BLoC
-                          final bloc = context.read<ContractFormBloc>();
                           bloc.add(ContractFormOwnerNameUpdated(result.name));
                           bloc.add(
                             ContractFormOwnerSignatoryUpdated(result.name),
@@ -272,7 +299,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                     // ID Card / Tax ID
                     AppTextField(
-                      label: AppLocalizations.of(context).id_card_or_tax_id,
+                      label: context.l10n.id_card_or_tax_id,
                       controller: _idCardController,
                       isRequired: true,
                       hintText: 'x-xxxx-xxxxx-xx-x',
@@ -280,9 +307,7 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
                       validator: (value) {
                         if (value == null || value.isEmpty) return null;
                         if (!ThaiIdInputFormatter.isValidThaiID(value)) {
-                          return AppLocalizations.of(
-                            context,
-                          ).invalidThaiIdError;
+                          return context.l10n.invalidThaiIdError;
                         }
                         return null;
                       },
@@ -295,12 +320,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                     // Address
                     AppTextField(
-                      label: AppLocalizations.of(context).currentAddressLabel,
+                      label: context.l10n.currentAddressLabel,
                       controller: _addressController,
                       isRequired: true,
-                      hintText: AppLocalizations.of(
-                        context,
-                      ).currentAddressLabel,
+                      hintText: context.l10n.currentAddressLabel,
                       onChanged: (value) => context
                           .read<ContractFormBloc>()
                           .add(ContractFormOwnerAddressUpdated(value)),
@@ -309,10 +332,10 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                     // Phone
                     AppTextField(
-                      label: AppLocalizations.of(context).phone_number,
+                      label: context.l10n.phone_number,
                       controller: _phoneController,
                       isRequired: true,
-                      hintText: AppLocalizations.of(context).phone_number,
+                      hintText: context.l10n.phone_number,
                       keyboardType: TextInputType.phone,
                       inputFormatters: [ThaiPhoneInputFormatter()],
                       onChanged: (value) => context
@@ -323,25 +346,33 @@ class _PropertyOwnerStepState extends State<PropertyOwnerStep> {
 
                     // Email
                     AppTextField(
-                      label: AppLocalizations.of(context).email,
+                      label: context.l10n.email,
                       controller: _emailController,
                       isRequired: true,
-                      hintText: AppLocalizations.of(context).email,
+                      hintText: context.l10n.email,
                       keyboardType: TextInputType.emailAddress,
                       onChanged: (value) => context
                           .read<ContractFormBloc>()
                           .add(ContractFormOwnerEmailUpdated(value)),
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      context.l10n.connectPropertyOwnerEmailHint,
+                      style: GoogleFonts.anuphan(
+                        color: AppColors.baseGrey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+
                     const SizedBox(height: 24),
 
                     // Signatory
                     AppTextField(
-                      label: AppLocalizations.of(context).authorized_signatory,
+                      label: context.l10n.authorized_signatory,
                       controller: _signatoryController,
                       isRequired: false,
-                      hintText: AppLocalizations.of(
-                        context,
-                      ).authorized_signatory,
+                      hintText: context.l10n.authorized_signatory,
                       onChanged: (value) => context
                           .read<ContractFormBloc>()
                           .add(ContractFormOwnerSignatoryUpdated(value)),

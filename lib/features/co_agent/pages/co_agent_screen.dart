@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:youragent/widgets/backgrounds/blue_wave_background.dart';
 
 import '../../../core/theme/app_colors.dart';
 
@@ -9,21 +11,51 @@ class CoAgentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: AppBar(
-        title: const Text('Co-Agent'),
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        foregroundColor: AppColors.baseDarkGrey,
-      ),
-      body: const Center(
-        child: Text(
-          'Co-Agent Screen',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: AppColors.baseDarkGrey,
-          ),
-        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final double headerHeight = constraints.maxHeight * 0.38;
+
+          return Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: headerHeight,
+                child: const BlueWaveBackground(),
+              ),
+              SafeArea(
+                child: Center(
+                  child: Text(
+                    'Co-Agent is Coming Soon',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.baseDarkGrey,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: kToolbarHeight,
+                left: 16,
+                child: IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/icons/chevron-left.svg',
+                    width: 24,
+                    height: 24,
+                    fit: BoxFit.contain,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

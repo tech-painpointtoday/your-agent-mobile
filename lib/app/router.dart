@@ -9,13 +9,13 @@ import 'package:youragent/features/contract/pages/edit/edit_contract_form_screen
 import 'package:youragent/features/contract/pages/edit/edit_contract_menu_screen.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/pages/create/add_contract_screen.dart';
+import 'package:youragent/features/home/pages/home_screen.dart';
 import 'package:youragent/features/property/pages/create/create_property_screen.dart';
 import 'package:youragent/features/property/pages/edit/edit_property_form_screen.dart';
 import 'package:youragent/features/property/pages/edit/edit_property_menu_screen.dart';
 
 import '../core/di/dependency_injection.dart';
 import '../domain/entities/property.dart';
-import '../domain/entities/user.dart';
 import '../features/activities/pages/all_activities_screen.dart';
 import '../features/auth/pages/email_verification_pending_screen.dart';
 import '../features/auth/pages/forgot_password_screen.dart';
@@ -25,7 +25,6 @@ import '../features/auth/pages/reset_password_screen.dart';
 import '../features/bureau/pages/bureau_screen.dart';
 import '../features/co_agent/pages/co_agent_screen.dart';
 import '../features/contract/pages/contract_screen.dart';
-import '../features/dashboard/pages/dashboard_home_screen.dart';
 import '../features/dashboard/pages/dashboard_screen.dart';
 import '../features/notifications/bloc/notification_bloc.dart';
 import '../features/notifications/bloc/notification_event.dart';
@@ -336,7 +335,7 @@ class AppRouter {
       GoRoute(path: '/home-screen', redirect: (context, state) => '/'),
       GoRoute(
         path: '/dashboard',
-        builder: (context, state) => const DashboardHomeScreen(),
+        builder: (context, state) => const DashboardScreen(),
       ),
       GoRoute(
         path: '/co-agent',
@@ -365,7 +364,7 @@ class AppRouter {
           if (extra is Contract) {
             return EditContractMenuScreen(contract: extra);
           }
-          return const DashboardHomeScreen();
+          return const HomeScreen();
         },
       ),
       GoRoute(
@@ -380,7 +379,8 @@ class AppRouter {
               bloc: extra['bloc'] as ContractFormBloc?,
             );
           }
-          return const DashboardHomeScreen();
+
+          return const HomeScreen();
         },
       ),
       GoRoute(
@@ -393,14 +393,13 @@ class AppRouter {
       ),
       GoRoute(
         path: '/dashboard/agent',
-        builder: (context, state) =>
-            const DashboardScreen(role: UserRole.agent),
+        builder: (context, state) => const DashboardScreen(),
       ),
-      GoRoute(
-        path: '/dashboard/agency',
-        builder: (context, state) =>
-            const DashboardScreen(role: UserRole.agency),
-      ),
+      // GoRoute(
+      //   path: '/dashboard/agency',
+      //   builder: (context, state) =>
+      //       const DashboardScreen(role: UserRole.agency),
+      // ),
     ],
   );
 }

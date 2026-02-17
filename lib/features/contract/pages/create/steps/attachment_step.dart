@@ -11,8 +11,9 @@ import 'package:youragent/features/contract/bloc/contract_form/contract_form_sta
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
-import 'package:youragent/l10n/app_localizations.dart';
 
 class AttachmentStep extends StatefulWidget {
   final bool hideHeader;
@@ -61,7 +62,7 @@ class _AttachmentStepState extends State<AttachmentStep> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppBadge(
-                        label: AppLocalizations.of(context).contractFile,
+                        label: context.l10n.contractFile,
                         fontSize: 16,
                         color: BadgeColor.blue,
                       ),
@@ -74,75 +75,67 @@ class _AttachmentStepState extends State<AttachmentStep> {
                   ),
                 if (!widget.hideHeader) const SizedBox(height: 24),
 
-                if (state.attachments.isEmpty)
-                  _buildAddItemButton(context)
-                else ...[
-                  ...state.attachments.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final attachment = entry.value;
-                    return Column(
-                      children: [
-                        _AttachmentItemCard(
-                          index: index + 1,
-                          attachment: attachment,
-                          onDelete: () {
-                            void performDelete() {
-                              if (attachment.isRemote) {
-                                context.read<ContractFormBloc>().add(
-                                  ContractFormRemoteAttachmentDeleted(
-                                    contractId: state.contractId!,
-                                    documentId: attachment.id!,
-                                    attachmentId: attachment.key,
-                                  ),
-                                );
-                              } else {
-                                context.read<ContractFormBloc>().add(
-                                  ContractFormAttachmentRemoved(attachment.key),
-                                );
-                              }
-                            }
-
-                            if (attachment.name.isNotEmpty ||
-                                attachment.filePath != null ||
-                                attachment.isRemote) {
-                              AppConfirmationBottomSheet.show(
-                                context: context,
-                                title: AppLocalizations.of(
-                                  context,
-                                ).deleteItemQuestion,
-                                description: AppLocalizations.of(
-                                  context,
-                                ).deleteAllImagesConfirmMessage,
-                                confirmLabel: AppLocalizations.of(
-                                  context,
-                                ).delete,
-                                cancelLabel: AppLocalizations.of(
-                                  context,
-                                ).statusCancelled,
-                                style: ConfirmationStyle.destructive,
-                                onConfirm: performDelete,
-                              );
-                              return;
-                            }
-                            performDelete();
-                          },
-                          onNameChanged: (val) =>
+                // Existing attachments
+                ...state.attachments.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final attachment = entry.value;
+                  return Column(
+                    children: [
+                      _AttachmentItem(
+                        index: index + 1,
+                        attachment: attachment,
+                        onDelete: () {
+                          void performDelete() {
+                            if (attachment.isRemote) {
                               context.read<ContractFormBloc>().add(
-                                ContractFormAttachmentNameUpdated(
-                                  attachment.key,
-                                  val,
+                                ContractFormRemoteAttachmentDeleted(
+                                  contractId: state.contractId ?? 0,
+                                  documentId: attachment.id ?? 0,
+                                  attachmentId: attachment.key,
                                 ),
-                              ),
-                          onPickFile: () => _pickFile(attachment.key),
-                        ),
-                        if (index < state.attachments.length - 1)
-                          const SizedBox(height: 24),
-                      ],
-                    );
-                  }),
-                  const SizedBox(height: 24),
-                  _buildAddItemButton(context),
-                ],
+                              );
+                            } else {
+                              context.read<ContractFormBloc>().add(
+                                ContractFormAttachmentRemoved(attachment.key),
+                              );
+                            }
+                          }
+
+                          if (attachment.name.isNotEmpty ||
+                              attachment.filePath != null ||
+                              attachment.isRemote) {
+                            AppConfirmationBottomSheet.show(
+                              context: context,
+                              title: context.l10n.deleteItemQuestion,
+                              description:
+                                  context.l10n.deleteAllImagesConfirmMessage,
+                              confirmLabel: context.l10n.delete,
+                              cancelLabel: context.l10n.statusCancelled,
+                              style: ConfirmationStyle.destructive,
+                              onConfirm: performDelete,
+                            );
+                            return;
+                          }
+                          performDelete();
+                        },
+                        onUpdate: (updated) {
+                          context.read<ContractFormBloc>().add(
+                            ContractFormAttachmentNameUpdated(
+                              updated.key,
+                              updated.name,
+                            ),
+                          );
+                        },
+                        onPickFile: () => _pickFile(attachment.key),
+                      ),
+                      if (index < state.attachments.length - 1)
+                        const SizedBox(height: 24),
+                    ],
+                  );
+                }),
+
+                const SizedBox(height: 24),
+                _buildAddButton(context),
                 const SizedBox(height: 100),
               ],
             ),
@@ -152,11 +145,13 @@ class _AttachmentStepState extends State<AttachmentStep> {
     );
   }
 
-  Widget _buildAddItemButton(BuildContext context) {
+  Widget _buildAddButton(BuildContext context) {
     return InkWell(
-      onTap: () => context.read<ContractFormBloc>().add(
-        const ContractFormAttachmentAdded(),
-      ),
+      onTap: () {
+        context.read<ContractFormBloc>().add(
+          const ContractFormAttachmentAdded(),
+        );
+      },
       child: CustomPaint(
         painter: DashedBorderPainter(
           color: AppColors.baseLightGrey,
@@ -172,18 +167,10 @@ class _AttachmentStepState extends State<AttachmentStep> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'assets/icons/plus.svg',
-                width: 16,
-                height: 16,
-                colorFilter: ColorFilter.mode(
-                  AppColors.baseDarkGrey,
-                  BlendMode.srcIn,
-                ),
-              ),
+              const Icon(Icons.add, color: AppColors.baseDarkGrey, size: 20),
               const SizedBox(width: 8),
               Text(
-                AppLocalizations.of(context).add_item,
+                context.l10n.add_item,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseDarkGrey,
                   fontSize: 16,
@@ -198,18 +185,18 @@ class _AttachmentStepState extends State<AttachmentStep> {
   }
 }
 
-class _AttachmentItemCard extends StatelessWidget {
+class _AttachmentItem extends StatelessWidget {
   final int index;
   final ContractAttachment attachment;
   final VoidCallback onDelete;
-  final Function(String) onNameChanged;
+  final Function(ContractAttachment) onUpdate;
   final VoidCallback onPickFile;
 
-  const _AttachmentItemCard({
+  const _AttachmentItem({
     required this.index,
     required this.attachment,
     required this.onDelete,
-    required this.onNameChanged,
+    required this.onUpdate,
     required this.onPickFile,
   });
 
@@ -222,16 +209,16 @@ class _AttachmentItemCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'รายการที่ $index',
+              context.l10n.itemNumber(index),
               style: GoogleFonts.anuphan(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: AppColors.baseBlack,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
               ),
             ),
             IconButton(
               padding: EdgeInsets.zero,
-              constraints: BoxConstraints(minHeight: 0, minWidth: 0),
+              constraints: const BoxConstraints(minHeight: 0, minWidth: 0),
               onPressed: onDelete,
               style: IconButton.styleFrom(
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -242,20 +229,17 @@ class _AttachmentItemCard extends StatelessWidget {
                   AppColors.baseGrey,
                   BlendMode.srcIn,
                 ),
-                fit: BoxFit.scaleDown,
-                width: 20,
-                height: 20,
+                width: 24,
+                height: 24,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        const Divider(height: 0),
-        const SizedBox(height: 24),
+        const Divider(height: 24),
         // Manual Label for Name
         Text.rich(
           TextSpan(
-            text: AppLocalizations.of(context).nameFile,
+            text: context.l10n.nameFile,
             style: GoogleFonts.anuphan(
               color: AppColors.baseBlack,
               fontSize: 14,
@@ -274,57 +258,72 @@ class _AttachmentItemCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              child: AppTextField(
-                label: '',
-                isRequired: false,
-                hintText: AppLocalizations.of(context).fileNameHint,
-                controller: TextEditingController(text: attachment.name)
-                  ..selection = TextSelection.fromPosition(
-                    TextPosition(offset: attachment.name.length),
-                  ),
-                onChanged: onNameChanged,
-                readOnly: attachment.isRemote,
-              ),
+        AppTextField(
+          label: context.l10n.nameFile,
+          isRequired: true,
+          hintText: context.l10n.fileNameHint,
+          controller: TextEditingController(text: attachment.name)
+            ..selection = TextSelection.fromPosition(
+              TextPosition(offset: attachment.name.length),
             ),
-            const SizedBox(width: 12),
-            InkWell(
-              onTap: attachment.isRemote ? null : onPickFile,
+          onChanged: (val) {
+            onUpdate(attachment.copyWith(name: val));
+          },
+        ),
+        const SizedBox(height: 20),
+        Text(
+          context.l10n.uploadFile,
+          style: GoogleFonts.anuphan(
+            color: AppColors.baseBlack,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: attachment.isRemote ? null : onPickFile,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              color: attachment.isRemote
+                  ? AppColors.baseLightGrey.withValues(alpha: 0.1)
+                  : Colors.white,
+              border: Border.all(color: AppColors.baseLightGrey),
               borderRadius: BorderRadius.circular(12),
-              child: Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: attachment.isRemote
-                      ? AppColors.baseOffWhite
-                      : Colors.white,
-                  border: Border.all(color: AppColors.baseLightGrey),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: SvgPicture.asset(
-                  'assets/icons/attachment.svg',
-                  width: 16,
-                  height: 16,
-                  fit: BoxFit.scaleDown,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/upload.svg',
+                  width: 20,
+                  height: 20,
                   colorFilter: ColorFilter.mode(
                     attachment.isRemote
-                        ? AppColors.baseLightGrey
-                        : AppColors.baseDarkGrey,
+                        ? AppColors.baseGrey
+                        : AppColors.primary,
                     BlendMode.srcIn,
                   ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                Text(
+                  attachment.filePath != null || attachment.fileUrl != null
+                      ? (attachment.isRemote
+                            ? attachment.name
+                            : attachment.filePath!.split('/').last)
+                      : context.l10n.uploadFile,
+                  style: GoogleFonts.anuphan(
+                    color: attachment.isRemote
+                        ? AppColors.baseGrey
+                        : AppColors.primary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Text(
-          AppLocalizations.of(context).uploadFile,
-          style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
+          ),
         ),
         if (attachment.filePath != null || attachment.fileUrl != null) ...[
           const SizedBox(height: 16),
@@ -385,15 +384,14 @@ class _AttachmentItemCard extends StatelessWidget {
                 ),
                 IconButton(
                   padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(minHeight: 0, minWidth: 0),
+                  constraints: const BoxConstraints(minHeight: 0, minWidth: 0),
                   onPressed: attachment.isRemote
                       ? null
                       : () {
-                          context.read<ContractFormBloc>().add(
-                            ContractFormAttachmentFileUpdated(
-                              id: attachment.key,
-                              filePath: null,
-                              fileSize: null,
+                          onUpdate(
+                            attachment.copyWith(
+                              clearFilePath: true,
+                              clearFileSize: true,
                             ),
                           );
                         },

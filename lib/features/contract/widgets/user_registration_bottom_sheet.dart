@@ -6,7 +6,7 @@ import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/utils/thai_phone_input_formatter.dart';
 
 enum RegistrationUserType { owner, buyer }
@@ -140,8 +140,8 @@ class _UserRegistrationBottomSheetState
       if (mounted) {
         StatusDialog.showSuccess(
           context: context,
-          title: AppLocalizations.of(context).registrationSuccessTitle,
-          message: AppLocalizations.of(context).accountCreatedMessage,
+          title: context.l10n.registrationSuccessTitle,
+          message: context.l10n.accountCreatedMessage,
         );
         Navigator.pop(
           context,
@@ -160,7 +160,7 @@ class _UserRegistrationBottomSheetState
       if (mounted) {
         StatusDialog.showError(
           context: context,
-          title: AppLocalizations.of(context).errorOccurredTitle,
+          title: context.l10n.errorOccurredTitle,
           message: e.toString().replaceFirst('Exception: ', ''),
         );
       }
@@ -173,10 +173,10 @@ class _UserRegistrationBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-    final title = AppLocalizations.of(context).createNewAccountTitle;
+    final title = context.l10n.createNewAccountTitle;
     final subtitle = widget.type == RegistrationUserType.owner
-        ? AppLocalizations.of(context).dataPropertyContract
-        : AppLocalizations.of(context).registerBuyerToContract;
+        ? context.l10n.dataPropertyContract
+        : context.l10n.registerBuyerToContract;
 
     return Container(
       width: double.infinity,
@@ -235,39 +235,41 @@ class _UserRegistrationBottomSheetState
               child: Column(
                 children: [
                   AppTextField(
-                    label: AppLocalizations.of(context).fullNameLabel,
+                    label: context.l10n.fullNameLabel,
                     controller: _nameController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context).fullNameLabel,
+                    hintText: context.l10n.fullNameLabel,
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
-                    label: AppLocalizations.of(context).phone_number,
+                    label: context.l10n.phone_number,
                     controller: _phoneController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context).phone_number,
+                    hintText: context.l10n.phone_number,
                     keyboardType: TextInputType.phone,
                     inputFormatters: [ThaiPhoneInputFormatter()],
                     validator: (value) {
                       if (value == null || value.isEmpty) return null;
                       final phone = value.replaceAll('-', '');
-                      if (phone.length < 10) return 'หมายเลขโทรศัพท์ไม่ถูกต้อง';
+                      if (phone.length < 10) {
+                        return context.l10n.invalidPhoneNumberFormat;
+                      }
                       return null;
                     },
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
-                    label: AppLocalizations.of(context).email,
+                    label: context.l10n.email,
                     controller: _emailController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context).email,
+                    hintText: context.l10n.email,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) return null;
                       if (!RegExp(
                         r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                       ).hasMatch(value.trim())) {
-                        return 'รูปแบบอีเมลไม่ถูกต้อง';
+                        return context.l10n.invalidEmailFormat;
                       }
                       return null;
                     },
@@ -275,25 +277,23 @@ class _UserRegistrationBottomSheetState
                   const SizedBox(height: 20),
                   if (widget.type == RegistrationUserType.owner) ...[
                     AppTextField(
-                      label: AppLocalizations.of(context).address,
+                      label: context.l10n.address,
                       controller: _addressController,
                       isRequired: true,
-                      hintText: AppLocalizations.of(
-                        context,
-                      ).currentAddressLabel,
+                      hintText: context.l10n.currentAddressLabel,
                     ),
                     const SizedBox(height: 20),
                   ],
                   AppTextField(
-                    label: AppLocalizations.of(context).password,
+                    label: context.l10n.password,
                     controller: _passwordController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(context).password,
+                    hintText: context.l10n.password,
                     obscureText: _obscurePassword,
                     validator: (value) {
                       if (value == null || value.isEmpty) return null;
                       if (value.length < 8) {
-                        return 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร';
+                        return context.l10n.passwordMinLengthError;
                       }
                       return null;
                     },
@@ -311,17 +311,15 @@ class _UserRegistrationBottomSheetState
                   ),
                   const SizedBox(height: 20),
                   AppTextField(
-                    label: AppLocalizations.of(context).confirm_password_hint,
+                    label: context.l10n.confirm_password_hint,
                     controller: _confirmPasswordController,
                     isRequired: true,
-                    hintText: AppLocalizations.of(
-                      context,
-                    ).confirm_password_hint,
+                    hintText: context.l10n.confirm_password_hint,
                     obscureText: _obscureConfirmPassword,
                     validator: (value) {
                       if (value == null || value.isEmpty) return null;
                       if (value != _passwordController.text) {
-                        return 'รหัสผ่านไม่ตรงกัน';
+                        return context.l10n.passwordMismatchError;
                       }
                       return null;
                     },
@@ -352,7 +350,7 @@ class _UserRegistrationBottomSheetState
               children: [
                 Expanded(
                   child: AppButton(
-                    text: AppLocalizations.of(context).cancel_button,
+                    text: context.l10n.cancel_button,
                     style: AppButtonStyle.outline,
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -360,7 +358,7 @@ class _UserRegistrationBottomSheetState
                 const SizedBox(width: 16),
                 Expanded(
                   child: AppButton(
-                    text: AppLocalizations.of(context).createAccount,
+                    text: context.l10n.createAccount,
                     style: AppButtonStyle.primary,
                     isLoading: _isLoading,
                     enabled: !_isLoading && _isFormValid,

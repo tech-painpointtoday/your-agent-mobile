@@ -8,7 +8,7 @@ import 'package:youragent/features/property/widgets/property_list_item.dart';
 import 'package:youragent/features/property/widgets/property_filter_bottom_sheet.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/domain/entities/property_filter.dart';
 
 /// Screen showing all properties in a list
@@ -143,7 +143,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                   ),
                   // Title
                   Text(
-                    AppLocalizations.of(context).myProperties,
+                    context.l10n.myProperties,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -206,7 +206,9 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                           child: AppBadges.plain(
-                            label: '${_filteredProperties.length} รายการ',
+                            label: context.l10n.itemCount(
+                              _filteredProperties.length,
+                            ),
                             color: BadgeColor.blue,
                           ),
                         )
@@ -214,9 +216,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                           child: AppBadges.plain(
-                            label: AppLocalizations.of(
-                              context,
-                            ).propertyNotFound,
+                            label: context.l10n.propertyNotFound,
                             color: BadgeColor.default_,
                           ),
                         ),
@@ -242,9 +242,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
                             Expanded(
                               child: AppSearchBar(
                                 controller: _searchController,
-                                hintText: AppLocalizations.of(
-                                  context,
-                                ).searchHint,
+                                hintText: context.l10n.searchHint,
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -308,10 +306,10 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Error: $_error'),
+                Text('${context.l10n.errorWithPrefix}$_error'),
                 TextButton(
                   onPressed: _loadProperties,
-                  child: const Text('Retry'),
+                  child: Text(context.l10n.retry),
                 ),
               ],
             ),
@@ -382,7 +380,7 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
           ),
           const SizedBox(height: 24),
           Text(
-            AppLocalizations.of(context).noPropertiesInSystem,
+            context.l10n.noPropertiesInSystem,
             style: const TextStyle(
               color: AppColors.baseDarkGrey,
               fontSize: 14,

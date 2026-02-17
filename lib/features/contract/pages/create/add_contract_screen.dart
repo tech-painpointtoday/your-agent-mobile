@@ -24,7 +24,7 @@ import 'package:youragent/core/di/dependency_injection.dart';
 
 import 'package:youragent/features/contract/pages/create/steps/payment_step.dart';
 import 'package:youragent/features/contract/pages/preview/contract_pdf_preview_page.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 class AddContractScreen extends StatelessWidget {
   final Contract? contract;
@@ -72,8 +72,8 @@ class _AddContractView extends StatelessWidget {
         } else if (state.status == ContractFormStatus.draftSaveSuccess) {
           StatusDialog.showSuccess(
             context: context,
-            title: AppLocalizations.of(context).successTitle,
-            message: AppLocalizations.of(context).draftSavedMessage,
+            title: context.l10n.successTitle,
+            message: context.l10n.draftSavedMessage,
           );
           if (context.mounted) {
             context.pop(true);
@@ -81,10 +81,8 @@ class _AddContractView extends StatelessWidget {
         } else if (state.status == ContractFormStatus.draftSaveFailure) {
           StatusDialog.showError(
             context: context,
-            title: AppLocalizations.of(context).errorLabel,
-            message:
-                state.errorMessage ??
-                AppLocalizations.of(context).draftSaveErrorMessage,
+            title: context.l10n.errorLabel,
+            message: state.errorMessage ?? context.l10n.draftSaveErrorMessage,
           );
         }
       },
@@ -114,10 +112,10 @@ class _AddContractView extends StatelessWidget {
 
               AppConfirmationBottomSheet.show(
                 context: context,
-                title: AppLocalizations.of(context).confirmCancelLabel,
-                description: AppLocalizations.of(context).confirmCancelMessage,
-                confirmLabel: AppLocalizations.of(context).confirmCancelLabel,
-                cancelLabel: AppLocalizations.of(context).continueEditingLabel,
+                title: context.l10n.confirmCancelLabel,
+                description: context.l10n.confirmCancelMessage,
+                confirmLabel: context.l10n.confirmCancelLabel,
+                cancelLabel: context.l10n.continueEditingLabel,
                 style: ConfirmationStyle.destructive,
                 onConfirm: () => Navigator.of(context).pop(),
               );
@@ -126,7 +124,7 @@ class _AddContractView extends StatelessWidget {
           titleSpacing: 0,
           title: BlocBuilder<ContractFormBloc, ContractFormState>(
             builder: (context, state) {
-              String title = AppLocalizations.of(context).createContractButton;
+              String title = context.l10n.createContractButton;
               return Text(
                 title,
                 style: GoogleFonts.anuphan(
@@ -153,12 +151,10 @@ class _AddContractView extends StatelessWidget {
                     onTap: () {
                       AppConfirmationBottomSheet.show(
                         context: context,
-                        title: AppLocalizations.of(context).saveDraftButton,
-                        description: AppLocalizations.of(
-                          context,
-                        ).saveChangesConfirmation,
-                        confirmLabel: AppLocalizations.of(context).confirm,
-                        cancelLabel: AppLocalizations.of(context).cancel,
+                        title: context.l10n.saveDraftButton,
+                        description: context.l10n.saveChangesConfirmation,
+                        confirmLabel: context.l10n.confirm,
+                        cancelLabel: context.l10n.cancel,
                         style: ConfirmationStyle.normal,
                         onConfirm: () {
                           context.read<ContractFormBloc>().add(
@@ -192,7 +188,7 @@ class _AddContractView extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            AppLocalizations.of(context).saveDraftButton,
+                            context.l10n.saveDraftButton,
                             style: GoogleFonts.anuphan(
                               color: Colors.white,
                               fontSize: 14,
@@ -282,7 +278,7 @@ class _AddContractView extends StatelessWidget {
                 buildWhen: (prev, curr) => prev.step != curr.step,
                 builder: (context, state) {
                   return AppButton(
-                    text: AppLocalizations.of(context).backButton,
+                    text: context.l10n.backButton,
                     style: AppButtonStyle.outline,
                     onPressed: state.step > 1
                         ? () => context.read<ContractFormBloc>().add(
@@ -306,7 +302,7 @@ class _AddContractView extends StatelessWidget {
                       state.status == ContractFormStatus.submitting;
 
                   return AppButton(
-                    text: AppLocalizations.of(context).nextButton,
+                    text: context.l10n.nextButton,
                     style: AppButtonStyle.primary,
                     onPressed: (state.isValid && !isLoading)
                         ? () {

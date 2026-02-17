@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import '../../../domain/entities/contract_status.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 class ContractStatusBadge extends StatelessWidget {
   final ContractStatus status;
@@ -55,7 +55,7 @@ class ContractStatusBadge extends StatelessWidget {
   }
 
   _StatusConfig _getStatusConfig(BuildContext context, ContractStatus status) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = context.l10n;
     switch (status) {
       case ContractStatus.draft:
         return _StatusConfig(

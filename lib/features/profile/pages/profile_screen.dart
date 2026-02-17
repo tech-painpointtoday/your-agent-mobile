@@ -517,12 +517,16 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 12),
           _buildWorkInfoRow(
             'assets/icons/file-check.svg',
-            'เลขที่ใบอนุญาต ${agent.licenseNumber ?? AppLocalizations.of(context).notSpecified}',
+            AppLocalizations.of(context).licenseNumberWithPrefix(
+              agent.licenseNumber ?? AppLocalizations.of(context).notSpecified,
+            ),
           ),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
             'assets/icons/hour-glass.svg',
-            'ประสบการณ์ ${agent.yearsOfExperience ?? 0} ปี',
+            AppLocalizations.of(
+              context,
+            ).experienceYears(agent.yearsOfExperience ?? 0),
           ),
           const SizedBox(height: 16),
           Text(
@@ -701,12 +705,21 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 16),
           _buildWorkInfoRow(
             'assets/icons/map-pin.svg',
-            agent.address ?? AppLocalizations.of(context).addressNotSpecified,
+            agent.serviceAreaCenterLat != null &&
+                    agent.serviceAreaCenterLng != null
+                ? '${agent.serviceAreaCenterLat}, ${agent.serviceAreaCenterLng}'
+                : AppLocalizations.of(context).addressNotSpecified,
           ),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
             'assets/icons/chart-15.svg',
-            'รัศมีการทำงาน ${double.tryParse(agent.reachableRadius ?? '')?.toStringAsFixed(2) ?? agent.reachableRadius} ก.ม.',
+            AppLocalizations.of(context).serviceRadiusWithPrefix(
+              double.tryParse(
+                    agent.reachableRadius ?? '',
+                  )?.toStringAsFixed(2) ??
+                  agent.reachableRadius ??
+                  '',
+            ),
           ),
         ],
       ),
@@ -775,7 +788,7 @@ class ProfileView extends StatelessWidget {
               ),
             ),
             AppBadge(
-              label: 'Lv. $currentLevel',
+              label: AppLocalizations.of(context).profileLevel(currentLevel),
               color: BadgeColor.blue,
               style: BadgeStyle.plain,
               hasBorder: true,

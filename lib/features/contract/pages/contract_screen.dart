@@ -9,7 +9,7 @@ import 'package:youragent/features/contract/widgets/contract_filter_bottom_sheet
 import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/features/contract/pages/contract_detail_screen.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/widgets/modals/app_status_bottom_sheet.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/contract_status.dart';
@@ -149,9 +149,8 @@ class _ContractScreenState extends State<ContractScreen> {
         AppStatusBottomSheet.showWarning(
           context: context,
           iconPath: 'assets/images/YA_Illustration_ConfirmWarning.png',
-          title: 'ไม่สามารถสร้างสัญญาได้',
-          message:
-              'คุณต้องมีทรัพย์ที่ผ่านการอนุมัติแล้วในระบบก่อน\nจึงจะสามารถสร้างเอกสารสัญญาได้',
+          title: context.l10n.cannotCreateContractTitle,
+          message: context.l10n.cannotCreateContractMessage,
           onOk: () => Navigator.of(context).pop(),
         );
       } else {
@@ -169,7 +168,7 @@ class _ContractScreenState extends State<ContractScreen> {
       if (!mounted) return;
       StatusDialog.showError(
         context: context,
-        title: AppLocalizations.of(context).errorOccurredTitle,
+        title: context.l10n.errorOccurredTitle,
         message: 'Failed to check properties: $e',
       );
     }
@@ -211,7 +210,7 @@ class _ContractScreenState extends State<ContractScreen> {
                   ),
                   // Title
                   Text(
-                    AppLocalizations.of(context).contracts,
+                    context.l10n.contracts,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -278,9 +277,7 @@ class _ContractScreenState extends State<ContractScreen> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                           child: AppBadges.plain(
-                            label: AppLocalizations.of(
-                              context,
-                            ).contractDocumentNotFound,
+                            label: context.l10n.contractDocumentNotFound,
                             color: BadgeColor.default_,
                           ),
                         ),
@@ -306,9 +303,7 @@ class _ContractScreenState extends State<ContractScreen> {
                             Expanded(
                               child: AppSearchBar(
                                 controller: _searchController,
-                                hintText: AppLocalizations.of(
-                                  context,
-                                ).searchHint,
+                                hintText: context.l10n.searchHint,
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -372,10 +367,10 @@ class _ContractScreenState extends State<ContractScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Error: $_error'),
+                Text('${context.l10n.errorWithPrefix}$_error'),
                 TextButton(
                   onPressed: _loadContracts,
-                  child: const Text('Retry'),
+                  child: Text(context.l10n.retry),
                 ),
               ],
             ),
@@ -464,7 +459,7 @@ class _ContractScreenState extends State<ContractScreen> {
 
           const SizedBox(height: 24),
           Text(
-            AppLocalizations.of(context).dataContract,
+            context.l10n.dataContract,
             style: const TextStyle(
               color: AppColors.baseDarkGrey,
               fontSize: 14,

@@ -17,7 +17,7 @@ import 'steps/general_info_step.dart';
 import 'steps/property_detail_step.dart';
 import 'steps/property_images_step.dart';
 import 'steps/property_type_step.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 class CreatePropertyScreen extends StatelessWidget {
   final Property? property;
@@ -73,14 +73,10 @@ class _CreatePropertyView extends StatelessWidget {
 
             AppConfirmationBottomSheet.show(
               context: context,
-              title: AppLocalizations.of(
-                context,
-              ).discardAllPropertyConfirmTitle,
-              description: AppLocalizations.of(
-                context,
-              ).discardAllPropertyConfirmMessage,
-              confirmLabel: AppLocalizations.of(context).discardConfirmTitle,
-              cancelLabel: AppLocalizations.of(context).statusCancelled,
+              title: context.l10n.discardAllPropertyConfirmTitle,
+              description: context.l10n.discardAllPropertyConfirmMessage,
+              confirmLabel: context.l10n.discardConfirmTitle,
+              cancelLabel: context.l10n.statusCancelled,
               icon: 'assets/images/dialog/YA_Illustration_ConfirmDiscard.png',
               style: ConfirmationStyle.destructive,
               onConfirm: () {
@@ -94,8 +90,8 @@ class _CreatePropertyView extends StatelessWidget {
           builder: (context, state) {
             return Text(
               state.step == 6
-                  ? AppLocalizations.of(context).confirmInfo
-                  : AppLocalizations.of(context).createPropertyLabel,
+                  ? context.l10n.confirmInfo
+                  : context.l10n.createPropertyLabel,
               style: GoogleFonts.anuphan(
                 color: Colors.white,
                 fontSize: 18,
@@ -121,12 +117,10 @@ class _CreatePropertyView extends StatelessWidget {
                   onTap: () {
                     AppConfirmationBottomSheet.show(
                       context: context,
-                      title: AppLocalizations.of(context).saveDraftButton,
-                      description: AppLocalizations.of(
-                        context,
-                      ).saveChangesConfirmation,
-                      confirmLabel: AppLocalizations.of(context).confirm,
-                      cancelLabel: AppLocalizations.of(context).statusCancelled,
+                      title: context.l10n.saveDraftButton,
+                      description: context.l10n.saveChangesConfirmation,
+                      confirmLabel: context.l10n.confirm,
+                      cancelLabel: context.l10n.statusCancelled,
                       style: ConfirmationStyle.normal,
                       onConfirm: () {
                         context.read<PropertyFormBloc>().add(
@@ -157,7 +151,7 @@ class _CreatePropertyView extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          AppLocalizations.of(context).saveDraftButton,
+                          context.l10n.saveDraftButton,
                           style: GoogleFonts.anuphan(
                             color: Colors.white,
                             fontSize: 14,
@@ -181,8 +175,8 @@ class _CreatePropertyView extends StatelessWidget {
           if (state.propertyFormStatus == PropertyFormStatus.draftSaveSuccess) {
             StatusDialog.showSuccess(
               context: context,
-              title: AppLocalizations.of(context).successTitle,
-              message: AppLocalizations.of(context).draftSavedMessage,
+              title: context.l10n.successTitle,
+              message: context.l10n.draftSavedMessage,
             );
             // Wait a moment then pop
             Future.delayed(const Duration(seconds: 1), () {
@@ -196,10 +190,8 @@ class _CreatePropertyView extends StatelessWidget {
               PropertyFormStatus.draftSaveFailure) {
             StatusDialog.showError(
               context: context,
-              title: AppLocalizations.of(context).errorLabel,
-              message:
-                  state.errorMessage ??
-                  AppLocalizations.of(context).draftSaveErrorMessage,
+              title: context.l10n.errorLabel,
+              message: state.errorMessage ?? context.l10n.draftSaveErrorMessage,
             );
           }
           // Property submission success
@@ -207,10 +199,10 @@ class _CreatePropertyView extends StatelessWidget {
               PropertyFormStatus.submissionSuccess) {
             StatusDialog.showSuccess(
               context: context,
-              title: AppLocalizations.of(context).successTitle,
+              title: context.l10n.successTitle,
               message: state.isDraft
-                  ? AppLocalizations.of(context).propertyPublishedSuccess
-                  : AppLocalizations.of(context).propertyCreatedSuccess,
+                  ? context.l10n.propertyPublishedSuccess
+                  : context.l10n.propertyCreatedSuccess,
             );
 
             // Wait then redirect
@@ -224,11 +216,11 @@ class _CreatePropertyView extends StatelessWidget {
               PropertyFormStatus.submissionFailure) {
             AppConfirmationBottomSheet.show(
               context: context,
-              title: AppLocalizations.of(context).errorLabel,
+              title: context.l10n.errorLabel,
               description:
                   state.errorMessage ??
-                  AppLocalizations.of(context).propertyCreatedErrorMessage,
-              confirmLabel: AppLocalizations.of(context).ok,
+                  context.l10n.propertyCreatedErrorMessage,
+              confirmLabel: context.l10n.ok,
               style: ConfirmationStyle.destructive,
             );
           }
@@ -261,7 +253,9 @@ class _CreatePropertyView extends StatelessWidget {
                   case 6:
                     return PropertyConfirmationStep();
                   default:
-                    return Center(child: Text('Step ${state.step} Unknown'));
+                    return Center(
+                      child: Text(context.l10n.unknownStep(state.step)),
+                    );
                 }
               },
             ),
@@ -293,7 +287,7 @@ class _CreatePropertyView extends StatelessWidget {
                 buildWhen: (previous, current) => previous.step != current.step,
                 builder: (context, state) {
                   return AppButton(
-                    text: AppLocalizations.of(context).backButton,
+                    text: context.l10n.backButton,
                     style: AppButtonStyle.outline,
                     onPressed: state.step > 1
                         ? () {
@@ -320,9 +314,9 @@ class _CreatePropertyView extends StatelessWidget {
                   return AppButton(
                     text: isLastStep
                         ? (state.isDraft
-                              ? AppLocalizations.of(context).publishButton
-                              : AppLocalizations.of(context).createLabel)
-                        : AppLocalizations.of(context).nextButton,
+                              ? context.l10n.publishButton
+                              : context.l10n.createLabel)
+                        : context.l10n.nextButton,
                     style: AppButtonStyle.primary,
                     onPressed:
                         (state.isValid &&
@@ -344,12 +338,12 @@ class _CreatePropertyView extends StatelessWidget {
     if (state.step == 6) {
       AppConfirmationBottomSheet.show(
         context: context,
-        title: AppLocalizations.of(context).confirmInfo,
+        title: context.l10n.confirmInfo,
         description: state.isDraft
-            ? AppLocalizations.of(context).publishPropertyConfirmation
-            : AppLocalizations.of(context).createPropertyConfirmation,
-        confirmLabel: AppLocalizations.of(context).confirm,
-        cancelLabel: AppLocalizations.of(context).statusCancelled,
+            ? context.l10n.publishPropertyConfirmation
+            : context.l10n.createPropertyConfirmation,
+        confirmLabel: context.l10n.confirm,
+        cancelLabel: context.l10n.statusCancelled,
         style: ConfirmationStyle.normal,
         onConfirm: () {
           context.read<PropertyFormBloc>().add(const PropertyFormSubmitted());

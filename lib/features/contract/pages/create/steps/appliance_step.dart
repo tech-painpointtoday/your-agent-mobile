@@ -17,7 +17,8 @@ import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/modals/app_image_picker_bottom_sheet.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 class ApplianceStep extends StatefulWidget {
   final bool hideHeader;
@@ -29,18 +30,19 @@ class ApplianceStep extends StatefulWidget {
 }
 
 class _ApplianceStepState extends State<ApplianceStep> {
-  Future<void> _pickImage(String applianceId) async {
+  // Appliance Actions
+  Future<void> _pickApplianceImage(String itemId) async {
     final bloc = context.read<ContractFormBloc>();
     AppImagePickerBottomSheet.show(
       context: context,
       isMultiImage: true,
       onImagesPicked: (paths) {
-        bloc.add(ContractFormApplianceImagesAdded(applianceId, paths));
+        bloc.add(ContractFormApplianceImagesAdded(itemId, paths));
       },
     );
   }
 
-  void _showPropertyPhotosSelection(String applianceId) {
+  void _showAppliancePropertyPhotosSelection(String itemId) {
     final bloc = context.read<ContractFormBloc>();
     final photos = bloc.state.contractCreateData?.propertyImages ?? [];
 
@@ -48,112 +50,37 @@ class _ApplianceStepState extends State<ApplianceStep> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        height: MediaQuery.of(context).size.height * 0.6,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 12),
-            Center(
-              child: Container(
-                width: 48,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
+      builder: (context) => _PropertyPhotoSelectionSheet(
+        photos: photos,
+        onPhotoSelected: (photo, url) {
+          bloc.add(
+            ContractFormAppliancePropertyImageSelected(
+              applianceId: itemId,
+              propertyImageId: photo.id!,
+              url: url,
             ),
-            const SizedBox(height: 16),
-            Text(
-              AppLocalizations.of(context).selectImageFromProperty,
-              style: GoogleFonts.anuphan(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemCount: photos.length,
-                itemBuilder: (context, index) {
-                  final photo = photos[index];
-                  return InkWell(
-                    onTap: () {
-                      final url = photo.url ?? photo.displayUrl;
-                      if (photo.id != null && url.isNotEmpty) {
-                        bloc.add(
-                          ContractFormAppliancePropertyImageSelected(
-                            applianceId: applianceId,
-                            propertyImageId: photo.id!,
-                            url: url,
-                          ),
-                        );
-                      }
-                      Navigator.pop(context);
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: CachedNetworkImage(
-                        imageUrl: photo.url ?? '',
-                        fit: BoxFit.cover,
-                        progressIndicatorBuilder: (context, url, progress) =>
-                            Container(
-                              color: Colors.grey[200],
-                              padding: const EdgeInsets.all(32),
-                              child: CircularProgressIndicator(
-                                value: progress.progress,
-                                strokeWidth: 2,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                        errorWidget: (context, url, error) => Container(
-                          color: Colors.grey[200],
-                          padding: const EdgeInsets.all(32),
-                          child: const Icon(Icons.error),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  void _showDeleteAllConfirmation(String applianceId) {
+  void _showApplianceDeleteAllConfirmation(String itemId) {
     AppConfirmationBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context).deleteAllImagesConfirmTitle,
-      description: AppLocalizations.of(context).deleteAllImagesConfirmMessage,
-      confirmLabel: AppLocalizations.of(context).deleteAllConfirmLabel,
-      cancelLabel: AppLocalizations.of(context).statusCancelled,
+      title: context.l10n.deleteAllImagesConfirmTitle,
+      description: context.l10n.deleteAllImagesConfirmMessage,
+      confirmLabel: context.l10n.deleteAllConfirmLabel,
+      cancelLabel: context.l10n.statusCancelled,
       style: ConfirmationStyle.destructive,
       onConfirm: () {
         context.read<ContractFormBloc>().add(
-          ContractFormApplianceAllImagesDeleted(applianceId),
+          ContractFormApplianceAllImagesDeleted(itemId),
         );
         StatusDialog.showSuccess(
           context: context,
-          title: AppLocalizations.of(context).successTitle,
-          message: AppLocalizations.of(context).imagesDeletedMessage,
+          title: context.l10n.successTitle,
+          message: context.l10n.imagesDeletedMessage,
         );
       },
     );
@@ -176,9 +103,7 @@ class _ApplianceStepState extends State<ApplianceStep> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppBadge(
-                        label: AppLocalizations.of(
-                          context,
-                        ).electrical_appliances_photos,
+                        label: context.l10n.applianceTitle,
                         fontSize: 16,
                         color: BadgeColor.blue,
                       ),
@@ -189,80 +114,97 @@ class _ApplianceStepState extends State<ApplianceStep> {
                       ),
                     ],
                   ),
-                if (!widget.hideHeader) const SizedBox(height: 24),
+                if (!widget.hideHeader) const SizedBox(height: 32),
 
+                // Appliances Section
+                Text(
+                  context.l10n.applianceTitle,
+                  style: GoogleFonts.anuphan(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.baseBlack,
+                  ),
+                ),
+                const SizedBox(height: 16),
                 if (state.applianceItems.isEmpty)
-                  _buildAddItemButton(context)
-                else ...[
-                  ...state.applianceItems.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final item = entry.value;
-                    return Column(
-                      children: [
-                        _ApplianceItemCard(
-                          index: index + 1,
-                          item: item,
-                          itemDefinitions:
-                              state.itemDefinitions?.appliances ?? const [],
-                          onDelete: () {
-                            if (item.hasData) {
-                              AppConfirmationBottomSheet.show(
-                                context: context,
-                                title: AppLocalizations.of(
-                                  context,
-                                ).deleteItemQuestion,
-                                description: AppLocalizations.of(
-                                  context,
-                                ).deleteAllImagesConfirmMessage,
-                                confirmLabel: AppLocalizations.of(
-                                  context,
-                                ).delete,
-                                cancelLabel: AppLocalizations.of(
-                                  context,
-                                ).statusCancelled,
-                                style: ConfirmationStyle.destructive,
-                                onConfirm: () {
-                                  context.read<ContractFormBloc>().add(
-                                    ContractFormApplianceRemoved(item.id),
-                                  );
-                                },
-                              );
-
-                              return;
-                            }
-
-                            context.read<ContractFormBloc>().add(
-                              ContractFormApplianceRemoved(item.id),
-                            );
-                          },
-                          onUpdate: (updatedItem) => context
-                              .read<ContractFormBloc>()
-                              .add(ContractFormApplianceUpdated(updatedItem)),
-                          onPickImage: () => _pickImage(item.id),
-                          onPickPropertyImage:
-                              (state
-                                      .contractCreateData
-                                      ?.propertyImages
-                                      .isNotEmpty ??
-                                  false)
-                              ? () => _showPropertyPhotosSelection(item.id)
-                              : null,
-                          onRemoveImage: (path) {
-                            context.read<ContractFormBloc>().add(
-                              ContractFormApplianceImageRemoved(item.id, path),
-                            );
-                          },
-                          onDeleteAllImages: () =>
-                              _showDeleteAllConfirmation(item.id),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.basePaleGrey,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        context.l10n.noAppliance,
+                        style: GoogleFonts.anuphan(
+                          color: AppColors.baseGrey,
+                          fontSize: 14,
                         ),
-                        if (index < state.applianceItems.length - 1)
-                          const SizedBox(height: 24),
-                      ],
+                      ),
+                    ),
+                  )
+                else
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: state.applianceItems.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 24),
+                    itemBuilder: (context, index) {
+                      final appliance = state.applianceItems[index];
+                      return _ApplianceItemCard(
+                        index: index + 1,
+                        item: appliance,
+                        itemDefinitions:
+                            state.itemDefinitions?.appliances ?? [],
+                        onUpdate: (updatedItem) {
+                          context.read<ContractFormBloc>().add(
+                            ContractFormApplianceUpdated(updatedItem),
+                          );
+                        },
+                        onDelete: () {
+                          StatusDialog.showDestructive(
+                            context: context,
+                            title: context.l10n.deleteItemTitle,
+                            message: context.l10n.deleteItemMessage,
+                            actionLabel: context.l10n.delete,
+                            onAction: () {
+                              context.read<ContractFormBloc>().add(
+                                ContractFormApplianceRemoved(appliance.id),
+                              );
+                            },
+                          );
+                        },
+                        onPickImage: () => _pickApplianceImage(appliance.id),
+                        onPickPropertyImage: () =>
+                            _showAppliancePropertyPhotosSelection(appliance.id),
+                        onRemoveImage: (path) {
+                          context.read<ContractFormBloc>().add(
+                            ContractFormApplianceImageRemoved(
+                              appliance.id,
+                              path,
+                            ),
+                          );
+                        },
+                        onDeleteAllImages: () =>
+                            _showApplianceDeleteAllConfirmation(appliance.id),
+                      );
+                    },
+                  ),
+
+                const SizedBox(height: 16),
+                AppButton(
+                  width: double.infinity,
+                  text: context.l10n.addAppliance,
+                  style: AppButtonStyle.outline,
+                  iconPath: 'assets/icons/plus.svg',
+                  onPressed: () {
+                    context.read<ContractFormBloc>().add(
+                      const ContractFormApplianceAdded(),
                     );
-                  }),
-                  const SizedBox(height: 24),
-                  _buildAddItemButton(context),
-                ],
+                  },
+                ),
                 const SizedBox(height: 100),
               ],
             ),
@@ -271,40 +213,98 @@ class _ApplianceStepState extends State<ApplianceStep> {
       },
     );
   }
+}
 
-  Widget _buildAddItemButton(BuildContext context) {
-    return InkWell(
-      onTap: () => context.read<ContractFormBloc>().add(
-        const ContractFormApplianceAdded(),
+class _PropertyPhotoSelectionSheet extends StatelessWidget {
+  final List<dynamic> photos;
+  final Function(dynamic photo, String url) onPhotoSelected;
+
+  const _PropertyPhotoSelectionSheet({
+    required this.photos,
+    required this.onPhotoSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: MediaQuery.of(context).size.height * 0.6,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
       ),
-      child: CustomPaint(
-        painter: DashedBorderPainter(
-          color: AppColors.baseLightGrey,
-          strokeWidth: 1,
-          dashWidth: 6,
-          dashSpace: 4,
-          radius: 12,
-        ),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.add, color: AppColors.baseGrey, size: 20),
-              const SizedBox(width: 8),
-              Text(
-                AppLocalizations.of(context).add_item,
-                style: GoogleFonts.anuphan(
-                  color: AppColors.baseDarkGrey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 12),
+          Center(
+            child: Container(
+              width: 48,
+              height: 6,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
               ),
-            ],
+            ),
           ),
-        ),
+          const SizedBox(height: 16),
+          Text(
+            context.l10n.selectImageFromProperty,
+            style: GoogleFonts.anuphan(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: photos.length,
+              itemBuilder: (context, index) {
+                final photo = photos[index];
+                return InkWell(
+                  onTap: () {
+                    final url = photo.url ?? photo.displayUrl;
+                    if (photo.id != null && url.isNotEmpty) {
+                      onPhotoSelected(photo, url);
+                    }
+                    Navigator.pop(context);
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: CachedNetworkImage(
+                      imageUrl: photo.url ?? '',
+                      fit: BoxFit.cover,
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          Container(
+                            color: Colors.grey[200],
+                            padding: const EdgeInsets.all(32),
+                            child: CircularProgressIndicator(
+                              value: progress.progress,
+                              strokeWidth: 2,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey[200],
+                        padding: const EdgeInsets.all(32),
+                        child: const Icon(Icons.error),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
       ),
     );
   }
@@ -430,7 +430,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'รายการที่ ${widget.index}',
+              context.l10n.itemNumber(widget.index),
               style: GoogleFonts.anuphan(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -453,7 +453,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
         ),
         const Divider(height: 32),
         AppChipSelection<String>(
-          label: AppLocalizations.of(context).applianceTitle,
+          label: context.l10n.applianceTitle,
           isRequired: true,
           value: selectedValue,
           options: options,
@@ -486,7 +486,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
           const SizedBox(height: 12),
           AppTextField(
             label: '',
-            hintText: AppLocalizations.of(context).applianceExampleHint,
+            hintText: context.l10n.applianceExampleHint,
             controller: TextEditingController(text: widget.item.name)
               ..selection = TextSelection.fromPosition(
                 TextPosition(offset: widget.item.name.length),
@@ -498,8 +498,8 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
         ],
         const SizedBox(height: 20),
         AppTextField(
-          label: AppLocalizations.of(context).descriptionLabel,
-          hintText: AppLocalizations.of(context).applianceDescExampleHint,
+          label: context.l10n.descriptionLabel,
+          hintText: context.l10n.applianceDescExampleHint,
           controller: TextEditingController(text: widget.item.description ?? '')
             ..selection = TextSelection.fromPosition(
               TextPosition(offset: (widget.item.description ?? '').length),
@@ -514,7 +514,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
             onTap: widget.onPickPropertyImage,
             child: CustomPaint(
               painter: DashedBorderPainter(
-                color: AppColors.baseLightGrey,
+                color: AppColors.baseLightGrey.withValues(alpha: 0.1),
                 strokeWidth: 1,
                 dashWidth: 6,
                 dashSpace: 4,
@@ -538,7 +538,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      AppLocalizations.of(context).selectImageFromProperty,
+                      context.l10n.selectImageFromProperty,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseDarkGrey,
                         fontSize: 16,
@@ -582,7 +582,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    AppLocalizations.of(context).uploadImagesButton,
+                    context.l10n.uploadImagesButton,
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseDarkGrey,
                       fontSize: 16,
@@ -612,7 +612,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                AppLocalizations.of(context).imageSampleLabel,
+                context.l10n.imageSampleLabel,
                 style: GoogleFonts.anuphan(
                   color: AppColors.baseBlack,
                   fontSize: 16,
@@ -634,7 +634,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      AppLocalizations.of(context).deleteAllImagesButton,
+                      context.l10n.deleteAllImagesButton,
                       style: GoogleFonts.anuphan(
                         color: AppColors.error,
                         fontSize: 14,

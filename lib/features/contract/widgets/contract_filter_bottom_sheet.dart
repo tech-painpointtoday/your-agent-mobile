@@ -5,7 +5,7 @@ import '../../../widgets/buttons/app_button.dart';
 import '../../../domain/entities/contract_status.dart';
 import '../../../domain/entities/contract_type.dart';
 import '../../../domain/entities/contract.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 class ContractFilter {
   final ContractStatus? status;
@@ -123,14 +123,14 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppBadge(
-                      label: AppLocalizations.of(context).searchFilterLabel,
+                      label: context.l10n.searchFilterLabel,
                       color: BadgeColor.blue,
                     ),
                     SizedBox(height: 24),
 
                     // สถานะการอนุมัติ
                     _buildFilterSection(
-                      title: AppLocalizations.of(context).approvalStatusTitle,
+                      title: context.l10n.approvalStatusTitle,
                       child: Wrap(
                         crossAxisAlignment: WrapCrossAlignment.start,
                         alignment: WrapAlignment.start,
@@ -139,19 +139,19 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
                         runSpacing: 8,
                         children: [
                           _buildChip(
-                            AppLocalizations.of(context).all,
+                            context.l10n.all,
                             isSelected: _selectedStatus == null,
                             onTap: () => setState(() => _selectedStatus = null),
                           ),
                           _buildChip(
-                            AppLocalizations.of(context).statusDraft,
+                            context.l10n.statusDraft,
                             isSelected: _selectedStatus == ContractStatus.draft,
                             onTap: () => setState(
                               () => _selectedStatus = ContractStatus.draft,
                             ),
                           ),
                           _buildChip(
-                            AppLocalizations.of(context).statusIncomplete,
+                            context.l10n.statusIncomplete,
                             isSelected:
                                 _selectedStatus ==
                                 ContractStatus.pendingSignature,
@@ -161,7 +161,7 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
                             ),
                           ),
                           _buildChip(
-                            AppLocalizations.of(context).statusSigned,
+                            context.l10n.statusSigned,
                             isSelected:
                                 _selectedStatus == ContractStatus.signed,
                             onTap: () => setState(
@@ -169,7 +169,7 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
                             ),
                           ),
                           _buildChip(
-                            AppLocalizations.of(context).statusComplete,
+                            context.l10n.statusComplete,
                             isSelected:
                                 _selectedStatus == ContractStatus.completed,
                             onTap: () => setState(
@@ -183,85 +183,73 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
 
                     // ประเภททรัพย์
                     _buildFilterSection(
-                      title: AppLocalizations.of(context).propertyTypeLabel,
+                      title: context.l10n.propertyTypeLabel,
                       child: Wrap(
                         spacing: 8,
                         runSpacing: 8,
                         children: [
                           _buildChip(
-                            AppLocalizations.of(context).all,
+                            context.l10n.all,
                             isSelected: _selectedPropertyType == null,
                             onTap: () =>
                                 setState(() => _selectedPropertyType = null),
                           ),
                           _buildChip(
-                            AppLocalizations.of(context).houseType,
+                            context.l10n.houseType,
                             isSelected:
-                                _selectedPropertyType ==
-                                AppLocalizations.of(context).houseType,
+                                _selectedPropertyType == context.l10n.houseType,
                             onTap: () => setState(
-                              () => _selectedPropertyType = AppLocalizations.of(
-                                context,
-                              ).houseType,
+                              () => _selectedPropertyType =
+                                  context.l10n.houseType,
                             ),
                           ),
                           _buildChip(
-                            AppLocalizations.of(
-                              context,
-                            ).property_type_condominium,
+                            context.l10n.property_type_condominium,
                             isSelected:
                                 _selectedPropertyType ==
-                                AppLocalizations.of(
-                                  context,
-                                ).property_type_condominium,
+                                context.l10n.property_type_condominium,
                             onTap: () => setState(
-                              () => _selectedPropertyType = AppLocalizations.of(
-                                context,
-                              ).property_type_condominium,
+                              () => _selectedPropertyType =
+                                  context.l10n.property_type_condominium,
                             ),
                           ),
                           _buildChip(
-                            AppLocalizations.of(context).townhouse,
+                            context.l10n.townhouse,
                             isSelected:
-                                _selectedPropertyType ==
-                                AppLocalizations.of(context).townhouse,
+                                _selectedPropertyType == context.l10n.townhouse,
                             onTap: () => setState(
-                              () => _selectedPropertyType = AppLocalizations.of(
-                                context,
-                              ).townhouse,
+                              () => _selectedPropertyType =
+                                  context.l10n.townhouse,
                             ),
                           ),
                           _buildChip(
-                            AppLocalizations.of(context).apartmentType,
+                            context.l10n.apartmentType,
                             isSelected:
                                 _selectedPropertyType ==
-                                AppLocalizations.of(context).apartmentType,
+                                context.l10n.apartmentType,
                             onTap: () => setState(
-                              () => _selectedPropertyType = AppLocalizations.of(
-                                context,
-                              ).apartmentType,
+                              () => _selectedPropertyType =
+                                  context.l10n.apartmentType,
                             ),
                           ),
                           _buildChip(
-                            AppLocalizations.of(context).homeOfficeType,
+                            context.l10n.homeOfficeType,
                             isSelected:
                                 _selectedPropertyType ==
-                                AppLocalizations.of(context).homeOfficeType,
+                                context.l10n.homeOfficeType,
                             onTap: () => setState(
-                              () => _selectedPropertyType = AppLocalizations.of(
-                                context,
-                              ).homeOfficeType,
+                              () => _selectedPropertyType =
+                                  context.l10n.homeOfficeType,
                             ),
                           ),
                           _buildChip(
-                            AppLocalizations.of(context).poolVillaType,
+                            context.l10n.poolVillaType,
                             isSelected:
                                 _selectedPropertyType ==
-                                AppLocalizations.of(context).poolVillaType,
+                                context.l10n.poolVillaType,
                             onTap: () => setState(
-                              () => _selectedPropertyType = AppLocalizations.of(
-                                context,
-                              ).poolVillaType,
+                              () => _selectedPropertyType =
+                                  context.l10n.poolVillaType,
                             ),
                           ),
                         ],
@@ -272,19 +260,19 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
                     // ประเภทสัญญา
                     // tmp close
                     // _buildFilterSection(
-                    //   title: AppLocalizations.of(context).contractTypeTitle,
+                    //   title: context.l10n.contractTypeTitle,
                     //   child: Wrap(
                     //     spacing: 8,
                     //     runSpacing: 8,
                     //     children: [
                     //       _buildChip(
-                    //         AppLocalizations.of(context).all,
+                    //         context.l10n.all,
                     //         isSelected: _selectedContractType == null,
                     //         onTap: () =>
                     //             setState(() => _selectedContractType = null),
                     //       ),
                     //       _buildChip(
-                    //         AppLocalizations.of(context).saleContractType,
+                    //         context.l10n.saleContractType,
                     //         isSelected:
                     //             _selectedContractType == ContractType.buy,
                     //         onTap: () => setState(
@@ -292,7 +280,7 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
                     //         ),
                     //       ),
                     //       _buildChip(
-                    //         AppLocalizations.of(context).rentContractType,
+                    //         context.l10n.rentContractType,
                     //         isSelected:
                     //             _selectedContractType == ContractType.rent,
                     //         onTap: () => setState(
@@ -321,7 +309,7 @@ class _ContractFilterBottomSheetState extends State<ContractFilterBottomSheet> {
               children: [
                 Expanded(
                   child: AppButton(
-                    text: AppLocalizations.of(context).clearFiltersButton,
+                    text: context.l10n.clearFiltersButton,
                     style: AppButtonStyle.outline,
                     onPressed: _clearFilters,
                   ),

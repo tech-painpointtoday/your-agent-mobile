@@ -21,7 +21,7 @@ import '../create/steps/furniture_step.dart';
 import '../create/steps/payment_step.dart';
 import '../create/steps/additional_conditions_step.dart';
 import '../create/steps/attachment_step.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 enum EditContractStepType {
   ownerInfo,
@@ -100,7 +100,7 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
         backgroundColor: AppColors.primary,
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context).editContract,
+            context.l10n.editContract,
             style: GoogleFonts.anuphan(
               color: Colors.white,
               fontSize: 18,
@@ -175,8 +175,8 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
         if (state.status == ContractFormStatus.success) {
           StatusDialog.showSuccess(
             context: context,
-            title: AppLocalizations.of(context).successTitle,
-            message: AppLocalizations.of(context).changesSavedMessage,
+            title: context.l10n.successTitle,
+            message: context.l10n.changesSavedMessage,
           );
           Future.delayed(const Duration(milliseconds: 300), () {
             if (context.mounted) {
@@ -186,18 +186,16 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
         } else if (state.status == ContractFormStatus.draftSaveSuccess) {
           StatusDialog.showSuccess(
             context: context,
-            title: AppLocalizations.of(context).successTitle,
-            message: AppLocalizations.of(context).draftSavedMessage,
+            title: context.l10n.successTitle,
+            message: context.l10n.draftSavedMessage,
           );
         } else if (state.status == ContractFormStatus.failure ||
             state.status == ContractFormStatus.draftSaveFailure) {
           AppConfirmationBottomSheet.show(
             context: context,
-            title: AppLocalizations.of(context).errorLabel,
-            description:
-                state.errorMessage ??
-                AppLocalizations.of(context).saveDataSuccess,
-            confirmLabel: AppLocalizations.of(context).ok,
+            title: context.l10n.errorLabel,
+            description: state.errorMessage ?? context.l10n.saveDataSuccess,
+            confirmLabel: context.l10n.ok,
             cancelLabel: '',
             style: ConfirmationStyle.destructive,
             onConfirm: () {},
@@ -239,7 +237,7 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
           children: [
             Expanded(
               child: AppButton(
-                text: AppLocalizations.of(context).statusCancelled,
+                text: context.l10n.statusCancelled,
                 style: AppButtonStyle.outline,
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -253,22 +251,16 @@ class _EditContractFormScreenState extends State<EditContractFormScreen> {
                       state.status == ContractFormStatus.submitting;
 
                   return AppButton(
-                    text: AppLocalizations.of(context).confirmSaveLabel,
+                    text: context.l10n.confirmSaveLabel,
                     style: AppButtonStyle.primary,
                     enabled: isValid && !isLoading,
                     onPressed: () {
                       AppConfirmationBottomSheet.show(
                         context: context,
-                        title: AppLocalizations.of(context).saveChangesQuestion,
-                        description: AppLocalizations.of(
-                          context,
-                        ).saveChangesConfirmation,
-                        confirmLabel: AppLocalizations.of(
-                          context,
-                        ).confirmSaveLabel,
-                        cancelLabel: AppLocalizations.of(
-                          context,
-                        ).statusCancelled,
+                        title: context.l10n.saveChangesQuestion,
+                        description: context.l10n.saveChangesConfirmation,
+                        confirmLabel: context.l10n.confirmSaveLabel,
+                        cancelLabel: context.l10n.statusCancelled,
                         style: ConfirmationStyle.normal,
                         onConfirm: () {
                           context.read<ContractFormBloc>().add(

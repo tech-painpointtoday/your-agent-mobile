@@ -47,6 +47,8 @@ class PropertyFormState extends Equatable {
   final int? propertyId; // Resulting property ID after success
   final bool isDraft; // Indicates if editing a draft property
   final bool showErrors; // Whether to show validation errors on fields
+  final bool isFetchingDevelopers;
+  final bool isFetchingProjects;
 
   // Data fields
   final PropertyType? selectedPropertyType;
@@ -183,6 +185,8 @@ class PropertyFormState extends Equatable {
     this.specificationFilters = const PropertySpecificationFilters(),
     this.specifications = const {},
     this.specificationValues = const {},
+    this.isFetchingDevelopers = false,
+    this.isFetchingProjects = false,
   });
 
   /// Smart step calculation based on data completeness
@@ -304,6 +308,8 @@ class PropertyFormState extends Equatable {
       step: initialStep,
       isDraft: isDraft,
       showErrors: false,
+      isFetchingDevelopers: false,
+      isFetchingProjects: false,
       propertyId: p.id,
       selectedPropertyType: p.propertyType,
       name: p.name,
@@ -553,6 +559,8 @@ class PropertyFormState extends Equatable {
     int? propertyId,
     bool? isDraft,
     bool? showErrors,
+    bool? isFetchingDevelopers,
+    bool? isFetchingProjects,
     PropertyType? selectedPropertyType,
     String? name,
     double? price,
@@ -613,6 +621,8 @@ class PropertyFormState extends Equatable {
       propertyId: propertyId ?? this.propertyId,
       isDraft: isDraft ?? this.isDraft,
       showErrors: showErrors ?? this.showErrors,
+      isFetchingDevelopers: isFetchingDevelopers ?? this.isFetchingDevelopers,
+      isFetchingProjects: isFetchingProjects ?? this.isFetchingProjects,
       selectedPropertyType: selectedPropertyType ?? this.selectedPropertyType,
       name: name ?? this.name,
       price: price ?? this.price,

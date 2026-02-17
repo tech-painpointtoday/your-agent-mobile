@@ -28,6 +28,9 @@ class ContractFormState extends Equatable {
   final String? errorMessage;
   final bool isValid;
   final ContractStatus? contractStatus;
+  final bool isFetchingOwners;
+  final bool isFetchingBuyers;
+  final bool isFetchingProperties;
 
   // Step 1 Data
   final int? contractId;
@@ -255,6 +258,9 @@ class ContractFormState extends Equatable {
     this.propertyAreaSqm = '',
     this.upfrontFee = 0,
     this.itemDefinitions,
+    this.isFetchingOwners = false,
+    this.isFetchingBuyers = false,
+    this.isFetchingProperties = false,
   });
 
   ContractFormState copyWith({
@@ -323,6 +329,9 @@ class ContractFormState extends Equatable {
     String? propertyAreaSqm,
     double? upfrontFee,
     ContractItemDefinitions? itemDefinitions,
+    bool? isFetchingOwners,
+    bool? isFetchingBuyers,
+    bool? isFetchingProperties,
     bool clearBankCode = false,
   }) {
     return ContractFormState(
@@ -391,6 +400,9 @@ class ContractFormState extends Equatable {
       initialData: initialData ?? this.initialData,
       contractStatus: contractStatus ?? this.contractStatus,
       itemDefinitions: itemDefinitions ?? this.itemDefinitions,
+      isFetchingOwners: isFetchingOwners ?? this.isFetchingOwners,
+      isFetchingBuyers: isFetchingBuyers ?? this.isFetchingBuyers,
+      isFetchingProperties: isFetchingProperties ?? this.isFetchingProperties,
     );
   }
 
@@ -461,5 +473,8 @@ class ContractFormState extends Equatable {
     propertyAreaSqm,
     upfrontFee,
     itemDefinitions,
+    isFetchingOwners,
+    isFetchingBuyers,
+    isFetchingProperties,
   ];
 }

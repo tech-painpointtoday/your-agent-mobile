@@ -7,8 +7,8 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'contract_status_badge.dart';
 import 'package:youragent/domain/entities/contract_status.dart';
-import 'package:youragent/l10n/app_localizations.dart';
 import 'contract_share_bottom_sheet.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
 import 'package:youragent/utils/app_utils.dart';
 
@@ -98,7 +98,7 @@ class _ContractListItemState extends State<ContractListItem> {
                   const SizedBox(height: 12),
                   // Contract Number
                   Text(
-                    '${AppLocalizations.of(context).contract_number}: ${AppUtils.generateContractCode(contract)}',
+                    '${context.l10n.contract_number}: ${AppUtils.generateContractCode(contract)}',
                     style: GoogleFonts.anuphan(
                       color: AppColors.baseGrey,
                       fontSize: 10,
@@ -157,7 +157,7 @@ class _ContractListItemState extends State<ContractListItem> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        AppLocalizations.of(context).property,
+                                        context.l10n.property,
                                         style: GoogleFonts.anuphan(
                                           color: AppColors.baseDarkGrey,
                                           fontSize: 10,
@@ -175,17 +175,13 @@ class _ContractListItemState extends State<ContractListItem> {
                                       const SizedBox(height: 12),
                                       if (contract.sellerSignedAt != null)
                                         AppBadge(
-                                          label: AppLocalizations.of(
-                                            context,
-                                          ).signed,
+                                          label: context.l10n.signed,
                                           color: BadgeColor.green,
                                           style: BadgeStyle.done,
                                         )
                                       else
                                         AppBadge(
-                                          label: AppLocalizations.of(
-                                            context,
-                                          ).notSigned,
+                                          label: context.l10n.notSigned,
                                           color: BadgeColor.default_,
                                           style: BadgeStyle.plain,
                                         ),
@@ -199,7 +195,7 @@ class _ContractListItemState extends State<ContractListItem> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        AppLocalizations.of(context).buyer,
+                                        context.l10n.buyer,
                                         style: GoogleFonts.anuphan(
                                           color: AppColors.baseDarkGrey,
                                           fontSize: 10,
@@ -217,17 +213,13 @@ class _ContractListItemState extends State<ContractListItem> {
                                       const SizedBox(height: 12),
                                       if (contract.buyerSignedAt != null)
                                         AppBadge(
-                                          label: AppLocalizations.of(
-                                            context,
-                                          ).signed,
+                                          label: context.l10n.signed,
                                           color: BadgeColor.green,
                                           style: BadgeStyle.done,
                                         )
                                       else
                                         AppBadge(
-                                          label: AppLocalizations.of(
-                                            context,
-                                          ).notSigned,
+                                          label: context.l10n.notSigned,
                                           color: BadgeColor.default_,
                                           style: BadgeStyle.plain,
                                         ),
@@ -267,7 +259,7 @@ class _ContractListItemState extends State<ContractListItem> {
                           contract.owner!.phone!.isNotEmpty) {
                         options.add(
                           CallOption(
-                            label: 'เจ้าของทรัพย์',
+                            label: context.l10n.ownerLabel,
                             phone: contract.owner!.phone!,
                           ),
                         );
@@ -276,7 +268,7 @@ class _ContractListItemState extends State<ContractListItem> {
                           contract.buyer!.phone!.isNotEmpty) {
                         options.add(
                           CallOption(
-                            label: 'ผู้ซื้อ',
+                            label: context.l10n.buyerLabel,
                             phone: contract.buyer!.phone!,
                           ),
                         );
@@ -292,7 +284,7 @@ class _ContractListItemState extends State<ContractListItem> {
                   Expanded(
                     child: AppButton(
                       padding: EdgeInsets.zero,
-                      text: AppLocalizations.of(context).shareDocument,
+                      text: context.l10n.shareDocument,
                       style: AppButtonStyle.outline,
                       height: 32,
                       textStyle: GoogleFonts.anuphan(
@@ -321,8 +313,8 @@ class _ContractListItemState extends State<ContractListItem> {
                   Expanded(
                     child: AppButton(
                       text: contract.status == ContractStatus.draft
-                          ? AppLocalizations.of(context).continueAddingInfo
-                          : AppLocalizations.of(context).edit,
+                          ? context.l10n.continueAddingInfo
+                          : context.l10n.edit,
                       style: AppButtonStyle.primary,
                       height: 32,
                       textStyle: GoogleFonts.anuphan(

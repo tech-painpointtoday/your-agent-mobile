@@ -112,21 +112,24 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          if (_property != null)
-            RefreshIndicator(
-              color: Colors.white,
-              backgroundColor: AppColors.primary,
-              onRefresh: _fetchPropertyDetail,
-              child: PropertyDetail(
-                isFullScreen: true,
-                key: ObjectKey(_property!),
-                property: _property!,
+      body: SizedBox(
+        height: double.infinity,
+        child: Stack(
+          children: [
+            if (_property != null)
+              RefreshIndicator(
+                color: Colors.white,
+                backgroundColor: AppColors.primary,
+                onRefresh: _fetchPropertyDetail,
+                child: PropertyDetail(
+                  isFullScreen: true,
+                  key: ObjectKey(_property!),
+                  property: _property!,
+                ),
               ),
-            ),
-          _buildBottomBar(),
-        ],
+            _buildBottomBar(),
+          ],
+        ),
       ),
     );
   }

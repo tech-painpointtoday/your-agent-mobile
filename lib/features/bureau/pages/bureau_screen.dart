@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youragent/widgets/backgrounds/blue_wave_background.dart';
 
 import '../../../core/theme/app_colors.dart';
 
@@ -9,21 +10,34 @@ class BureauScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: AppBar(
-        title: const Text('Bureau'),
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        foregroundColor: AppColors.baseDarkGrey,
-      ),
-      body: const Center(
-        child: Text(
-          'Bureau Screen',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: AppColors.baseDarkGrey,
-          ),
-        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final double headerHeight = constraints.maxHeight * 0.38;
+
+          return Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: headerHeight,
+                child: const BlueWaveBackground(),
+              ),
+              SafeArea(
+                child: Center(
+                  child: Text(
+                    'Bureau is Coming Soon',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.baseDarkGrey,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

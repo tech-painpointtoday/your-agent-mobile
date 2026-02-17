@@ -485,7 +485,11 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     bool isRequired = false,
     String? Function(String?)? validator,
     VoidCallback? onFetchNeeded,
+    required bool Function(PropertyFormState) fetchingSelector,
   }) {
+    final isFetching = fetchingSelector(
+      context.watch<PropertyFormBloc>().state,
+    );
     return TypeAheadField<T>(
       controller: controller,
       focusNode: focusNode,
@@ -510,13 +514,21 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
           ),
         ),
       ),
-      suggestionsCallback: (pattern) {
+      suggestionsCallback: (pattern) async {
         if (items.isEmpty && onFetchNeeded != null && context.mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) onFetchNeeded();
           });
-          return <T>[];
+          // Wait for fetching to start and then finish, or timeout
+          int retries = 0;
+          while (retries < 15 && mounted) {
+            final currentState = context.read<PropertyFormBloc>().state;
+            if (!fetchingSelector(currentState)) break;
+            await Future.delayed(const Duration(milliseconds: 200));
+            retries++;
+          }
         }
+
         if (pattern.isEmpty) return items;
         final lower = pattern.toLowerCase();
         return items.where((item) {
@@ -534,10 +546,26 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         );
       },
       onSelected: onSelected,
-      emptyBuilder: (context) => Padding(
-        padding: const EdgeInsets.all(16),
-        child: Text(AppLocalizations.of(context).noDataFound),
+      loadingBuilder: (context) => const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: CircularProgressIndicator(),
+        ),
       ),
+      emptyBuilder: (context) {
+        if (isFetching) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(AppLocalizations.of(context).noDataFound),
+        );
+      },
     );
   }
 
@@ -672,6 +700,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       hintText: AppLocalizations.of(context).searchDeveloper,
                       items: state.developers,
                       isRequired: isCondoOrApt,
+                      fetchingSelector: (s) => s.isFetchingDevelopers,
                       validator: isCondoOrApt
                           ? (value) {
                               if (value == null || value.isEmpty) {
@@ -776,6 +805,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         hintText: AppLocalizations.of(context).projectNameHint,
                         items: state.condoProjects,
                         isRequired: isCondoOrApt,
+                        fetchingSelector: (s) => s.isFetchingProjects,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return AppLocalizations.of(
@@ -850,6 +880,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         hintText: AppLocalizations.of(context).projectNameHint,
                         items: state.houseProjects,
                         isRequired: false,
+                        fetchingSelector: (s) => s.isFetchingProjects,
                         nameSelector: (p) => isTh ? p.nameTh : p.nameEn,
                         subtitleSelector: (p) => isTh ? p.nameEn : p.nameTh,
                         onSelected: (project) {

@@ -374,10 +374,9 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     if (property.built != null)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).builtLabel,
-                        value: DateFormat(
-                          AppLocalizations.of(context).dateFormat,
-                          isTh ? 'th' : 'en',
-                        ).format(property.built!),
+                        value: AppLocalizations.of(
+                          context,
+                        ).dateFormat(property.built!),
                       ),
                     if (property.houseColor != null)
                       PropertyDetailRow(

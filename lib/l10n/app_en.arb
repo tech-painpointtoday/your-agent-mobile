@@ -798,6 +798,65 @@
   "showMoreButton": "Show More",
   "retryButton": "Retry",
   "editDataButton": "Edit Data",
+  "cannotCreateContractTitle": "Cannot create contract",
+  "cannotCreateContractMessage": "You must have an approved property in the system before you can create a contract document.",
+  "itemNumber": "Item {index}",
+  "@itemNumber": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "uploadImageHint": "Upload at least 1 image (JPEG, PNG, WebP)",
+  "contractImageName": "Contract Image",
+  "paymentMethodCreditCard": "Credit Card",
+  "paymentMethodPromptPay": "PromptPay",
+  "paymentMethodBankTransfer": "Bank Transfer",
+  "deleteAllImagesConfirmTitle": "Delete All Images?",
+  "deleteAllImagesConfirmMessage": "Are you sure you want to delete all images? This action cannot be undone.",
+  "imagesDeletedMessage": "Images deleted successfully",
+  "deleteItemQuestion": "Delete Item?",
+  "furnitureTitle": "Furniture",
+  "furnitureExampleHint": "e.g. Sofa, Bed",
+  "furnitureDescExampleHint": "e.g. Brand, Color, Condition",
+  "selectImageFromProperty": "Select from Property Images",
+  "sellingPrice": "Selling Price",
+  "rentalPrice": "Rental Price",
+  "latePaymentPenalty": "Late Payment Penalty",
+  "bahtPerDay": "Baht/Day",
+  "enterDateRangeHint": "e.g. 1-5",
+  "enterBranchHint": "Enter branch",
+  "enterAccountNameHint": "Enter account name",
+  "enterAccountNumberHint": "Enter account number",
+  "nameFile": "File Name",
+  "fileNameHint": "Enter file name",
+  "uploadFile": "Upload File",
+  "allPropertiesCount": "All property types total {count} items",
+  "@allPropertiesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "itemCount": "{count} items",
+  "@itemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unknownStep": "Step {step} Unknown",
+  "@unknownStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      }
+    }
+  },
+  "emailHintJuristic": "juristic@example.com",
   "selectLocationTitle": "Select Location",
   "selectLocationMessage": "Please select a location on the map or search for a place",
   "mapAddressLabel": "Address from Map",
@@ -819,14 +878,19 @@
   "addProjectNameDescription": "If you add a new project name, the system will save the information and you can easily search for it next time.",
   "addNowButton": "Add Now",
   "juristicContactPhoneLabel": "Juristic Contact Phone",
+  "furnitureAndAppliance": "Furniture and Appliance",
+  "noFurniture": "No furniture items",
+  "noAppliance": "No appliance items",
+  "deleteItemTitle": "Delete Item?",
+  "deleteItemMessage": "Are you sure you want to delete this item?",
+  "addFurniture": "Add Furniture",
+  "appliance": "Appliance",
+  "additionalConditionsHint": "Enter additional conditions...",
   "juristicContactEmailLabel": "Juristic Contact Email",
   "discardConfirmTitle": "Discard",
-  "deleteAllImagesConfirmTitle": "Delete All Images?",
-  "deleteAllImagesConfirmMessage": "Once you delete, it cannot be undone",
   "discardAllPropertyConfirmTitle": "Discard All Property Information Changes?",
   "discardAllPropertyConfirmMessage": "Once you discard, it cannot be undone",
   "imageDeletedMessage": "Image deleted successfully",
-  "imagesDeletedMessage": "All images deleted successfully",
   "searchFilterLabel": "Search Filter",
   "approvalStatusTitle": "Approval Status",
   "statusIncomplete": "Pending Signature",
@@ -917,19 +981,7 @@
   "personTypeLabel": "Person Type",
   "searchDataNameProperty": "Search data name property",
   "currentAddressLabel": "Current Address",
-  "deleteItemQuestion": "Delete this item?",
-  "nameFile": "Name file",
-  "uploadFile": "Upload file",
-  "sellingPrice": "Selling Price",
-  "rentalPrice": "Rental Price",
   "paymentDueDateLabel": "Payment Due Date",
-  "enterDateRangeHint": "Enter date 1-31",
-  "latePaymentPenalty": "Late Payment Penalty",
-  "bahtPerDay": "Baht/Day",
-  "enterBranchHint": "Specify Bank",
-  "enterAccountNumberHint": "Specify account number",
-  "furnitureExampleHint": "Example: bed, sofa",
-  "furnitureDescExampleHint": "Example: 6ft pine wood bed",
   "propertyPhotos": "Property Photos",
   "searchDataName": "Search data name",
   "contractSelect": "Contract select",
@@ -971,7 +1023,16 @@
   "searchAddress": "Search address",
   "confirmThisLocation": "Confirm this location",
   "noDataFound": "Data",
-  "dateFormat": "dd Jan yyyy",
+  "dateFormat": "{date}",
+  "@dateFormat": {
+    "description": "Standard date format",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
   "demoCompanyName": "YourHome Platform Co., Ltd.",
   "lastUpdateDemo": "Last updated Dec 24, 2025, 12:00 PM",
   "decline": "Decline",
@@ -1026,12 +1087,12 @@
   "shareDocument": "Share Document",
   "submitDocumentQuestion": "Submit document?",
   "buyerInfo": "Buyer Information",
+  "renterInfo": "Renter Information",
   "addFurnitureDetails": "Add furniture items and details",
   "paymentMethods": "Cost and payment methods",
   "additionalContractConditions": "Additional contract conditions",
-  "fileNameHint": "File name e.g. ID card copy",
   "propertyOwnerNotFound": "Property owner data not found",
-  "enterAccountNameHint": "Specify account name",
+  "connectPropertyOwnerEmailHint": "Please specify the property owner's email to connect information",
   "contractFormat": "Contract format",
   "selectContractStartDate": "Select contract start date",
   "registerBuyerToContract": "Register buyer info to make contract",
@@ -1119,8 +1180,80 @@
   "select": "Select",
   "createAccount": "Create Account",
   "applianceTitle": "Appliance",
-  "furnitureTitle": "Furniture",
-  "selectImageFromProperty": "Select image from property",
   "add_developer_success": "Developer added successfully",
-  "add_project_success": "Project added successfully"
+  "add_project_success": "Project added successfully",
+  "ownerLabel": "Owner",
+  "buyerLabel": "Buyer",
+  "signedSuffix": "Signed",
+  "sendDocumentTo": "Send document to {label}",
+  "@sendDocumentTo": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "resendDocumentConfirm": "Do you want to resend the document to {label} ({email}) again?",
+  "@resendDocumentConfirm": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "sendDocumentConfirm": "Do you want to send the document to {label} ({email})?",
+  "@sendDocumentConfirm": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "sendToLessorSuccess": "Document sent to lessor successfully",
+  "sendToLesseeSuccess": "Document sent to lessee successfully",
+  "invalidPhoneNumberFormat": "Invalid phone number",
+  "invalidEmailFormat": "Invalid email format",
+  "passwordMinLengthError": "Password must be at least 8 characters",
+  "passwordMismatchError": "Passwords do not match",
+  "addAppliance": "Add Appliance",
+  "furnitureConfirm": "Confirm Furniture",
+  "allowAgentRepresentationLabel": "Allow Agent",
+  "licenseNumberWithPrefix": "License Number {number}",
+  "@licenseNumberWithPrefix": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "experienceYears": "{years} years experience",
+  "@experienceYears": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "serviceRadiusWithPrefix": "Service Radius {radius} km",
+  "@serviceRadiusWithPrefix": {
+    "placeholders": {
+      "radius": {
+        "type": "String"
+      }
+    }
+  },
+  "profileLevel": "Lv. {level}",
+  "@profileLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  }
 }

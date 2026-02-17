@@ -379,35 +379,30 @@ class MenuGridCard extends StatelessWidget {
         imagePath: 'assets/images/home/money.png',
         route: '/money',
         accent: const Color(0xFF10B981),
-        enable: false,
       ),
       HomeMenuItem(
         label: l10n.availability,
         imagePath: 'assets/images/home/calendar.png',
         route: '/calendar',
         accent: const Color(0xFFF59E0B),
-        enable: false,
       ),
       HomeMenuItem(
         label: l10n.contactListLabel,
         imagePath: 'assets/images/home/contact.png',
         route: '/contact',
         accent: const Color(0xFF22C55E),
-        enable: false,
       ),
       HomeMenuItem(
         label: l10n.dashboard,
         imagePath: 'assets/images/home/dashboard.png',
         route: '/dashboard',
         accent: const Color(0xFFF97316),
-        enable: false,
       ),
       HomeMenuItem(
         label: l10n.coAgent,
         imagePath: 'assets/images/home/co_agent.png',
         route: '/co-agent',
         accent: const Color(0xFF6366F1),
-        enable: false,
       ),
       HomeMenuItem(
         label: l10n.contracts,
@@ -420,7 +415,6 @@ class MenuGridCard extends StatelessWidget {
         imagePath: 'assets/images/home/bureau.png',
         route: '/bureau',
         accent: const Color(0xFF06B6D4),
-        enable: false,
       ),
     ];
   }
@@ -473,13 +467,13 @@ class _MenuGridItem extends StatelessWidget {
           Center(
             child: Image.asset(
               item.imagePath,
-              width: 40,
-              height: 40,
+              width: 48,
+              height: 48,
               fit: BoxFit.contain,
               opacity: AlwaysStoppedAnimation<double>(item.enable ? 1 : 0.2),
               errorBuilder: (context, error, stackTrace) => Container(
-                width: 24,
-                height: 24,
+                width: 48,
+                height: 48,
                 color: AppColors.baseLightGrey,
                 child: Icon(
                   Icons.error_outline,

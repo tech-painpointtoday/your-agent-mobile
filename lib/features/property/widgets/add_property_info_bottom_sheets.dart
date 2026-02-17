@@ -5,18 +5,18 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
-import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 /// Entry point for adding a developer
 class AddDeveloperBottomSheet {
   static Future<Map<String, dynamic>?> show(BuildContext context) {
     return PropertyInfoBottomSheet.show(
       context: context,
-      title: AppLocalizations.of(context).addDeveloperTitle,
-      description: AppLocalizations.of(context).addDeveloperDescription,
-      labelBase: AppLocalizations.of(context).developerNameHint,
-      hintText: AppLocalizations.of(context).developerNameHint,
+      title: context.l10n.addDeveloperTitle,
+      description: context.l10n.addDeveloperDescription,
+      labelBase: context.l10n.developerNameHint,
+      hintText: context.l10n.developerNameHint,
     );
   }
 }
@@ -101,7 +101,7 @@ class _AddProjectBottomSheetContentState
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-    final l10n = AppLocalizations.of(context);
+    final l10n = context.l10n;
 
     return Container(
       width: double.infinity,
@@ -224,7 +224,7 @@ class _AddProjectBottomSheetContentState
               AppTextField(
                 label: l10n.juristicContactEmailLabel,
                 controller: _juristicEmailController,
-                hintText: 'juristic@example.com',
+                hintText: l10n.emailHintJuristic,
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.isEmpty) return null;
@@ -314,7 +314,7 @@ class _AddProjectBottomSheetContentState
                                     setState(() => _isLoading = false);
                                     StatusDialog.showError(
                                       context: context,
-                                      title: AppLocalizations.of(context).error,
+                                      title: context.l10n.error,
                                       message: e.toString().replaceFirst(
                                         'Exception: ',
                                         '',
@@ -506,14 +506,14 @@ class _PropertyInfoBottomSheetState extends State<PropertyInfoBottomSheet> {
                 children: [
                   Expanded(
                     child: AppButton(
-                      text: AppLocalizations.of(context).statusCancelled,
+                      text: context.l10n.statusCancelled,
                       style: AppButtonStyle.outline,
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
                   Expanded(
                     child: AppButton(
-                      text: AppLocalizations.of(context).addNowButton,
+                      text: context.l10n.addNowButton,
                       style: AppButtonStyle.primary,
                       enabled: _isButtonEnabled && !_isLoading,
                       isLoading: _isLoading,
@@ -541,7 +541,7 @@ class _PropertyInfoBottomSheetState extends State<PropertyInfoBottomSheet> {
                                     setState(() => _isLoading = false);
                                     StatusDialog.showError(
                                       context: context,
-                                      title: AppLocalizations.of(context).error,
+                                      title: context.l10n.error,
                                       message: e.toString().replaceFirst(
                                         'Exception: ',
                                         '',

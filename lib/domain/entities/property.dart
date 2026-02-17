@@ -227,7 +227,7 @@ class Property extends Equatable {
   final String title;
   final String? name; // Internal name / Project name
   final String description;
-
+  final bool allowAgentRepresentation;
   // Location
   final String? address;
   final double? latitude;
@@ -297,6 +297,7 @@ class Property extends Equatable {
     required this.title,
     this.name,
     this.description = '',
+    this.allowAgentRepresentation = false,
     this.address,
     this.latitude,
     this.longitude,
@@ -545,6 +546,7 @@ class Property extends Equatable {
           parseString(data['description']) ??
           parseString(specs['description']) ??
           '',
+      allowAgentRepresentation: data['allow_agent_representation'] ?? false,
 
       // Status & Price
       approvalStatus: parseStatus(data['approval_status']?.toString()),
@@ -637,7 +639,7 @@ class Property extends Equatable {
   /// Converts Entity to API Create Payload (Flat Structure)
   Map<String, dynamic> toCreatePayload() {
     return {
-      'name': title, // API expects 'name'
+      'name': title,
       'type': propertyType?.value,
       'price': price,
       'description': description,

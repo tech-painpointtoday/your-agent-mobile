@@ -8,6 +8,7 @@ import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/utils/app_utils.dart';
+import 'package:youragent/widgets/badges/app_badge.dart';
 import 'property_status_badge.dart';
 
 /// Property list item card widget
@@ -124,13 +125,25 @@ class PropertyListItem extends StatelessWidget {
                   const SizedBox(height: 16),
                   // Status badge and edit button
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       PropertyStatusBadge(
                         status: property.approvalStatus,
                         isDraft: property.isDraft,
                       ),
-                      if (onEdit != null)
+                      if (property.allowAgentRepresentation) ...[
+                        const SizedBox(width: 8),
+                        AppBadge(
+                          label: AppLocalizations.of(
+                            context,
+                          ).allowAgentRepresentationLabel,
+                          color: BadgeColor.blue,
+                          style: BadgeStyle.plain,
+                          hasBorder: false,
+                          fontSize: 12,
+                        ),
+                      ],
+                      if (onEdit != null) ...[
+                        Spacer(),
                         GestureDetector(
                           onTap: onEdit,
                           child: Padding(
@@ -146,6 +159,7 @@ class PropertyListItem extends StatelessWidget {
                             ),
                           ),
                         ),
+                      ],
                     ],
                   ),
                 ],

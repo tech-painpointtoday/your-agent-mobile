@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../widgets/backgrounds/blue_wave_background.dart';
@@ -26,13 +27,30 @@ class CalendarScreen extends StatelessWidget {
               SafeArea(
                 child: Center(
                   child: Text(
-                    'Calendar Screen',
+                    'Calendar is Coming Soon',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: AppColors.baseDarkGrey,
                     ),
                   ),
+                ),
+              ),
+              Positioned(
+                top: kToolbarHeight,
+                left: 16,
+                child: IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/icons/chevron-left.svg',
+                    width: 24,
+                    height: 24,
+                    fit: BoxFit.contain,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(context),
                 ),
               ),
             ],

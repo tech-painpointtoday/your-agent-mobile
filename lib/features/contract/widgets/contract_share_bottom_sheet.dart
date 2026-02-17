@@ -5,7 +5,7 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/contract.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 
@@ -80,7 +80,7 @@ class ContractShareBottomSheet extends StatelessWidget {
             const SizedBox(height: 32),
             _buildResendOrSendAction(
               context: context,
-              label: AppLocalizations.of(context).property,
+              label: context.l10n.property,
               email: sellerEmail,
               isSigned: contract.sellerSignedAt != null,
               onSend:
@@ -89,7 +89,7 @@ class ContractShareBottomSheet extends StatelessWidget {
             const SizedBox(height: 12),
             _buildResendOrSendAction(
               context: context,
-              label: AppLocalizations.of(context).lessee,
+              label: context.l10n.lessee,
               email: buyerEmail,
               isSigned: contract.buyerSignedAt != null,
               onSend: onSendToBuyer ?? () => _handleSendToBuyer(parentContext),
@@ -97,7 +97,7 @@ class ContractShareBottomSheet extends StatelessWidget {
             // if (pdfPath != null || onDownloadPdf != null) ...[
             //   const SizedBox(height: 12),
             //   AppButton(
-            //     text: AppLocalizations.of(context).file,
+            //     text: context.l10n.file,
             //     style: AppButtonStyle.outline,
             //     onPressed: () {
             //       Navigator.pop(context);
@@ -107,7 +107,7 @@ class ContractShareBottomSheet extends StatelessWidget {
             // ],
             const SizedBox(height: 12),
             AppButton(
-              text: AppLocalizations.of(context).statusCancelled,
+              text: context.l10n.statusCancelled,
               style: AppButtonStyle.ghost,
               textColor: AppColors.supportRedDeep,
               onPressed: () => Navigator.pop(context),
@@ -158,7 +158,7 @@ class ContractShareBottomSheet extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '$labelลงนามแล้ว',
+                        '$label${context.l10n.signedSuffix}',
                         style: GoogleFonts.anuphan(
                           color: AppColors.supportGreenDark,
                           fontSize: 14,
@@ -182,7 +182,7 @@ class ContractShareBottomSheet extends StatelessWidget {
               ),
             ),
             AppButton(
-              text: AppLocalizations.of(context).submit,
+              text: context.l10n.submit,
               style: AppButtonStyle.outline,
               height: 36,
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -192,13 +192,13 @@ class ContractShareBottomSheet extends StatelessWidget {
                       Navigator.pop(context);
                       AppConfirmationBottomSheet.show(
                         context: context,
-                        title: AppLocalizations.of(context).submitDocument,
-                        description:
-                            'คุณต้องการส่งเอกสารไปยัง$label ($email) อีกครั้งใช่หรือไม่?',
-                        confirmLabel: AppLocalizations.of(context).submit,
-                        cancelLabel: AppLocalizations.of(
-                          context,
-                        ).statusCancelled,
+                        title: context.l10n.submitDocument,
+                        description: context.l10n.resendDocumentConfirm(
+                          label,
+                          email,
+                        ),
+                        confirmLabel: context.l10n.submit,
+                        cancelLabel: context.l10n.statusCancelled,
                         style: ConfirmationStyle.normal,
                         onConfirm: onSend,
                       );
@@ -210,7 +210,7 @@ class ContractShareBottomSheet extends StatelessWidget {
     }
 
     return AppButton(
-      text: 'ส่งเอกสารไปยัง $label',
+      text: context.l10n.sendDocumentTo(label),
       style: AppButtonStyle.primary,
       onPressed: !emailExists
           ? null
@@ -218,11 +218,10 @@ class ContractShareBottomSheet extends StatelessWidget {
               Navigator.pop(context);
               AppConfirmationBottomSheet.show(
                 context: context,
-                title: AppLocalizations.of(context).submitDocumentQuestion,
-                description:
-                    'คุณต้องการส่งเอกสารไปยัง$label ($email) ใช่หรือไม่?',
-                confirmLabel: AppLocalizations.of(context).submit,
-                cancelLabel: AppLocalizations.of(context).statusCancelled,
+                title: context.l10n.submitDocumentQuestion,
+                description: context.l10n.sendDocumentConfirm(label, email),
+                confirmLabel: context.l10n.submit,
+                cancelLabel: context.l10n.statusCancelled,
                 style: ConfirmationStyle.normal,
                 onConfirm: onSend,
               );
@@ -245,8 +244,8 @@ class ContractShareBottomSheet extends StatelessWidget {
 
         StatusDialog.showSuccess(
           context: context,
-          title: AppLocalizations.of(context).successTitle,
-          message: 'ส่งเอกสารไปยังผู้ให้เช่าสำเร็จ',
+          title: context.l10n.successTitle,
+          message: context.l10n.sendToLessorSuccess,
         );
       }
     } catch (e) {
@@ -261,7 +260,7 @@ class ContractShareBottomSheet extends StatelessWidget {
         }
         StatusDialog.showError(
           context: context,
-          title: AppLocalizations.of(context).errorOccurredTitle,
+          title: context.l10n.errorOccurredTitle,
           message: errorMessage,
         );
       }
@@ -283,8 +282,8 @@ class ContractShareBottomSheet extends StatelessWidget {
 
         StatusDialog.showSuccess(
           context: context,
-          title: AppLocalizations.of(context).successTitle,
-          message: 'ส่งเอกสารไปยังผู้เช่าสำเร็จ',
+          title: context.l10n.successTitle,
+          message: context.l10n.sendToLesseeSuccess,
         );
       }
     } catch (e) {
@@ -299,7 +298,7 @@ class ContractShareBottomSheet extends StatelessWidget {
         }
         StatusDialog.showError(
           context: context,
-          title: AppLocalizations.of(context).errorOccurredTitle,
+          title: context.l10n.errorOccurredTitle,
           message: errorMessage,
         );
       }

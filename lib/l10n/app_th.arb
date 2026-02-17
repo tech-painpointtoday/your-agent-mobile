@@ -798,6 +798,65 @@
   "developerNameHint": "ชื่อผู้พัฒนาโครงการ",
   "addProjectNameTitle": "เพิ่มชื่อโครงการ",
   "locationTitle": "ตำแหน่งที่ตั้ง",
+  "cannotCreateContractTitle": "ไม่สามารถสร้างสัญญาได้",
+  "cannotCreateContractMessage": "คุณต้องมีทรัพย์ที่ผ่านการอนุมัติแล้วในระบบก่อน\nจึงจะสามารถสร้างเอกสารสัญญาได้",
+  "itemNumber": "รายการที่ {index}",
+  "@itemNumber": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "uploadImageHint": "อัปโหลดรูปภาพอย่างน้อย 1 รูป (JPEG, PNG, WebP)",
+  "contractImageName": "รูปภาพสัญญา",
+  "paymentMethodCreditCard": "บัตรเครดิต",
+  "paymentMethodPromptPay": "พร้อมเพย์",
+  "paymentMethodBankTransfer": "โอนเงินผ่านธนาคาร",
+  "deleteAllImagesConfirmTitle": "ลบรูปภาพทั้งหมด?",
+  "deleteAllImagesConfirmMessage": "คุณแน่ใจหรือไม่ว่าต้องการลบรูปภาพทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้",
+  "imagesDeletedMessage": "ลบรูปภาพเรียบร้อยแล้ว",
+  "deleteItemQuestion": "ลบรายการ?",
+  "furnitureTitle": "เฟอร์นิเจอร์",
+  "furnitureExampleHint": "เช่น โซฟา, เตียง",
+  "furnitureDescExampleHint": "เช่น ยี่ห้อ, สี, สภาพ",
+  "selectImageFromProperty": "เลือกจากรูปภาพทรัพย์",
+  "sellingPrice": "ราคาขาย",
+  "rentalPrice": "ราคาเช่า",
+  "latePaymentPenalty": "ค่าปรับล่าช้า",
+  "bahtPerDay": "บาท/วัน",
+  "enterDateRangeHint": "เช่น 1-5",
+  "enterBranchHint": "ระบุสาขา",
+  "enterAccountNameHint": "ระบุชื่อบัญชี",
+  "enterAccountNumberHint": "ระบุเลขบัญชี",
+  "nameFile": "ชื่อไฟล์",
+  "fileNameHint": "ระบุชื่อไฟล์",
+  "uploadFile": "อัปโหลดไฟล์",
+  "allPropertiesCount": "อสังหาริมทรัพย์ทุกประเภททั้งหมด {count} รายการ",
+  "@allPropertiesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "itemCount": "{count} รายการ",
+  "@itemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unknownStep": "ขั้นตอน {step} ไม่ทราบ",
+  "@unknownStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      }
+    }
+  },
+  "emailHintJuristic": "juristic@example.com",
   "searchLocationHint": "ค้นหาตำแหน่งที่ตั้ง",
   "confirmLocationButton": "ยืนยันตำแหน่งนี้",
   "propertyTypeLabel": "ประเภททรัพย์",
@@ -835,15 +894,12 @@
   "addDeveloperDescription": "ถ้าคุณเพิ่มผู้พัฒนาโครงการใหม่ ระบบจะเก็บข้อมูลไว้ให้ และคุณสามารถค้นหาได้ง่ายๆ ในครั้งถัดไปเลย",
   "addProjectNameDescription": "ถ้าคุณเพิ่มชื่อโครงการใหม่ ระบบจะเก็บข้อมูลไว้ให้ และคุณสามารถค้นหาได้ง่ายๆ ในครั้งถัดไปเลย",
   "addNowButton": "เพิ่มเลย",
-  "deleteAllImagesConfirmTitle": "ลบรูปภาพทั้งหมด?",
-  "deleteAllImagesConfirmMessage": "หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้",
   "discardConfirmTitle": "ละทิ้ง",
   "juristicContactPhoneLabel": "เบอร์ติดต่อสำนักงานนิติบุคคล",
   "juristicContactEmailLabel": "อีเมลสำนักงานนิติบุคคล",
   "discardAllPropertyConfirmTitle": "ละทิ้งการสร้างทรัพย์?",
   "discardAllPropertyConfirmMessage": "หากคุณละทิ้งแล้ว จะไม่สามารถย้อนกลับได้",
   "imageDeletedMessage": "ลบรูปภาพเรียบร้อยแล้ว",
-  "imagesDeletedMessage": "ลบรูปภาพทั้งหมดเรียบร้อยแล้ว",
   "searchFilterLabel": "ตัวกรองการค้นหา",
   "approvalStatusTitle": "สถานะการอนุมัติ",
   "statusIncomplete": "รอการลงนาม",
@@ -921,20 +977,8 @@
   "personTypeLabel": "ประเภทบุคคล",
   "searchDataNameProperty": "ค้นหาชื่อเจ้าของทรัพย์ในระบบ เพื่อเชื่อมต่อข้อมูล",
   "currentAddressLabel": "ที่อยู่ปัจจุบัน",
-  "deleteItemQuestion": "ลบรายการนี้?",
-  "nameFile": "ชื่อไฟล์",
-  "uploadFile": "อัปโหลดไฟล์ PDF อย่างน้อย 1 ไฟล์",
-  "sellingPrice": "ราคาขาย",
-  "rentalPrice": "ราคาเช่า",
   "paymentDueDateLabel": "วันที่ครบกำหนดชำระ",
-  "enterDateRangeHint": "ระบุวันที่ 1-31",
-  "latePaymentPenalty": "ค่าปรับล่าช้า",
-  "bahtPerDay": "บาท/วัน",
-  "enterBranchHint": "ระบุธนาคาร",
-  "enterAccountNumberHint": "ระบุเลขบัญชี",
   "selectFromPropertyPhotos": "เลือกจากรูปอสังหาฯ",
-  "furnitureExampleHint": "เช่น เตียงนอน, โซฟา",
-  "furnitureDescExampleHint": "เช่น เตียงนอน 6 ฟุต สีไม้สน",
   "propertyPhotos": "รูปอสังหาฯ",
   "searchDataName": "ค้นหาชื่ออสังหาฯ ในระบบ เพื่อเชื่อมต่อข้อมูล",
   "contractSelect": "เลือกวันที่ทำสัญญา",
@@ -972,7 +1016,16 @@
   "confirmLocationPropertySelect": "ยืนยันการเลือกตำแหน่งนี้สำหรับประกาศทรัพย์",
   "searchAddress": "กำลังค้นหาที่อยู่…",
   "confirmThisLocation": "ยืนยันตําแหน่งนี้",
-  "dateFormat": "dd ม.ค. yyyy",
+  "dateFormat": "{date}",
+  "@dateFormat": {
+    "description": "Standard date format",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
   "demoCompanyName": "บริษัท ยัวร์โฮม แพลตฟอร์ม จำกัด",
   "lastUpdateDemo": "อัปเดตล่าสุด 24 ธ.ค. 2568, 12:00 น.",
   "decline": "ไม่ยอมรับ",
@@ -1026,12 +1079,12 @@
   "shareDocument": "แชร์เอกสาร",
   "submitDocumentQuestion": "ส่งเอกสาร?",
   "buyerInfo": "ข้อมูลผู้ซื้อ",
+  "renterInfo": "ข้อมูลผู้เช่า",
   "addFurnitureDetails": "เพิ่มรายการเฟอร์นิเจอร์ และรายละเอียด",
   "paymentMethods": "ค่าใช้จ่าย และช่องทางการชำระเงิน",
   "additionalContractConditions": "เงื่อนไขสัญญาเพิ่มเติม",
-  "fileNameHint": "ชื่อไฟล์ เช่น สำเนาบัตรประชาชน",
   "propertyOwnerNotFound": "ไม่พบข้อมูลเจ้าของทรัพย์",
-  "enterAccountNameHint": "ระบุชื่อบัญชี",
+  "connectPropertyOwnerEmailHint": "กรุณาระบุอีเมลของเจ้าของทรัพย์ เพื่อเชื่อมต่อข้อมูล",
   "contractFormat": "รูปแบบสัญญา",
   "selectContractStartDate": "เลือกวันที่เริ่มสัญญา",
   "registerBuyerToContract": "ลงทะเบียนข้อมูลผู้ซื้อ เพื่อทำสัญญา",
@@ -1120,8 +1173,88 @@
   "select": "เลือก",
   "createAccount": "สร้างบัญชี",
   "applianceTitle": "เครื่องใช้ไฟฟ้า",
-  "furnitureTitle": "เฟอร์นิเจอร์",
-  "selectImageFromProperty": "เลือกรูปจากอสังหาฯ",
   "add_developer_success": "เพิ่มผู้พัฒนาเรียบร้อยแล้ว",
-  "add_project_success": "เพิ่มโครงการเรียบร้อยแล้ว"
+  "add_project_success": "เพิ่มโครงการเรียบร้อยแล้ว",
+  "ownerLabel": "เจ้าของทรัพย์",
+  "buyerLabel": "ผู้ซื้อ",
+  "signedSuffix": "ลงนามแล้ว",
+  "sendDocumentTo": "ส่งเอกสารไปยัง {label}",
+  "@sendDocumentTo": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "resendDocumentConfirm": "คุณต้องการส่งเอกสารไปยัง{label} ({email}) อีกครั้งใช่หรือไม่?",
+  "@resendDocumentConfirm": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "sendDocumentConfirm": "คุณต้องการส่งเอกสารไปยัง{label} ({email}) ใช่หรือไม่?",
+  "@sendDocumentConfirm": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "sendToLessorSuccess": "ส่งเอกสารไปยังผู้ให้เช่าสำเร็จ",
+  "sendToLesseeSuccess": "ส่งเอกสารไปยังผู้เช่าสำเร็จ",
+  "invalidPhoneNumberFormat": "หมายเลขโทรศัพท์ไม่ถูกต้อง",
+  "invalidEmailFormat": "รูปแบบอีเมลไม่ถูกต้อง",
+  "passwordMinLengthError": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร",
+  "furnitureAndAppliance": "เฟอร์นิเจอร์และเครื่องใช้ไฟฟ้า",
+  "noFurniture": "ไม่มีรายการเฟอร์นิเจอร์",
+  "noAppliance": "ไม่มีรายการเครื่องใช้ไฟฟ้า",
+  "deleteItemTitle": "ลบรายการ?",
+  "deleteItemMessage": "คุณต้องการลบรายการนี้ใช่หรือไม่?",
+  "addFurniture": "เพิ่มเฟอร์นิเจอร์",
+  "appliance": "เครื่องใช้ไฟฟ้า",
+  "additionalConditionsHint": "ระบุรายละเอียดเพิ่มเติม",
+  "passwordMismatchError": "รหัสผ่านไม่ตรงกัน",
+  "addAppliance": "เพิ่มเครื่องใช้ไฟฟ้า",
+  "furnitureConfirm": "ยืนยันเฟอร์นิเจอร์",
+  "allowAgentRepresentationLabel": "รับนายหน้า",
+  "licenseNumberWithPrefix": "เลขที่ใบอนุญาต {number}",
+  "@licenseNumberWithPrefix": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "experienceYears": "ประสบการณ์ {years} ปี",
+  "@experienceYears": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "serviceRadiusWithPrefix": "รัศมีการทำงาน {radius} ก.ม.",
+  "@serviceRadiusWithPrefix": {
+    "placeholders": {
+      "radius": {
+        "type": "String"
+      }
+    }
+  },
+  "profileLevel": "Lv. {level}",
+  "@profileLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  }
 }

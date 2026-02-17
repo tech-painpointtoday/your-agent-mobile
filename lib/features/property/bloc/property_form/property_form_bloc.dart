@@ -669,14 +669,13 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     PropertyFormDevelopersFetched event,
     Emitter<PropertyFormState> emit,
   ) async {
-    // 1. Use cached if available
     if (state.developers.isNotEmpty && !event.refresh) return;
-
+    emit(state.copyWith(isFetchingDevelopers: true));
     try {
       final developers = await _propertyApiService.getDevelopers();
-      emit(state.copyWith(developers: developers));
+      emit(state.copyWith(developers: developers, isFetchingDevelopers: false));
     } catch (e) {
-      // Silently fail or log
+      emit(state.copyWith(isFetchingDevelopers: false));
     }
   }
 
@@ -708,11 +707,12 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     PropertyFormCondoProjectsFetched event,
     Emitter<PropertyFormState> emit,
   ) async {
+    emit(state.copyWith(isFetchingProjects: true));
     final projects = await _loadCondoProjectsForDeveloper(
       event.developerId,
       refresh: event.refresh,
     );
-    emit(state.copyWith(condoProjects: projects));
+    emit(state.copyWith(condoProjects: projects, isFetchingProjects: false));
   }
 
   Future<void> _onDeveloperChanged(
@@ -731,6 +731,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
             : state.selectedHouseProjectId,
         condoProjects: developerChanged ? [] : state.condoProjects,
         houseProjects: developerChanged ? [] : state.houseProjects,
+        isFetchingProjects: true,
       ),
     );
     final projects = await _loadCondoProjectsForDeveloper(event.developerId);
@@ -738,7 +739,13 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     final houseProjects = await _loadHouseProjectsForDeveloper(
       event.developerId,
     );
-    emit(state.copyWith(condoProjects: projects, houseProjects: houseProjects));
+    emit(
+      state.copyWith(
+        condoProjects: projects,
+        houseProjects: houseProjects,
+        isFetchingProjects: false,
+      ),
+    );
   }
 
   Future<void> _onCondoProjectChanged(
@@ -793,11 +800,12 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     PropertyFormHouseProjectsFetched event,
     Emitter<PropertyFormState> emit,
   ) async {
+    emit(state.copyWith(isFetchingProjects: true));
     final projects = await _loadHouseProjectsForDeveloper(
       event.developerId,
       refresh: event.refresh,
     );
-    emit(state.copyWith(houseProjects: projects));
+    emit(state.copyWith(houseProjects: projects, isFetchingProjects: false));
   }
 
   Future<void> _onHouseProjectChanged(

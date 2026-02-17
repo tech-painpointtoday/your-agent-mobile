@@ -16,7 +16,7 @@ import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/contract_detail_bloc.dart';
 import '../widgets/contract_status_badge.dart';
 import '../widgets/contract_share_bottom_sheet.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/utils/app_utils.dart';
 
 class ContractDetailScreen extends StatefulWidget {
@@ -112,20 +112,20 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             _isInitialLoad = false;
             StatusDialog.showError(
               context: context,
-              title: AppLocalizations.of(context).errorOccurredTitle,
+              title: context.l10n.errorOccurredTitle,
               message: state.message,
             );
           } else if (state is ContractDeletedSuccess) {
             StatusDialog.showSuccess(
               context: context,
-              title: AppLocalizations.of(context).successTitle,
-              message: AppLocalizations.of(context).contract_deleted_success,
+              title: context.l10n.successTitle,
+              message: context.l10n.contract_deleted_success,
             );
             context.pop(true);
           } else if (state is ContractActionSuccess) {
             StatusDialog.showSuccess(
               context: context,
-              title: AppLocalizations.of(context).successTitle,
+              title: context.l10n.successTitle,
               message: state.message,
             );
           }
@@ -205,7 +205,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
   Widget _buildHeader(BuildContext context, ContractDetailState state) {
     String contractNumber = '-';
-    String propertyName = AppLocalizations.of(context).loading;
+    String propertyName = context.l10n.loading;
 
     if (state is ContractDetailLoadedWithoutPdf ||
         state is ContractDetailPdfLoading ||
@@ -221,7 +221,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${AppLocalizations.of(context).contract_number}: $contractNumber',
+            '${context.l10n.contract_number}: $contractNumber',
             style: GoogleFonts.anuphan(
               color: AppColors.baseGrey,
               fontSize: 10,
@@ -263,7 +263,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
 
     if (hasSellerSigned && hasBuyerSigned) {
       return AppBadge(
-        label: AppLocalizations.of(context).signedByBoth,
+        label: context.l10n.signedByBoth,
         color: BadgeColor.blue,
         style: BadgeStyle.dot,
         fontSize: 12,
@@ -271,14 +271,14 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     }
     if (hasSellerSigned) {
       return AppBadge(
-        label: AppLocalizations.of(context).signedByLessor,
+        label: context.l10n.signedByLessor,
         color: BadgeColor.default_,
         style: BadgeStyle.done,
         fontSize: 12,
       );
     } else if (hasBuyerSigned) {
       return AppBadge(
-        label: AppLocalizations.of(context).signedByLessee,
+        label: context.l10n.signedByLessee,
         color: BadgeColor.default_,
         style: BadgeStyle.done,
         fontSize: 12,
@@ -286,7 +286,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     }
 
     return AppBadge(
-      label: AppLocalizations.of(context).notSignedYet,
+      label: context.l10n.notSignedYet,
       color: BadgeColor.default_,
       fontSize: 12,
     );
@@ -303,14 +303,14 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         children: [
           Flexible(
             child: _buildDocumentActionButton(
-              label: AppLocalizations.of(context).downloadPdf,
+              label: context.l10n.downloadPdf,
               onTap: state is ContractDetailLoaded && state.pdfPath != null
                   ? () => _downloadPdf(context, state)
                   : () {
                       StatusDialog.showWarning(
                         context: context,
-                        title: AppLocalizations.of(context).pleaseWait,
-                        message: AppLocalizations.of(context).document,
+                        title: context.l10n.pleaseWait,
+                        message: context.l10n.document,
                       );
                     },
             ),
@@ -318,7 +318,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
           const SizedBox(width: 12),
           Flexible(
             child: _buildDocumentActionButton(
-              label: AppLocalizations.of(context).shareDocument,
+              label: context.l10n.shareDocument,
               iconPath: 'assets/icons/arrow-up-right.svg',
               onTap:
                   (state is ContractDetailLoaded &&
@@ -427,7 +427,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context).loadingPdf,
+              context.l10n.loadingPdf,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
                 color: AppColors.baseGrey,
@@ -447,7 +447,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context).preparingPdf,
+              context.l10n.preparingPdf,
               style: GoogleFonts.anuphan(
                 fontSize: 14,
                 color: AppColors.baseGrey,
@@ -503,8 +503,8 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     final contract = _getContract(state);
 
     final buttonText = contract.status == ContractStatus.draft
-        ? AppLocalizations.of(context).continueAddingInfo
-        : AppLocalizations.of(context).editContract;
+        ? context.l10n.continueAddingInfo
+        : context.l10n.editContract;
 
     final isCompleted =
         contract.status == ContractStatus.signed ||
@@ -551,10 +551,10 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
             onTap: () {
               AppConfirmationBottomSheet.show(
                 context: context,
-                title: AppLocalizations.of(context).deleteContract,
-                description: AppLocalizations.of(context).deleteBackContract,
-                confirmLabel: AppLocalizations.of(context).delete,
-                cancelLabel: AppLocalizations.of(context).statusCancelled,
+                title: context.l10n.deleteContract,
+                description: context.l10n.deleteBackContract,
+                confirmLabel: context.l10n.delete,
+                cancelLabel: context.l10n.statusCancelled,
                 style: ConfirmationStyle.destructive,
                 onConfirm: () {
                   context.read<ContractDetailBloc>().add(
@@ -630,7 +630,7 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
     if (state.pdfPath != null) {
       final dateStr = state.contract.createdAt != null
           ? AppUtils.generateContractCode(state.contract)
-          : 'Draft';
+          : context.l10n.statusDraft;
       SharePlus.instance.share(
         ShareParams(
           files: [

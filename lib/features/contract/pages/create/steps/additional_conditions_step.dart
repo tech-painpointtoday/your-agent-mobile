@@ -5,7 +5,7 @@ import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 class AdditionalConditionsStep extends StatefulWidget {
   final bool hideHeader;
@@ -44,26 +44,22 @@ class _AdditionalConditionsStepState extends State<AdditionalConditionsStep> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         AppBadge(
-                          label: AppLocalizations.of(
-                            context,
-                          ).additionalContractConditions,
-                          fontSize: 16,
                           color: BadgeColor.blue,
+                          label: context.l10n.additional_conditions,
+                          fontSize: 16,
                         ),
                         AppBadge(
                           color: BadgeColor.default_,
-                          fontSize: 16,
                           label: '${state.step}/8',
+                          fontSize: 16,
                         ),
                       ],
                     ),
                   if (!widget.hideHeader) const SizedBox(height: 24),
                   AppTextField(
-                    label: AppLocalizations.of(
-                      context,
-                    ).additionalContractConditions,
-                    hintText: AppLocalizations.of(context).conditions,
-                    maxLines: 15,
+                    label: context.l10n.additional_conditions,
+                    hintText: context.l10n.additionalConditionsHint,
+                    maxLines: 8,
                     showScrollbar: true,
                     scrollController: _scrollController,
                     controller:

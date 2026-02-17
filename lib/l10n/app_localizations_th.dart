@@ -2432,6 +2432,110 @@ class AppLocalizationsTh extends AppLocalizations {
   String get editDataButton => 'แก้ไขข้อมูล';
 
   @override
+  String get cannotCreateContractTitle => 'ไม่สามารถสร้างสัญญาได้';
+
+  @override
+  String get cannotCreateContractMessage =>
+      'คุณต้องมีทรัพย์ที่ผ่านการอนุมัติแล้วในระบบก่อน\nจึงจะสามารถสร้างเอกสารสัญญาได้';
+
+  @override
+  String itemNumber(int index) {
+    return 'รายการที่ $index';
+  }
+
+  @override
+  String get uploadImageHint =>
+      'อัปโหลดรูปภาพอย่างน้อย 1 รูป (JPEG, PNG, WebP)';
+
+  @override
+  String get contractImageName => 'รูปภาพสัญญา';
+
+  @override
+  String get paymentMethodCreditCard => 'บัตรเครดิต';
+
+  @override
+  String get paymentMethodPromptPay => 'พร้อมเพย์';
+
+  @override
+  String get paymentMethodBankTransfer => 'โอนเงินผ่านธนาคาร';
+
+  @override
+  String get deleteAllImagesConfirmTitle => 'ลบรูปภาพทั้งหมด?';
+
+  @override
+  String get deleteAllImagesConfirmMessage =>
+      'คุณแน่ใจหรือไม่ว่าต้องการลบรูปภาพทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้';
+
+  @override
+  String get imagesDeletedMessage => 'ลบรูปภาพเรียบร้อยแล้ว';
+
+  @override
+  String get deleteItemQuestion => 'ลบรายการ?';
+
+  @override
+  String get furnitureTitle => 'เฟอร์นิเจอร์';
+
+  @override
+  String get furnitureExampleHint => 'เช่น โซฟา, เตียง';
+
+  @override
+  String get furnitureDescExampleHint => 'เช่น ยี่ห้อ, สี, สภาพ';
+
+  @override
+  String get selectImageFromProperty => 'เลือกจากรูปภาพทรัพย์';
+
+  @override
+  String get sellingPrice => 'ราคาขาย';
+
+  @override
+  String get rentalPrice => 'ราคาเช่า';
+
+  @override
+  String get latePaymentPenalty => 'ค่าปรับล่าช้า';
+
+  @override
+  String get bahtPerDay => 'บาท/วัน';
+
+  @override
+  String get enterDateRangeHint => 'เช่น 1-5';
+
+  @override
+  String get enterBranchHint => 'ระบุสาขา';
+
+  @override
+  String get enterAccountNameHint => 'ระบุชื่อบัญชี';
+
+  @override
+  String get enterAccountNumberHint => 'ระบุเลขบัญชี';
+
+  @override
+  String get nameFile => 'ชื่อไฟล์';
+
+  @override
+  String get fileNameHint => 'ระบุชื่อไฟล์';
+
+  @override
+  String get uploadFile => 'อัปโหลดไฟล์';
+
+  @override
+  String allPropertiesCount(int count) {
+    return 'อสังหาริมทรัพย์ทุกประเภททั้งหมด $count รายการ';
+  }
+
+  @override
+  String itemCount(int count) {
+    return '$count รายการ';
+  }
+
+  @override
+  String unknownStep(int step) {
+    return 'ขั้นตอน $step ไม่ทราบ';
+  }
+
+  @override
+  String get emailHintJuristic => 'juristic@example.com';
+
+  @override
   String get selectLocationTitle => 'เลือกตำแหน่ง';
 
   @override
@@ -2499,17 +2603,34 @@ class AppLocalizationsTh extends AppLocalizations {
   String get juristicContactPhoneLabel => 'เบอร์ติดต่อสำนักงานนิติบุคคล';
 
   @override
+  String get furnitureAndAppliance => 'เฟอร์นิเจอร์และเครื่องใช้ไฟฟ้า';
+
+  @override
+  String get noFurniture => 'ไม่มีรายการเฟอร์นิเจอร์';
+
+  @override
+  String get noAppliance => 'ไม่มีรายการเครื่องใช้ไฟฟ้า';
+
+  @override
+  String get deleteItemTitle => 'ลบรายการ?';
+
+  @override
+  String get deleteItemMessage => 'คุณต้องการลบรายการนี้ใช่หรือไม่?';
+
+  @override
+  String get addFurniture => 'เพิ่มเฟอร์นิเจอร์';
+
+  @override
+  String get appliance => 'เครื่องใช้ไฟฟ้า';
+
+  @override
+  String get additionalConditionsHint => 'ระบุรายละเอียดเพิ่มเติม';
+
+  @override
   String get juristicContactEmailLabel => 'อีเมลสำนักงานนิติบุคคล';
 
   @override
   String get discardConfirmTitle => 'ละทิ้ง';
-
-  @override
-  String get deleteAllImagesConfirmTitle => 'ลบรูปภาพทั้งหมด?';
-
-  @override
-  String get deleteAllImagesConfirmMessage =>
-      'หากคุณลบแล้ว จะไม่สามารถย้อนกลับได้';
 
   @override
   String get discardAllPropertyConfirmTitle => 'ละทิ้งการสร้างทรัพย์?';
@@ -2520,9 +2641,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get imageDeletedMessage => 'ลบรูปภาพเรียบร้อยแล้ว';
-
-  @override
-  String get imagesDeletedMessage => 'ลบรูปภาพทั้งหมดเรียบร้อยแล้ว';
 
   @override
   String get searchFilterLabel => 'ตัวกรองการค้นหา';
@@ -2804,43 +2922,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get currentAddressLabel => 'ที่อยู่ปัจจุบัน';
 
   @override
-  String get deleteItemQuestion => 'ลบรายการนี้?';
-
-  @override
-  String get nameFile => 'ชื่อไฟล์';
-
-  @override
-  String get uploadFile => 'อัปโหลดไฟล์ PDF อย่างน้อย 1 ไฟล์';
-
-  @override
-  String get sellingPrice => 'ราคาขาย';
-
-  @override
-  String get rentalPrice => 'ราคาเช่า';
-
-  @override
   String get paymentDueDateLabel => 'วันที่ครบกำหนดชำระ';
-
-  @override
-  String get enterDateRangeHint => 'ระบุวันที่ 1-31';
-
-  @override
-  String get latePaymentPenalty => 'ค่าปรับล่าช้า';
-
-  @override
-  String get bahtPerDay => 'บาท/วัน';
-
-  @override
-  String get enterBranchHint => 'ระบุธนาคาร';
-
-  @override
-  String get enterAccountNumberHint => 'ระบุเลขบัญชี';
-
-  @override
-  String get furnitureExampleHint => 'เช่น เตียงนอน, โซฟา';
-
-  @override
-  String get furnitureDescExampleHint => 'เช่น เตียงนอน 6 ฟุต สีไม้สน';
 
   @override
   String get propertyPhotos => 'รูปอสังหาฯ';
@@ -2970,7 +3052,12 @@ class AppLocalizationsTh extends AppLocalizations {
   String get noDataFound => 'ไม่พบข้อมูล';
 
   @override
-  String get dateFormat => 'dd ม.ค. yyyy';
+  String dateFormat(DateTime date) {
+    final intl.DateFormat dateDateFormat = intl.DateFormat.yMMMd(localeName);
+    final String dateString = dateDateFormat.format(date);
+
+    return '$dateString';
+  }
 
   @override
   String get demoCompanyName => 'บริษัท ยัวร์โฮม แพลตฟอร์ม จำกัด';
@@ -3152,6 +3239,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get buyerInfo => 'ข้อมูลผู้ซื้อ';
 
   @override
+  String get renterInfo => 'ข้อมูลผู้เช่า';
+
+  @override
   String get addFurnitureDetails => 'เพิ่มรายการเฟอร์นิเจอร์ และรายละเอียด';
 
   @override
@@ -3161,13 +3251,11 @@ class AppLocalizationsTh extends AppLocalizations {
   String get additionalContractConditions => 'เงื่อนไขสัญญาเพิ่มเติม';
 
   @override
-  String get fileNameHint => 'ชื่อไฟล์ เช่น สำเนาบัตรประชาชน';
-
-  @override
   String get propertyOwnerNotFound => 'ไม่พบข้อมูลเจ้าของทรัพย์';
 
   @override
-  String get enterAccountNameHint => 'ระบุชื่อบัญชี';
+  String get connectPropertyOwnerEmailHint =>
+      'กรุณาระบุอีเมลของเจ้าของทรัพย์ เพื่อเชื่อมต่อข้อมูล';
 
   @override
   String get contractFormat => 'รูปแบบสัญญา';
@@ -3448,14 +3536,79 @@ class AppLocalizationsTh extends AppLocalizations {
   String get applianceTitle => 'เครื่องใช้ไฟฟ้า';
 
   @override
-  String get furnitureTitle => 'เฟอร์นิเจอร์';
-
-  @override
-  String get selectImageFromProperty => 'เลือกรูปจากอสังหาฯ';
-
-  @override
   String get add_developer_success => 'เพิ่มผู้พัฒนาเรียบร้อยแล้ว';
 
   @override
   String get add_project_success => 'เพิ่มโครงการเรียบร้อยแล้ว';
+
+  @override
+  String get ownerLabel => 'เจ้าของทรัพย์';
+
+  @override
+  String get buyerLabel => 'ผู้ซื้อ';
+
+  @override
+  String get signedSuffix => 'ลงนามแล้ว';
+
+  @override
+  String sendDocumentTo(String label) {
+    return 'ส่งเอกสารไปยัง $label';
+  }
+
+  @override
+  String resendDocumentConfirm(String label, String email) {
+    return 'คุณต้องการส่งเอกสารไปยัง$label ($email) อีกครั้งใช่หรือไม่?';
+  }
+
+  @override
+  String sendDocumentConfirm(String label, String email) {
+    return 'คุณต้องการส่งเอกสารไปยัง$label ($email) ใช่หรือไม่?';
+  }
+
+  @override
+  String get sendToLessorSuccess => 'ส่งเอกสารไปยังผู้ให้เช่าสำเร็จ';
+
+  @override
+  String get sendToLesseeSuccess => 'ส่งเอกสารไปยังผู้เช่าสำเร็จ';
+
+  @override
+  String get invalidPhoneNumberFormat => 'หมายเลขโทรศัพท์ไม่ถูกต้อง';
+
+  @override
+  String get invalidEmailFormat => 'รูปแบบอีเมลไม่ถูกต้อง';
+
+  @override
+  String get passwordMinLengthError => 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร';
+
+  @override
+  String get passwordMismatchError => 'รหัสผ่านไม่ตรงกัน';
+
+  @override
+  String get addAppliance => 'เพิ่มเครื่องใช้ไฟฟ้า';
+
+  @override
+  String get furnitureConfirm => 'ยืนยันเฟอร์นิเจอร์';
+
+  @override
+  String get allowAgentRepresentationLabel => 'รับนายหน้า';
+
+  @override
+  String licenseNumberWithPrefix(String number) {
+    return 'เลขที่ใบอนุญาต $number';
+  }
+
+  @override
+  String experienceYears(int years) {
+    return 'ประสบการณ์ $years ปี';
+  }
+
+  @override
+  String serviceRadiusWithPrefix(String radius) {
+    return 'รัศมีการทำงาน $radius ก.ม.';
+  }
+
+  @override
+  String profileLevel(int level) {
+    return 'Lv. $level';
+  }
 }
