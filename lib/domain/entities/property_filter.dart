@@ -106,7 +106,7 @@ class PropertyFilter extends Equatable {
       final listingStr = switch (property.listingType) {
         PropertyListingType.sale => 'ขาย',
         PropertyListingType.rent => 'เช่า',
-        PropertyListingType.saleAndRent => 'ขายและเช่า',
+        PropertyListingType.saleOrRent => 'ขายและเช่า',
         _ => '',
       };
       if (listingStr != listingType) return false;

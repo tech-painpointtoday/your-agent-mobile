@@ -79,7 +79,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  AppLocalizations.of(context).confirmSubmitEmail,
+                  AppLocalizations.of(context).confirmSubmitEmail(email),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,

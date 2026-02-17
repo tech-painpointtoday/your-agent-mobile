@@ -38,6 +38,7 @@ class CreatePropertyScreen extends StatelessWidget {
         initialProperty: property, // Pass the property to load draft data
         initialDevelopers: metadataState.developers,
         initialCondoProjects: metadataState.condoProjects,
+        initialHouseProjects: metadataState.houseProjects,
       ),
       child: _CreatePropertyView(property: property),
     );

@@ -2056,6 +2056,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get priceLabel => 'ราคา';
 
   @override
+  String get monthlyRentalPriceLabel => 'ค่าเช่าต่อเดือน';
+
+  @override
   String get currencyUnit => 'บาท';
 
   @override
@@ -3029,8 +3032,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get confirmEmail => 'ยืนยันอีเมล';
 
   @override
-  String get confirmSubmitEmail =>
-      'เราได้ส่งลิงก์ยืนยันไปที่อีเมลของคุณแล้ว\nกรุณายืนยันอีเมลผ่านลิงก์ที่ส่งไป เพื่อเริ่มต้นใช้งาน';
+  String confirmSubmitEmail(Object email) {
+    return 'เราได้ส่งลิงก์ยืนยันไปที่ $email แล้ว\nกรุณายืนยันอีเมลผ่านลิงก์ที่ส่งไป เพื่อเริ่มต้นใช้งาน';
+  }
 
   @override
   String get locationProperty => 'ตำแหน่งทรัพย์';
@@ -3591,6 +3595,24 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get allowAgentRepresentationLabel => 'รับนายหน้า';
+
+  @override
+  String get renterOrBuyer => 'ข้อมูล ผู้เช่า/ผู้ซื้อ';
+
+  @override
+  String get home => 'หน้าแรก';
+
+  @override
+  String get navProperty => 'ทรัพย์';
+
+  @override
+  String get navContact => 'ผู้ติดต่อ';
+
+  @override
+  String get navMoney => 'การเงิน';
+
+  @override
+  String get navCalendar => 'ตารางเวลา';
 
   @override
   String licenseNumberWithPrefix(String number) {

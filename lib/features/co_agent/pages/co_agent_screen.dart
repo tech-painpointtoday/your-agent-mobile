@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:youragent/widgets/backgrounds/blue_wave_background.dart';
+import 'package:youragent/widgets/app_coming_soon_placeholder.dart';
 
 import '../../../core/theme/app_colors.dart';
 
@@ -24,18 +25,7 @@ class CoAgentScreen extends StatelessWidget {
                 height: headerHeight,
                 child: const BlueWaveBackground(),
               ),
-              SafeArea(
-                child: Center(
-                  child: Text(
-                    'Co-Agent is Coming Soon',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.baseDarkGrey,
-                    ),
-                  ),
-                ),
-              ),
+              SafeArea(child: Center(child: const AppComingSoonPlaceholder())),
               Positioned(
                 top: kToolbarHeight,
                 left: 16,

@@ -58,6 +58,7 @@ class PropertyFormState extends Equatable {
   final String? address;
   final double? latitude;
   final double? longitude;
+  final double? monthlyRentalPrice;
   final int? bedrooms;
   final int? bathrooms;
   final int? garage;
@@ -138,6 +139,7 @@ class PropertyFormState extends Equatable {
     this.address,
     this.latitude,
     this.longitude,
+    this.monthlyRentalPrice,
     this.bedrooms,
     this.bathrooms,
     this.garage,
@@ -233,8 +235,7 @@ class PropertyFormState extends Equatable {
     }
 
     // Step 3: Property Details (price, bedrooms, bathrooms, etc.)
-    if (property.price == 0 ||
-        property.listingType == null ||
+    if (property.listingType == null ||
         property.status == null ||
         property.totalFloors == null ||
         property.bedrooms == 0 ||
@@ -248,6 +249,21 @@ class PropertyFormState extends Equatable {
         property.buildingSize == 0 ||
         property.direction == null) {
       return 3;
+    }
+
+    if (property.listingType == PropertyListingType.rent) {
+      if (property.monthlyRentalPrice == null ||
+          property.monthlyRentalPrice == 0) {
+        return 3;
+      }
+    } else if (property.listingType == PropertyListingType.sale) {
+      if (property.price == 0) return 3;
+    } else if (property.listingType == PropertyListingType.saleOrRent) {
+      if (property.price == 0 ||
+          property.monthlyRentalPrice == null ||
+          property.monthlyRentalPrice == 0) {
+        return 3;
+      }
     }
 
     // Step 4: Additional Info (description)
@@ -318,6 +334,13 @@ class PropertyFormState extends Equatable {
       address: p.address,
       latitude: p.latitude,
       longitude: p.longitude,
+      monthlyRentalPrice: () {
+        final val = specs['monthly_rental_price'];
+        if (val == null) return null;
+        if (val is num) return val.toDouble();
+        if (val is String) return double.tryParse(val);
+        return null;
+      }(),
       bedrooms: p.bedrooms,
       bathrooms: p.bathrooms,
       garage: p.garage,
@@ -416,7 +439,12 @@ class PropertyFormState extends Equatable {
       'selectedPropertyType': selectedPropertyType?.label,
       'name': name,
       'type': selectedPropertyType?.value,
-      'price': price,
+      if (listingType == PropertyListingType.sale ||
+          listingType == PropertyListingType.saleOrRent)
+        'price': price,
+      if (listingType == PropertyListingType.rent ||
+          listingType == PropertyListingType.saleOrRent)
+        'monthly_rental_price': monthlyRentalPrice,
       'description': description,
       'address': address,
       'latitude': latitude,
@@ -532,13 +560,30 @@ class PropertyFormState extends Equatable {
           bathrooms != null &&
           garage != null &&
           built != null &&
-          houseColor != null &&
-          (price != null && price! > 0);
+          houseColor != null;
+
+      print('monthlyRentalPrice:');
+      print(monthlyRentalPrice);
+      print('price:');
+      print(price);
+      bool priceValid = false;
+      if (listingType == PropertyListingType.rent) {
+        priceValid = (monthlyRentalPrice != null && monthlyRentalPrice! > 0);
+      } else if (listingType == PropertyListingType.sale) {
+        priceValid = (price != null && price! > 0);
+      } else if (listingType == PropertyListingType.saleOrRent) {
+        priceValid =
+            (price != null && price! > 0) &&
+            (monthlyRentalPrice != null && monthlyRentalPrice! > 0);
+      }
 
       if (isCondoOrApt) {
-        return baseValid && (buildingSize != null && buildingSize! > 0);
+        return baseValid &&
+            priceValid &&
+            (buildingSize != null && buildingSize! > 0);
       } else {
         return baseValid &&
+            priceValid &&
             (landSize != null && landSize! > 0) &&
             (buildingSize != null && buildingSize! > 0);
       }
@@ -573,6 +618,7 @@ class PropertyFormState extends Equatable {
     int? garage,
     double? landSize,
     double? buildingSize,
+    double? monthlyRentalPrice,
     PropertyColor? houseColor,
     DateTime? built,
     PropertyDirection? direction,
@@ -635,6 +681,7 @@ class PropertyFormState extends Equatable {
       garage: garage ?? this.garage,
       landSize: landSize ?? this.landSize,
       buildingSize: buildingSize ?? this.buildingSize,
+      monthlyRentalPrice: monthlyRentalPrice ?? this.monthlyRentalPrice,
       houseColor: houseColor ?? this.houseColor,
       built: built ?? this.built,
       direction: direction ?? this.direction,
@@ -704,7 +751,7 @@ class PropertyFormState extends Equatable {
       name: name,
       description: description ?? '',
       price: price ?? 0,
-
+      monthlyRentalPrice: monthlyRentalPrice ?? 0,
       // Status
       approvalStatus: PropertyApprovalStatus.pending, // Mark as draft for UI
       listingType: listingType,
@@ -853,6 +900,7 @@ class PropertyFormState extends Equatable {
     selectedPropertyType,
     name,
     price,
+    monthlyRentalPrice,
     description,
     address,
     latitude,

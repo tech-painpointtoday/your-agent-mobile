@@ -137,12 +137,10 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       () => _updateData('number', _roomNoController.text),
     );
 
-    // Initial fetch for developers and all condo projects if empty
-    if (state.developers.isEmpty) {
-      context.read<PropertyFormBloc>().add(
-        const PropertyFormDevelopersFetched(),
-      );
-    }
+    // Initial fetch for developers (always refresh to ensure full list)
+    context.read<PropertyFormBloc>().add(
+      const PropertyFormDevelopersFetched(refresh: true),
+    );
     if (state.condoProjects.isEmpty) {
       context.read<PropertyFormBloc>().add(
         const PropertyFormCondoProjectsFetched(),
@@ -486,10 +484,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     String? Function(String?)? validator,
     VoidCallback? onFetchNeeded,
     required bool Function(PropertyFormState) fetchingSelector,
+    String? emptyMessage,
   }) {
-    final isFetching = fetchingSelector(
-      context.watch<PropertyFormBloc>().state,
-    );
     return TypeAheadField<T>(
       controller: controller,
       focusNode: focusNode,
@@ -553,17 +549,9 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         ),
       ),
       emptyBuilder: (context) {
-        if (isFetching) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
         return Padding(
           padding: const EdgeInsets.all(16),
-          child: Text(AppLocalizations.of(context).noDataFound),
+          child: Text(emptyMessage ?? AppLocalizations.of(context).noDataFound),
         );
       },
     );
@@ -574,7 +562,11 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     return BlocConsumer<PropertyFormBloc, PropertyFormState>(
       listenWhen: (prev, curr) =>
           prev.selectedDeveloperId != curr.selectedDeveloperId ||
-          prev.selectedCondoProjectId != curr.selectedCondoProjectId,
+          prev.selectedCondoProjectId != curr.selectedCondoProjectId ||
+          prev.selectedHouseProjectId != curr.selectedHouseProjectId ||
+          // When developers list is loaded/updated (e.g. after metadata fetch),
+          // we also want to resync the developer text field for edit flows.
+          prev.developers != curr.developers,
       listener: (context, state) {
         // Sync Developer Controller
         if (state.selectedDeveloperId != null) {
@@ -801,6 +793,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         controller: _projectController,
                         focusNode: _projectFocusNode,
                         suggestionsController: _projectSuggestionsController,
+                        emptyMessage: 'ไม่พบรายการ',
                         label: AppLocalizations.of(context).projectNameHint,
                         hintText: AppLocalizations.of(context).projectNameHint,
                         items: state.condoProjects,
@@ -852,6 +845,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                           context.read<PropertyFormBloc>().add(
                             PropertyFormCondoProjectsFetched(
                               developerId: state.selectedDeveloperId,
+                              refresh: true,
                             ),
                           );
                         },
@@ -876,6 +870,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         focusNode: _projectFocusNode,
                         suggestionsController:
                             _houseProjectSuggestionsController,
+                        emptyMessage: 'ไม่พบรายการ',
                         label: AppLocalizations.of(context).projectNameHint,
                         hintText: AppLocalizations.of(context).projectNameHint,
                         items: state.houseProjects,
@@ -916,15 +911,14 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                           _projectFocusNode.unfocus();
                           FocusScope.of(context).unfocus();
                         },
-                        onFetchNeeded: state.selectedDeveloperId == null
-                            ? () {
-                                context.read<PropertyFormBloc>().add(
-                                  const PropertyFormHouseProjectsFetched(
-                                    developerId: null,
-                                  ),
-                                );
-                              }
-                            : null,
+                        onFetchNeeded: () {
+                          context.read<PropertyFormBloc>().add(
+                            PropertyFormHouseProjectsFetched(
+                              developerId: state.selectedDeveloperId,
+                              refresh: true,
+                            ),
+                          );
+                        },
                       );
                     }
                   },

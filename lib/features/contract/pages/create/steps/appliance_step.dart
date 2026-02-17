@@ -17,7 +17,6 @@ import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/inputs/app_chip_selection.dart';
 import 'package:youragent/widgets/modals/app_image_picker_bottom_sheet.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 class ApplianceStep extends StatefulWidget {
@@ -117,100 +116,117 @@ class _ApplianceStepState extends State<ApplianceStep> {
                 if (!widget.hideHeader) const SizedBox(height: 32),
 
                 // Appliances Section
-                Text(
-                  context.l10n.applianceTitle,
-                  style: GoogleFonts.anuphan(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.baseBlack,
-                  ),
-                ),
-                const SizedBox(height: 16),
                 if (state.applianceItems.isEmpty)
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.basePaleGrey,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        context.l10n.noAppliance,
-                        style: GoogleFonts.anuphan(
-                          color: AppColors.baseGrey,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  )
-                else
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.applianceItems.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 24),
-                    itemBuilder: (context, index) {
-                      final appliance = state.applianceItems[index];
-                      return _ApplianceItemCard(
-                        index: index + 1,
-                        item: appliance,
-                        itemDefinitions:
-                            state.itemDefinitions?.appliances ?? [],
-                        onUpdate: (updatedItem) {
-                          context.read<ContractFormBloc>().add(
-                            ContractFormApplianceUpdated(updatedItem),
-                          );
-                        },
-                        onDelete: () {
-                          StatusDialog.showDestructive(
-                            context: context,
-                            title: context.l10n.deleteItemTitle,
-                            message: context.l10n.deleteItemMessage,
-                            actionLabel: context.l10n.delete,
-                            onAction: () {
-                              context.read<ContractFormBloc>().add(
-                                ContractFormApplianceRemoved(appliance.id),
+                  _buildAddItemButton(context)
+                else ...[
+                  ...state.applianceItems.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final item = entry.value;
+                    return Column(
+                      children: [
+                        _ApplianceItemCard(
+                          index: index + 1,
+                          item: item,
+                          itemDefinitions:
+                              state.itemDefinitions?.appliances ?? [],
+                          onUpdate: (updatedItem) {
+                            context.read<ContractFormBloc>().add(
+                              ContractFormApplianceUpdated(updatedItem),
+                            );
+                          },
+                          onDelete: () {
+                            if (item.hasData) {
+                              AppConfirmationBottomSheet.show(
+                                context: context,
+                                title: context.l10n.deleteItemQuestion,
+                                description:
+                                    context.l10n.deleteAllImagesConfirmMessage,
+                                confirmLabel: context.l10n.delete,
+                                cancelLabel: context.l10n.statusCancelled,
+                                style: ConfirmationStyle.destructive,
+                                onConfirm: () {
+                                  context.read<ContractFormBloc>().add(
+                                    ContractFormApplianceRemoved(item.id),
+                                  );
+                                },
                               );
-                            },
-                          );
-                        },
-                        onPickImage: () => _pickApplianceImage(appliance.id),
-                        onPickPropertyImage: () =>
-                            _showAppliancePropertyPhotosSelection(appliance.id),
-                        onRemoveImage: (path) {
-                          context.read<ContractFormBloc>().add(
-                            ContractFormApplianceImageRemoved(
-                              appliance.id,
-                              path,
-                            ),
-                          );
-                        },
-                        onDeleteAllImages: () =>
-                            _showApplianceDeleteAllConfirmation(appliance.id),
-                      );
-                    },
-                  ),
+                              return;
+                            }
 
-                const SizedBox(height: 16),
-                AppButton(
-                  width: double.infinity,
-                  text: context.l10n.addAppliance,
-                  style: AppButtonStyle.outline,
-                  iconPath: 'assets/icons/plus.svg',
-                  onPressed: () {
-                    context.read<ContractFormBloc>().add(
-                      const ContractFormApplianceAdded(),
+                            context.read<ContractFormBloc>().add(
+                              ContractFormApplianceRemoved(item.id),
+                            );
+                          },
+                          onPickImage: () => _pickApplianceImage(item.id),
+                          onPickPropertyImage:
+                              (state
+                                      .contractCreateData
+                                      ?.propertyImages
+                                      .isNotEmpty ??
+                                  false)
+                              ? () => _showAppliancePropertyPhotosSelection(
+                                  item.id,
+                                )
+                              : null,
+                          onRemoveImage: (path) {
+                            context.read<ContractFormBloc>().add(
+                              ContractFormApplianceImageRemoved(item.id, path),
+                            );
+                          },
+                          onDeleteAllImages: () =>
+                              _showApplianceDeleteAllConfirmation(item.id),
+                        ),
+                        if (index < state.applianceItems.length - 1)
+                          const SizedBox(height: 24),
+                      ],
                     );
-                  },
-                ),
+                  }),
+                  const SizedBox(height: 24),
+                  _buildAddItemButton(context),
+                ],
                 const SizedBox(height: 100),
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildAddItemButton(BuildContext context) {
+    return InkWell(
+      onTap: () => context.read<ContractFormBloc>().add(
+        const ContractFormApplianceAdded(),
+      ),
+      child: CustomPaint(
+        painter: DashedBorderPainter(
+          color: AppColors.baseLightGrey,
+          strokeWidth: 1,
+          dashWidth: 6,
+          dashSpace: 4,
+          radius: 12,
+        ),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          alignment: Alignment.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.add, color: AppColors.baseGrey, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                context.l10n.add_item,
+                style: GoogleFonts.anuphan(
+                  color: AppColors.baseDarkGrey,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -514,7 +530,7 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
             onTap: widget.onPickPropertyImage,
             child: CustomPaint(
               painter: DashedBorderPainter(
-                color: AppColors.baseLightGrey.withValues(alpha: 0.1),
+                color: AppColors.baseLightGrey,
                 strokeWidth: 1,
                 dashWidth: 6,
                 dashSpace: 4,

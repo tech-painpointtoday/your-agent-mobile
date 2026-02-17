@@ -1,3 +1,6 @@
 #!/bin/bash
 # Run prod flavor
-flutter run -t lib/main_prod.dart "$@"
+
+flutter clean
+flutter pub get
+flutter run  --flavor prod -t lib/main_prod.dart "$@"

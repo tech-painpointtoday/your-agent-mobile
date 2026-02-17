@@ -25,6 +25,7 @@ class PropertyDetailStep extends StatefulWidget {
 class _PropertyDetailStepState extends State<PropertyDetailStep> {
   late final TextEditingController _builtController;
   late final TextEditingController _priceController;
+  late final TextEditingController _monthlyRentalPriceController;
   late final TextEditingController _landSizeController;
   late final TextEditingController _buildingSizeController;
 
@@ -39,8 +40,15 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
           : null,
     );
     _priceController = TextEditingController(
-      text: state.price != null
+      text: state.price != null && state.price! > 0
           ? NumberFormat.decimalPattern('en_US').format(state.price)
+          : null,
+    );
+    _monthlyRentalPriceController = TextEditingController(
+      text: state.monthlyRentalPrice != null && state.monthlyRentalPrice! > 0
+          ? NumberFormat.decimalPattern(
+              'en_US',
+            ).format(state.monthlyRentalPrice)
           : null,
     );
     _landSizeController = TextEditingController(
@@ -54,28 +62,44 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
           : null,
     );
 
-    // Add listeners to update Bloc
+    // Add listeners to update Bloc and trigger revalidation correctly
     _priceController.addListener(() {
-      final val = _priceController.text;
+      final raw = _priceController.text.replaceAll(',', '').trim();
+      final value = raw.isEmpty ? 0.0 : (double.tryParse(raw) ?? 0.0);
       context.read<PropertyFormBloc>().add(
         PropertyFormDataUpdated(
           key: 'price',
-          value: double.tryParse(val.replaceAll(',', '')),
+          value: value,
+        ),
+      );
+    });
+    _monthlyRentalPriceController.addListener(() {
+      final raw = _monthlyRentalPriceController.text.replaceAll(',', '').trim();
+      final value = raw.isEmpty ? 0.0 : (double.tryParse(raw) ?? 0.0);
+      context.read<PropertyFormBloc>().add(
+        PropertyFormDataUpdated(
+          key: 'monthly_rental_price',
+          value: value,
         ),
       );
     });
     _landSizeController.addListener(() {
-      final val = _landSizeController.text;
+      final raw = _landSizeController.text.trim();
+      final value = raw.isEmpty ? 0.0 : (double.tryParse(raw) ?? 0.0);
       context.read<PropertyFormBloc>().add(
-        PropertyFormDataUpdated(key: 'land_size', value: double.tryParse(val)),
+        PropertyFormDataUpdated(
+          key: 'land_size',
+          value: value,
+        ),
       );
     });
     _buildingSizeController.addListener(() {
-      final val = _buildingSizeController.text;
+      final raw = _buildingSizeController.text.trim();
+      final value = raw.isEmpty ? 0.0 : (double.tryParse(raw) ?? 0.0);
       context.read<PropertyFormBloc>().add(
         PropertyFormDataUpdated(
           key: 'building_size',
-          value: double.tryParse(val),
+          value: value,
         ),
       );
     });
@@ -85,6 +109,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
   void dispose() {
     _builtController.dispose();
     _priceController.dispose();
+    _monthlyRentalPriceController.dispose();
     _landSizeController.dispose();
     _buildingSizeController.dispose();
     super.dispose();
@@ -163,7 +188,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                       label: AppLocalizations.of(
                         context,
                       ).listingTypeValueSaleAndRent,
-                      value: PropertyListingType.saleAndRent,
+                      value: PropertyListingType.saleOrRent,
                     ),
                   ],
                   onChanged: (val) => context.read<PropertyFormBloc>().add(
@@ -394,26 +419,52 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                   _buildSelectionError(context),
                 const SizedBox(height: 24),
 
-                // Price
-                AppTextFormField(
-                  label: AppLocalizations.of(context).priceLabel,
-                  controller: _priceController,
-                  inputFormatters: [CurrencyInputFormatter()],
-                  isRequired: true,
-                  hintText: '0',
-                  validator: (val) {
-                    if (val == null || val.isEmpty || val == '0') {
-                      return AppLocalizations.of(context).this_field_required;
-                    }
-                    return null;
-                  },
-                  suffix: Text(
-                    AppLocalizations.of(context).currencyUnit,
-                    style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                // Price Fields based on Listing Type
+                if (state.listingType == PropertyListingType.sale ||
+                    state.listingType == PropertyListingType.saleOrRent) ...[
+                  AppTextFormField(
+                    label: AppLocalizations.of(context).priceLabel,
+                    controller: _priceController,
+                    inputFormatters: [CurrencyInputFormatter()],
+                    isRequired: true,
+                    hintText: '0',
+                    validator: (val) {
+                      if (val == null || val.isEmpty || val == '0') {
+                        return AppLocalizations.of(context).this_field_required;
+                      }
+                      return null;
+                    },
+                    suffix: Text(
+                      AppLocalizations.of(context).currencyUnit,
+                      style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                    ),
+                    keyboardType: TextInputType.number,
                   ),
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
+                ],
+
+                if (state.listingType == PropertyListingType.rent ||
+                    state.listingType == PropertyListingType.saleOrRent) ...[
+                  AppTextFormField(
+                    label: AppLocalizations.of(context).monthlyRentalPriceLabel,
+                    controller: _monthlyRentalPriceController,
+                    inputFormatters: [CurrencyInputFormatter()],
+                    isRequired: true,
+                    hintText: '0',
+                    validator: (val) {
+                      if (val == null || val.isEmpty || val == '0') {
+                        return AppLocalizations.of(context).this_field_required;
+                      }
+                      return null;
+                    },
+                    suffix: Text(
+                      AppLocalizations.of(context).currencyUnit,
+                      style: GoogleFonts.anuphan(color: AppColors.baseGrey),
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                  const SizedBox(height: 24),
+                ],
 
                 // Land Size & Building Size
                 Row(

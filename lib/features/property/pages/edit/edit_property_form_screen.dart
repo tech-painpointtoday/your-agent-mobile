@@ -61,12 +61,51 @@ class EditPropertyFormScreen extends StatelessWidget {
             break;
         }
 
-        return PropertyFormBloc(
+        final bloc = PropertyFormBloc(
           initialFilters: metadataState.specificationFilters,
           initialProperty: property,
           initialDevelopers: metadataState.developers,
           initialCondoProjects: metadataState.condoProjects,
-        )..add(PropertyFormStepChanged(initialStep));
+          initialHouseProjects: metadataState.houseProjects,
+        );
+
+        // Set the correct step for this edit view.
+        bloc.add(PropertyFormStepChanged(initialStep));
+
+        // Always refresh developer list so IDs from the property can be matched.
+        bloc.add(const PropertyFormDevelopersFetched(refresh: true));
+
+        // If the property already has a developer, fetch its projects so
+        // condo/house project IDs can be matched immediately.
+        final selectedDevId = bloc.state.selectedDeveloperId;
+        final type = property.propertyType;
+        final isCondoOrApt =
+            type == PropertyType.condo || type == PropertyType.apartment;
+        final isHouseLike =
+            type == PropertyType.house ||
+            type == PropertyType.townhome ||
+            type == PropertyType.homeOffice;
+
+        if (selectedDevId != null) {
+          if (isCondoOrApt) {
+            bloc.add(
+              PropertyFormCondoProjectsFetched(
+                developerId: selectedDevId,
+                refresh: true,
+              ),
+            );
+          }
+          if (isHouseLike) {
+            bloc.add(
+              PropertyFormHouseProjectsFetched(
+                developerId: selectedDevId,
+                refresh: true,
+              ),
+            );
+          }
+        }
+
+        return bloc;
       },
       child: Scaffold(
         backgroundColor: AppColors.primary,

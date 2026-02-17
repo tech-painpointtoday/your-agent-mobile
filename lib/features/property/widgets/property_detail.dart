@@ -327,10 +327,9 @@ class _PropertyDetailState extends State<PropertyDetail> {
                           PropertyListingType.rent => AppLocalizations.of(
                             context,
                           ).listingTypeValueRent,
-                          PropertyListingType.saleAndRent =>
-                            AppLocalizations.of(
-                              context,
-                            ).listingTypeValueSaleAndRent,
+                          PropertyListingType.saleOrRent => AppLocalizations.of(
+                            context,
+                          ).listingTypeValueSaleAndRent,
                         },
                       ),
                     if (property.status != null)

@@ -33,6 +33,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     Property? initialProperty,
     List<Developer>? initialDevelopers,
     List<CondoProject>? initialCondoProjects,
+    List<HouseProject>? initialHouseProjects,
   }) : _propertyApiService =
            propertyApiService ?? DependencyInjection.propertyApiService,
        _addressLookupService =
@@ -45,18 +46,23 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
                    initialProperty,
                    filters: initialFilters,
                  );
-                 // Filter condoProjects if developer is selected
-                 final filteredProjects = state.selectedDeveloperId != null
+                 // Filter condo/house projects if developer is selected
+                 final devId = state.selectedDeveloperId;
+                 final filteredCondoProjects = devId != null
                      ? (initialCondoProjects ?? const [])
-                           .where(
-                             (p) => p.developerId == state.selectedDeveloperId,
-                           )
+                           .where((p) => p.developerId == devId)
                            .toList()
                      : (initialCondoProjects ?? const []);
+                 final filteredHouseProjects = devId != null
+                     ? (initialHouseProjects ?? const [])
+                           .where((p) => p.developerId == devId)
+                           .toList()
+                     : (initialHouseProjects ?? const []);
 
                  return state.copyWith(
                    developers: initialDevelopers,
-                   condoProjects: filteredProjects,
+                   condoProjects: filteredCondoProjects,
+                   houseProjects: filteredHouseProjects,
                  );
                }()
              : PropertyFormState(
@@ -64,6 +70,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
                      initialFilters ?? const PropertySpecificationFilters(),
                  developers: initialDevelopers ?? const [],
                  condoProjects: initialCondoProjects ?? const [],
+                 houseProjects: initialHouseProjects ?? const [],
                ),
        ) {
     on<PropertyFormStepChanged>(_onStepChanged);
@@ -188,6 +195,9 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
         break;
       case 'price':
         emit(state.copyWith(price: event.value as double?));
+        break;
+      case 'monthly_rental_price':
+        emit(state.copyWith(monthlyRentalPrice: event.value as double?));
         break;
       case 'description':
         emit(state.copyWith(description: event.value as String?));

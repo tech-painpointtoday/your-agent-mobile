@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youragent/services/property_api_service.dart';
 import 'package:youragent/data/models/developer_model.dart';
 import 'package:youragent/data/models/condo_project_model.dart';
+import 'package:youragent/data/models/house_project_model.dart';
 import 'package:youragent/data/models/property_specification_filters.dart';
 import 'property_metadata_event.dart';
 import 'property_metadata_state.dart';
@@ -34,11 +35,14 @@ class PropertyMetadataBloc
         _propertyApiService.getDevelopers(),
         // Fetch generic condo projects list (assuming backend returns reasonable default)
         _propertyApiService.getCondoProjects(),
+        // Fetch generic house projects list for initial matching in forms
+        _propertyApiService.getHouseProjects(),
       ]);
 
       final filters = results[0] as PropertySpecificationFilters;
       final developers = results[1] as List<Developer>;
       final condoProjects = results[2] as List<CondoProject>;
+      final houseProjects = results[3] as List<HouseProject>;
 
       emit(
         state.copyWith(
@@ -46,6 +50,7 @@ class PropertyMetadataBloc
           specificationFilters: filters,
           developers: developers,
           condoProjects: condoProjects,
+          houseProjects: houseProjects,
         ),
       );
     } catch (e) {

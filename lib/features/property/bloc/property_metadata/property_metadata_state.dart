@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:youragent/data/models/property_specification_filters.dart';
 import 'package:youragent/data/models/developer_model.dart';
 import 'package:youragent/data/models/condo_project_model.dart';
+import 'package:youragent/data/models/house_project_model.dart';
 
 enum PropertyMetadataStatus { initial, loading, success, failure }
 
@@ -10,6 +11,7 @@ class PropertyMetadataState extends Equatable {
   final PropertySpecificationFilters? specificationFilters;
   final List<Developer> developers;
   final List<CondoProject> condoProjects;
+  final List<HouseProject> houseProjects;
   final String? error;
 
   const PropertyMetadataState({
@@ -17,6 +19,7 @@ class PropertyMetadataState extends Equatable {
     this.specificationFilters,
     this.developers = const [],
     this.condoProjects = const [],
+    this.houseProjects = const [],
     this.error,
   });
 
@@ -25,6 +28,7 @@ class PropertyMetadataState extends Equatable {
     PropertySpecificationFilters? specificationFilters,
     List<Developer>? developers,
     List<CondoProject>? condoProjects,
+    List<HouseProject>? houseProjects,
     String? error,
   }) {
     return PropertyMetadataState(
@@ -32,6 +36,7 @@ class PropertyMetadataState extends Equatable {
       specificationFilters: specificationFilters ?? this.specificationFilters,
       developers: developers ?? this.developers,
       condoProjects: condoProjects ?? this.condoProjects,
+      houseProjects: houseProjects ?? this.houseProjects,
       error: error ?? this.error,
     );
   }
@@ -42,6 +47,7 @@ class PropertyMetadataState extends Equatable {
     specificationFilters,
     developers,
     condoProjects,
+    houseProjects,
     error,
   ];
 }

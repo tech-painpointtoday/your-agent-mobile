@@ -22,7 +22,7 @@ class AppUtils {
     final typeDigit = switch (property.listingType) {
       PropertyListingType.sale => '1',
       PropertyListingType.rent => '2',
-      PropertyListingType.saleAndRent => '3',
+      PropertyListingType.saleOrRent => '3',
       null => '3', // default to "all" when type is missing
     };
 

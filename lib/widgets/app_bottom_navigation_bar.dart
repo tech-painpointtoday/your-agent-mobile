@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 import '../core/theme/app_colors.dart';
 
@@ -95,31 +96,31 @@ class AppBottomNavigationBar extends StatelessWidget {
             _buildBottomNavItem(
               iconPath: 'assets/icons/home-2-filled.svg',
               unselectedIconPath: 'assets/icons/home.svg',
-              label: 'Home',
+              label: AppLocalizations.of(context).home,
               isSelected: currentIndex == 0,
             ),
             _buildBottomNavItem(
               iconPath: 'assets/icons/building-filled.svg',
               unselectedIconPath: 'assets/icons/building.svg',
-              label: 'Property',
+              label: AppLocalizations.of(context).navProperty,
               isSelected: currentIndex == 1,
             ),
             _buildBottomNavItem(
               iconPath: 'assets/icons/wallet-filled.svg',
               unselectedIconPath: 'assets/icons/wallet.svg',
-              label: 'Money',
+              label: AppLocalizations.of(context).navMoney,
               isSelected: currentIndex == 2,
             ),
             _buildBottomNavItem(
               iconPath: 'assets/icons/calendar-filled.svg',
               unselectedIconPath: 'assets/icons/calendar.svg',
-              label: 'Calendar',
+              label: AppLocalizations.of(context).navCalendar,
               isSelected: currentIndex == 3,
             ),
             _buildBottomNavItem(
               iconPath: 'assets/icons/contact-book-filled.svg',
               unselectedIconPath: 'assets/icons/contact-book.svg',
-              label: 'Contact',
+              label: AppLocalizations.of(context).navContact,
               isSelected: currentIndex == 4,
             ),
           ],

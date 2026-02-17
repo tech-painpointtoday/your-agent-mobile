@@ -4118,6 +4118,12 @@ abstract class AppLocalizations {
   /// **'Price'**
   String get priceLabel;
 
+  /// No description provided for @monthlyRentalPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Rental Price'**
+  String get monthlyRentalPriceLabel;
+
   /// No description provided for @currencyUnit.
   ///
   /// In en, this message translates to:
@@ -5987,8 +5993,8 @@ abstract class AppLocalizations {
   /// No description provided for @confirmSubmitEmail.
   ///
   /// In en, this message translates to:
-  /// **'Confirm submit email'**
-  String get confirmSubmitEmail;
+  /// **'We\'ve sent a confirmation link to {email}. Please check your inbox.'**
+  String confirmSubmitEmail(Object email);
 
   /// No description provided for @locationProperty.
   ///
@@ -7015,6 +7021,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Allow Agent'**
   String get allowAgentRepresentationLabel;
+
+  /// No description provided for @renterOrBuyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Renter/Buyer Info'**
+  String get renterOrBuyer;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @navProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties'**
+  String get navProperty;
+
+  /// No description provided for @navContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get navContact;
+
+  /// No description provided for @navMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get navMoney;
+
+  /// No description provided for @navCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get navCalendar;
 
   /// No description provided for @licenseNumberWithPrefix.
   ///

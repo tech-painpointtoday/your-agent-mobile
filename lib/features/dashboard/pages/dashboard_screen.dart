@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../widgets/backgrounds/blue_wave_background.dart';
+import '../../../widgets/app_coming_soon_placeholder.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -24,18 +25,7 @@ class DashboardScreen extends StatelessWidget {
                 height: headerHeight,
                 child: const BlueWaveBackground(),
               ),
-              SafeArea(
-                child: Center(
-                  child: Text(
-                    'Dashboard is Coming Soon',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.baseDarkGrey,
-                    ),
-                  ),
-                ),
-              ),
+              SafeArea(child: Center(child: const AppComingSoonPlaceholder())),
               Positioned(
                 top: kToolbarHeight,
                 left: 16,

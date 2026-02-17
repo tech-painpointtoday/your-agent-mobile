@@ -6,6 +6,7 @@ import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/backgrounds/blue_wave_background.dart';
+import 'package:youragent/widgets/app_coming_soon_placeholder.dart';
 
 import '../widgets/money_property_card.dart';
 import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
@@ -89,18 +90,7 @@ class _MoneyScreenState extends State<MoneyScreen>
                 height: headerHeight,
                 child: const BlueWaveBackground(),
               ),
-              SafeArea(
-                child: Center(
-                  child: Text(
-                    'Money is Coming Soon',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.baseDarkGrey,
-                    ),
-                  ),
-                ),
-              ),
+              SafeArea(child: Center(child: const AppComingSoonPlaceholder())),
               Positioned(
                 top: kToolbarHeight,
                 left: 16,

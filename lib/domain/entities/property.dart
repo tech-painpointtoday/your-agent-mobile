@@ -186,12 +186,12 @@ enum PropertyType {
 enum PropertyListingType {
   sale,
   rent,
-  saleAndRent;
+  saleOrRent;
 
   String get value => switch (this) {
     sale => 'sale',
     rent => 'rent',
-    saleAndRent => 'sale_rent',
+    saleOrRent => 'sale_or_rent',
   };
 
   static PropertyListingType? fromValue(String? value) {
@@ -248,6 +248,7 @@ class Property extends Equatable {
 
   // Pricing & Status
   final double price;
+  final double? monthlyRentalPrice;
   final PropertyApprovalStatus approvalStatus;
   final PropertyListingType? listingType;
   final PropertyAvailabilityStatus? status;
@@ -315,6 +316,7 @@ class Property extends Equatable {
     this.formattedAddressEn,
     this.formattedAddressTh,
     this.price = 0,
+    this.monthlyRentalPrice = 0,
     this.approvalStatus = PropertyApprovalStatus.pending,
     this.listingType,
     this.status,
@@ -642,6 +644,7 @@ class Property extends Equatable {
       'name': title,
       'type': propertyType?.value,
       'price': price,
+      'monthly_rental_price': monthlyRentalPrice,
       'description': description,
       'listing_type': listingType?.value,
       'status': status?.value,
@@ -711,6 +714,7 @@ class Property extends Equatable {
     String? formattedAddressEn,
     String? formattedAddressTh,
     double? price,
+    double? monthlyRentalPrice,
     PropertyApprovalStatus? approvalStatus,
     PropertyListingType? listingType,
     PropertyAvailabilityStatus? status,
@@ -759,6 +763,7 @@ class Property extends Equatable {
       formattedAddressEn: formattedAddressEn ?? this.formattedAddressEn,
       formattedAddressTh: formattedAddressTh ?? this.formattedAddressTh,
       price: price ?? this.price,
+      monthlyRentalPrice: monthlyRentalPrice ?? this.monthlyRentalPrice,
       approvalStatus: approvalStatus ?? this.approvalStatus,
       listingType: listingType ?? this.listingType,
       status: status ?? this.status,
@@ -836,6 +841,7 @@ class Property extends Equatable {
       formattedAddressEn: clean(formattedAddressEn),
       formattedAddressTh: clean(formattedAddressTh),
       price: price,
+      monthlyRentalPrice: monthlyRentalPrice,
       approvalStatus: approvalStatus,
       listingType: listingType,
       status: status,
@@ -871,6 +877,7 @@ class Property extends Equatable {
     code,
     title,
     price,
+    monthlyRentalPrice,
     address,
     approvalStatus,
     imageUrls,

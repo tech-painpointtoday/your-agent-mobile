@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:youragent/widgets/app_coming_soon_placeholder.dart';
 
 import '../../../app/router.dart';
 import '../../../core/di/dependency_injection.dart';
@@ -39,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: MenuGridCard(),
             ),
+
             // SizedBox(height: 18),
             // Padding(
             //   padding: EdgeInsets.symmetric(horizontal: 16),
@@ -49,6 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
             //   padding: EdgeInsets.symmetric(horizontal: 16),
             //   child: ActivitiesSection(),
             // ),
+            SizedBox(height: 84),
+            const AppComingSoonPlaceholder(),
             SizedBox(height: 512),
           ],
         ),
@@ -411,7 +415,7 @@ class MenuGridCard extends StatelessWidget {
         accent: const Color(0xFF0EA5E9),
       ),
       HomeMenuItem(
-        label: l10n.data,
+        label: l10n.renterInfo,
         imagePath: 'assets/images/home/bureau.png',
         route: '/bureau',
         accent: const Color(0xFF06B6D4),
