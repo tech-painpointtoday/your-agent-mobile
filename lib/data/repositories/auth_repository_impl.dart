@@ -13,6 +13,7 @@ import '../models/agent_login_response.dart';
 import '../models/user_profile_model.dart';
 import '../../services/user_profile_storage_service.dart';
 import '../../utils/crypto_utils.dart';
+import '../../services/api_client.dart';
 
 class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
   final AuthApiService _authApiService;
@@ -302,19 +303,36 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
   @override
   Future<Either<Failure, void>> signOut() async {
     try {
+      // 1. Backend Logout (Best Effort)
       try {
         await _authApiService.logout();
+      } catch (_) {
+        // Ignore backend errors
+      }
+
+      // 2. Third Party Logout (Best Effort)
+      try {
+        await _googleSignIn.signOut();
       } catch (_) {}
 
-      await _googleSignIn.signOut();
-      await FacebookAuth.instance.logOut();
+      try {
+        await FacebookAuth.instance.logOut();
+      } catch (_) {}
+
+      // 3. Critical Local Cleanup
       await SessionService().clearSession();
       await UserProfileStorageService().clearProfile();
+      await ApiClient().clearAuthToken();
+
+      _currentUser = null;
+      notifyListeners();
+
+      return const Right(null);
+    } catch (e) {
+      // Fallback: Ensure local state is cleared even if something unexpected occurs
       _currentUser = null;
       notifyListeners();
       return const Right(null);
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
     }
   }
 
@@ -331,6 +349,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
       await FacebookAuth.instance.logOut();
       await SessionService().clearSession();
       await UserProfileStorageService().clearProfile();
+      await ApiClient().clearAuthToken();
       _currentUser = null;
       notifyListeners();
 

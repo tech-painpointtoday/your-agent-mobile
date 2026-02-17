@@ -122,6 +122,7 @@ class _AddProjectBottomSheetContentState
       ),
       child: Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,

@@ -16,7 +16,10 @@ class AppMultiSelectChips<T> extends StatelessWidget {
     required this.options,
     required this.onSelected,
     this.isRequired = false,
+    this.itemLabel,
   });
+
+  final String Function(T)? itemLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +91,7 @@ class AppMultiSelectChips<T> extends StatelessWidget {
                       : null,
                 ),
                 child: Text(
-                  option.toString(),
+                  itemLabel?.call(option) ?? option.toString(),
                   style: GoogleFonts.anuphan(
                     color: isSelected
                         ? AppColors.primary

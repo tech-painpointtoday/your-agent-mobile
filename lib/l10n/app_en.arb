@@ -1120,5 +1120,7 @@
   "createAccount": "Create Account",
   "applianceTitle": "Appliance",
   "furnitureTitle": "Furniture",
-  "selectImageFromProperty": "Select image from property"
+  "selectImageFromProperty": "Select image from property",
+  "add_developer_success": "Developer added successfully",
+  "add_project_success": "Project added successfully"
 }

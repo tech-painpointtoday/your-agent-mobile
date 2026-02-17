@@ -156,6 +156,7 @@ class _PolicyScreenState extends State<PolicyScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: _content(),
                     ),
+                    SizedBox(height: 256),
                   ],
                 ),
               ),

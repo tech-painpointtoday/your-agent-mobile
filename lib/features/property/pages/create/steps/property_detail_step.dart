@@ -200,39 +200,62 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                 const SizedBox(height: 24),
 
                 // Dynamic Filters or Fallback
-                if (state.specificationFilters.singleSelect.isNotEmpty)
-                  ...state.specificationFilters.singleSelect.map((filter) {
-                    if (filter.key == 'style') {
-                      return SizedBox.shrink();
-                    }
+                if (state.specificationFilters.singleSelect
+                    .where((f) => f.category == 'structure')
+                    .isNotEmpty)
+                  ...state.specificationFilters.singleSelect
+                      .where((f) => f.category == 'structure')
+                      .map((filter) {
+                        if (filter.key == 'style') {
+                          return SizedBox.shrink();
+                        }
 
-                    return Column(
-                      children: [
-                        AppSelectionPills<String>(
-                          label: filter.label,
-                          value: state.specifications[filter.key],
-                          isRequired: true,
-                          options: filter.options
-                              .map(
-                                (opt) =>
-                                    SelectionPillOption(label: opt, value: opt),
-                              )
-                              .toList(),
-                          onChanged: (val) =>
-                              context.read<PropertyFormBloc>().add(
-                                PropertyFormDynamicSingleSelectChanged(
-                                  filter.key,
-                                  val,
-                                ),
-                              ),
-                        ),
-                        if (state.showErrors &&
-                            state.specifications[filter.key] == null)
-                          _buildSelectionError(context),
-                        const SizedBox(height: 24),
-                      ],
-                    );
-                  })
+                        final bool isTh =
+                            Localizations.localeOf(context).languageCode ==
+                            'th';
+
+                        // Prepare options using optionsWithImages if available
+                        final List<SelectionPillOption<String>> options =
+                            filter.optionsWithImages.isNotEmpty
+                            ? filter.optionsWithImages
+                                  .map(
+                                    (opt) => SelectionPillOption(
+                                      label: isTh ? opt.labelTh : opt.label,
+                                      value: opt.value,
+                                    ),
+                                  )
+                                  .toList()
+                            : filter.options
+                                  .map(
+                                    (opt) => SelectionPillOption(
+                                      label: opt,
+                                      value: opt,
+                                    ),
+                                  )
+                                  .toList();
+
+                        return Column(
+                          children: [
+                            AppSelectionPills<String>(
+                              label: isTh ? filter.labelTh : filter.labelEn,
+                              value: state.specifications[filter.key],
+                              isRequired: true,
+                              options: options,
+                              onChanged: (val) =>
+                                  context.read<PropertyFormBloc>().add(
+                                    PropertyFormDynamicSingleSelectChanged(
+                                      filter.key,
+                                      val,
+                                    ),
+                                  ),
+                            ),
+                            if (state.showErrors &&
+                                state.specifications[filter.key] == null)
+                              _buildSelectionError(context),
+                            const SizedBox(height: 24),
+                          ],
+                        );
+                      })
                 else ...[
                   // Fallback: Total Floors
                   AppSelectionPills<int>(

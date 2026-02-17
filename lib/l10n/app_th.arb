@@ -1121,5 +1121,7 @@
   "createAccount": "สร้างบัญชี",
   "applianceTitle": "เครื่องใช้ไฟฟ้า",
   "furnitureTitle": "เฟอร์นิเจอร์",
-  "selectImageFromProperty": "เลือกรูปจากอสังหาฯ"
+  "selectImageFromProperty": "เลือกรูปจากอสังหาฯ",
+  "add_developer_success": "เพิ่มผู้พัฒนาเรียบร้อยแล้ว",
+  "add_project_success": "เพิ่มโครงการเรียบร้อยแล้ว"
 }

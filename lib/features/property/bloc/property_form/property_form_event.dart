@@ -166,10 +166,14 @@ class PropertyFormDevelopersFetched extends PropertyFormEvent {
 
 class PropertyFormCondoProjectsFetched extends PropertyFormEvent {
   final int? developerId;
-  const PropertyFormCondoProjectsFetched({this.developerId});
+  final bool refresh;
+  const PropertyFormCondoProjectsFetched({
+    this.developerId,
+    this.refresh = false,
+  });
 
   @override
-  List<Object?> get props => [developerId];
+  List<Object?> get props => [developerId, refresh];
 }
 
 class PropertyFormDeveloperChanged extends PropertyFormEvent {
@@ -198,10 +202,14 @@ class PropertyFormHouseProjectChanged extends PropertyFormEvent {
 
 class PropertyFormHouseProjectsFetched extends PropertyFormEvent {
   final int? developerId;
-  const PropertyFormHouseProjectsFetched({this.developerId});
+  final bool refresh;
+  const PropertyFormHouseProjectsFetched({
+    this.developerId,
+    this.refresh = false,
+  });
 
   @override
-  List<Object?> get props => [developerId];
+  List<Object?> get props => [developerId, refresh];
 }
 
 class PropertyFormListingTypeChanged extends PropertyFormEvent {

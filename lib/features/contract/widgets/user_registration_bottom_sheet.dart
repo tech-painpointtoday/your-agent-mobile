@@ -292,8 +292,9 @@ class _UserRegistrationBottomSheetState
                     obscureText: _obscurePassword,
                     validator: (value) {
                       if (value == null || value.isEmpty) return null;
-                      if (value.length < 8)
+                      if (value.length < 8) {
                         return 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร';
+                      }
                       return null;
                     },
                     suffix: IconButton(

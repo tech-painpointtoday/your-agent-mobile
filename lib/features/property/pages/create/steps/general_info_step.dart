@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -341,13 +340,11 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
           StatusDialog.showSuccess(
             context: context,
             title: AppLocalizations.of(context).success,
-            message: AppLocalizations.of(
-              context,
-            ).register_success, // Using a generic success message
+            message: AppLocalizations.of(context).add_developer_success,
           );
           // Refresh developers list
           context.read<PropertyFormBloc>().add(
-            const PropertyFormDevelopersFetched(),
+            const PropertyFormDevelopersFetched(refresh: true),
           );
 
           final developer = result['developer'] as Map<String, dynamic>;
@@ -414,7 +411,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         StatusDialog.showSuccess(
           context: context,
           title: AppLocalizations.of(context).success,
-          message: AppLocalizations.of(context).property_created_success,
+          message: AppLocalizations.of(context).add_project_success,
         );
 
         final nameTh = project['name_th'] ?? project['name'] ?? '';
@@ -428,11 +425,17 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         // Trigger refresh based on type
         if (isCondoOrApt) {
           context.read<PropertyFormBloc>().add(
-            PropertyFormCondoProjectsFetched(developerId: developerId),
+            PropertyFormCondoProjectsFetched(
+              developerId: developerId,
+              refresh: true,
+            ),
           );
         } else {
           context.read<PropertyFormBloc>().add(
-            const PropertyFormHouseProjectsFetched(developerId: null),
+            PropertyFormHouseProjectsFetched(
+              developerId: developerId,
+              refresh: true,
+            ),
           );
         }
 

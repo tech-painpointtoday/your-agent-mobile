@@ -683,9 +683,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
   /// Loads condo projects for the given developer (null = all).
   /// Uses cache; only calls API on cache miss.
   Future<List<CondoProject>> _loadCondoProjectsForDeveloper(
-    int? developerId,
-  ) async {
-    if (_projectsByDeveloper.containsKey(developerId)) {
+    int? developerId, {
+    bool refresh = false,
+  }) async {
+    if (!refresh && _projectsByDeveloper.containsKey(developerId)) {
       return _projectsByDeveloper[developerId]!;
     }
     try {
@@ -696,6 +697,8 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       return projects;
     } catch (e) {
       debugPrint('PropertyFormBloc getCondoProjects error: $e');
+      // If refresh failed, maybe we should keep old data?
+      // For now, clear it as per original logic, or we could just return empty.
       _projectsByDeveloper[developerId] = const [];
       return const [];
     }
@@ -705,7 +708,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     PropertyFormCondoProjectsFetched event,
     Emitter<PropertyFormState> emit,
   ) async {
-    final projects = await _loadCondoProjectsForDeveloper(event.developerId);
+    final projects = await _loadCondoProjectsForDeveloper(
+      event.developerId,
+      refresh: event.refresh,
+    );
     emit(state.copyWith(condoProjects: projects));
   }
 
@@ -764,9 +770,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
 
   /// Loads house projects for the given developer (null = all).
   Future<List<HouseProject>> _loadHouseProjectsForDeveloper(
-    int? developerId,
-  ) async {
-    if (_houseProjectsByDeveloper.containsKey(developerId)) {
+    int? developerId, {
+    bool refresh = false,
+  }) async {
+    if (!refresh && _houseProjectsByDeveloper.containsKey(developerId)) {
       return _houseProjectsByDeveloper[developerId]!;
     }
     try {
@@ -786,7 +793,10 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     PropertyFormHouseProjectsFetched event,
     Emitter<PropertyFormState> emit,
   ) async {
-    final projects = await _loadHouseProjectsForDeveloper(event.developerId);
+    final projects = await _loadHouseProjectsForDeveloper(
+      event.developerId,
+      refresh: event.refresh,
+    );
     emit(state.copyWith(houseProjects: projects));
   }
 

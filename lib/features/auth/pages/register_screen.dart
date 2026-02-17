@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -63,11 +62,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // For now, API only accepts name, email, password, passwordConfirmation
     // Phone, business type, and company name are collected but not sent yet
 
-    print('Registering agent...');
-    print('Name: ${_nameController.text.trim()}');
-    print('Email: ${_emailController.text.trim()}');
-    print('Password: ${_passwordController.text}');
-    print('Confirm Password: ${_confirmPasswordController.text}');
     context.read<AuthBloc>().add(
       RegisterAgentEvent(
         name: _nameController.text.trim(),

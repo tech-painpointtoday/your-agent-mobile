@@ -3452,4 +3452,10 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get selectImageFromProperty => 'เลือกรูปจากอสังหาฯ';
+
+  @override
+  String get add_developer_success => 'เพิ่มผู้พัฒนาเรียบร้อยแล้ว';
+
+  @override
+  String get add_project_success => 'เพิ่มโครงการเรียบร้อยแล้ว';
 }

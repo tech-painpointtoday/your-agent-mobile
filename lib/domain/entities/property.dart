@@ -24,7 +24,7 @@ enum PropertyColor {
   purple,
   orange;
 
-  String get label => switch (this) {
+  String get labelTh => switch (this) {
     white => 'ขาว',
     cream => 'ครีม',
     grey => 'เทา',
@@ -38,6 +38,23 @@ enum PropertyColor {
     purple => 'ม่วง',
     orange => 'ส้ม',
   };
+
+  String get labelEn => switch (this) {
+    white => 'White',
+    cream => 'Cream',
+    grey => 'Grey',
+    black => 'Black',
+    brown => 'Brown',
+    red => 'Red',
+    yellow => 'Yellow',
+    green => 'Green',
+    blue => 'Blue',
+    pink => 'Pink',
+    purple => 'Purple',
+    orange => 'Orange',
+  };
+
+  String get label => labelTh;
 
   String get value => switch (this) {
     white => 'white',
@@ -74,7 +91,7 @@ enum PropertyDirection {
   northWest,
   southWest;
 
-  String get label => switch (this) {
+  String get labelTh => switch (this) {
     north => 'ทิศเหนือ',
     south => 'ทิศใต้',
     east => 'ทิศตะวันออก',
@@ -84,6 +101,19 @@ enum PropertyDirection {
     northWest => 'ทิศตะวันตกเฉียงเหนือ',
     southWest => 'ทิศตะวันตกเฉียงใต้',
   };
+
+  String get labelEn => switch (this) {
+    north => 'North',
+    south => 'South',
+    east => 'East',
+    west => 'West',
+    northEast => 'North-East',
+    southEast => 'South-East',
+    northWest => 'North-West',
+    southWest => 'South-West',
+  };
+
+  String get label => labelTh;
 
   String get value => switch (this) {
     north => 'N',
@@ -114,7 +144,7 @@ enum PropertyType {
   homeOffice,
   poolVilla;
 
-  String get label => switch (this) {
+  String get labelTh => switch (this) {
     house => 'บ้าน',
     condo => 'คอนโดมิเนียม',
     townhome => 'ทาวน์เฮาส์/ทาวน์โฮม',
@@ -122,6 +152,17 @@ enum PropertyType {
     homeOffice => 'โฮมออฟฟิศ',
     poolVilla => 'พูลวิลล่า',
   };
+
+  String get labelEn => switch (this) {
+    house => 'House',
+    condo => 'Condo',
+    townhome => 'Townhome',
+    apartment => 'Apartment',
+    homeOffice => 'Home Office',
+    poolVilla => 'Pool Villa',
+  };
+
+  String get label => labelTh;
 
   String get value => switch (this) {
     house => 'house',

@@ -6781,6 +6781,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select image from property'**
   String get selectImageFromProperty;
+
+  /// No description provided for @add_developer_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer added successfully'**
+  String get add_developer_success;
+
+  /// No description provided for @add_project_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Project added successfully'**
+  String get add_project_success;
 }
 
 class _AppLocalizationsDelegate

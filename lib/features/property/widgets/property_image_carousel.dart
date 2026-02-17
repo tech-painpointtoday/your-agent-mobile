@@ -147,7 +147,7 @@ class _PropertyImageCarouselState extends State<PropertyImageCarousel> {
         if ((widget.imageUrls?.length ?? 0) > 1 ||
             (widget.imageFiles?.length ?? 0) > 1)
           Positioned(
-            top: 12 + kToolbarHeight,
+            top: 12 + (widget.isFullScreen ? kToolbarHeight : 0),
             right: 16,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

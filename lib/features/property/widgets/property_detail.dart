@@ -60,22 +60,24 @@ class _PropertyDetailState extends State<PropertyDetail> {
   Widget build(BuildContext context) {
     final isTh = Localizations.localeOf(context).languageCode == 'th';
     final devName = isTh ? property.developerNameTh : property.developerNameEn;
-    final projectName = isTh
-        ? property.condoProjectNameTh
-        : property.condoProjectNameEn;
-
     // Header logic: Condo info or Village Name
     String? headerDisplayInfo;
+    String? displayProjectName;
+
     if (property.propertyType == PropertyType.condo) {
-      if (devName != null && projectName != null) {
-        headerDisplayInfo = '$devName | $projectName';
-      } else if (projectName != null) {
-        headerDisplayInfo = projectName;
-      } else if (devName != null) {
-        headerDisplayInfo = devName;
-      }
-    } else if (property.propertyType == PropertyType.house) {
-      headerDisplayInfo = property.villageName;
+      displayProjectName = isTh
+          ? property.condoProjectNameTh
+          : property.condoProjectNameEn;
+    } else {
+      displayProjectName = property.villageName;
+    }
+
+    if (devName != null && displayProjectName != null) {
+      headerDisplayInfo = '$devName • $displayProjectName';
+    } else if (displayProjectName != null) {
+      headerDisplayInfo = displayProjectName;
+    } else if (devName != null) {
+      headerDisplayInfo = devName;
     }
 
     // Complete Address Logic
@@ -311,7 +313,9 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     if (property.propertyType != null)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).propertyTypeLabel,
-                        value: property.propertyType!.label,
+                        value: isTh
+                            ? property.propertyType!.labelTh
+                            : property.propertyType!.labelEn,
                       ),
                     if (property.listingType != null)
                       PropertyDetailRow(
@@ -367,17 +371,20 @@ class _PropertyDetailState extends State<PropertyDetail> {
                         label: AppLocalizations.of(context).parkingLabel,
                         value: '${property.garage} ที่',
                       ),
-                    PropertyDetailRow(
-                      label: AppLocalizations.of(context).builtLabel,
-                      value: DateFormat(
-                        AppLocalizations.of(context).dateFormat,
-                        'th',
-                      ).format(property.createdAt),
-                    ),
+                    if (property.built != null)
+                      PropertyDetailRow(
+                        label: AppLocalizations.of(context).builtLabel,
+                        value: DateFormat(
+                          AppLocalizations.of(context).dateFormat,
+                          isTh ? 'th' : 'en',
+                        ).format(property.built!),
+                      ),
                     if (property.houseColor != null)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).propertyColor,
-                        value: property.houseColor!.label,
+                        value: isTh
+                            ? property.houseColor!.labelTh
+                            : property.houseColor!.labelEn,
                       ),
                     if (property.price > 0)
                       PropertyDetailRow(
@@ -401,7 +408,9 @@ class _PropertyDetailState extends State<PropertyDetail> {
                     if (property.direction != null)
                       PropertyDetailRow(
                         label: AppLocalizations.of(context).direction_label,
-                        value: property.direction!.label,
+                        value: isTh
+                            ? property.direction!.labelTh
+                            : property.direction!.labelEn,
                       ),
                   ],
                 ),
@@ -578,10 +587,25 @@ class _PropertyDetailState extends State<PropertyDetail> {
       }
 
       final List<String> displayValues = [];
+
+      String getLocalizedValue(String val) {
+        if (filter.optionsWithImages.isNotEmpty) {
+          final opt = filter.optionsWithImages
+              .where((o) => o.value == val)
+              .firstOrNull;
+          if (opt != null) {
+            return isEn ? opt.label : opt.labelTh;
+          }
+        }
+        return val;
+      }
+
       if (rawValue is List) {
-        displayValues.addAll(rawValue.map((v) => v.toString()));
+        displayValues.addAll(
+          rawValue.map((v) => getLocalizedValue(v.toString())),
+        );
       } else {
-        displayValues.add(rawValue.toString());
+        displayValues.add(getLocalizedValue(rawValue.toString()));
       }
 
       if (displayValues.isNotEmpty) {

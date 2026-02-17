@@ -3439,4 +3439,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectImageFromProperty => 'Select image from property';
+
+  @override
+  String get add_developer_success => 'Developer added successfully';
+
+  @override
+  String get add_project_success => 'Project added successfully';
 }

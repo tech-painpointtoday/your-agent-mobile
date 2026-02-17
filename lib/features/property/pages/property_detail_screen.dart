@@ -120,6 +120,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
               backgroundColor: AppColors.primary,
               onRefresh: _fetchPropertyDetail,
               child: PropertyDetail(
+                isFullScreen: true,
                 key: ObjectKey(_property!),
                 property: _property!,
               ),

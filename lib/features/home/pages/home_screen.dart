@@ -346,7 +346,7 @@ class HomeSearchBar extends StatelessWidget {
 
 class HomeMenuItem {
   final String label;
-  final String subtitle;
+  final String? subtitle;
   final String imagePath;
   final String route;
   final Color accent;
@@ -354,7 +354,7 @@ class HomeMenuItem {
 
   const HomeMenuItem({
     required this.label,
-    required this.subtitle,
+    this.subtitle,
     required this.imagePath,
     required this.route,
     required this.accent,
@@ -369,62 +369,54 @@ class MenuGridCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     return [
       HomeMenuItem(
-        label: 'Property',
-        subtitle: l10n.propertiesTitle,
+        label: l10n.propertiesTitle,
         imagePath: 'assets/images/home/property.png',
         route: '/property',
         accent: const Color(0xFF2563EB),
       ),
       HomeMenuItem(
-        label: 'Money',
-        subtitle: l10n.finance,
+        label: l10n.finance,
         imagePath: 'assets/images/home/money.png',
         route: '/money',
         accent: const Color(0xFF10B981),
         enable: false,
       ),
       HomeMenuItem(
-        label: 'Calendar',
-        subtitle: l10n.availability,
+        label: l10n.availability,
         imagePath: 'assets/images/home/calendar.png',
         route: '/calendar',
         accent: const Color(0xFFF59E0B),
         enable: false,
       ),
       HomeMenuItem(
-        label: 'Contact',
-        subtitle: l10n.contactListLabel,
+        label: l10n.contactListLabel,
         imagePath: 'assets/images/home/contact.png',
         route: '/contact',
         accent: const Color(0xFF22C55E),
         enable: false,
       ),
       HomeMenuItem(
-        label: 'Dashboard',
-        subtitle: l10n.dashboard,
+        label: l10n.dashboard,
         imagePath: 'assets/images/home/dashboard.png',
         route: '/dashboard',
         accent: const Color(0xFFF97316),
         enable: false,
       ),
       HomeMenuItem(
-        label: 'Co-Agent',
-        subtitle: l10n.coAgent,
+        label: l10n.coAgent,
         imagePath: 'assets/images/home/co_agent.png',
         route: '/co-agent',
         accent: const Color(0xFF6366F1),
         enable: false,
       ),
       HomeMenuItem(
-        label: 'Contract',
-        subtitle: l10n.contracts,
+        label: l10n.contracts,
         imagePath: 'assets/images/home/contract.png',
         route: '/contract',
         accent: const Color(0xFF0EA5E9),
       ),
       HomeMenuItem(
-        label: 'Bureau',
-        subtitle: l10n.data,
+        label: l10n.data,
         imagePath: 'assets/images/home/bureau.png',
         route: '/bureau',
         accent: const Color(0xFF06B6D4),
@@ -436,7 +428,7 @@ class MenuGridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(20),
@@ -510,18 +502,19 @@ class _MenuGridItem extends StatelessWidget {
               color: AppColors.baseDarkGrey,
             ),
           ),
-          SizedBox(height: 2),
-          Text(
-            item.subtitle,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w500,
-              color: AppColors.baseDarkGrey,
+          if (item.subtitle != null) SizedBox(height: 2),
+          if (item.subtitle != null)
+            Text(
+              item.subtitle!,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w500,
+                color: AppColors.baseDarkGrey,
+              ),
             ),
-          ),
         ],
       ),
     );

@@ -7,7 +7,9 @@ import '../../../../../features/property/bloc/property_form/property_form_bloc.d
 import '../../../../../widgets/form_fields/app_text_form_field.dart';
 import '../../../../../widgets/inputs/app_selectable_grid.dart';
 import '../../../../../widgets/inputs/app_multi_select_chips.dart';
+import '../../../../../widgets/inputs/app_selection_pills.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import '../../../../../data/models/property_specification_filters.dart';
 
 class AdditionalInfoStep extends StatefulWidget {
   final int? step;
@@ -149,15 +151,91 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                 ),
                 const SizedBox(height: 24),
 
+                // Dynamic Single-Select Filters (Non-Structure)
+                // Dynamic Single-Select Filters (Non-Structure)
+                if (state.specificationFilters.singleSelect
+                    .where((f) => f.category != 'structure' && f.key != 'style')
+                    .isNotEmpty)
+                  ...state.specificationFilters.singleSelect
+                      .where(
+                        (f) => f.category != 'structure' && f.key != 'style',
+                      )
+                      .map((filter) {
+                        final bool isTh =
+                            Localizations.localeOf(context).languageCode ==
+                            'th';
+
+                        // Prepare options using optionsWithImages if available
+                        final List<SelectionPillOption<String>> options =
+                            filter.optionsWithImages.isNotEmpty
+                            ? filter.optionsWithImages
+                                  .map(
+                                    (opt) => SelectionPillOption(
+                                      label: isTh ? opt.labelTh : opt.label,
+                                      value: opt.value,
+                                    ),
+                                  )
+                                  .toList()
+                            : filter.options
+                                  .map(
+                                    (opt) => SelectionPillOption(
+                                      label: opt,
+                                      value: opt,
+                                    ),
+                                  )
+                                  .toList();
+
+                        return Column(
+                          children: [
+                            AppSelectionPills<String>(
+                              label: isTh ? filter.labelTh : filter.labelEn,
+                              value: state.specifications[filter.key],
+                              isRequired: false,
+                              options: options,
+                              onChanged: (val) =>
+                                  context.read<PropertyFormBloc>().add(
+                                    PropertyFormDynamicSingleSelectChanged(
+                                      filter.key,
+                                      val,
+                                    ),
+                                  ),
+                            ),
+                            const SizedBox(height: 24),
+                          ],
+                        );
+                      }),
+
+                // Dynamic Multi-Select Filters or Fallback
                 // Dynamic Multi-Select Filters or Fallback
                 if (state.specificationFilters.multiSelect.isNotEmpty)
                   ...state.specificationFilters.multiSelect.map((filter) {
+                    final bool isTh =
+                        Localizations.localeOf(context).languageCode == 'th';
+
+                    final options = filter.optionsWithImages.isNotEmpty
+                        ? filter.optionsWithImages.map((o) => o.value).toList()
+                        : filter.options;
+
                     return Column(
                       children: [
                         AppMultiSelectChips<String>(
-                          label: filter.label,
+                          label: isTh ? filter.labelTh : filter.labelEn,
                           values: state.specificationValues[filter.key] ?? [],
-                          options: filter.options,
+                          options: options,
+                          itemLabel: (val) {
+                            if (filter.optionsWithImages.isNotEmpty) {
+                              final opt = filter.optionsWithImages.firstWhere(
+                                (o) => o.value == val,
+                                orElse: () => PropertySpecificationOption(
+                                  value: val,
+                                  label: val,
+                                  labelTh: val,
+                                ),
+                              );
+                              return isTh ? opt.labelTh : opt.label;
+                            }
+                            return val;
+                          },
                           onSelected: (val) =>
                               context.read<PropertyFormBloc>().add(
                                 PropertyFormDynamicMultiSelectToggled(

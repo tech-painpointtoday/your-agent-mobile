@@ -13,7 +13,6 @@ import '../../../widgets/dialogs/status_dialog.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import '../../../widgets/form_fields/social_login_section.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function(Locale) changeLocale;

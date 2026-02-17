@@ -94,6 +94,7 @@ class EmailVerificationPendingScreen extends StatelessWidget {
                         state is AuthOperationState &&
                         state.resendEmailStatus == ResendEmailStatus.loading;
                     return AppButton(
+                      width: double.infinity,
                       text: AppLocalizations.of(context).resendLink,
                       style: AppButtonStyle.primary,
                       isLoading: isLoading,
