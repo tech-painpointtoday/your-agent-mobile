@@ -77,7 +77,8 @@ class _AppState extends State<App> {
                       child: SafeArea(
                         top: false,
                         child: Material(
-                          elevation: 2,
+                          elevation: 0,
+                          color: Colors.transparent,
                           borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(8),
                             topLeft: Radius.circular(8),
@@ -90,27 +91,76 @@ class _AppState extends State<App> {
                             ),
                             decoration: BoxDecoration(
                               color: F.appFlavor == Flavor.dev
-                                  ? Colors.orange
-                                  : Colors.blue,
+                                  ? const Color(0xFF0A1F4B)
+                                  : const Color(0xFF3D0A50),
                               borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(8),
                                 bottomLeft: Radius.circular(8),
                               ),
+                              border: Border(
+                                top: BorderSide(
+                                  color: F.appFlavor == Flavor.dev
+                                      ? const Color(0xFF00FF9D)
+                                      : const Color(0xFFFF00E5),
+                                  width: 1,
+                                ),
+                                bottom: BorderSide(
+                                  color: F.appFlavor == Flavor.dev
+                                      ? const Color(0xFF00FF9D)
+                                      : const Color(0xFFFF00E5),
+                                  width: 1,
+                                ),
+                                left: BorderSide(
+                                  color: F.appFlavor == Flavor.dev
+                                      ? const Color(0xFF00FF9D)
+                                      : const Color(0xFFFF00E5),
+                                  width: 1,
+                                ),
+                              ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
+                                  color: F.appFlavor == Flavor.dev
+                                      ? const Color(
+                                          0xFF00FF9D,
+                                        ).withValues(alpha: 0.6)
+                                      : const Color(
+                                          0xFFFF00E5,
+                                        ).withValues(alpha: 0.6),
+                                  blurRadius: 12,
+                                  spreadRadius: 0,
+                                ),
+                                BoxShadow(
+                                  color: F.appFlavor == Flavor.dev
+                                      ? const Color(
+                                          0xFF00FF9D,
+                                        ).withValues(alpha: 0.35)
+                                      : const Color(
+                                          0xFFFF00E5,
+                                        ).withValues(alpha: 0.35),
+                                  blurRadius: 24,
+                                  spreadRadius: -2,
                                 ),
                               ],
                             ),
                             child: Text(
                               F.bannerLabel,
                               style: GoogleFonts.anuphan(
-                                color: Colors.white,
+                                color: F.appFlavor == Flavor.dev
+                                    ? const Color(0xFF00FF9D)
+                                    : const Color(0xFFFF00E5),
                                 letterSpacing: 2,
                                 fontSize: 10,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w800,
+                                shadows: [
+                                  Shadow(
+                                    color:
+                                        (F.appFlavor == Flavor.dev
+                                                ? const Color(0xFF00FF9D)
+                                                : const Color(0xFFFF00E5))
+                                            .withValues(alpha: 0.9),
+                                    blurRadius: 6,
+                                  ),
+                                ],
                               ),
                             ),
                           ),

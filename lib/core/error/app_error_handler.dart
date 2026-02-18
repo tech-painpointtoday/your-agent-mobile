@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,15 +13,16 @@ import 'package:youragent/l10n/app_localizations.dart';
 
 class AppErrorHandler {
   static void initialize() {
-    // Handle Flutter errors (rendering, etc.)
+    // Handle Flutter errors (rendering, etc.) and report to Crashlytics
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.presentError(details);
-      // Example: Log to Crashlytics here
+      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
       debugPrint('FlutterError caught: ${details.exception}');
     };
 
-    // Handle asynchronous errors (Streams, Futures)
+    // Handle asynchronous errors (Streams, Futures) and report to Crashlytics
     PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       debugPrint('PlatformDispatcher error caught: $error');
 
       final context = navigatorKey.currentContext;
