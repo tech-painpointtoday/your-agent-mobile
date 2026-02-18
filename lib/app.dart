@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'app/router.dart';
 import 'core/di/dependency_injection.dart';
@@ -67,6 +68,56 @@ class _AppState extends State<App> {
             child: Stack(
               children: [
                 child ?? const SizedBox.shrink(),
+                // Flavor banner: show when build is not production (dev/staging)
+                if (!F.isProduction && F.bannerLabel.isNotEmpty)
+                  Positioned(
+                    top: 36,
+                    right: 0,
+                    child: IgnorePointer(
+                      child: SafeArea(
+                        top: false,
+                        child: Material(
+                          elevation: 2,
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(8),
+                            topLeft: Radius.circular(8),
+                          ),
+                          child: Container(
+                            width: 56,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: F.appFlavor == Flavor.dev
+                                  ? Colors.orange
+                                  : Colors.blue,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(8),
+                                bottomLeft: Radius.circular(8),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              F.bannerLabel,
+                              style: GoogleFonts.anuphan(
+                                color: Colors.white,
+                                letterSpacing: 2,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 kDebugMode
                     ? const DebugLogFloatingButton()
                     : const SizedBox.shrink(),

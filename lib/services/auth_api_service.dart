@@ -2,6 +2,15 @@ import 'package:dio/dio.dart';
 
 import 'api_client.dart';
 import '../domain/entities/device_info_model.dart';
+import '../core/error/api_exception.dart';
+
+class _ErrorData {
+  final String message;
+  final String? code;
+  final Map<String, dynamic>? details;
+
+  _ErrorData(this.message, {this.code, this.details});
+}
 
 class AuthApiService {
   final ApiClient _apiClient;
@@ -55,40 +64,41 @@ class AuthApiService {
     }
   }
 
-  String _extractErrorMessage(DioException e) {
+  _ErrorData _extractErrorData(DioException e) {
     if (e.response?.data is Map<String, dynamic>) {
       final data = e.response!.data as Map<String, dynamic>;
 
-      // Check for structured error object first
       if (data['error'] is Map<String, dynamic>) {
         final error = data['error'] as Map<String, dynamic>;
+        final code = error['code']?.toString();
+        final details = error['details'] is Map<String, dynamic>
+            ? error['details'] as Map<String, dynamic>
+            : null;
 
-        // Handle VALIDATION_ERROR specifically
-        if (error['code'] == 'VALIDATION_ERROR' &&
-            error['details'] is Map<String, dynamic>) {
-          final details = error['details'] as Map<String, dynamic>;
-          if (details.isNotEmpty) {
-            // Get the first error message from the first field
-            final firstFieldErrors = details.values.first;
-            if (firstFieldErrors is List && firstFieldErrors.isNotEmpty) {
-              return firstFieldErrors.first.toString();
-            }
+        String message = error['message']?.toString() ?? 'An error occurred';
+
+        if (code == 'VALIDATION_ERROR' &&
+            details != null &&
+            details.isNotEmpty) {
+          final firstFieldErrors = details.values.first;
+          if (firstFieldErrors is List && firstFieldErrors.isNotEmpty) {
+            message = firstFieldErrors.first.toString();
           }
         }
 
-        // Fallback to error object message
-        if (error['message'] != null) {
-          return error['message'].toString();
-        }
+        return _ErrorData(message, code: code, details: details);
       }
 
-      // Top level message fallback
       if (data['message'] != null) {
-        return data['message'].toString();
+        return _ErrorData(data['message'].toString());
       }
     }
 
-    return e.message ?? 'Unknown error occurred';
+    return _ErrorData(e.message ?? 'Unknown error occurred');
+  }
+
+  String _extractErrorMessage(DioException e) {
+    return _extractErrorData(e).message;
   }
 
   Future<Map<String, dynamic>> sellerRegister({
@@ -129,7 +139,12 @@ class AuthApiService {
       return data;
     } catch (e) {
       if (e is DioException) {
-        throw Exception(_extractErrorMessage(e));
+        final errorData = _extractErrorData(e);
+        throw ApiException(
+          errorData.message,
+          code: errorData.code,
+          details: errorData.details,
+        );
       }
       throw Exception('Failed to register seller: $e');
     }
@@ -171,7 +186,12 @@ class AuthApiService {
       return data;
     } catch (e) {
       if (e is DioException) {
-        throw Exception(_extractErrorMessage(e));
+        final errorData = _extractErrorData(e);
+        throw ApiException(
+          errorData.message,
+          code: errorData.code,
+          details: errorData.details,
+        );
       }
       throw Exception('Failed to register buyer: $e');
     }

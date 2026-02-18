@@ -121,6 +121,9 @@
   "register_success": "Registration Successful",
   "register_success_message": "Your account has been created successfully. Please check your email for verification.",
   "register_error": "Registration Failed",
+  "emailAlreadyRegistered": "This email has already been registered.",
+  "useThisEmailToContinue": "Use this email to continue the contract",
+  "registrationNote": "Data will not be updated if it already exists.",
   "social_login_confirmation": "Do you want to continue with {provider}?",
   "@social_login_confirmation": {
     "placeholders": {

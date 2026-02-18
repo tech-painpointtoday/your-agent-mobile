@@ -84,3 +84,41 @@ dependencies {
 flutter {
     source = "../.."
 }
+
+// Copy flavor app icons from assets/logo into dev/staging res so launcher uses them
+val flavorIcons = mapOf(
+    "dev" to "app_icon_dev.png",
+    "staging" to "app_icon_uat.png",
+)
+val densities = listOf("mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi")
+
+flavorIcons.forEach { (flavor, iconName) ->
+    val taskName = "copy${flavor.replaceFirstChar { it.uppercase() }}Icon"
+    tasks.register(taskName) {
+        doLast {
+            val source = file("${project.projectDir}/../../assets/logo/$iconName")
+            if (source.exists()) {
+                densities.forEach { density ->
+                    val destDir = file("${project.projectDir}/src/$flavor/res/drawable-$density")
+                    destDir.mkdirs()
+                    copy {
+                        from(source)
+                        into(destDir)
+                        rename { "ic_launcher_foreground.png" }
+                    }
+                }
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    flavorIcons.keys.forEach { flavor ->
+        val cap = flavor.replaceFirstChar { it.uppercase() }
+        tasks.matching {
+            it.name.startsWith("merge${cap}") && it.name.endsWith("Resources")
+        }.configureEach {
+            dependsOn("copy${cap}Icon")
+        }
+    }
+}

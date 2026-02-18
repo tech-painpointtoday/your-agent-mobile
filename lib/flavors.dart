@@ -27,5 +27,19 @@ class F {
         return 'https://yourhome.co.th/api';
     }
   }
-}
 
+  /// True only for production builds. Use to show banner/badge in dev/staging.
+  static bool get isProduction => appFlavor == Flavor.prod;
+
+  /// Short label for in-app banner when not production (e.g. "DEV", "STAGING").
+  static String get bannerLabel {
+    switch (appFlavor) {
+      case Flavor.dev:
+        return 'DEV';
+      case Flavor.staging:
+        return 'STAGING';
+      case Flavor.prod:
+        return '';
+    }
+  }
+}

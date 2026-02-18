@@ -376,6 +376,15 @@ class AppLocalizationsTh extends AppLocalizations {
   String get register_error => 'การลงทะเบียนไม่สำเร็จ';
 
   @override
+  String get emailAlreadyRegistered => 'อีเมลนี้เคยลงทะเบียนแล้ว';
+
+  @override
+  String get useThisEmailToContinue => 'ใช้อีเมลนี้ เพื่อทำสัญญาต่อ';
+
+  @override
+  String get registrationNote => 'ข้อมูลจะไม่ถูกอัปเดต กรณีที่มีข้อมูลอยู่แล้ว';
+
+  @override
   String social_login_confirmation(String provider) {
     return 'คุณต้องการเข้าใช้งานด้วย $provider ต่อใช่หรือไม่?';
   }

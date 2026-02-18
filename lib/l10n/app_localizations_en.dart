@@ -377,6 +377,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get register_error => 'Registration Failed';
 
   @override
+  String get emailAlreadyRegistered =>
+      'This email has already been registered.';
+
+  @override
+  String get useThisEmailToContinue =>
+      'Use this email to continue the contract';
+
+  @override
+  String get registrationNote =>
+      'Data will not be updated if it already exists.';
+
+  @override
   String social_login_confirmation(String provider) {
     return 'Do you want to continue with $provider?';
   }

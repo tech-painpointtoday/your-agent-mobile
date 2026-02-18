@@ -8,6 +8,7 @@ import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/utils/thai_phone_input_formatter.dart';
+import 'package:youragent/core/error/api_exception.dart';
 
 enum RegistrationUserType { owner, buyer }
 
@@ -63,16 +64,24 @@ class _UserRegistrationBottomSheetState
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
+  String? _errorCode;
 
   @override
   void initState() {
     super.initState();
     _nameController.addListener(_onFormFieldChanged);
     _phoneController.addListener(_onFormFieldChanged);
-    _emailController.addListener(_onFormFieldChanged);
+    _emailController.addListener(_onEmailFieldChanged);
     _addressController.addListener(_onFormFieldChanged);
     _passwordController.addListener(_onFormFieldChanged);
     _confirmPasswordController.addListener(_onFormFieldChanged);
+  }
+
+  void _onEmailFieldChanged() {
+    if (_errorCode != null) {
+      setState(() => _errorCode = null);
+    }
+    _onFormFieldChanged();
   }
 
   void _onFormFieldChanged() {
@@ -158,11 +167,22 @@ class _UserRegistrationBottomSheetState
       }
     } catch (e) {
       if (mounted) {
-        StatusDialog.showError(
-          context: context,
-          title: context.l10n.errorOccurredTitle,
-          message: e.toString().replaceFirst('Exception: ', ''),
-        );
+        if (e is ApiException) {
+          setState(() => _errorCode = e.code);
+          if (e.code != 'VALIDATION_ERROR') {
+            StatusDialog.showError(
+              context: context,
+              title: context.l10n.errorOccurredTitle,
+              message: e.message,
+            );
+          }
+        } else {
+          StatusDialog.showError(
+            context: context,
+            title: context.l10n.errorOccurredTitle,
+            message: e.toString().replaceFirst('Exception: ', ''),
+          );
+        }
       }
     } finally {
       if (mounted) {
@@ -193,181 +213,235 @@ class _UserRegistrationBottomSheetState
         24,
         MediaQuery.of(context).viewInsets.bottom + 24,
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Handle bar
-            Center(
-              child: Container(
-                width: 48,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.baseLightGrey,
-                  borderRadius: BorderRadius.circular(2),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.82,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Handle bar
+              Center(
+                child: Container(
+                  width: 48,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.baseLightGrey,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            // Title
-            Text(
-              title,
-              style: GoogleFonts.anuphan(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
+              // Title
+              Text(
+                title,
+                style: GoogleFonts.anuphan(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: GoogleFonts.anuphan(
-                fontSize: 14,
-                color: AppColors.baseGrey,
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: GoogleFonts.anuphan(
+                  fontSize: 14,
+                  color: AppColors.baseGrey,
+                ),
               ),
-            ),
-            const SizedBox(height: 32),
+              const SizedBox(height: 32),
 
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  AppTextField(
-                    label: context.l10n.fullNameLabel,
-                    controller: _nameController,
-                    isRequired: true,
-                    hintText: context.l10n.fullNameLabel,
-                  ),
-                  const SizedBox(height: 20),
-                  AppTextField(
-                    label: context.l10n.phone_number,
-                    controller: _phoneController,
-                    isRequired: true,
-                    hintText: context.l10n.phone_number,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [ThaiPhoneInputFormatter()],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return null;
-                      final phone = value.replaceAll('-', '');
-                      if (phone.length < 10) {
-                        return context.l10n.invalidPhoneNumberFormat;
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  AppTextField(
-                    label: context.l10n.email,
-                    controller: _emailController,
-                    isRequired: true,
-                    hintText: context.l10n.email,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return null;
-                      if (!RegExp(
-                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                      ).hasMatch(value.trim())) {
-                        return context.l10n.invalidEmailFormat;
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  if (widget.type == RegistrationUserType.owner) ...[
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
                     AppTextField(
-                      label: context.l10n.address,
-                      controller: _addressController,
+                      label: context.l10n.fullNameLabel,
+                      controller: _nameController,
                       isRequired: true,
-                      hintText: context.l10n.currentAddressLabel,
+                      hintText: context.l10n.fullNameLabel,
                     ),
                     const SizedBox(height: 20),
-                  ],
-                  AppTextField(
-                    label: context.l10n.password,
-                    controller: _passwordController,
-                    isRequired: true,
-                    hintText: context.l10n.password,
-                    obscureText: _obscurePassword,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return null;
-                      if (value.length < 8) {
-                        return context.l10n.passwordMinLengthError;
-                      }
-                      return null;
-                    },
-                    suffix: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        color: AppColors.baseGrey,
-                        size: 20,
+                    AppTextField(
+                      label: context.l10n.phone_number,
+                      controller: _phoneController,
+                      isRequired: true,
+                      hintText: context.l10n.phone_number,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [ThaiPhoneInputFormatter()],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return null;
+                        final phone = value.replaceAll('-', '');
+                        if (phone.length < 10) {
+                          return context.l10n.invalidPhoneNumberFormat;
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    AppTextField(
+                      label: context.l10n.email,
+                      controller: _emailController,
+                      isRequired: true,
+                      hintText: context.l10n.email,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return null;
+                        if (!RegExp(
+                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                        ).hasMatch(value.trim())) {
+                          return context.l10n.invalidEmailFormat;
+                        }
+                        return null;
+                      },
+                    ),
+                    if (_errorCode == 'VALIDATION_ERROR') ...[
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          context.l10n.emailAlreadyRegistered,
+                          style: GoogleFonts.anuphan(
+                            color: AppColors.error,
+                            fontSize: 14,
+                          ),
+                        ),
                       ),
-                      onPressed: () =>
-                          setState(() => _obscurePassword = !_obscurePassword),
+                      const SizedBox(height: 16),
+                      AppButton(
+                        width: double.infinity,
+                        text: context.l10n.useThisEmailToContinue,
+                        style: AppButtonStyle.outline,
+                        backgroundColor: AppColors.brandLightGreen,
+                        textColor: AppColors.brandGreen,
+                        borderColor: AppColors.brandGreen.withValues(
+                          alpha: 0.16,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(
+                            context,
+                            RegistrationResult(
+                              name: _nameController.text,
+                              email: _emailController.text,
+                              phone: _phoneController.text,
+                              password: _passwordController.text,
+                              address: widget.type == RegistrationUserType.owner
+                                  ? _addressController.text
+                                  : null,
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      Center(
+                        child: Text(
+                          context.l10n.registrationNote,
+                          style: GoogleFonts.anuphan(
+                            fontSize: 14,
+                            color: AppColors.baseGrey,
+                          ),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                    if (widget.type == RegistrationUserType.owner) ...[
+                      AppTextField(
+                        label: context.l10n.address,
+                        controller: _addressController,
+                        isRequired: true,
+                        hintText: context.l10n.currentAddressLabel,
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                    AppTextField(
+                      label: context.l10n.password,
+                      controller: _passwordController,
+                      isRequired: true,
+                      hintText: context.l10n.password,
+                      obscureText: _obscurePassword,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return null;
+                        if (value.length < 8) {
+                          return context.l10n.passwordMinLengthError;
+                        }
+                        return null;
+                      },
+                      suffix: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          color: AppColors.baseGrey,
+                          size: 20,
+                        ),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    AppTextField(
+                      label: context.l10n.confirm_password_hint,
+                      controller: _confirmPasswordController,
+                      isRequired: true,
+                      hintText: context.l10n.confirm_password_hint,
+                      obscureText: _obscureConfirmPassword,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return null;
+                        if (value != _passwordController.text) {
+                          return context.l10n.passwordMismatchError;
+                        }
+                        return null;
+                      },
+                      suffix: IconButton(
+                        icon: SvgPicture.asset(
+                          _obscureConfirmPassword
+                              ? 'assets/icons/eye-off.svg'
+                              : 'assets/icons/eye.svg',
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.baseGrey,
+                            BlendMode.srcIn,
+                          ),
+                          width: 20,
+                          height: 20,
+                        ),
+                        onPressed: () => setState(
+                          () => _obscureConfirmPassword =
+                              !_obscureConfirmPassword,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      text: context.l10n.cancel_button,
+                      style: AppButtonStyle.outline,
+                      onPressed: () => Navigator.pop(context),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  AppTextField(
-                    label: context.l10n.confirm_password_hint,
-                    controller: _confirmPasswordController,
-                    isRequired: true,
-                    hintText: context.l10n.confirm_password_hint,
-                    obscureText: _obscureConfirmPassword,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) return null;
-                      if (value != _passwordController.text) {
-                        return context.l10n.passwordMismatchError;
-                      }
-                      return null;
-                    },
-                    suffix: IconButton(
-                      icon: SvgPicture.asset(
-                        _obscureConfirmPassword
-                            ? 'assets/icons/eye-off.svg'
-                            : 'assets/icons/eye.svg',
-                        colorFilter: const ColorFilter.mode(
-                          AppColors.baseGrey,
-                          BlendMode.srcIn,
-                        ),
-                        width: 20,
-                        height: 20,
-                      ),
-                      onPressed: () => setState(
-                        () =>
-                            _obscureConfirmPassword = !_obscureConfirmPassword,
-                      ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: AppButton(
+                      text: context.l10n.createAccount,
+                      style: AppButtonStyle.primary,
+                      isLoading: _isLoading,
+                      enabled: !_isLoading && _isFormValid,
+                      onPressed: _handleRegister,
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 32),
-
-            Row(
-              children: [
-                Expanded(
-                  child: AppButton(
-                    text: context.l10n.cancel_button,
-                    style: AppButtonStyle.outline,
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: AppButton(
-                    text: context.l10n.createAccount,
-                    style: AppButtonStyle.primary,
-                    isLoading: _isLoading,
-                    enabled: !_isLoading && _isFormValid,
-                    onPressed: _handleRegister,
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

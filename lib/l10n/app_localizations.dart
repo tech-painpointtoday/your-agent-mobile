@@ -824,6 +824,24 @@ abstract class AppLocalizations {
   /// **'Registration Failed'**
   String get register_error;
 
+  /// No description provided for @emailAlreadyRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'This email has already been registered.'**
+  String get emailAlreadyRegistered;
+
+  /// No description provided for @useThisEmailToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this email to continue the contract'**
+  String get useThisEmailToContinue;
+
+  /// No description provided for @registrationNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Data will not be updated if it already exists.'**
+  String get registrationNote;
+
   /// No description provided for @social_login_confirmation.
   ///
   /// In en, this message translates to:
