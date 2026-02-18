@@ -588,6 +588,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DDA272F2159018207B41ACA9 /* Pods-Runner.profile.xcconfig */;
 			buildSettings = {
+				APP_URL_SCHEME = youragent;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -715,7 +716,7 @@
 				G_REVERSED_CLIENT_ID = "com.googleusercontent.apps.1043784667090-tjn2q0asovn1g67qapthbh9s13cdos3i";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -726,7 +727,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A1B2C3D42F2B4086005CCA4D /* Debug-dev.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-Dev;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -832,7 +833,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A1B2C3D52F2B4086005CCA4D /* Release-dev.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-Dev;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -932,7 +933,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A1B2C3D62F2B4086005CCA4D /* Profile-dev.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-Dev;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1026,7 +1027,7 @@
 				G_REVERSED_CLIENT_ID = "com.googleusercontent.apps.1043784667090-tjn2q0asovn1g67qapthbh9s13cdos3i";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1337,7 +1338,7 @@
 				G_REVERSED_CLIENT_ID = "com.googleusercontent.apps.1043784667090-tjn2q0asovn1g67qapthbh9s13cdos3i";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";

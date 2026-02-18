@@ -476,6 +476,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
     required String label,
     required String hintText,
     required List<T> items,
+    List<T> Function()? itemsGetter,
     required String Function(T) nameSelector,
     required void Function(T) onSelected,
     String Function(T)? subtitleSelector,
@@ -511,11 +512,12 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
         ),
       ),
       suggestionsCallback: (pattern) async {
-        if (items.isEmpty && onFetchNeeded != null && context.mounted) {
+        List<T> currentItems() => itemsGetter?.call() ?? items;
+
+        if (currentItems().isEmpty && onFetchNeeded != null && context.mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) onFetchNeeded();
           });
-          // Wait for fetching to start and then finish, or timeout
           int retries = 0;
           while (retries < 15 && mounted) {
             final currentState = context.read<PropertyFormBloc>().state;
@@ -523,11 +525,22 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
             await Future.delayed(const Duration(milliseconds: 200));
             retries++;
           }
+          if (!context.mounted) return <T>[];
+          // Use fresh list from bloc after fetch (avoids "has data but show empty")
+          final fresh = currentItems();
+          if (pattern.isEmpty) return fresh;
+          final lower = pattern.toLowerCase();
+          return fresh.where((item) {
+            final name = nameSelector(item).toLowerCase();
+            final sub = subtitleSelector?.call(item).toLowerCase() ?? '';
+            return name.contains(lower) || sub.contains(lower);
+          }).toList();
         }
 
-        if (pattern.isEmpty) return items;
+        final list = currentItems();
+        if (pattern.isEmpty) return list;
         final lower = pattern.toLowerCase();
-        return items.where((item) {
+        return list.where((item) {
           final name = nameSelector(item).toLowerCase();
           final sub = subtitleSelector?.call(item).toLowerCase() ?? '';
           return name.contains(lower) || sub.contains(lower);
@@ -691,6 +704,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       label: AppLocalizations.of(context).developerHint,
                       hintText: AppLocalizations.of(context).searchDeveloper,
                       items: state.developers,
+                      itemsGetter: () =>
+                          context.read<PropertyFormBloc>().state.developers,
                       isRequired: isCondoOrApt,
                       fetchingSelector: (s) => s.isFetchingDevelopers,
                       validator: isCondoOrApt
@@ -797,6 +812,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         label: AppLocalizations.of(context).projectNameHint,
                         hintText: AppLocalizations.of(context).projectNameHint,
                         items: state.condoProjects,
+                        itemsGetter: () =>
+                            context.read<PropertyFormBloc>().state.condoProjects,
                         isRequired: isCondoOrApt,
                         fetchingSelector: (s) => s.isFetchingProjects,
                         validator: (value) {
@@ -874,6 +891,8 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         label: AppLocalizations.of(context).projectNameHint,
                         hintText: AppLocalizations.of(context).projectNameHint,
                         items: state.houseProjects,
+                        itemsGetter: () =>
+                            context.read<PropertyFormBloc>().state.houseProjects,
                         isRequired: false,
                         fetchingSelector: (s) => s.isFetchingProjects,
                         nameSelector: (p) => isTh ? p.nameTh : p.nameEn,

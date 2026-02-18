@@ -2,3 +2,4 @@
 #include "Generated.xcconfig"
 
 APP_DISPLAY_NAME=YourAgent Dev
+APP_URL_SCHEME=youragentdev

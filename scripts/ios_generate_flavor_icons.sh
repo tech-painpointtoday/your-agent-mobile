@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Generate iOS app icon sizes from assets/logo for dev and staging flavors.
+# Generate iOS app icon sizes from assets/logo for dev, staging, and prod flavors.
 # Run from project root: ./scripts/ios_generate_flavor_icons.sh
 # Requires: sips (macOS) or ImageMagick (convert).
 
@@ -8,6 +8,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 ASSETS="$ROOT/assets/logo"
 DEV_SRC="$ASSETS/app_icon_dev.png"
 UAT_SRC="$ASSETS/app_icon_uat.png"
+PROD_SRC="$ASSETS/app_icon.png"
 XCASSETS="$ROOT/ios/Runner/Assets.xcassets"
 
 # size_px: physical pixel size (e.g. 40 for 20x20@2x)
@@ -71,4 +72,7 @@ generate_set "$DEV_SRC" "$XCASSETS/AppIcon-Dev.appiconset"
 echo "Generating AppIcon-Staging from $UAT_SRC"
 generate_set "$UAT_SRC" "$XCASSETS/AppIcon-Staging.appiconset"
 
-echo "Done. Build dev/staging in Xcode to use the new icons."
+echo "Generating AppIcon (prod) from $PROD_SRC"
+generate_set "$PROD_SRC" "$XCASSETS/AppIcon.appiconset"
+
+echo "Done. Build dev/staging/prod in Xcode to use the new icons."
