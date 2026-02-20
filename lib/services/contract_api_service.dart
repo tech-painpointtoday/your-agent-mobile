@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../domain/entities/contract.dart';
 import '../domain/entities/contract_create_data.dart';
 import '../domain/entities/contract_edit_data.dart';
@@ -6,6 +7,8 @@ import '../domain/entities/contract_attachment.dart';
 import '../domain/entities/contract_item_definition.dart';
 import '../domain/entities/buyer.dart';
 import '../domain/entities/owner.dart';
+import '../domain/entities/pagination.dart';
+import '../domain/entities/contract_results.dart';
 import 'api_client.dart';
 import 'api_response_service.dart';
 
@@ -16,12 +19,11 @@ class ContractApiService {
   ContractApiService(this._apiClient);
 
   /// Get Contracts (paginated)
-  /// GET /agent/contracts?page={page}
-  Future<List<Contract>> getContracts({int page = 1}) async {
+  Future<ContractResults> getContracts({int page = 1, int perPage = 10}) async {
     try {
       final response = await _apiClient.get(
         '/agent/contracts',
-        queryParameters: {'page': page},
+        queryParameters: {'page': page, 'per_page': perPage},
       );
 
       final apiResponse =
@@ -35,15 +37,79 @@ class ContractApiService {
       }
 
       final data = apiResponse.data!;
-      final List<dynamic> contractsJson = data['data'] is List
-          ? data['data']
-          : [];
+      List<dynamic> contractsJson = [];
 
-      return contractsJson
+      debugPrint(
+        'ContractApiService: analyzing response data. data type is ${data.runtimeType}, data[\'data\'] type is ${data['data'].runtimeType}',
+      );
+
+      if (data['data'] != null && data['data'] is Map<String, dynamic>) {
+        final dataValue = data['data'] as Map<String, dynamic>;
+        if (dataValue['contracts'] != null && dataValue['contracts'] is List) {
+          contractsJson = dataValue['contracts'] as List;
+          debugPrint(
+            'ContractApiService: Found ${contractsJson.length} contracts in data.contracts',
+          );
+        } else if (dataValue['data'] != null && dataValue['data'] is List) {
+          contractsJson = dataValue['data'] as List;
+          debugPrint(
+            'ContractApiService: Found ${contractsJson.length} contracts in data.data',
+          );
+        }
+      } else if (data['data'] != null && data['data'] is List) {
+        contractsJson = data['data'] as List<dynamic>;
+        debugPrint(
+          'ContractApiService: Found ${contractsJson.length} contracts in direct data list',
+        );
+      } else if (data['contracts'] != null && data['contracts'] is List) {
+        contractsJson = data['contracts'] as List;
+        debugPrint(
+          'ContractApiService: Found ${contractsJson.length} contracts in top-level contracts',
+        );
+      }
+
+      final contracts = contractsJson
           .map(
             (json) => Contract.fromJson(Map<String, dynamic>.from(json as Map)),
           )
           .toList();
+
+      Pagination pagination = Pagination(
+        currentPage: page,
+        lastPage: 1,
+        perPage: perPage,
+        total: contracts.length,
+        from: 1,
+        to: contracts.length,
+      );
+
+      if (data['pagination'] != null) {
+        pagination = Pagination.fromJson(
+          data['pagination'] as Map<String, dynamic>,
+        );
+      } else if (data['data'] != null && data['data'] is Map<String, dynamic>) {
+        final dataValue = data['data'] as Map<String, dynamic>;
+        if (dataValue['pagination'] != null) {
+          pagination = Pagination.fromJson(
+            dataValue['pagination'] as Map<String, dynamic>,
+          );
+        }
+      }
+
+      if (data['pagination'] != null) {
+        pagination = Pagination.fromJson(
+          data['pagination'] as Map<String, dynamic>,
+        );
+      } else if (data['data'] is Map<String, dynamic>) {
+        final dataMap = data['data'] as Map<String, dynamic>;
+        if (dataMap['pagination'] != null) {
+          pagination = Pagination.fromJson(
+            dataMap['pagination'] as Map<String, dynamic>,
+          );
+        }
+      }
+
+      return ContractResults(contracts: contracts, pagination: pagination);
     } catch (e) {
       if (e is DioException && e.response != null) {
         final errorMessage = ApiResponseService.getErrorMessage(e);

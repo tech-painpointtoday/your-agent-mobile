@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
@@ -15,7 +16,11 @@ import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/contract_status.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 
-/// Screen showing all contract documents in a list
+import '../bloc/contract_list/contract_list_bloc.dart';
+import '../bloc/contract_list/contract_list_event.dart';
+import '../bloc/contract_list/contract_list_state.dart';
+
+/// Screen showing all contract documents in a list with infinite scroll
 class ContractScreen extends StatefulWidget {
   const ContractScreen({super.key});
 
@@ -25,101 +30,99 @@ class ContractScreen extends StatefulWidget {
 
 class _ContractScreenState extends State<ContractScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final _contractApiService = DependencyInjection.contractApiService;
+  final ScrollController _scrollController = ScrollController();
   final _propertyApiService = DependencyInjection.propertyApiService;
+  final _contractApiService = DependencyInjection.contractApiService;
 
-  List<Contract> _allContracts = [];
-  List<Contract> _filteredContracts = [];
-  bool _isLoading = true;
-  String? _error;
   ContractFilter _currentFilter = ContractFilter();
+  late final ContractListBloc _contractListBloc;
 
   @override
   void initState() {
     super.initState();
-    _loadContracts();
+    _scrollController.addListener(_onScroll);
     _searchController.addListener(_onSearchChanged);
+    _contractListBloc = ContractListBloc(
+      contractApiService: _contractApiService,
+    )..add(const ContractListFetched());
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _searchController.dispose();
+    _contractListBloc.close();
     super.dispose();
   }
 
-  Future<void> _loadContracts() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final contracts = await _contractApiService.getContracts();
-      if (!mounted) return;
-
-      setState(() {
-        _allContracts = contracts;
-        _filteredContracts = contracts;
-        _isLoading = false;
-      });
-      _onSearchChanged(); // Re-apply filter if any
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
+  void _onScroll() {
+    if (_isBottom) {
+      _contractListBloc.add(const ContractListFetched());
     }
   }
 
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  Future<void> _onRefresh() async {
+    _contractListBloc.add(ContractListRefresh());
+  }
+
   void _onSearchChanged() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredContracts = _allContracts.where((contract) {
-        // Search query check
-        final matchesSearch =
-            query.isEmpty ||
-            contract.propertyName.toLowerCase().contains(query) ||
+    setState(() {}); // Trigger local filtering rebuild
+  }
+
+  List<Contract> _applyLocalFilters(List<Contract> contracts) {
+    var filtered = contracts;
+
+    // Apply Search Query
+    final query = _searchController.text.toLowerCase().trim();
+    if (query.isNotEmpty) {
+      filtered = filtered.where((contract) {
+        return contract.propertyName.toLowerCase().contains(query) ||
             contract.contractNumber.toLowerCase().contains(query) ||
             contract.lessor.toLowerCase().contains(query) ||
             contract.lessee.toLowerCase().contains(query);
+      }).toList();
+    }
 
-        // Status filter check
+    // Apply Filter Bottom Sheet
+    if (!_currentFilter.isEmpty) {
+      filtered = filtered.where((contract) {
         final matchesStatus =
             _currentFilter.status == null ||
             contract.status == _currentFilter.status;
-
-        // Property type filter check
         final matchesPropertyType =
             _currentFilter.propertyType == null ||
             contract.propertyType == _currentFilter.propertyType;
-
-        // Contract type filter check
         final matchesContractType =
             _currentFilter.contractType == null ||
             contract.contractType == _currentFilter.contractType;
 
-        return matchesSearch &&
-            matchesStatus &&
-            matchesPropertyType &&
-            matchesContractType;
+        return matchesStatus && matchesPropertyType && matchesContractType;
       }).toList();
-    });
+    }
+
+    return filtered;
   }
 
   void _showFilterBottomSheet() {
+    final contracts = _contractListBloc.state.contracts;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => ContractFilterBottomSheet(
-        allContracts: _allContracts,
+        allContracts: contracts,
         initialFilter: _currentFilter,
         onApply: (filter) {
           setState(() {
             _currentFilter = filter;
           });
-          _onSearchChanged();
         },
       ),
     );
@@ -134,12 +137,12 @@ class _ContractScreenState extends State<ContractScreen> {
         builder: (context) => const Center(child: CircularProgressIndicator()),
       );
 
-      final properties = await _propertyApiService.getProperties();
+      final results = await _propertyApiService.getProperties();
 
       if (!mounted) return;
       Navigator.of(context).pop();
 
-      final approvedProperties = properties
+      final approvedProperties = results.properties
           .where((p) => p.approvalStatus == PropertyApprovalStatus.approved)
           .toList();
 
@@ -156,7 +159,7 @@ class _ContractScreenState extends State<ContractScreen> {
       } else {
         context.push('/contract/create').then((result) {
           if (result == true) {
-            _loadContracts();
+            _onRefresh();
           }
         });
       }
@@ -178,228 +181,271 @@ class _ContractScreenState extends State<ContractScreen> {
   Widget build(BuildContext context) {
     final double bottomPadding = MediaQuery.of(context).padding.bottom > 0
         ? MediaQuery.of(context).padding.bottom
-        : 16;
+        : 16.0;
 
-    return Scaffold(
-      backgroundColor: AppColors.primary,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    borderRadius: BorderRadius.circular(8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: SvgPicture.asset(
-                        'assets/icons/chevron-left.svg',
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
-                        width: 18,
-                        height: 18,
-                      ),
-                    ),
-                  ),
-                  // Title
-                  Text(
-                    context.l10n.contracts,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Spacer(),
-                  // Add Button
-                  InkWell(
-                    onTap: _handleCreateContract,
-                    borderRadius: BorderRadius.circular(100),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      padding: const EdgeInsets.all(8),
-                      decoration: ShapeDecoration(
-                        color: const Color(0x19F7FAFF),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/icons/plus.svg',
-                        width: 20,
-                        height: 20,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Content Area
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: _loadContracts,
-                color: Colors.white,
-                backgroundColor: AppColors.primary,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Contract Count
-                      if (_filteredContracts.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                          child: AppBadges.plain(
-                            label: '${_filteredContracts.length} รายการ',
-                            color: BadgeColor.blue,
+    return BlocProvider.value(
+      value: _contractListBloc,
+      child: Scaffold(
+        backgroundColor: AppColors.primary,
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: SvgPicture.asset(
+                          'assets/icons/chevron-left.svg',
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white,
+                            BlendMode.srcIn,
                           ),
-                        )
-                      else if (_filteredContracts.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                          child: AppBadges.plain(
-                            label: context.l10n.contractDocumentNotFound,
-                            color: BadgeColor.default_,
+                          width: 18,
+                          height: 18,
+                        ),
+                      ),
+                    ),
+                    // Title
+                    Text(
+                      context.l10n.contracts,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    // Add Button
+                    InkWell(
+                      onTap: _handleCreateContract,
+                      borderRadius: BorderRadius.circular(100),
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        padding: const EdgeInsets.all(8),
+                        decoration: ShapeDecoration(
+                          color: const Color(0x19F7FAFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
                           ),
                         ),
-
-                      // Contract List
-                      Expanded(child: _buildContent()),
-
-                      // Search Bar at Bottom
-                      Container(
-                        padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPadding),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 8,
-                              offset: const Offset(0, -2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: AppSearchBar(
-                                controller: _searchController,
-                                hintText: context.l10n.searchHint,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            // Filter Button
-                            InkWell(
-                              onTap: _showFilterBottomSheet,
-                              borderRadius: BorderRadius.circular(14),
-                              child: Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(14),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x14000000),
-                                      blurRadius: 12,
-                                      offset: Offset(0, 6),
-                                    ),
-                                  ],
-                                ),
-                                child: SvgPicture.asset(
-                                  'assets/icons/filter.svg',
-                                  width: 16,
-                                  height: 16,
-                                  fit: BoxFit.scaleDown,
-                                  colorFilter: ColorFilter.mode(
-                                    !_currentFilter.isEmpty
-                                        ? AppColors.primary
-                                        : AppColors.baseDarkGrey,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                        child: SvgPicture.asset(
+                          'assets/icons/plus.svg',
+                          width: 20,
+                          height: 20,
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+
+              // Content Area
+              Expanded(
+                child: Builder(
+                  builder: (context) {
+                    return RefreshIndicator(
+                      onRefresh: () => Future.sync(() => _onRefresh()),
+                      color: Colors.white,
+                      backgroundColor: AppColors.primary,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Contract Count
+                            BlocBuilder<ContractListBloc, ContractListState>(
+                              builder: (context, state) {
+                                final contracts = _applyLocalFilters(
+                                  state.contracts,
+                                );
+                                if (contracts.isNotEmpty) {
+                                  return Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      24,
+                                      24,
+                                      24,
+                                      16,
+                                    ),
+                                    child: AppBadges.plain(
+                                      label:
+                                          '${state.totalCount} รายการ', // Alternatively use context.l10n.itemCount if available
+                                      color: BadgeColor.blue,
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+
+                            // Contract List
+                            Expanded(child: _buildContent()),
+
+                            // Search Bar at Bottom
+                            Container(
+                              padding: EdgeInsets.fromLTRB(
+                                16,
+                                16,
+                                16,
+                                bottomPadding,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, -2),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: AppSearchBar(
+                                      controller: _searchController,
+                                      hintText: context.l10n.searchHint,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  // Filter Button
+                                  InkWell(
+                                    onTap: _showFilterBottomSheet,
+                                    borderRadius: BorderRadius.circular(14),
+                                    child: Container(
+                                      width: 44,
+                                      height: 44,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(14),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Color(0x14000000),
+                                            blurRadius: 12,
+                                            offset: Offset(0, 6),
+                                          ),
+                                        ],
+                                      ),
+                                      child: SvgPicture.asset(
+                                        'assets/icons/filter.svg',
+                                        width: 16,
+                                        height: 16,
+                                        fit: BoxFit.scaleDown,
+                                        colorFilter: ColorFilter.mode(
+                                          !_currentFilter.isEmpty
+                                              ? AppColors.primary
+                                              : AppColors.baseDarkGrey,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildContent() {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    return BlocBuilder<ContractListBloc, ContractListState>(
+      builder: (context, state) {
+        if (state.status == ContractListStatus.initial) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    if (_error != null) {
-      return SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.6,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('${context.l10n.errorWithPrefix}$_error'),
-                TextButton(
-                  onPressed: _loadContracts,
-                  child: Text(context.l10n.retry),
+        if (state.status == ContractListStatus.failure) {
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${context.l10n.errorWithPrefix}${state.errorMessage ?? "Unknown error"}',
+                    ),
+                    TextButton(
+                      onPressed: _onRefresh,
+                      child: Text(context.l10n.retry),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      );
-    }
+          );
+        }
 
-    if (_filteredContracts.isEmpty) {
-      return SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.6,
-          child: _buildEmptyState(),
-        ),
-      );
-    }
+        final filteredContracts = _applyLocalFilters(state.contracts);
 
-    return _buildContractList();
+        if (filteredContracts.isEmpty && state.hasReachedMax) {
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: _buildEmptyState(),
+            ),
+          );
+        }
+
+        return _buildContractList(state, filteredContracts);
+      },
+    );
   }
 
-  Widget _buildContractList() {
+  Widget _buildContractList(
+    ContractListState state,
+    List<Contract> filteredContracts,
+  ) {
     return ListView.separated(
+      controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: _filteredContracts.length,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      itemCount: state.hasReachedMax
+          ? filteredContracts.length
+          : filteredContracts.length + 1,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final contract = _filteredContracts[index];
+        if (index >= filteredContracts.length) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 32),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final contract = filteredContracts[index];
         return ContractListItem(
           contract: contract,
           onTap: () async {
@@ -410,19 +456,19 @@ class _ContractScreenState extends State<ContractScreen> {
               ),
             );
             if (result == true) {
-              _loadContracts();
+              _onRefresh();
             }
           },
           onEdit: () {
             if (contract.status == ContractStatus.draft) {
               context.push('/contract/create', extra: contract).then((result) {
                 if (result == true) {
-                  _loadContracts();
+                  _onRefresh();
                 }
               });
             } else {
               context.push('/contract/edit', extra: contract).then((result) {
-                _loadContracts();
+                _onRefresh();
               });
             }
           },
@@ -446,7 +492,7 @@ class _ContractScreenState extends State<ContractScreen> {
               child: Image.asset(
                 'assets/images/contract/YA_Illustration_EmptyState_NoContract.png',
                 fit: BoxFit.fitWidth,
-                errorBuilder: (context, error, srtackTrace) {
+                errorBuilder: (context, error, stackTrace) {
                   return const Icon(
                     Icons.image_not_supported,
                     size: 60,
@@ -456,7 +502,6 @@ class _ContractScreenState extends State<ContractScreen> {
               ),
             ),
           ),
-
           const SizedBox(height: 24),
           Text(
             context.l10n.dataContract,

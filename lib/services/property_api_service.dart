@@ -11,6 +11,8 @@ import 'package:youragent/data/models/condo_project_model.dart';
 import 'package:youragent/data/models/property_specification_filters.dart';
 import 'package:youragent/data/models/house_project_model.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:youragent/domain/entities/pagination.dart';
+import 'package:youragent/domain/entities/property_results.dart';
 
 /// Photo upload data structure
 /// Uses XFile for cross-platform compatibility (web and mobile)
@@ -50,14 +52,18 @@ class PropertyApiService {
 
   /// Get all properties (approved only)
   /// GET /$role/properties (e.g., /agent/properties)
-  Future<List<Property>> getProperties({
+  Future<PropertyResults> getProperties({
     String? role, // Optional: defaults to current user role
     int? id,
+    int? page,
+    int? perPage,
   }) async {
     try {
       final actualRole = role ?? _currentRole;
       final queryParams = <String, dynamic>{};
       if (id != null) queryParams['id'] = id;
+      if (page != null) queryParams['page'] = page;
+      if (perPage != null) queryParams['per_page'] = perPage;
 
       // Reduced logging: Only log essential info
       if (id != null) {
@@ -111,13 +117,41 @@ class PropertyApiService {
         );
       }
 
+      // Parse pagination
+      Pagination pagination = Pagination(
+        currentPage: page ?? 1,
+        lastPage: 1,
+        perPage: perPage ?? 10,
+        total: propertiesList.length,
+        from: 1,
+        to: propertiesList.length,
+      );
+
+      if (data is Map<String, dynamic>) {
+        if (data['pagination'] != null) {
+          // Check root level
+          pagination = Pagination.fromJson(
+            data['pagination'] as Map<String, dynamic>,
+          );
+        } else if (data['data'] != null &&
+            data['data'] is Map<String, dynamic>) {
+          // Check inside data object
+          final dataValue = data['data'] as Map<String, dynamic>;
+          if (dataValue['pagination'] != null) {
+            pagination = Pagination.fromJson(
+              dataValue['pagination'] as Map<String, dynamic>,
+            );
+          }
+        }
+      }
+
       debugPrint(
         'PropertyApiService: Found ${propertiesList.length} properties in response',
       );
 
       if (propertiesList.isEmpty) {
         debugPrint('PropertyApiService: No properties found in response');
-        return [];
+        return PropertyResults(properties: [], pagination: pagination);
       }
 
       // Only log first property summary (not all details) to reduce verbosity
@@ -179,7 +213,7 @@ class PropertyApiService {
           'PropertyApiService: Summary - ID: ${firstProperty.id}, name: ${firstProperty.name}, location: ${firstProperty.address}, images: ${firstProperty.imageUrls.length}',
         );
       }
-      return properties;
+      return PropertyResults(properties: properties, pagination: pagination);
     } catch (e) {
       throw Exception('Failed to get properties: $e');
     }

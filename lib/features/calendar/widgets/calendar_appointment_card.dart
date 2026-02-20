@@ -121,19 +121,19 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.anuphan(
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF181D27),
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.baseBlack,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 8),
                       Text(
                         widget.propertyAddress,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.anuphan(
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.w400,
-                          color: const Color(0xFF737373),
+                          color: AppColors.baseDarkGrey,
                         ),
                       ),
                     ],
@@ -145,8 +145,8 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                   child: widget.imageUrl != null
                       ? Image.network(
                           widget.imageUrl!,
-                          width: 72,
-                          height: 72,
+                          width: 70,
+                          height: 70,
                           fit: BoxFit.cover,
                           errorBuilder: (ctx, err, stack) => _placeholder(),
                         )
@@ -216,8 +216,8 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                 GestureDetector(
                   onTap: _toggle,
                   child: Container(
-                    width: 40,
-                    height: 40,
+                    width: 32,
+                    height: 32,
                     decoration: BoxDecoration(
                       color: AppColors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -233,8 +233,8 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                       child: Center(
                         child: SvgPicture.asset(
                           'assets/icons/chevron-down.svg',
-                          width: 16,
-                          height: 16,
+                          width: 12,
+                          height: 12,
                           fit: BoxFit.scaleDown,
                           colorFilter: ColorFilter.mode(
                             AppColors.baseDarkGrey,
@@ -253,8 +253,8 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                         ? 'ต้องการ Co-agent'
                         : 'ยกเลิกนัด',
                     style: AppButtonStyle.outline,
-                    height: 40,
-                    textSize: 13,
+                    height: 32,
+                    textSize: 12,
                     onPressed: widget.onSecondaryAction,
                   ),
                 ),
@@ -266,11 +266,11 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                         ? 'เริ่มเดินทาง'
                         : 'ยืนยันนัด',
                     style: AppButtonStyle.primary,
-                    height: 40,
-                    textSize: 13,
+                    height: 32,
+                    textSize: 12,
                     backgroundColor:
                         widget.confirmStatus == AppointmentStatus.confirmed
-                        ? const Color(0xFF22C55E)
+                        ? AppColors.supportGreenDark
                         : AppColors.primary,
                     onPressed: widget.onPrimaryAction,
                   ),
@@ -360,18 +360,18 @@ class _InfoColumn extends StatelessWidget {
         Text(
           label,
           style: GoogleFonts.anuphan(
-            fontSize: 11,
+            fontSize: 10,
             fontWeight: FontWeight.w400,
-            color: const Color(0xFF737373),
+            color: AppColors.baseDarkGrey,
           ),
         ),
         const SizedBox(height: 2),
         Text(
           value,
           style: GoogleFonts.anuphan(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF181D27),
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+            color: AppColors.baseBlack,
           ),
         ),
       ],

@@ -402,7 +402,8 @@ class ContractFormBloc extends Bloc<ContractFormEvent, ContractFormState> {
   ) async {
     emit(state.copyWith(isFetchingProperties: true));
     try {
-      final properties = await _propertyApiService.getProperties();
+      final results = await _propertyApiService.getProperties();
+      final properties = results.properties;
 
       List<Property> filtered;
       if (event.query.isEmpty) {

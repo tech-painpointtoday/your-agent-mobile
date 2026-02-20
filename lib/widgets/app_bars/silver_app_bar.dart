@@ -154,6 +154,8 @@ class SilverAppBarScreen extends StatefulWidget {
   final double backgroundHeight;
   final bool hasFilter;
   final RefreshCallback? onRefresh;
+  final ScrollController? controller;
+  final double preferredHeight;
 
   const SilverAppBarScreen({
     super.key,
@@ -168,9 +170,8 @@ class SilverAppBarScreen extends StatefulWidget {
     this.preferredHeight = 160.0,
     this.hasFilter = false,
     this.onRefresh,
+    this.controller,
   });
-
-  final double preferredHeight;
 
   @override
   State<SilverAppBarScreen> createState() => _SilverAppBarScreenState();
@@ -178,6 +179,7 @@ class SilverAppBarScreen extends StatefulWidget {
 
 class _SilverAppBarScreenState extends State<SilverAppBarScreen> {
   late ScrollController _scrollController;
+  bool _isLocalController = false;
   double _appBarOpacity = 0.0;
   final GlobalKey<_SilverAppBarWidgetState> _appBarKey =
       GlobalKey<_SilverAppBarWidgetState>();
@@ -185,14 +187,22 @@ class _SilverAppBarScreenState extends State<SilverAppBarScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
+    if (widget.controller != null) {
+      _scrollController = widget.controller!;
+      _isLocalController = false;
+    } else {
+      _scrollController = ScrollController();
+      _isLocalController = true;
+    }
     _scrollController.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
     _scrollController.removeListener(_scrollListener);
-    _scrollController.dispose();
+    if (_isLocalController) {
+      _scrollController.dispose();
+    }
     super.dispose();
   }
 

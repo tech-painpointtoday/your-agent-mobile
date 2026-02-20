@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
@@ -10,8 +11,11 @@ import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/domain/entities/property_filter.dart';
+import 'package:youragent/features/property/bloc/property_list/property_list_bloc.dart';
+import 'package:youragent/features/property/bloc/property_list/property_list_event.dart';
+import 'package:youragent/features/property/bloc/property_list/property_list_state.dart';
 
-/// Screen showing all properties in a list
+/// Screen showing all properties in a list with infinite scroll
 class AllPropertiesScreen extends StatefulWidget {
   const AllPropertiesScreen({super.key});
 
@@ -21,88 +25,84 @@ class AllPropertiesScreen extends StatefulWidget {
 
 class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final _propertyApiService = DependencyInjection.propertyApiService;
 
-  List<Property> _allProperties = [];
-  List<Property> _filteredProperties = [];
   PropertyFilter _currentFilter = const PropertyFilter();
-  bool _isLoading = true;
-  String? _error;
+
+  late final PropertyListBloc _propertyListBloc;
 
   @override
   void initState() {
     super.initState();
-    _loadProperties();
+    _scrollController.addListener(_onScroll);
     _searchController.addListener(_onSearchChanged);
+    _propertyListBloc = PropertyListBloc(
+      propertyApiService: _propertyApiService,
+    )..add(const PropertyListFetched());
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _searchController.dispose();
+    _propertyListBloc.close();
     super.dispose();
   }
 
-  Future<void> _loadProperties() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final properties = await _propertyApiService.getProperties();
-      if (!mounted) return;
-
-      setState(() {
-        _allProperties = properties;
-        _filteredProperties = properties;
-        _isLoading = false;
-      });
-      _onSearchChanged(); // Re-apply filter if any
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
+  void _onScroll() {
+    if (_isBottom) {
+      _propertyListBloc.add(const PropertyListFetched());
     }
   }
 
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  Future<void> _onRefresh() async {
+    _propertyListBloc.add(PropertyListRefresh());
+  }
+
   void _onSearchChanged() {
-    _applyFilters();
+    setState(() {}); // Trigger local filtering rebuild
   }
 
-  void _applyFilters() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredProperties = _allProperties.where((property) {
-        // Search Query Filter
-        final matchesSearch =
-            query.isEmpty ||
-            property.title.toLowerCase().contains(query) ||
-            (property.code?.toLowerCase().contains(query) ?? false) ||
-            (property.address?.toLowerCase().contains(query) ?? false);
+  List<Property> _applyLocalFilters(List<Property> properties) {
+    var filtered = properties;
 
-        if (!matchesSearch) return false;
-
-        // Property Filter
-        return _currentFilter.matches(property);
+    // Apply Search Query
+    final query = _searchController.text.toLowerCase().trim();
+    if (query.isNotEmpty) {
+      filtered = filtered.where((property) {
+        return property.title.toLowerCase().contains(query) ||
+            (property.address?.toLowerCase().contains(query) ?? false) ||
+            (property.code?.toLowerCase().contains(query) ?? false);
       }).toList();
-    });
+    }
+
+    // Apply Filter Bottom Sheet
+    if (!_currentFilter.isEmpty) {
+      filtered = filtered.where((p) => _currentFilter.matches(p)).toList();
+    }
+
+    return filtered;
   }
 
-  void _showFilterBottomSheet() async {
-    final filter = await showModalBottomSheet<PropertyFilter>(
+  void _showFilterBottomSheet(BuildContext context) async {
+    final properties = _propertyListBloc.state.properties;
+    final result = await PropertyFilterBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      builder: (context) => PropertyFilterBottomSheet(
-        initialFilter: _currentFilter,
-        properties: _allProperties,
-      ),
+      initialFilter: _currentFilter,
+      properties: properties,
     );
-
-    if (filter != null) {
-      _currentFilter = filter;
-      _applyFilters();
+    if (result != null) {
+      setState(() {
+        _currentFilter = result;
+      });
     }
   }
 
@@ -110,245 +110,286 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
   Widget build(BuildContext context) {
     final double bottomPadding = MediaQuery.of(context).padding.bottom > 0
         ? MediaQuery.of(context).padding.bottom
-        : 16;
+        : 16.0;
 
-    return Scaffold(
-      backgroundColor: AppColors.primary,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Back Button
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    borderRadius: BorderRadius.circular(8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: SvgPicture.asset(
-                        'assets/icons/chevron-left.svg',
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
-                        width: 18,
-                        height: 18,
-                      ),
-                    ),
-                  ),
-                  // Title
-                  Text(
-                    context.l10n.myProperties,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Spacer(),
-                  // Add Button
-                  InkWell(
-                    onTap: () {
-                      context
-                          .push('/property/create')
-                          .then((_) => _loadProperties());
-                    },
-                    borderRadius: BorderRadius.circular(100),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      padding: EdgeInsets.all(8),
-                      decoration: ShapeDecoration(
-                        color: const Color(0x19F7FAFF),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/icons/plus.svg',
-                        width: 20,
-                        height: 20,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Content Area
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: _loadProperties,
-                color: Colors.white,
-                backgroundColor: AppColors.primary,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Property Count or Empty State Title
-                      if (_filteredProperties.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                          child: AppBadges.plain(
-                            label: context.l10n.itemCount(
-                              _filteredProperties.length,
-                            ),
-                            color: BadgeColor.blue,
+    return BlocProvider.value(
+      value: _propertyListBloc,
+      child: Scaffold(
+        backgroundColor: AppColors.primary,
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Back Button
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: SvgPicture.asset(
+                          'assets/icons/chevron-left.svg',
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white,
+                            BlendMode.srcIn,
                           ),
-                        )
-                      else if (!_isLoading && _error == null)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                          child: AppBadges.plain(
-                            label: context.l10n.propertyNotFound,
-                            color: BadgeColor.default_,
+                          width: 18,
+                          height: 18,
+                        ),
+                      ),
+                    ),
+                    // Title
+                    Text(
+                      context.l10n.myProperties,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    // Add Button
+                    InkWell(
+                      onTap: () {
+                        context
+                            .push('/property/create')
+                            .then((_) => _onRefresh());
+                      },
+                      borderRadius: BorderRadius.circular(100),
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        padding: const EdgeInsets.all(8),
+                        decoration: ShapeDecoration(
+                          color: const Color(0x19F7FAFF),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
                           ),
                         ),
-
-                      // Property List or Empty State
-                      Expanded(child: _buildContent()),
-
-                      // Search Bar at Bottom
-                      Container(
-                        padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPadding),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 8,
-                              offset: const Offset(0, -2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: AppSearchBar(
-                                controller: _searchController,
-                                hintText: context.l10n.searchHint,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            // Filter Button
-                            InkWell(
-                              onTap: _showFilterBottomSheet,
-                              borderRadius: BorderRadius.circular(14),
-                              child: Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(14),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x14000000),
-                                      blurRadius: 12,
-                                      offset: Offset(0, 6),
-                                    ),
-                                  ],
-                                ),
-                                child: SvgPicture.asset(
-                                  'assets/icons/filter.svg',
-                                  width: 16,
-                                  height: 16,
-                                  fit: BoxFit.scaleDown,
-                                  colorFilter: ColorFilter.mode(
-                                    !_currentFilter.isEmpty
-                                        ? AppColors.primary
-                                        : AppColors.baseDarkGrey,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                        child: SvgPicture.asset(
+                          'assets/icons/plus.svg',
+                          width: 20,
+                          height: 20,
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+
+              // Content Area
+              Expanded(
+                child: Builder(
+                  builder: (context) {
+                    return RefreshIndicator(
+                      onRefresh: () => Future.sync(() => _onRefresh()),
+                      color: Colors.white,
+                      backgroundColor: AppColors.primary,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Property Count
+                            BlocBuilder<PropertyListBloc, PropertyListState>(
+                              builder: (context, state) {
+                                final properties = _applyLocalFilters(
+                                  state.properties,
+                                );
+                                if (properties.isNotEmpty) {
+                                  return Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      24,
+                                      24,
+                                      24,
+                                      16,
+                                    ),
+                                    child: AppBadges.plain(
+                                      label: context.l10n.itemCount(
+                                        state.totalCount,
+                                      ),
+                                      color: BadgeColor.blue,
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+
+                            // Property List
+                            Expanded(child: _buildContent()),
+
+                            // Search Bar at Bottom
+                            Container(
+                              padding: EdgeInsets.fromLTRB(
+                                16,
+                                16,
+                                16,
+                                bottomPadding,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, -2),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: AppSearchBar(
+                                      controller: _searchController,
+                                      hintText: context.l10n.searchHint,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  // Filter Button
+                                  InkWell(
+                                    onTap: () =>
+                                        _showFilterBottomSheet(context),
+                                    borderRadius: BorderRadius.circular(14),
+                                    child: Container(
+                                      width: 44,
+                                      height: 44,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(14),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Color(0x14000000),
+                                            blurRadius: 12,
+                                            offset: Offset(0, 6),
+                                          ),
+                                        ],
+                                      ),
+                                      child: SvgPicture.asset(
+                                        'assets/icons/filter.svg',
+                                        width: 16,
+                                        height: 16,
+                                        fit: BoxFit.scaleDown,
+                                        colorFilter: ColorFilter.mode(
+                                          !_currentFilter.isEmpty
+                                              ? AppColors.primary
+                                              : AppColors.baseDarkGrey,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildContent() {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    return BlocBuilder<PropertyListBloc, PropertyListState>(
+      builder: (context, state) {
+        if (state.status == PropertyListStatus.initial) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    if (_error != null) {
-      return SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.6,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('${context.l10n.errorWithPrefix}$_error'),
-                TextButton(
-                  onPressed: _loadProperties,
-                  child: Text(context.l10n.retry),
+        if (state.status == PropertyListStatus.failure) {
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${context.l10n.errorWithPrefix}${state.errorMessage ?? "Unknown error"}',
+                    ),
+                    TextButton(
+                      onPressed: _onRefresh,
+                      child: Text(context.l10n.retry),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      );
-    }
+          );
+        }
 
-    if (_filteredProperties.isEmpty) {
-      return SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.6,
-          child: _buildEmptyState(),
-        ),
-      );
-    }
+        final filteredProperties = _applyLocalFilters(state.properties);
 
-    return _buildPropertyList();
+        if (filteredProperties.isEmpty && state.hasReachedMax) {
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: _buildEmptyState(),
+            ),
+          );
+        }
+
+        return _buildPropertyList(state, filteredProperties);
+      },
+    );
   }
 
-  Widget _buildPropertyList() {
+  Widget _buildPropertyList(
+    PropertyListState state,
+    List<Property> filteredProperties,
+  ) {
     return ListView.separated(
+      controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: _filteredProperties.length,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      itemCount: state.hasReachedMax
+          ? filteredProperties.length
+          : filteredProperties.length + 1,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final property = _filteredProperties[index];
+        if (index >= filteredProperties.length) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 32),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final property = filteredProperties[index];
         final route = property.isDraft ? '/property/create' : '/property/edit';
         return PropertyListItem(
           property: property,
           onTap: () {
-            context
-                .push('/property/${property.id}')
-                .then((_) => _loadProperties());
+            context.push('/property/${property.id}').then((_) => _onRefresh());
           },
           onEdit: () {
-            context.push(route, extra: property).then((_) => _loadProperties());
+            context.push(route, extra: property).then((_) => _onRefresh());
           },
         );
       },
@@ -360,7 +401,6 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Empty State Illustration (placeholder)
           Padding(
             padding: const EdgeInsets.all(16),
             child: ConstrainedBox(

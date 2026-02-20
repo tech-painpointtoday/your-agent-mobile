@@ -45,20 +45,28 @@ class _AppSearchBarState extends State<AppSearchBar> {
       _focusNode = widget.focusNode!;
     }
 
-    _searchController.addListener(() {
-      setState(() {});
-      widget.onChanged?.call(_searchController.text);
-    });
+    _searchController.addListener(_handleSearchChanged);
+    _focusNode.addListener(_handleFocusChanged);
+  }
 
-    _focusNode.addListener(() {
-      setState(() {
-        _isFocused = _focusNode.hasFocus;
-      });
+  void _handleSearchChanged() {
+    if (!mounted) return;
+    setState(() {});
+    widget.onChanged?.call(_searchController.text);
+  }
+
+  void _handleFocusChanged() {
+    if (!mounted) return;
+    setState(() {
+      _isFocused = _focusNode.hasFocus;
     });
   }
 
   @override
   void dispose() {
+    _searchController.removeListener(_handleSearchChanged);
+    _focusNode.removeListener(_handleFocusChanged);
+
     if (_isInternalController) {
       _searchController.dispose();
     }

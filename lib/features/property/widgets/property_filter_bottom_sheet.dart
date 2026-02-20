@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/widgets/inputs/app_dropdown.dart';
@@ -20,6 +21,25 @@ class PropertyFilterBottomSheet extends StatefulWidget {
     this.initialFilter,
     required this.properties,
   });
+
+  static Future<PropertyFilter?> show({
+    required BuildContext context,
+    PropertyFilter? initialFilter,
+    required List<Property> properties,
+  }) {
+    return showModalBottomSheet<PropertyFilter>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) => PropertyFilterBottomSheet(
+        initialFilter: initialFilter,
+        properties: properties,
+      ),
+    );
+  }
 
   @override
   State<PropertyFilterBottomSheet> createState() =>
@@ -822,7 +842,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                   decoration: InputDecoration(
                     hintText: '0',
                     hintStyle: GoogleFonts.anuphan(
-                      color: const Color(0xFFA4A7AE),
+                      color: AppColors.baseGrey,
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       height: 1.50,
@@ -842,7 +862,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                 AppLocalizations.of(context).currencyUnit,
                 textAlign: TextAlign.right,
                 style: GoogleFonts.anuphan(
-                  color: const Color(0xFFA4A7AE),
+                  color: AppColors.baseGrey,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   height: 1.50,
@@ -911,7 +931,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                   decoration: InputDecoration(
                     hintText: '0.00',
                     hintStyle: GoogleFonts.anuphan(
-                      color: const Color(0xFFA4A7AE),
+                      color: AppColors.baseGrey,
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       height: 1.50,
@@ -931,7 +951,7 @@ class _PropertyFilterBottomSheetState extends State<PropertyFilterBottomSheet> {
                 unit,
                 textAlign: TextAlign.right,
                 style: GoogleFonts.anuphan(
-                  color: const Color(0xFFA4A7AE),
+                  color: AppColors.baseGrey,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   height: 1.50,

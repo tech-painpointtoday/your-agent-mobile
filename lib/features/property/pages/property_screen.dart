@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
@@ -11,6 +12,9 @@ import 'package:youragent/features/property/widgets/property_list_item.dart';
 import 'package:youragent/widgets/app_bars/silver_app_bar.dart';
 import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/core/extensions/l10n_extensions.dart';
+import 'package:youragent/features/property/bloc/property_list/property_list_bloc.dart';
+import 'package:youragent/features/property/bloc/property_list/property_list_event.dart';
+import 'package:youragent/features/property/bloc/property_list/property_list_state.dart';
 
 /// Main Property screen used in navigation tabs
 class PropertyScreen extends StatefulWidget {
@@ -22,156 +26,148 @@ class PropertyScreen extends StatefulWidget {
 
 class _PropertyScreenState extends State<PropertyScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final _propertyApiService = DependencyInjection.propertyApiService;
 
-  List<Property> _properties = [];
-  List<Property> _filteredProperties = [];
-  bool _isLoading = true;
-  String? _error;
+  late final PropertyListBloc _propertyListBloc;
 
   @override
   void initState() {
     super.initState();
-    _loadProperties();
     _searchController.addListener(_onSearchChanged);
+    _propertyListBloc = PropertyListBloc(
+      propertyApiService: _propertyApiService,
+    )..add(const PropertyListFetched());
   }
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchChanged);
+    _scrollController.dispose();
     _searchController.dispose();
+    _propertyListBloc.close();
     super.dispose();
   }
 
-  Future<void> _loadProperties() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final properties = await _propertyApiService.getProperties();
-      if (!mounted) return;
-
-      setState(() {
-        _properties = properties;
-        _filteredProperties = properties;
-        _isLoading = false;
-      });
-      // Trigger search filter in case there was text
-      _onSearchChanged();
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
+  Future<void> _onRefresh() async {
+    _propertyListBloc.add(PropertyListRefresh());
   }
 
   void _onSearchChanged() {
-    final query = _searchController.text;
-    setState(() {
-      if (query.isEmpty) {
-        _filteredProperties = _properties;
-      } else {
-        _filteredProperties = _properties.where((property) {
-          final normalizedQuery = _normalizeText(query);
-          return _normalizeText(property.title).contains(normalizedQuery) ||
-              _normalizeText(
-                property.address ?? '',
-              ).contains(normalizedQuery) ||
-              _normalizeText(property.code ?? '').contains(normalizedQuery);
-        }).toList();
-      }
-    });
+    setState(() {}); // Trigger local filtering rebuild
   }
 
-  String _normalizeText(String text) {
-    return text.toLowerCase().trim();
+  List<Property> _applyLocalFilters(List<Property> properties) {
+    var filtered = properties;
+
+    // Apply Search Query
+    final query = _searchController.text.toLowerCase().trim();
+    if (query.isNotEmpty) {
+      filtered = filtered.where((property) {
+        return property.title.toLowerCase().contains(query) ||
+            (property.address?.toLowerCase().contains(query) ?? false) ||
+            (property.code?.toLowerCase().contains(query) ?? false);
+      }).toList();
+    }
+
+    return filtered;
   }
 
   @override
   Widget build(BuildContext context) {
-    return SilverAppBarScreen(
-      onRefresh: _loadProperties,
-      hasFilter: true,
-      title: context.l10n.propertiesTitle,
-      actionWidget: InkWell(
-        onTap: () async {
-          context.push('/property/create').then((_) => _loadProperties());
-        },
-        borderRadius: BorderRadius.circular(24),
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: ShapeDecoration(
-            color: const Color(0x19F7FAFF),
-            shape: RoundedRectangleBorder(
+    return BlocProvider.value(
+      value: _propertyListBloc,
+      child: BlocBuilder<PropertyListBloc, PropertyListState>(
+        builder: (context, state) {
+          final filteredProperties = _applyLocalFilters(state.properties);
+
+          return SilverAppBarScreen(
+            onRefresh: _onRefresh,
+            controller: _scrollController,
+            hasFilter: true,
+            title: context.l10n.propertiesTitle,
+            actionWidget: InkWell(
+              onTap: () async {
+                context
+                    .push('/property/create')
+                    .then((_) => _propertyListBloc.add(PropertyListRefresh()));
+              },
               borderRadius: BorderRadius.circular(24),
-            ),
-          ),
-          child: const Icon(Icons.add, size: 24, color: Colors.white),
-        ),
-      ),
-      searchBar: HomeSearchBar(controller: _searchController),
-      preferredHeight: 132.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Map with negative offset to overlap the background
-          Transform.translate(
-            offset: const Offset(0, 0),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: MapView(
-                    properties: _filteredProperties,
-                    onMaximizeTapped: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FullscreenMapScreen(
-                            properties: _filteredProperties,
-                          ),
-                        ),
-                      );
-                    },
+                width: 40,
+                height: 40,
+                decoration: ShapeDecoration(
+                  color: const Color(0x19F7FAFF),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
                   ),
                 ),
+                child: const Icon(Icons.add, size: 24, color: Colors.white),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          // Property List
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            color: AppColors.white,
-            child: _buildPropertyList(),
-          ),
-        ],
+            searchBar: HomeSearchBar(controller: _searchController),
+            preferredHeight: 132.0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Map with negative offset to overlap the background
+                Transform.translate(
+                  offset: const Offset(0, 0),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: MapView(
+                          properties: filteredProperties,
+                          onMaximizeTapped: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FullscreenMapScreen(
+                                  properties: filteredProperties,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Property List
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  color: AppColors.white,
+                  child: _buildPropertyList(state, filteredProperties),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildPropertyList() {
-    if (_isLoading) {
+  Widget _buildPropertyList(
+    PropertyListState state,
+    List<Property> filteredProperties,
+  ) {
+    if (state.status == PropertyListStatus.initial) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_error != null) {
+    if (state.status == PropertyListStatus.failure) {
       return Center(
         child: Column(
           children: [
-            Text('${context.l10n.errorWithPrefix}$_error'),
-            TextButton(
-              onPressed: _loadProperties,
-              child: Text(context.l10n.retry),
+            Text(
+              '${context.l10n.errorWithPrefix}${state.errorMessage ?? "Unknown error"}',
             ),
+            TextButton(onPressed: _onRefresh, child: Text(context.l10n.retry)),
           ],
         ),
       );
@@ -196,7 +192,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                context.l10n.allPropertiesCount(_filteredProperties.length),
+                context.l10n.allPropertiesCount(state.totalCount),
                 style: GoogleFonts.anuphan(
                   color: const Color(0xFF737373),
                   fontSize: 12,
@@ -225,7 +221,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          _filteredProperties.isEmpty
+          filteredProperties.isEmpty && state.hasReachedMax
               ? Center(
                   child: Padding(
                     padding: const EdgeInsets.all(32),
@@ -243,11 +239,11 @@ class _PropertyScreenState extends State<PropertyScreen> {
                   shrinkWrap: true,
                   padding: const EdgeInsets.symmetric(vertical: 0),
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _filteredProperties.length,
+                  itemCount: filteredProperties.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 12),
                   itemBuilder: (context, index) {
-                    final property = _filteredProperties[index];
+                    final property = filteredProperties[index];
                     final route = property.isDraft
                         ? '/property/create'
                         : '/property/edit';
@@ -257,12 +253,18 @@ class _PropertyScreenState extends State<PropertyScreen> {
                       onTap: () {
                         context
                             .push('/property/${property.id}')
-                            .then((_) => _loadProperties());
+                            .then(
+                              (_) =>
+                                  _propertyListBloc.add(PropertyListRefresh()),
+                            );
                       },
                       onEdit: () {
                         context
                             .push(route, extra: property)
-                            .then((_) => _loadProperties());
+                            .then(
+                              (_) =>
+                                  _propertyListBloc.add(PropertyListRefresh()),
+                            );
                       },
                     );
                   },

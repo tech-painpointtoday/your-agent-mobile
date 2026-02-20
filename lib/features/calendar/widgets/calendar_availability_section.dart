@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
+import 'package:youragent/features/calendar/widgets/calendar_availability_bottom_sheet.dart';
 
 enum _ViewMode { list, calendar }
 
@@ -20,10 +22,15 @@ class _CalendarAvailabilitySectionState
   _ViewMode _viewMode = _ViewMode.list;
   final TextEditingController _searchCtrl = TextEditingController();
 
-  // Calendar state
-  DateTime _focusedMonth = DateTime(2569 - 543, 1); // Jan 2026 (BE 2569)
-  DateTime _selectedDay = DateTime(2569 - 543, 1, 1);
-  bool _calendarExpanded = false;
+  // Calendar state — default to today
+  late DateTime _focusedMonth = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+  );
+  late DateTime _selectedDay = DateTime.now();
+  // Continuous drag height — 1 row = 36 px (30 cell + 3*2 margin)
+  static const double _kRowHeight = 36.0;
+  double _calendarGridHeight = _kRowHeight; // start collapsed (1 row)
 
   static const List<Map<String, dynamic>> _mockSlots = [
     {
@@ -88,17 +95,22 @@ class _CalendarAvailabilitySectionState
                 ),
                 // Add button
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    CalendarAvailabilityBottomSheet.show(
+                      context,
+                      mode: AvailabilityMode.add,
+                      initialDate: _selectedDay,
+                    );
+                  },
                   child: Container(
-                    width: 40,
-                    height: 40,
+                    padding: const EdgeInsets.all(8),
                     decoration: ShapeDecoration(
-                      color: const Color(0xFF3E6CF4),
+                      color: AppColors.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
                     ),
-                    child: const Icon(Icons.add, color: Colors.white, size: 22),
+                    child: const Icon(Icons.add, color: Colors.white, size: 20),
                   ),
                 ),
               ],
@@ -114,14 +126,14 @@ class _CalendarAvailabilitySectionState
                     label: 'มุมมองรายการ',
                     style: BadgeStyle.plain,
                     customBackgroundColor: _viewMode == _ViewMode.list
-                        ? const Color(0xFF175CD3)
+                        ? AppColors.primary
                         : Colors.white,
                     customTextColor: _viewMode == _ViewMode.list
-                        ? const Color(0xFFEFF8FF)
-                        : const Color(0xFF717680),
+                        ? AppColors.supportBlueLight
+                        : AppColors.baseDarkGrey,
                     hasBorder: true,
                     borderColor: _viewMode == _ViewMode.list
-                        ? const Color(0xFF175CD3)
+                        ? AppColors.primary
                         : AppColors.baseLightGrey,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
@@ -137,14 +149,14 @@ class _CalendarAvailabilitySectionState
                     label: 'มุมมองปฏิทิน',
                     style: BadgeStyle.plain,
                     customBackgroundColor: _viewMode == _ViewMode.calendar
-                        ? const Color(0xFF175CD3)
+                        ? AppColors.primary
                         : Colors.white,
                     customTextColor: _viewMode == _ViewMode.calendar
-                        ? const Color(0xFFEFF8FF)
-                        : const Color(0xFF717680),
+                        ? AppColors.supportBlueLight
+                        : AppColors.baseDarkGrey,
                     hasBorder: true,
                     borderColor: _viewMode == _ViewMode.calendar
-                        ? const Color(0xFF175CD3)
+                        ? AppColors.primary
                         : AppColors.baseLightGrey,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
@@ -179,25 +191,51 @@ class _CalendarAvailabilitySectionState
               _MiniCalendar(
                 focusedMonth: _focusedMonth,
                 selectedDay: _selectedDay,
-                expanded: _calendarExpanded,
+                gridHeight: _calendarGridHeight,
                 onDaySelected: (d) => setState(() => _selectedDay = d),
                 onMonthChanged: (m) => setState(() => _focusedMonth = m),
-                onExpandToggle: () =>
-                    setState(() => _calendarExpanded = !_calendarExpanded),
+                onGridHeightChanged: (h) =>
+                    setState(() => _calendarGridHeight = h),
               ),
               const SizedBox(height: 16),
               // Slots for selected day
-              ..._slotsForSelectedDay().map(
-                (slot) => Padding(
+              ..._slotsForSelectedDay().map((slot) {
+                final timeRange = slot['time'] as String;
+                return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _SlotCard(
-                    time: slot['time'] as String,
+                    time: timeRange,
                     available: slot['available'] as bool,
-                    onEdit: () {},
+                    onEdit: () {
+                      final times = timeRange.split(' - ');
+                      TimeOfDay? startT;
+                      TimeOfDay? endT;
+                      try {
+                        final s = times[0].split(':');
+                        startT = TimeOfDay(
+                          hour: int.parse(s[0]),
+                          minute: int.parse(s[1]),
+                        );
+                        final e = times[1].replaceFirst(' น.', '').split(':');
+                        endT = TimeOfDay(
+                          hour: int.parse(e[0]),
+                          minute: int.parse(e[1]),
+                        );
+                      } catch (_) {}
+
+                      CalendarAvailabilityBottomSheet.show(
+                        context,
+                        mode: AvailabilityMode.edit,
+                        initialDate: _selectedDay,
+                        initialStartTime: startT,
+                        initialEndTime: endT,
+                        initialIsAvailable: slot['available'] as bool,
+                      );
+                    },
                     onDelete: () {},
                   ),
-                ),
-              ),
+                );
+              }),
             ],
 
             // ── Grouped list (list view only) ───────────────────────────
@@ -214,7 +252,37 @@ class _CalendarAvailabilitySectionState
                         child: _SlotCard(
                           time: slot['time'] as String,
                           available: slot['available'] as bool,
-                          onEdit: () {},
+                          onEdit: () {
+                            final timeRange = slot['time'] as String;
+                            final times = timeRange.split(' - ');
+                            TimeOfDay? startT;
+                            TimeOfDay? endT;
+                            try {
+                              final s = times[0].split(':');
+                              startT = TimeOfDay(
+                                hour: int.parse(s[0]),
+                                minute: int.parse(s[1]),
+                              );
+                              final e = times[1]
+                                  .replaceFirst(' น.', '')
+                                  .split(':');
+                              endT = TimeOfDay(
+                                hour: int.parse(e[0]),
+                                minute: int.parse(e[1]),
+                              );
+                            } catch (_) {}
+
+                            // Parse date string like "2 มกราคม 2569" back to DateTime if possible
+                            // For mock view, we just use today or a dummy date
+                            CalendarAvailabilityBottomSheet.show(
+                              context,
+                              mode: AvailabilityMode.edit,
+                              initialDate: _selectedDay, // Using _selectedDay
+                              initialStartTime: startT,
+                              initialEndTime: endT,
+                              initialIsAvailable: slot['available'] as bool,
+                            );
+                          },
                           onDelete: () {},
                         ),
                       ),
@@ -252,7 +320,17 @@ class _FilterButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFFE9EAEB)),
       ),
-      child: const Icon(Icons.tune_rounded, size: 20, color: Color(0xFF737373)),
+      child: Center(
+        child: SvgPicture.asset(
+          'assets/icons/filter.svg',
+          width: 16,
+          height: 16,
+          colorFilter: const ColorFilter.mode(
+            AppColors.baseGrey,
+            BlendMode.srcIn,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -267,18 +345,22 @@ class _DateHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(
-          Icons.calendar_month_outlined,
-          size: 16,
-          color: Color(0xFF181D27),
+        SvgPicture.asset(
+          'assets/icons/calendar.svg',
+          width: 16,
+          height: 16,
+          colorFilter: const ColorFilter.mode(
+            AppColors.baseDarkGrey,
+            BlendMode.srcIn,
+          ),
         ),
         const SizedBox(width: 6),
         Text(
           label,
           style: GoogleFonts.anuphan(
             fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF181D27),
+            fontWeight: FontWeight.w500,
+            color: AppColors.baseBlack,
           ),
         ),
       ],
@@ -325,21 +407,16 @@ class _SlotCard extends StatelessWidget {
                 Text(
                   time,
                   style: GoogleFonts.anuphan(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF181D27),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.baseBlack,
                   ),
                 ),
                 const SizedBox(height: 6),
                 AppBadge(
                   label: available ? 'พร้อมให้บริการ' : 'ไม่พร้อมให้บริการ',
                   style: available ? BadgeStyle.done : BadgeStyle.plain,
-                  customBackgroundColor: available
-                      ? const Color(0xFFDCFCE7)
-                      : const Color(0xFFFFEEE8),
-                  customTextColor: available
-                      ? const Color(0xFF16A34A)
-                      : const Color(0xFFE53E3E),
+                  color: available ? BadgeColor.green : BadgeColor.red,
                   fontSize: 12,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -352,25 +429,43 @@ class _SlotCard extends StatelessWidget {
           // Edit
           IconButton(
             onPressed: onEdit,
-            icon: const Icon(
-              Icons.edit_outlined,
-              size: 20,
-              color: Color(0xFF9AA4B2),
-            ),
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
+            style: IconButton.styleFrom(
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: EdgeInsets.zero,
+            ),
+            icon: SvgPicture.asset(
+              'assets/icons/edit.svg',
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                AppColors.baseGrey,
+                BlendMode.srcIn,
+              ),
+            ),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 12),
           // Delete
           IconButton(
             onPressed: onDelete,
-            icon: const Icon(
-              Icons.delete_outline_rounded,
-              size: 20,
-              color: Color(0xFF9AA4B2),
-            ),
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
+            style: IconButton.styleFrom(
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: EdgeInsets.zero,
+            ),
+            icon: SvgPicture.asset(
+              'assets/icons/trash.svg',
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                AppColors.baseGrey,
+                BlendMode.srcIn,
+              ),
+            ),
           ),
         ],
       ),
@@ -382,21 +477,27 @@ class _SlotCard extends StatelessWidget {
 class _MiniCalendar extends StatelessWidget {
   final DateTime focusedMonth;
   final DateTime selectedDay;
-  final bool expanded;
+
+  /// Current pixel height of the day grid (controls how many rows are visible).
+  final double gridHeight;
   final ValueChanged<DateTime> onDaySelected;
   final ValueChanged<DateTime> onMonthChanged;
-  final VoidCallback onExpandToggle;
+
+  /// Called with the new desired height; parent clamps and stores it.
+  final ValueChanged<double> onGridHeightChanged;
+
+  static const double _kRowHeight = 36.0;
 
   const _MiniCalendar({
     required this.focusedMonth,
     required this.selectedDay,
-    required this.expanded,
+    required this.gridHeight,
     required this.onDaySelected,
     required this.onMonthChanged,
-    required this.onExpandToggle,
+    required this.onGridHeightChanged,
   });
 
-  static const _weekdays = ['ง.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'];
+  static const _weekdays = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'];
   static const _thaiMonths = [
     'มกราคม',
     'กุมภาพันธ์',
@@ -449,7 +550,7 @@ class _MiniCalendar extends StatelessWidget {
       );
     }
 
-    // Determine rows to show: collapsed = only current week row, expanded = all
+    // Compute rows
     final selectedRowIndex = days.indexWhere(
       (d) =>
           d.isCurrentMonth &&
@@ -457,16 +558,20 @@ class _MiniCalendar extends StatelessWidget {
           d.date.month == month,
     );
     final selectedRow = selectedRowIndex >= 0 ? selectedRowIndex ~/ 7 : 0;
-
     final totalRows = (days.length / 7).ceil();
-    final rowsToShow = expanded ? totalRows : 1;
-    final startRow = expanded ? 0 : selectedRow;
+    final maxHeight = totalRows * _kRowHeight;
+    final clampedHeight = gridHeight.clamp(_kRowHeight, maxHeight);
+    // Offset so the grid starts at the selected-day's row when shrunken
+    final visibleRows = (clampedHeight / _kRowHeight).round();
+    final startRow = (selectedRow + visibleRows > totalRows)
+        ? (totalRows - visibleRows).clamp(0, totalRows)
+        : selectedRow;
 
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE9EAEB)),
+        border: Border.all(color: AppColors.baseLightGrey),
         boxShadow: const [
           BoxShadow(
             color: Color(0x08000000),
@@ -492,21 +597,26 @@ class _MiniCalendar extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFE9EAEB)),
+                      border: Border.all(color: AppColors.baseLightGrey),
                     ),
                     child: Row(
                       children: [
-                        const Icon(
-                          Icons.chevron_left,
-                          size: 14,
-                          color: Color(0xFF737373),
+                        SvgPicture.asset(
+                          'assets/icons/chevron-left.svg',
+                          width: 12,
+                          height: 12,
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.baseGrey,
+                            BlendMode.srcIn,
+                          ),
                         ),
+                        const SizedBox(width: 4),
                         Text(
                           '$beYear',
                           style: GoogleFonts.anuphan(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF181D27),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.baseBlack,
                           ),
                         ),
                       ],
@@ -518,18 +628,18 @@ class _MiniCalendar extends StatelessWidget {
                   _thaiMonths[month - 1],
                   style: GoogleFonts.anuphan(
                     fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF181D27),
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.baseBlack,
                   ),
                 ),
                 const Spacer(),
                 _NavArrow(
-                  icon: Icons.chevron_left,
+                  icon: 'assets/icons/chevron-left.svg',
                   onTap: () => onMonthChanged(DateTime(year, month - 1)),
                 ),
                 const SizedBox(width: 4),
                 _NavArrow(
-                  icon: Icons.chevron_right,
+                  icon: 'assets/icons/chevron-right.svg',
                   onTap: () => onMonthChanged(DateTime(year, month + 1)),
                 ),
               ],
@@ -549,7 +659,7 @@ class _MiniCalendar extends StatelessWidget {
                           style: GoogleFonts.anuphan(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
-                            color: const Color(0xFFA4A7AE),
+                            color: AppColors.baseGrey,
                           ),
                         ),
                       ),
@@ -560,109 +670,146 @@ class _MiniCalendar extends StatelessWidget {
           ),
           const SizedBox(height: 4),
 
-          // ── Day grid ──
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              children: List.generate(rowsToShow, (rowOffset) {
-                final row = startRow + rowOffset;
-                final startIdx = row * 7;
-                final endIdx = (startIdx + 7).clamp(0, days.length);
-                if (startIdx >= days.length) return const SizedBox.shrink();
-                final rowDays = days.sublist(
-                  startIdx,
-                  endIdx < days.length ? endIdx : days.length,
-                );
-                // Pad to 7 if needed
-                while (rowDays.length < 7) {
-                  final nextDay = rowDays.last.date.add(
-                    const Duration(days: 1),
-                  );
-                  rowDays.add(
-                    _CalDay(
-                      day: nextDay.day,
-                      isCurrentMonth: false,
-                      date: nextDay,
-                    ),
-                  );
-                }
-
-                return Row(
-                  children: rowDays.map((calDay) {
-                    final isSelected =
-                        calDay.isCurrentMonth &&
-                        calDay.date.day == selectedDay.day &&
-                        calDay.date.month == month &&
-                        calDay.date.year == year;
-                    final isToday =
-                        calDay.date.day == today.day &&
-                        calDay.date.month == today.month &&
-                        calDay.date.year == today.year;
-
-                    return Expanded(
-                      child: GestureDetector(
-                        onTap: calDay.isCurrentMonth
-                            ? () => onDaySelected(calDay.date)
-                            : null,
-                        child: Center(
-                          child: Container(
-                            width: 30,
-                            height: 30,
-                            margin: const EdgeInsets.symmetric(vertical: 3),
-                            decoration: ShapeDecoration(
-                              color: isSelected
-                                  ? const Color(0xFF2E90FA)
-                                  : isToday
-                                  ? const Color(0xFFEFF8FF)
-                                  : Colors.transparent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '${calDay.day}',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.anuphan(
-                                  fontSize: 14,
-                                  fontWeight: isSelected || isToday
-                                      ? FontWeight.w600
-                                      : FontWeight.w500,
-                                  color: isSelected
-                                      ? Colors.white
-                                      : isToday
-                                      ? const Color(0xFF2E90FA)
-                                      : calDay.isCurrentMonth
-                                      ? const Color(0xFF181D27)
-                                      : const Color(0xFFE9EAEB),
-                                  height: 1.14,
+          // ── Day grid (clipped to draggable height) ──
+          ClipRect(
+            child: AnimatedContainer(
+              duration: Duration.zero,
+              height: gridHeight.clamp(_kRowHeight, totalRows * _kRowHeight),
+              child: OverflowBox(
+                alignment: Alignment.topCenter,
+                maxHeight: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    children: List.generate(totalRows, (row) {
+                      final displayRow = startRow + row;
+                      if (displayRow >= totalRows) {
+                        return const SizedBox.shrink();
+                      }
+                      final startIdx = displayRow * 7;
+                      final endIdx = (startIdx + 7).clamp(0, days.length);
+                      if (startIdx >= days.length) {
+                        return const SizedBox.shrink();
+                      }
+                      final rowDays = days.sublist(
+                        startIdx,
+                        endIdx < days.length ? endIdx : days.length,
+                      );
+                      while (rowDays.length < 7) {
+                        final nextDay = rowDays.last.date.add(
+                          const Duration(days: 1),
+                        );
+                        rowDays.add(
+                          _CalDay(
+                            day: nextDay.day,
+                            isCurrentMonth: false,
+                            date: nextDay,
+                          ),
+                        );
+                      }
+                      return Row(
+                        children: rowDays.map((calDay) {
+                          final isSelected =
+                              calDay.isCurrentMonth &&
+                              calDay.date.day == selectedDay.day &&
+                              calDay.date.month == month &&
+                              calDay.date.year == year;
+                          final isToday =
+                              calDay.date.day == today.day &&
+                              calDay.date.month == today.month &&
+                              calDay.date.year == today.year;
+                          return Expanded(
+                            child: GestureDetector(
+                              onTap: calDay.isCurrentMonth
+                                  ? () => onDaySelected(calDay.date)
+                                  : null,
+                              child: Center(
+                                child: Container(
+                                  width: 30,
+                                  height: 30,
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 3,
+                                  ),
+                                  decoration: ShapeDecoration(
+                                    color: isSelected
+                                        ? AppColors.supportBlueDark
+                                        : isToday
+                                        ? AppColors.supportBlueLight
+                                        : Colors.transparent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '${calDay.day}',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.anuphan(
+                                        fontSize: 14,
+                                        fontWeight: isSelected || isToday
+                                            ? FontWeight.w600
+                                            : FontWeight.w500,
+                                        color: isSelected
+                                            ? Colors.white
+                                            : isToday
+                                            ? AppColors.supportBlueDark
+                                            : calDay.isCurrentMonth
+                                            ? AppColors.baseBlack
+                                            : AppColors.baseGrey,
+                                        height: 1.14,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                );
-              }),
+                          );
+                        }).toList(),
+                      );
+                    }),
+                  ),
+                ),
+              ),
             ),
           ),
 
           const SizedBox(height: 8),
 
-          // ── Expand / collapse drag handle ──
+          // ── Drag handle (continuous resize) ──
           GestureDetector(
-            onTap: onExpandToggle,
+            onTap: () {
+              // Tap snaps between 1 row and full height
+              final maxH = totalRows * _kRowHeight;
+              final isCollapsed = gridHeight <= _kRowHeight + 4;
+              onGridHeightChanged(isCollapsed ? maxH : _kRowHeight);
+            },
+            onVerticalDragUpdate: (details) {
+              final maxH = totalRows * _kRowHeight;
+              final newH = (gridHeight + details.delta.dy).clamp(
+                _kRowHeight,
+                maxH,
+              );
+              onGridHeightChanged(newH);
+            },
+            onVerticalDragEnd: (details) {
+              // Snap to nearest full row
+              final maxH = totalRows * _kRowHeight;
+              final rows = ((gridHeight + _kRowHeight / 2) / _kRowHeight)
+                  .round()
+                  .clamp(1, totalRows);
+              onGridHeightChanged(
+                (rows * _kRowHeight).clamp(_kRowHeight, maxH),
+              );
+            },
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: 10, top: 6),
               alignment: Alignment.center,
               child: Container(
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFCBD0D8),
+                  color: AppColors.baseGrey,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -687,7 +834,7 @@ class _CalDay {
 }
 
 class _NavArrow extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final VoidCallback onTap;
 
   const _NavArrow({required this.icon, required this.onTap});
@@ -700,7 +847,15 @@ class _NavArrow extends StatelessWidget {
         width: 28,
         height: 28,
         alignment: Alignment.center,
-        child: Icon(icon, size: 18, color: const Color(0xFF9AA4B2)),
+        child: SvgPicture.asset(
+          icon,
+          width: 16,
+          height: 16,
+          colorFilter: const ColorFilter.mode(
+            AppColors.baseGrey,
+            BlendMode.srcIn,
+          ),
+        ),
       ),
     );
   }
