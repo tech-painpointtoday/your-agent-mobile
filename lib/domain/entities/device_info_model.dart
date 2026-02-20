@@ -19,7 +19,7 @@ class DeviceInfoModel extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'token': token,
+      if (token.isNotEmpty) 'token': token,
       'device_id': deviceId,
       'platform': platform,
       'app_version': appVersion,

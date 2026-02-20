@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/backgrounds/blue_wave_background.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
-import '../widgets/calendar_appointment_card.dart';
+import 'package:youragent/core/di/dependency_injection.dart';
+import 'package:youragent/features/calendar/bloc/availability/availability_bloc.dart';
+import 'package:youragent/features/calendar/bloc/availability/availability_event.dart';
 import '../widgets/calendar_history_card.dart';
 import '../widgets/calendar_availability_section.dart';
+import 'package:youragent/features/calendar/bloc/booking_list/booking_list_bloc.dart';
+import 'package:youragent/features/calendar/bloc/booking_list/booking_list_event.dart';
+import 'package:youragent/features/calendar/bloc/booking_list/booking_list_state.dart';
+import '../widgets/booking_card.dart';
+import 'package:intl/intl.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -19,6 +27,8 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late AvailabilityBloc _availabilityBloc;
+  late BookingListBloc _bookingListBloc;
   late ScrollController _scrollController;
   late TextEditingController _searchController;
   double _appBarOpacity = 0.0;
@@ -56,6 +66,12 @@ class _CalendarScreenState extends State<CalendarScreen>
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
     _searchController = TextEditingController();
+    _availabilityBloc = AvailabilityBloc(
+      apiService: DependencyInjection.availableTimeApiService,
+    )..add(FetchAvailability(date: DateTime.now()));
+    _bookingListBloc = BookingListBloc(
+      apiService: DependencyInjection.bookingApiService,
+    )..add(const FetchBookings());
   }
 
   @override
@@ -64,6 +80,8 @@ class _CalendarScreenState extends State<CalendarScreen>
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     _searchController.dispose();
+    _availabilityBloc.close();
+    _bookingListBloc.close();
     super.dispose();
   }
 
@@ -177,20 +195,26 @@ class _CalendarScreenState extends State<CalendarScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: NestedScrollView(
-        controller: _scrollController,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [_buildSliverAppBar()];
-        },
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            _buildAppointmentListSection(context),
-            _buildHistorySection(context),
-            _buildAvailabilitySection(context),
-          ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _availabilityBloc),
+        BlocProvider.value(value: _bookingListBloc),
+      ],
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: NestedScrollView(
+          controller: _scrollController,
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [_buildSliverAppBar()];
+          },
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildAppointmentListSection(context),
+              _buildHistorySection(context),
+              _buildAvailabilitySection(context),
+            ],
+          ),
         ),
       ),
     );
@@ -283,152 +307,144 @@ class _CalendarScreenState extends State<CalendarScreen>
 
   // ── Tab 1: Appointment list ─────────────────────────────────────────────
   Widget _buildAppointmentListSection(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 32),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.only(top: 16, bottom: 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'รายการนัดหมาย',
-                    style: GoogleFonts.anuphan(
-                      color: const Color(0xFF1743C7),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
+    return BlocBuilder<BookingListBloc, BookingListState>(
+      builder: (context, state) {
+        if (state.status == BookingListStatus.initial ||
+            state.status == BookingListStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state.status == BookingListStatus.failure) {
+          return Center(child: Text('เกิดข้อผิดพลาด: ${state.errorMessage}'));
+        }
+
+        final now = DateTime.now();
+        final todayStr = DateFormat('yyyyMMdd').format(now);
+        final tomorrowStr = DateFormat(
+          'yyyyMMdd',
+        ).format(now.add(const Duration(days: 1)));
+        final next7Days = List.generate(
+          7,
+          (i) => DateFormat('yyyyMMdd').format(now.add(Duration(days: i))),
+        );
+
+        final bookings = state.bookings.where((b) {
+          if (_activeFilterIndex == 0) return true;
+          if (_activeFilterIndex == 1) return b.ymd == todayStr;
+          if (_activeFilterIndex == 2) return b.ymd == tomorrowStr;
+          if (_activeFilterIndex == 3) return next7Days.contains(b.ymd);
+          return true;
+        }).toList();
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 32),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.only(top: 16, bottom: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'รายการนัดหมาย',
+                        style: GoogleFonts.anuphan(
+                          color: const Color(0xFF1743C7),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'รายการนัดหมายทั้งหมด ${bookings.length} รายการ',
+                        style: GoogleFonts.anuphan(
+                          color: const Color(0xFF737373),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'รายการนัดหมายทั้งหมด 5 รายการ',
-                    style: GoogleFonts.anuphan(
-                      color: const Color(0xFF737373),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
+                ),
+                const SizedBox(height: 12),
+                // Filter badges
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: List.generate(_filters.length, (index) {
+                      final isSelected = _activeFilterIndex == index;
+                      return AppBadge(
+                        label: _filters[index],
+                        customBackgroundColor: isSelected
+                            ? AppColors.supportBlueDeep
+                            : AppColors.white,
+                        customTextColor: isSelected
+                            ? AppColors.supportBlueLight
+                            : AppColors.baseDarkGrey,
+                        hasBorder: !isSelected,
+                        borderColor: const Color(0xFFE9EAEB),
+                        onDismiss: () =>
+                            setState(() => _activeFilterIndex = index),
+                      );
+                    }),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 12),
+                // Search bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: AppSearchBar(
+                    controller: _searchController,
+                    hintText: AppLocalizations.of(context).searchHint,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Appointment list
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: bookings.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 32),
+                            child: Text(
+                              'ไม่มีรายการนัดหมาย',
+                              style: GoogleFonts.anuphan(
+                                fontSize: 14,
+                                color: AppColors.baseGrey,
+                              ),
+                            ),
+                          ),
+                        )
+                      : ListView.separated(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: bookings.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 12),
+                          itemBuilder: (context, index) {
+                            return BookingCard(
+                              booking: bookings[index],
+                              onPrimaryActionTap: () {},
+                              onCoAgentTap: () {},
+                            );
+                          },
+                        ),
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            // Filter badges
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: List.generate(_filters.length, (index) {
-                  final isSelected = _activeFilterIndex == index;
-                  return AppBadge(
-                    label: _filters[index],
-                    customBackgroundColor: isSelected
-                        ? AppColors.supportBlueDeep
-                        : AppColors.white,
-                    customTextColor: isSelected
-                        ? AppColors.supportBlueLight
-                        : AppColors.baseDarkGrey,
-                    hasBorder: !isSelected,
-                    borderColor: const Color(0xFFE9EAEB),
-                    onDismiss: () => setState(() => _activeFilterIndex = index),
-                  );
-                }),
-              ),
-            ),
-            const SizedBox(height: 12),
-            // Search bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: AppSearchBar(
-                controller: _searchController,
-                hintText: AppLocalizations.of(context).searchHint,
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Appointment list
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ListView.separated(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _mockAppointments.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final item = _mockAppointments[index];
-                  return CalendarAppointmentCard(
-                    propertyTitle: item['title']!,
-                    propertyAddress: item['address']!,
-                    imageUrl: item['image'],
-                    visitorName: item['visitor']!,
-                    dateTime: item['dateTime']!,
-                    confirmStatus: item['status'] == 'confirmed'
-                        ? AppointmentStatus.confirmed
-                        : AppointmentStatus.pending,
-                    travelStatus: item['travel'] == 'arriving'
-                        ? TravelStatus.arriving
-                        : TravelStatus.notStarted,
-                    arrivingIn: item['arrivingIn'],
-                    // First item starts expanded as demo
-                    initiallyExpanded: index == 0,
-                    onSecondaryAction: () {},
-                    onPrimaryAction: () {},
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
-
-  static const List<Map<String, String?>> _mockAppointments = [
-    {
-      'title':
-          'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
-      'address': 'ปุณณวิถี 33 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260',
-      'image':
-          'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
-      'visitor': 'สมชาย ใจดี',
-      'dateTime': '5 ม.ค. 2569, 08:00 น.',
-      'status': 'confirmed',
-      'travel': 'arriving',
-      'arrivingIn': '07:55 น.',
-    },
-    {
-      'title':
-          'อสังหาริมทรัพย์ 2: คอนโดใหญ่ขนาดกว้าง ในสีลม เหมาะสำหรับมืออาชีพ...',
-      'address': 'สีลม 10, เขตบางรัก, กรุงเทพมหานคร 10500',
-      'image':
-          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400',
-      'visitor': 'สมชาย ใจดี',
-      'dateTime': '5 ม.ค. 2569, 08:00 น.',
-      'status': 'pending',
-      'travel': 'notStarted',
-      'arrivingIn': null,
-    },
-    {
-      'title':
-          'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
-      'address': 'ปุณณวิถี 33 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260',
-      'image':
-          'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400',
-      'visitor': 'สมชาย ใจดี',
-      'dateTime': '5 ม.ค. 2569, 08:00 น.',
-      'status': 'pending',
-      'travel': 'notStarted',
-      'arrivingIn': null,
-    },
-  ];
 
   // ── Tab 2: Appointment history ──────────────────────────────────────────
   Widget _buildHistorySection(BuildContext context) {

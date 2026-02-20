@@ -7,7 +7,7 @@ import 'package:youragent/features/auth/bloc/auth_bloc.dart';
 import 'package:youragent/services/api_client.dart';
 import 'package:youragent/services/property_api_service.dart';
 // import 'package:youragent/services/fengshui_api_service.dart';
-// import 'package:youragent/services/booking_api_service.dart';
+import 'package:youragent/services/booking_api_service.dart';
 import 'package:youragent/services/chat_api_service.dart';
 import 'package:youragent/services/pusher_service.dart';
 // import 'package:youragent/services/agent_api_service.dart';
@@ -19,6 +19,7 @@ import 'package:youragent/services/contract_api_service.dart';
 import 'package:youragent/services/address_lookup_service.dart';
 import 'package:youragent/services/google_places_service.dart';
 import 'package:youragent/services/settings_api_service.dart';
+import 'package:youragent/services/available_time_api_service.dart';
 import 'package:youragent/core/services/deep_link_service.dart';
 import 'package:youragent/core/config/app_config.dart';
 import 'package:youragent/core/services/device_service.dart';
@@ -89,6 +90,13 @@ class DependencyInjection {
 
   static final ChatSearchService _chatSearchService = ChatSearchService();
 
+  static final AvailableTimeApiService _availableTimeApiService =
+      AvailableTimeApiService(apiClient: _apiClient);
+
+  static final BookingApiService _bookingApiService = BookingApiService(
+    apiClient: _apiClient,
+  );
+
   static final AuthBloc _authBloc = AuthBloc(
     signInWithEmailUseCase: signInWithEmailUseCase,
     registerWithEmailUseCase: registerWithEmailUseCase,
@@ -131,6 +139,11 @@ class DependencyInjection {
   static DeviceService get deviceService => DeviceService();
 
   static ChatSearchService get chatSearchService => _chatSearchService;
+
+  static AvailableTimeApiService get availableTimeApiService =>
+      _availableTimeApiService;
+
+  static BookingApiService get bookingApiService => _bookingApiService;
 
   // Auth dependencies - singleton
   static AuthRepository get authRepository => _authRepository;

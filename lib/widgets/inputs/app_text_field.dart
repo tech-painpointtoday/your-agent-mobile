@@ -136,7 +136,6 @@ class _AppTextFieldState extends State<AppTextField> {
           onTap: widget.onTap,
           onChanged: widget.onChanged,
           showCursor: widget.readOnly ? false : widget.showCursor,
-          enabled: !widget.readOnly,
           inputFormatters: widget.inputFormatters,
           validator: widget.validator,
           autovalidateMode: widget.autovalidateMode,

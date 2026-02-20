@@ -54,6 +54,19 @@ class DeviceService {
     // Get FCM Token
     String fcmToken = '';
     try {
+      if (Platform.isIOS) {
+        String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+
+        if (apnsToken == null) {
+          await Future<void>.delayed(const Duration(seconds: 3));
+          apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+        }
+
+        if (apnsToken == null) {
+          debugPrint('APNS token is still null. Check your Xcode setup.');
+        }
+      }
+
       fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
     } catch (e) {
       debugPrint('Error getting FCM token: $e');
