@@ -418,7 +418,7 @@ class _PropertyDetailState extends State<PropertyDetail> {
 
               // 5. Additional Details Section (Updated Icon & Expandable Text)
               if (property.specificationValues.isNotEmpty ||
-                  property.description.isNotEmpty) ...[
+                  property.description.replaceAll(' ', '').isNotEmpty) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: Column(
@@ -493,7 +493,9 @@ class _PropertyDetailState extends State<PropertyDetail> {
                         },
                       ),
 
-                      if (property.description.isNotEmpty) ...[
+                      if (property.description
+                          .replaceAll(' ', '')
+                          .isNotEmpty) ...[
                         const SizedBox(height: 16),
                         Text(
                           AppLocalizations.of(context).descriptionLabel,

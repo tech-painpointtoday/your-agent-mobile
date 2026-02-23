@@ -3648,4 +3648,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String profileLevel(int level) {
     return 'Lv. $level';
   }
+
+  @override
+  String get skip => 'ข้าม';
+
+  @override
+  String get pleaseFillAllFields => 'กรุณากรอกข้อมูลให้ครบถ้วน';
 }

@@ -1267,5 +1267,7 @@
         "type": "int"
       }
     }
-  }
+  },
+  "skip": "Skip",
+  "pleaseFillAllFields": "Please fill in all required fields"
 }

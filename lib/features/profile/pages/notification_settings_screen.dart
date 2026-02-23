@@ -8,6 +8,7 @@ import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/services/deep_link_service.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/utils/permission_helper.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 
@@ -36,6 +37,7 @@ class _NotificationSettingsScreenState
     _initDeepLinkListener();
     _fetchLineStatus();
     _setupLineSDK();
+    _syncPushToggleWithSystemPermission();
   }
 
   Future<void> _setupLineSDK() async {
@@ -66,6 +68,14 @@ class _NotificationSettingsScreenState
   void dispose() {
     _deepLinkSubscription?.cancel();
     super.dispose();
+  }
+
+  Future<void> _syncPushToggleWithSystemPermission() async {
+    final hasPerm = await PermissionHelper.hasNotificationPermission();
+    if (!mounted) return;
+    setState(() {
+      _pushNotifications = hasPerm;
+    });
   }
 
   void _initDeepLinkListener() {
@@ -268,10 +278,27 @@ class _NotificationSettingsScreenState
                 title: l10n.pushNotifications,
                 subtitle: l10n.pushNotificationsSubtitle,
                 value: _pushNotifications,
-                onChanged: (val) {
-                  setState(() {
-                    _pushNotifications = val;
-                  });
+                onChanged: (val) async {
+                  if (val) {
+                    // User is enabling push notifications: request OS permission if needed.
+                    final granted =
+                        await PermissionHelper.ensureNotificationReady(context);
+                    if (!mounted) return;
+                    setState(() {
+                      _pushNotifications = granted;
+                    });
+                  } else {
+                    // User is disabling push: guide them to system settings to turn off.
+                    await PermissionHelper.openNotificationSettingsForDisable(
+                      context,
+                    );
+                    if (!mounted) return;
+                    final hasPerm =
+                        await PermissionHelper.hasNotificationPermission();
+                    setState(() {
+                      _pushNotifications = hasPerm;
+                    });
+                  }
                 },
               ),
             ],

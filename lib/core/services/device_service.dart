@@ -19,6 +19,30 @@ class DeviceService {
 
   Future<void> init() async {
     await _loadFromPrefs();
+    _listenToFcmTokenRefresh();
+  }
+
+  /// When FCM token is refreshed (e.g. by Firebase), save it and re-register so backend has the latest token.
+  void _listenToFcmTokenRefresh() {
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+      if (newToken.isEmpty) return;
+      debugPrint('FCM token refreshed, updating storage and re-registering device');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('fcm_token', newToken);
+      if (_cachedInfo != null) {
+        _cachedInfo = DeviceInfoModel(
+          token: newToken,
+          deviceId: _cachedInfo!.deviceId,
+          platform: _cachedInfo!.platform,
+          appVersion: _cachedInfo!.appVersion,
+          deviceModel: _cachedInfo!.deviceModel,
+          deviceOsVersion: _cachedInfo!.deviceOsVersion,
+        );
+      }
+      if (DependencyInjection.authRepository.isAuthenticated) {
+        await registerDevice();
+      }
+    });
   }
 
   Future<void> _loadFromPrefs() async {
@@ -69,6 +93,7 @@ class DeviceService {
     String fcmToken = '';
     final prefs = await SharedPreferences.getInstance();
     fcmToken = prefs.getString('fcm_token') ?? '';
+    debugPrint('fcmToken: $fcmToken');
     if (fcmToken.isEmpty) {
       try {
         if (Platform.isIOS) {

@@ -26,9 +26,13 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
   void initState() {
     super.initState();
     final state = context.read<PropertyFormBloc>().state;
-    _descriptionController = TextEditingController(
-      text: state.description ?? '',
-    );
+    if (state.description?.replaceAll(' ', '').isEmpty ?? true) {
+      _descriptionController = TextEditingController(text: '-');
+    } else {
+      _descriptionController = TextEditingController(
+        text: state.description ?? '-',
+      );
+    }
 
     if (state.specificationFilters.multiSelect.isEmpty) {
       context.read<PropertyFormBloc>().add(PropertyFormFiltersFetched());
@@ -92,11 +96,40 @@ class _AdditionalInfoStepState extends State<AdditionalInfoStep> {
                         ),
                       ),
                     ),
-                    if (widget.step != null)
-                      AppBadge(
-                        color: BadgeColor.default_,
-                        label: '${widget.step}/5',
+                    if (widget.step != null) ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          AppBadge(
+                            style: BadgeStyle.plain,
+                            color: BadgeColor.default_,
+                            label: AppLocalizations.of(context).skip,
+                            onDismiss: () {
+                              if (state.description
+                                      ?.replaceAll(' ', '')
+                                      .isEmpty ==
+                                  true) {
+                                context.read<PropertyFormBloc>().add(
+                                  PropertyFormDataUpdated(
+                                    key: 'description',
+                                    value: '-',
+                                  ),
+                                );
+                              }
+
+                              context.read<PropertyFormBloc>().add(
+                                PropertyFormStepChanged(widget.step! + 1),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                          AppBadge(
+                            color: BadgeColor.default_,
+                            label: '${widget.step}/5',
+                          ),
+                        ],
                       ),
+                    ],
                   ],
                 ),
                 const SizedBox(height: 24),

@@ -254,7 +254,7 @@ class BookingCard extends StatelessWidget {
       subtext = 'รอการยืนยันจากตัวแทน';
     }
 
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Column(
         mainAxisSize: MainAxisSize.min,

@@ -11,6 +11,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../data/models/user_profile_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/image_url_helper.dart';
+import '../../../utils/permission_helper.dart';
 import '../../../widgets/app_bars/silver_app_bar.dart';
 import '../../../widgets/app_search_bar.dart';
 import '../../notifications/bloc/notification_bloc.dart';
@@ -25,6 +26,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // After login and landing on Home, prompt for notification permission
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        PermissionHelper.ensureNotificationReady(context);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

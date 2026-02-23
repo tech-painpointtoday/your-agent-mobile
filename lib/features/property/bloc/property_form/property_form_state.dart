@@ -439,13 +439,13 @@ class PropertyFormState extends Equatable {
       'selectedPropertyType': selectedPropertyType?.label,
       'name': name,
       'type': selectedPropertyType?.value,
-      if (listingType == PropertyListingType.sale ||
-          listingType == PropertyListingType.saleOrRent)
-        'price': price,
+      'price': listingType == PropertyListingType.rent
+          ? monthlyRentalPrice
+          : price,
       if (listingType == PropertyListingType.rent ||
           listingType == PropertyListingType.saleOrRent)
         'monthly_rental_price': monthlyRentalPrice,
-      'description': description,
+      'description': description?.isNotEmpty == true ? description : '-',
       'address': address,
       'latitude': latitude,
       'longitude': longitude,
@@ -562,10 +562,6 @@ class PropertyFormState extends Equatable {
           built != null &&
           houseColor != null;
 
-      print('monthlyRentalPrice:');
-      print(monthlyRentalPrice);
-      print('price:');
-      print(price);
       bool priceValid = false;
       if (listingType == PropertyListingType.rent) {
         priceValid = (monthlyRentalPrice != null && monthlyRentalPrice! > 0);

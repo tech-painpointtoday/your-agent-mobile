@@ -7,6 +7,7 @@ import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/core/extensions/l10n_extensions.dart';
+import 'package:youragent/utils/thai_phone_input_formatter.dart';
 
 /// Entry point for adding a developer
 class AddDeveloperBottomSheet {
@@ -204,17 +205,20 @@ class _AddProjectBottomSheetContentState
                 isRequired: true,
               ),
 
-              // Juristic Contact Phone (Optional)
+              // Juristic Contact Phone (Optional) – validate format if provided
               AppTextField(
                 label: l10n.juristicContactPhoneLabel,
                 controller: _juristicPhoneController,
                 hintText: '02-1234567',
                 keyboardType: TextInputType.phone,
+                inputFormatters: [ThaiPhoneInputFormatter()],
                 validator: (value) {
                   if (value == null || value.isEmpty) return null;
-                  final phoneRegex = RegExp(r'^[0-9\-]{9,13}$');
-                  if (!phoneRegex.hasMatch(value)) {
-                    return l10n.please_enter_valid_number;
+                  final trimmed = value.trim();
+                  // Validate based on digits (ignore spaces/dashes) – expect at least 9 digits
+                  final digitsOnly = trimmed.replaceAll(RegExp(r'[^\d]'), '');
+                  if (digitsOnly.length < 9) {
+                    return l10n.invalidPhoneNumberFormat;
                   }
                   return null;
                 },

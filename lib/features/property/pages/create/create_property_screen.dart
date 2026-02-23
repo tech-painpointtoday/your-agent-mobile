@@ -347,7 +347,11 @@ class _CreatePropertyView extends StatelessWidget {
         cancelLabel: context.l10n.statusCancelled,
         style: ConfirmationStyle.normal,
         onConfirm: () {
-          context.read<PropertyFormBloc>().add(const PropertyFormSubmitted());
+          context.read<PropertyFormBloc>().add(
+            PropertyFormSubmitted(
+              validationErrorMessage: context.l10n.pleaseFillAllFields,
+            ),
+          );
         },
       );
     } else {

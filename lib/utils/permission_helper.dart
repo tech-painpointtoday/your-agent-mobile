@@ -159,4 +159,31 @@ class PermissionHelper {
           'คุณปิดสิทธิ์การแจ้งเตือนถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์การแจ้งเตือน',
     );
   }
+
+  /// Returns true if notification permission is currently granted.
+  static Future<bool> hasNotificationPermission() async {
+    final status = await Permission.notification.status;
+    return status.isGranted || status.isLimited;
+  }
+
+  /// Guides the user to system settings to turn OFF notifications.
+  static Future<void> openNotificationSettingsForDisable(
+    BuildContext context,
+  ) async {
+    bool openSettings = false;
+    await AppConfirmationBottomSheet.show(
+      context: context,
+      title: 'ปิดการแจ้งเตือน?',
+      description:
+          'หากคุณต้องการปิดการแจ้งเตือน กรุณาไปที่การตั้งค่าและปิดการแจ้งเตือนของแอปนี้',
+      confirmLabel: 'ไปที่การตั้งค่า',
+      cancelLabel: 'ยกเลิก',
+      onConfirm: () {
+        openSettings = true;
+      },
+    );
+    if (openSettings) {
+      await openAppSettings();
+    }
+  }
 }

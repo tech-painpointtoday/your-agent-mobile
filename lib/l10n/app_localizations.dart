@@ -7111,6 +7111,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Lv. {level}'**
   String profileLevel(int level);
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @pleaseFillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in all required fields'**
+  String get pleaseFillAllFields;
 }
 
 class _AppLocalizationsDelegate

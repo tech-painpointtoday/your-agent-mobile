@@ -238,7 +238,11 @@ class EditPropertyFormScreen extends StatelessWidget {
                               style: ConfirmationStyle.normal,
                               onConfirm: () {
                                 context.read<PropertyFormBloc>().add(
-                                  const PropertyFormSubmitted(),
+                                  PropertyFormSubmitted(
+                                    validationErrorMessage:
+                                        AppLocalizations.of(context)
+                                            .pleaseFillAllFields,
+                                  ),
                                 );
                               },
                             );

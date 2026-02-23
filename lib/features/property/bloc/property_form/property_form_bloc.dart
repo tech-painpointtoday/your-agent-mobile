@@ -404,7 +404,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       emit(
         state.copyWith(
           propertyFormStatus: PropertyFormStatus.submissionFailure,
-          errorMessage: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+          errorMessage: event.validationErrorMessage,
         ),
       );
       return;

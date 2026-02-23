@@ -4,6 +4,7 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:youragent/core/di/dependency_injection.dart'
     show DependencyInjection, navigatorKey;
 import 'package:youragent/core/config/app_config.dart';
+import 'package:youragent/core/services/device_service.dart';
 
 // 🎨 Cyberpunk Colors
 const _hackerGreen = Color(0xFF00FF41);
@@ -58,6 +59,7 @@ class _DebugLogOverlayWidget extends StatefulWidget {
 
 class _DebugLogOverlayWidgetState extends State<_DebugLogOverlayWidget> {
   int _refreshKey = 0;
+  static String? _fcmToken;
 
   void _clearLogs() {
     final talker = DependencyInjection.talker;
@@ -148,16 +150,18 @@ class _DebugLogOverlayWidgetState extends State<_DebugLogOverlayWidget> {
                           const Spacer(),
                           IconButton(
                             icon: const Icon(
-                              Icons.home_work_outlined,
+                              Icons.generating_tokens,
                               size: 20,
-                              color: _hackerGreen,
+                              color: Colors.lightBlueAccent,
                             ),
-                            tooltip: 'Mock Properties',
+                            tooltip: 'FCM Token',
                             onPressed: () {
-                              DebugLogOverlay.hide();
-                              navigatorKey.currentContext?.push(
-                                '/test-mock-properties',
-                              );
+                              DeviceService().getDeviceInfo().then((value) {
+                                debugPrint('deviceInfo: $value');
+                                setState(() {
+                                  _fcmToken = value.token;
+                                });
+                              });
                             },
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
@@ -189,7 +193,32 @@ class _DebugLogOverlayWidgetState extends State<_DebugLogOverlayWidget> {
                         ],
                       ),
                     ),
-
+                    if (_fcmToken != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(color: _hackerGreen, width: 1),
+                          ),
+                        ),
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'FCM Token: ',
+                                style: monoStyle.copyWith(color: _hackerGreen),
+                              ),
+                              TextSpan(
+                                text: _fcmToken,
+                                style: monoStyle.copyWith(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     // Talker Content
                     Expanded(
                       child: TalkerScreen(

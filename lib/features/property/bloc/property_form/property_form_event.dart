@@ -152,7 +152,12 @@ class PropertyFormAllImagesDeleted extends PropertyFormEvent {
 }
 
 class PropertyFormSubmitted extends PropertyFormEvent {
-  const PropertyFormSubmitted();
+  /// Localized message for validation failure (e.g. context.l10n.pleaseFillAllFields).
+  final String? validationErrorMessage;
+  const PropertyFormSubmitted({this.validationErrorMessage});
+
+  @override
+  List<Object?> get props => [validationErrorMessage];
 }
 
 class PropertyFormReset extends PropertyFormEvent {

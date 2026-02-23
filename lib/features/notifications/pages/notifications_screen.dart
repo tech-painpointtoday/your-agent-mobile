@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../utils/permission_helper.dart';
 import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/notification_bloc.dart';
 import '../bloc/notification_event.dart';
@@ -24,8 +25,26 @@ class NotificationsScreen extends StatelessWidget {
   }
 }
 
-class _NotificationsScreenContent extends StatelessWidget {
+class _NotificationsScreenContent extends StatefulWidget {
   const _NotificationsScreenContent();
+
+  @override
+  State<_NotificationsScreenContent> createState() =>
+      _NotificationsScreenContentState();
+}
+
+class _NotificationsScreenContentState
+    extends State<_NotificationsScreenContent> {
+  @override
+  void initState() {
+    super.initState();
+    // When user opens Notifications screen, prompt again if permission not granted yet
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        PermissionHelper.ensureNotificationReady(context);
+      }
+    });
+  }
 
   void _markAllAsRead(BuildContext context) {
     AppConfirmationBottomSheet.show(

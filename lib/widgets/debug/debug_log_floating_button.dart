@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youragent/core/config/app_config.dart';
+import 'package:youragent/core/services/device_service.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/debug/debug_log_overlay.dart';
 
