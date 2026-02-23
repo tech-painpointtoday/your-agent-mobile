@@ -106,16 +106,16 @@ class _AppSearchBarState extends State<AppSearchBar> {
               controller: _searchController,
               focusNode: _focusNode,
               style: const TextStyle(
-                color: AppColors.baseDarkGrey,
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
+                color: AppColors.baseBlack,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
               ),
               decoration: InputDecoration(
                 hintText: widget.hintText,
                 hintStyle: const TextStyle(
-                  color: AppColors.baseDarkGrey,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
+                  color: AppColors.baseGrey,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
                 ),
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,

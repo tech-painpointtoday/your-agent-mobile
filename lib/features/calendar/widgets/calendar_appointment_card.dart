@@ -131,7 +131,7 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.anuphan(
-                          fontSize: 10,
+                          fontSize: 12,
                           fontWeight: FontWeight.w400,
                           color: AppColors.baseDarkGrey,
                         ),

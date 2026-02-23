@@ -6,6 +6,7 @@ import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/booking.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class BookingCard extends StatelessWidget {
@@ -27,42 +28,44 @@ class BookingCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
+      decoration: ShapeDecoration(
+        color: AppColors.baseWhite,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: AppColors.baseOffWhite),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        shadows: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Color(0x0A000000),
+            blurRadius: 16,
+            offset: Offset(0, 4),
+            spreadRadius: 0,
           ),
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildHeader(),
-          const SizedBox(height: 12),
-          _buildStatusSection(),
+          const SizedBox(height: 16),
+          _buildStatusAndSubtext(),
           _buildWarningSection(),
           const SizedBox(height: 16),
-          _buildActions(),
+          _buildActions(context),
         ],
       ),
     );
   }
 
   Widget _buildHeader() {
-    final title =
-        booking.property?.title ??
-        booking.property?.name ??
-        'อสังหาริมทรัพย์ที่ ${booking.propertyId}';
-
     final locationInfo = [
+      booking.property?.title ?? booking.property?.name,
       booking.property?.subdistrict,
       booking.property?.district,
       booking.property?.city,
-    ].where((e) => e != null && e.isNotEmpty).join(', ');
+    ].where((e) => e != null && e.isNotEmpty).join(' ');
 
     final buyerName = booking.buyer?.name ?? 'ไม่ระบุชื่อ';
 
@@ -76,7 +79,7 @@ class BookingCard extends StatelessWidget {
         final day = int.parse(ymd.substring(6, 8));
         final dt = DateTime(year, month, day);
         final thaiYear = year + 543;
-        final formatter = DateFormat('d MMM');
+        final formatter = DateFormat('d MMM', 'th');
         displayDate = '${formatter.format(dt)} $thaiYear, ${booking.time} น.';
       } else {
         displayDate = '${booking.ymd}, ${booking.time} น.';
@@ -88,35 +91,64 @@ class BookingCard extends StatelessWidget {
     final imageUrl = booking.property?.imageUrl;
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                displayDate,
                 style: GoogleFonts.anuphan(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.baseDarkGrey,
+                  color: AppColors.baseBlack,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 8),
-
-              // Location
+              const SizedBox(height: 4),
               Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/user.svg',
+                    width: 12,
+                    height: 12,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.baseBlack,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    buyerName,
+                    style: GoogleFonts.anuphan(
+                      color: AppColors.baseBlack,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: SvgPicture.asset(
-                      'assets/icons/map-pin.svg', // Ensure you have this icon
-                      width: 14,
+                      'assets/icons/map-pin.svg',
+                      width: 12,
+                      height: 12,
                       colorFilter: const ColorFilter.mode(
-                        AppColors.baseGrey,
+                        AppColors.baseDarkGrey,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -126,55 +158,12 @@ class BookingCard extends StatelessWidget {
                     child: Text(
                       locationInfo.isEmpty ? 'ไม่ระบุตำแหน่ง' : locationInfo,
                       style: GoogleFonts.anuphan(
+                        color: AppColors.baseDarkGrey,
                         fontSize: 12,
-                        color: AppColors.baseGrey,
+                        fontWeight: FontWeight.w400,
                       ),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-
-              // Buyer & Time
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/user.svg', // Ensure icon exists
-                    width: 14,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.baseGrey,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      buyerName,
-                      style: GoogleFonts.anuphan(
-                        fontSize: 12,
-                        color: AppColors.baseGrey,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  SvgPicture.asset(
-                    'assets/icons/clock.svg', // Ensure icon exists
-                    width: 14,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.baseGrey,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    displayDate,
-                    style: GoogleFonts.anuphan(
-                      fontSize: 12,
-                      color: AppColors.baseGrey,
                     ),
                   ),
                 ],
@@ -182,51 +171,63 @@ class BookingCard extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 12),
-        if (imageUrl != null)
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-              errorWidget: (context, url, err) => Container(
-                width: 80,
-                height: 80,
-                color: AppColors.baseLightGrey,
-                child: const Icon(
-                  Icons.broken_image,
-                  color: AppColors.baseGrey,
+        const SizedBox(width: 16),
+        CachedNetworkImage(
+          imageUrl: imageUrl ?? '',
+          width: 70,
+          height: 70,
+          fit: BoxFit.cover,
+          imageBuilder: (context, imageProvider) => Container(
+            width: 70,
+            height: 70,
+            decoration: ShapeDecoration(
+              color: AppColors.basePaleGrey,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            clipBehavior: Clip.hardEdge,
+            child: Image(image: imageProvider, fit: BoxFit.cover),
+          ),
+          placeholder: (context, url) => Container(
+            width: 70,
+            height: 70,
+            decoration: ShapeDecoration(
+              color: AppColors.basePaleGrey,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+          errorWidget: (context, url, error) => Container(
+            width: 70,
+            height: 70,
+            decoration: ShapeDecoration(
+              color: AppColors.basePaleGrey,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: SvgPicture.asset(
+                'assets/icons/image.svg',
+                width: 16,
+                height: 16,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.baseGrey,
+                  BlendMode.srcIn,
                 ),
               ),
             ),
-          )
-        else
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: AppColors.baseLightGrey,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: SvgPicture.asset(
-              'assets/icons/home.svg',
-              width: 80,
-              height: 80,
-              colorFilter: const ColorFilter.mode(
-                AppColors.baseGrey,
-                BlendMode.srcIn,
-              ),
-            ),
           ),
+        ),
       ],
     );
   }
 
-  Widget _buildStatusSection() {
-    // Determine status badge based on booking status
-    // 0: Pending, 1: Confirmed, etc.
+  Widget _buildStatusAndSubtext() {
     String statusLabel = 'ลูกค้ารอยืนยัน';
     BadgeColor badgeColor = BadgeColor.blue;
     String subtext = '';
@@ -234,8 +235,6 @@ class BookingCard extends StatelessWidget {
     if (booking.status == 1) {
       statusLabel = 'ยืนยันนัดแล้ว';
       badgeColor = BadgeColor.green;
-      // Depending on other fields, it could be travelling, viewing etc.
-      // We'll mock the subtext for now based on UI design
       subtext = 'ผู้จองเข้าชมบ้านยังไม่เริ่มเดินทาง';
     } else if (booking.status == 2) {
       statusLabel = 'ยกเลิกนัดหมาย';
@@ -245,34 +244,88 @@ class BookingCard extends StatelessWidget {
       statusLabel = 'เสร็จสิ้น';
       badgeColor = BadgeColor.green;
       subtext = 'เวลา 11:55 - 12:30 --- ระยะเวลา 35 นาที';
+    } else if (booking.status == 4) {
+      statusLabel = 'ลูกค้ากำลังเดินทาง';
+      badgeColor = BadgeColor.blue;
+      subtext = 'เริ่มเดินทาง 11:20 --- จะถึงตอน 11:55';
     } else {
       statusLabel = 'ลูกค้ารอยืนยัน';
       badgeColor = BadgeColor.blue;
       subtext = 'รอการยืนยันจากตัวแทน';
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppBadges.status(label: statusLabel, color: badgeColor),
-        if (subtext.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Text(
-            subtext,
-            style: GoogleFonts.anuphan(fontSize: 12, color: AppColors.baseGrey),
-          ),
+    return Container(
+      width: double.infinity,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppBadges.status(label: statusLabel, color: badgeColor),
+          if (subtext.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              subtext,
+              style: GoogleFonts.anuphan(
+                color: AppColors.baseDarkGrey,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 
   Widget _buildWarningSection() {
-    // If there's a specific logic for warning (e.g. late), render this
-    // For now we simulate it by returning empty
-    return const SizedBox.shrink();
+    // Mocking delay warning for now. In reality, check booking data.
+    final hasDelay =
+        booking.timeUntilBookingSeconds != null &&
+        booking.timeUntilBookingSeconds! < 0;
+
+    if (!hasDelay) return const SizedBox.shrink();
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: ShapeDecoration(
+        color: AppColors.supportOrangeLight,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: AppColors.supportOrangeDark),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/alert-triangle.svg',
+            width: 16,
+            height: 16,
+            colorFilter: const ColorFilter.mode(
+              AppColors.supportOrangeDark,
+              BlendMode.srcIn,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'คุณอาจจะไปถึงช้าประมาณ 10 นาที',
+            style: GoogleFonts.anuphan(
+              color: AppColors.supportOrangeDark,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget _buildActions() {
+  Widget _buildActions(BuildContext context) {
     if (booking.status == 0) {
       return Row(
         children: [
@@ -280,49 +333,88 @@ class BookingCard extends StatelessWidget {
             child: AppButton(
               height: 32,
               textSize: 12,
-              text: 'ปฏิเสธ',
+              text: 'ยกเลิกนัด',
               style: AppButtonStyle.outline,
-              onPressed: () {},
+              onPressed: () {
+                StatusDialog.showDestructive(
+                  context: context,
+                  title: 'ยกเลิกนัดหมาย?',
+                  message: 'คุณต้องการยกเลิกนัดหมายนี้หรือไม่?',
+                  actionLabel: 'ยกเลิกนัด',
+                  onAction: () {
+                    // TODO: Dispatch event
+                  },
+                );
+              },
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
           Expanded(
             child: AppButton(
               height: 32,
               textSize: 12,
               text: 'ยืนยันนัด',
               style: AppButtonStyle.primary,
-              onPressed: onPrimaryActionTap,
+              onPressed: () {
+                StatusDialog.confirm(
+                  context: context,
+                  title: 'ยืนยันนัดหมาย?',
+                  message: 'คุณต้องการยืนยันนัดหมายนี้หรือไม่?',
+                  confirmLabel: 'ยืนยัน',
+                  onConfirm: onPrimaryActionTap,
+                );
+              },
             ),
           ),
         ],
       );
     } else if (booking.status == 1) {
-      return Row(
-        children: [
-          Expanded(
-            child: AppButton(
-              height: 32,
-              textSize: 12,
-              text: 'ต้องการ Co-agent',
-              style: AppButtonStyle.outline,
-              onPressed: onCoAgentTap,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: AppButton(
-              height: 32,
-              textSize: 12,
-              text: 'เริ่มเดินทาง',
-              style: AppButtonStyle.primary,
-              onPressed: onPrimaryActionTap,
-            ),
-          ),
-        ],
+      return AppButton(
+        width: double.infinity,
+        height: 32,
+        textSize: 12,
+        text: 'เริ่มเดินทาง',
+        style: AppButtonStyle.primary,
+        onPressed: () {
+          StatusDialog.confirm(
+            context: context,
+            title: 'เริ่มเดินทาง?',
+            message: 'คุณกำลังเริ่มเดินทางไปหาลูกค้าใช่หรือไม่?',
+            confirmLabel: 'เริ่มเดินทาง',
+            onConfirm: onPrimaryActionTap,
+          );
+        },
+      );
+    } else if (booking.status == 4) {
+      return AppButton(
+        width: double.infinity,
+        height: 32,
+        textSize: 12,
+        text: 'ถึงแล้ว',
+        style: AppButtonStyle.primary,
+        onPressed: () {
+          StatusDialog.confirm(
+            context: context,
+            title: 'ถึงที่หมาย?',
+            message: 'คุณถึงที่หมายแล้วใช่หรือไม่?',
+            confirmLabel: 'ถึงแล้ว',
+            onConfirm: onPrimaryActionTap,
+          );
+        },
       );
     } else if (booking.status == 3) {
-      return const SizedBox.shrink(); // completed no buttons
+      // Completed - optionally show Contact button if requested
+      // For now, based on user input, we hide it or keep it simple.
+      return AppButton(
+        width: double.infinity,
+        height: 32,
+        textSize: 12,
+        text: 'ติดต่อผู้จอง',
+        style: AppButtonStyle.primary,
+        onPressed: () {
+          // TODO: Open contact info
+        },
+      );
     } else {
       return const SizedBox.shrink();
     }
