@@ -64,13 +64,12 @@ class ApiClient {
         onError: (error, handler) async {
           // Handle 401 Unauthorized
           if (error.response?.statusCode == 401) {
-            final isLogoutRequest = error.requestOptions.path.contains(
-              '/logout',
-            );
-            if (!isLogoutRequest) {
+            final path = error.requestOptions.path;
+            final isLogoutRequest = path.contains('/logout');
+            final isDeviceTokenRegister = path.contains('device-tokens');
+            if (!isLogoutRequest && !isDeviceTokenRegister) {
               final authRepo = DependencyInjection.authRepository;
               if (authRepo.isAuthenticated) {
-                // Trigger global logout via Bloc to ensure state consistency
                 debugPrint(
                   'Unauthorized access detected (401). Logging out...',
                 );
@@ -95,6 +94,9 @@ class ApiClient {
       return null;
     }
   }
+
+  /// Exposed for callers that need to ensure auth token is present before a request (e.g. device registration).
+  Future<String?> getAuthToken() => _getAuthToken();
 
   Future<void> saveAuthToken(String token) async {
     await _storage.write(key: 'auth_token', value: token);

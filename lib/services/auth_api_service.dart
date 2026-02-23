@@ -16,6 +16,9 @@ class AuthApiService {
   final ApiClient _apiClient;
   AuthApiService(this._apiClient);
 
+  /// Token we just saved (e.g. from login). Used by registerDeviceToken to avoid polling storage.
+  String? _lastSavedAuthToken;
+
   Future<Map<String, dynamic>> _login({
     required String path,
     required String email,
@@ -41,6 +44,7 @@ class AuthApiService {
       }
 
       if (token != null && token.isNotEmpty) {
+        _lastSavedAuthToken = token;
         await _apiClient.saveAuthToken(token);
       }
 
@@ -133,6 +137,7 @@ class AuthApiService {
             dataMap['token'] as String? ?? dataMap['access_token'] as String?;
       }
       if (token != null && token.isNotEmpty) {
+        _lastSavedAuthToken = token;
         await _apiClient.saveAuthToken(token);
       }
 
@@ -180,6 +185,7 @@ class AuthApiService {
             dataMap['token'] as String? ?? dataMap['access_token'] as String?;
       }
       if (token != null && token.isNotEmpty) {
+        _lastSavedAuthToken = token;
         await _apiClient.saveAuthToken(token);
       }
 
@@ -227,6 +233,7 @@ class AuthApiService {
             dataMap['token'] as String? ?? dataMap['access_token'] as String?;
       }
       if (token != null && token.isNotEmpty) {
+        _lastSavedAuthToken = token;
         await _apiClient.saveAuthToken(token);
       }
 
@@ -278,6 +285,7 @@ class AuthApiService {
       }
 
       if (authToken != null && authToken.isNotEmpty) {
+        _lastSavedAuthToken = authToken;
         await _apiClient.saveAuthToken(authToken);
       }
 
@@ -303,6 +311,7 @@ class AuthApiService {
     try {
       await _apiClient.post('/logout');
     } finally {
+      _lastSavedAuthToken = null;
       await _apiClient.clearAuthToken();
     }
   }
@@ -423,11 +432,42 @@ class AuthApiService {
   }
 
   Future<Map<String, dynamic>> registerDeviceToken(DeviceInfoModel info) async {
+    // Prefer token we just saved (login/social); else read from storage with one short wait
+    String? authToken = _lastSavedAuthToken;
+    if (authToken == null || authToken.isEmpty) {
+      authToken = await _apiClient.getAuthToken();
+      if (authToken == null || authToken.isEmpty) {
+        await Future<void>.delayed(const Duration(milliseconds: 150));
+        authToken = await _apiClient.getAuthToken();
+      }
+    }
+    if (authToken == null || authToken.isEmpty) {
+      throw Exception('Cannot register device: auth token not available');
+    }
     final response = await _apiClient.post(
       '/device-tokens/register',
       data: info.toJson(),
+      options: Options(headers: {'Authorization': 'Bearer $authToken'}),
     );
     return response.data as Map<String, dynamic>;
+  }
+
+  /// Unregister device (e.g. on logout). Call while still authenticated.
+  Future<void> unregisterDeviceToken(DeviceInfoModel info) async {
+    String? authToken = _lastSavedAuthToken;
+    if (authToken == null || authToken.isEmpty) {
+      authToken = await _apiClient.getAuthToken();
+    }
+    if (authToken == null || authToken.isEmpty) return;
+    try {
+      await _apiClient.post(
+        '/device-tokens/unregister',
+        data: {'token': info.token},
+        options: Options(headers: {'Authorization': 'Bearer $authToken'}),
+      );
+    } on DioException catch (_) {
+      // Best effort; do not block logout
+    }
   }
 
   Future<void> deleteAccount({
@@ -440,6 +480,7 @@ class AuthApiService {
         data: {'password': password, 'reason': reason},
       );
       // Clear auth token after successful deletion
+      _lastSavedAuthToken = null;
       await _apiClient.clearAuthToken();
     } catch (e) {
       if (e is DioException) {

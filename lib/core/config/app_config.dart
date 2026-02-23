@@ -22,4 +22,9 @@ class AppConfig {
 
   static const String googleMapsApiKey =
       'AIzaSyCfEojoebHhrPHCZEOoqgBdb1YCgAelEFg';
+
+  /// Pusher Channels (client uses key + cluster only; secret is server-side).
+  static const String pusherKey = 'a2391ca343476cf7cfdf';
+  static const String pusherCluster = 'ap1';
+  static const String pusherAppId = '2036190';
 }

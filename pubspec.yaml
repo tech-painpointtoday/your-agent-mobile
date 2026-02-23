@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.2+1001
+version: 1.0.2+1002
 
 environment:
   sdk: ^3.10.7
@@ -43,7 +43,7 @@ dependencies:
   go_router: ^16.0.0
   dio: ^5.9.0
   dartz: ^0.10.1
-  flutter_secure_storage: ^9.2.4
+  flutter_secure_storage: ^10.0.0
   http: ^1.6.0
   app_links: ^6.3.2
 
@@ -84,7 +84,7 @@ dependencies:
   url_launcher: ^6.3.2
   pdf: ^3.10.0
   printing: ^5.11.0
-  pusher_channels_flutter: ^2.4.0
+  pusher_channels_flutter: ^2.6.0
   flutter_line_sdk: ^2.6.2
   permission_handler: ^12.0.1
 
@@ -98,6 +98,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+
+# Resolve conflict: pusher_channels_flutter >=2.5 needs js ^0.7; flutter_secure_storage 9.x
+# pulls js ^0.6 via flutter_secure_storage_web. Override to 10.x (no js on web) so
+# pusher can use latest. flutter_facebook_auth's transitive facebook_auth_desktop
+# requests ^9.2.2 but works with 10.0.0 (same read/write/delete API).
+dependency_overrides:
+  flutter_secure_storage: 10.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

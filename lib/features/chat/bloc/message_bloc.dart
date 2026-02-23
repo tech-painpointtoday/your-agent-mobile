@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
+
 import '../../../core/di/dependency_injection.dart';
 import '../../../domain/entities/chat_message.dart';
 import '../../../domain/entities/user.dart';
-import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
+import '../../../services/pusher_service.dart';
 import 'message_event.dart';
 import 'message_state.dart';
 
@@ -32,37 +35,6 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   ) async {
     emit(MessageLoading());
     try {
-      if (event.bookingId == -1) {
-        // Mocking Staff/Support conversation
-        final mockMessages = [
-          ChatMessage(
-            id: 1,
-            senderType: SenderType.staff,
-            senderId: 0,
-            message:
-                'สวัสดีครับ คุณ Agent ยินดีต้อนรับสู่ YourAgent support ครับ',
-            createdAt: DateTime.now().subtract(const Duration(hours: 2)),
-          ),
-          ChatMessage(
-            id: 2,
-            senderType: SenderType.staff,
-            senderId: 0,
-            message: 'มีอะไรให้เราช่วยดูแลในวันนี้ไหมครับ?',
-            createdAt: DateTime.now().subtract(const Duration(minutes: 5)),
-          ),
-          ChatMessage(
-            id: 3,
-            senderType: SenderType.staff,
-            senderId: 0,
-            message:
-                'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80',
-            createdAt: DateTime.now().subtract(const Duration(minutes: 2)),
-          ),
-        ];
-        emit(MessageLoaded(messages: mockMessages));
-        return;
-      }
-
       final authRepo = DependencyInjection.authRepository;
       final role = authRepo.currentRole == UserRole.agent ? 'agent' : 'agency';
 
@@ -74,19 +46,35 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
       emit(MessageLoaded(messages: messages));
 
-      // Pusher Subscription
+      // Pusher: chat.booking.{booking_id} or chat.staff.{conversation_id}
       _currentChannel = isStaff
-          ? "chat.staff.${event.bookingId}"
-          : "chat.booking.${event.bookingId}";
+          ? PusherChannels.chatStaffChannel(
+              event.conversationId ?? event.bookingId,
+            )
+          : PusherChannels.chatBookingChannel(event.bookingId);
       DependencyInjection.pusherService.subscribe(
         channelName: _currentChannel!,
         onEvent: (event) {
-          if (event is PusherEvent && event.eventName == 'new-message') {
+          debugPrint(
+            "Pusher Event: ${event.eventName} on ${_currentChannel!}"
+            "event: ${event.data}",
+          );
+          if (event is PusherEvent &&
+              event.eventName == PusherChannels.newMessageEvent) {
             try {
-              final data = jsonDecode(event.data);
-              add(NewMessageReceived(data));
+              final dynamic raw = event.data;
+              final Map<String, dynamic> data = raw is Map<String, dynamic>
+                  ? raw
+                  : (raw is String
+                        ? Map<String, dynamic>.from(
+                            jsonDecode(raw) as Map<dynamic, dynamic>,
+                          )
+                        : <String, dynamic>{});
+              if (data.isNotEmpty) {
+                add(NewMessageReceived(data));
+              }
             } catch (e) {
-              // Ignore parse errors
+              debugPrint("Pusher new-message parse error: $e");
             }
           }
         },
@@ -168,21 +156,22 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     Emitter<MessageState> emit,
   ) async {
     final currentState = state;
-    if (currentState is MessageLoaded) {
-      try {
-        final Map<String, dynamic> rawMsg =
-            event.messageData['message'] ?? event.messageData;
-        final newMessage = ChatMessage.fromJson(rawMsg);
+    if (currentState is! MessageLoaded) return;
 
-        // Prevent duplicates
-        if (currentState.messages.any((m) => m.id == newMessage.id)) return;
+    try {
+      // Event payload: { "message": { "id", "booking_id", "sender_type", ... } }
+      final rawMsg = event.messageData['message'] ?? event.messageData;
+      if (rawMsg is! Map<String, dynamic>) return;
 
-        final updatedMessages = List<ChatMessage>.from(currentState.messages)
-          ..add(newMessage);
-        emit(currentState.copyWith(messages: updatedMessages));
-      } catch (e) {
-        // Log or handle error
-      }
+      final newMessage = ChatMessage.fromJson(rawMsg);
+
+      if (currentState.messages.any((m) => m.id == newMessage.id)) return;
+
+      final updatedMessages = List<ChatMessage>.from(currentState.messages)
+        ..add(newMessage);
+      emit(currentState.copyWith(messages: updatedMessages));
+    } catch (e) {
+      debugPrint("NewMessageReceived apply error: $e");
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'pagination.dart';
 
 /// ChatMessage entity matching the old Laravel ChatMessage model
 enum SenderType {
@@ -103,4 +104,43 @@ class ChatMessage extends Equatable {
         updatedAt,
         senderName,
       ];
+}
+
+/// Response from GET /agent/chats: { "data": { "messages": [...], "pagination": {...} } }
+class PaginatedChatResponse extends Equatable {
+  final List<ChatMessage> messages;
+  final Pagination pagination;
+
+  const PaginatedChatResponse({
+    required this.messages,
+    required this.pagination,
+  });
+
+  factory PaginatedChatResponse.fromJson(Map<String, dynamic> json) {
+    final rawData = json['data'];
+    List<dynamic> messageList;
+    Map<String, dynamic> paginationJson;
+    if (rawData is Map<String, dynamic>) {
+      messageList =
+          rawData['messages'] is List<dynamic>
+              ? rawData['messages'] as List<dynamic>
+              : <dynamic>[];
+      paginationJson =
+          rawData['pagination'] is Map<String, dynamic>
+              ? rawData['pagination'] as Map<String, dynamic>
+              : <String, dynamic>{};
+    } else {
+      messageList = <dynamic>[];
+      paginationJson = <String, dynamic>{};
+    }
+    return PaginatedChatResponse(
+      messages: messageList
+          .map((e) => ChatMessage.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      pagination: Pagination.fromJson(paginationJson),
+    );
+  }
+
+  @override
+  List<Object?> get props => [messages, pagination];
 }

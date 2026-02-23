@@ -119,6 +119,17 @@ class _LoginScreenState extends State<LoginScreen> {
         final userData = await DependencyInjection.authApiService
             .getCurrentUser();
         final profile = UserProfileModel.fromJson(userData);
+
+        // If no cached FCM token, fetch and save it
+        final deviceService = DependencyInjection.deviceService;
+        var cachedToken = await deviceService.getCachedFcmToken();
+        if (cachedToken == null || cachedToken.isEmpty) {
+          cachedToken = await deviceService.ensureFcmToken();
+          debugPrint(
+            'fcmToken=${cachedToken.isEmpty ? "(empty)" : cachedToken}',
+          );
+        }
+
         if (!profile.isEmailVerified) {
           if (!context.mounted) return;
           context.go(

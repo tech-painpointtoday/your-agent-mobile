@@ -4,6 +4,7 @@ class ChatBooking extends Equatable {
   final int id;
   final String participantName;
   final String? lastMessage;
+  final String? participantPhone;
   final int unreadCount;
   final DateTime? lastActiveAt;
   final String? avatarUrl;
@@ -11,6 +12,7 @@ class ChatBooking extends Equatable {
   const ChatBooking({
     required this.id,
     required this.participantName,
+    this.participantPhone,
     this.lastMessage,
     this.unreadCount = 0,
     this.lastActiveAt,
@@ -28,6 +30,7 @@ class ChatBooking extends Equatable {
           user?['name'] as String? ??
           json['participant_name'] as String? ??
           'Unknown',
+      participantPhone: user?['phone'] as String?,
       lastMessage:
           lastMsg?['message'] as String? ??
           json['last_message_text'] as String?,

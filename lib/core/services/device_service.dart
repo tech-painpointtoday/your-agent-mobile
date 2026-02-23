@@ -30,6 +30,20 @@ class DeviceService {
     }
   }
 
+  /// Returns cached FCM token from prefs, or null if never saved.
+  Future<String?> getCachedFcmToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('fcm_token');
+  }
+
+  /// Ensures we have an FCM token: use cached if present, otherwise fetch from Firebase and save.
+  Future<String> ensureFcmToken() async {
+    final cached = await getCachedFcmToken();
+    if (cached != null && cached.isNotEmpty) return cached;
+    final info = await getDeviceInfo();
+    return info.token;
+  }
+
   Future<DeviceInfoModel> getDeviceInfo() async {
     final deviceInfo = DeviceInfoPlugin();
     final packageInfo = await PackageInfo.fromPlatform();
@@ -51,25 +65,26 @@ class DeviceService {
       osVersion = 'iOS ${iosInfo.systemVersion}';
     }
 
-    // Get FCM Token
+    // Use cached FCM token if we have it; otherwise fetch and save
     String fcmToken = '';
-    try {
-      if (Platform.isIOS) {
-        String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-
-        if (apnsToken == null) {
-          await Future<void>.delayed(const Duration(seconds: 3));
-          apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+    final prefs = await SharedPreferences.getInstance();
+    fcmToken = prefs.getString('fcm_token') ?? '';
+    if (fcmToken.isEmpty) {
+      try {
+        if (Platform.isIOS) {
+          String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+          if (apnsToken == null) {
+            await Future<void>.delayed(const Duration(seconds: 3));
+            apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+          }
+          if (apnsToken == null) {
+            debugPrint('APNS token is still null. Check your Xcode setup.');
+          }
         }
-
-        if (apnsToken == null) {
-          debugPrint('APNS token is still null. Check your Xcode setup.');
-        }
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      } catch (e) {
+        debugPrint('Error getting FCM token: $e');
       }
-
-      fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
-    } catch (e) {
-      debugPrint('Error getting FCM token: $e');
     }
 
     _cachedInfo = DeviceInfoModel(
@@ -94,11 +109,19 @@ class DeviceService {
     await prefs.setString('fcm_token', _cachedInfo!.token);
   }
 
+  /// Call after login: ensures FCM token (fetches and saves if missing), then registers device.
+  Future<void> registerDeviceAfterLogin() async {
+    try {
+      await ensureFcmToken();
+      await registerDevice();
+    } catch (e) {
+      debugPrint('registerDeviceAfterLogin: $e');
+    }
+  }
+
   Future<void> registerDevice() async {
     try {
       final info = await getDeviceInfo();
-      // If FCM token is not yet available, skip registration to avoid
-      // unauthorized (401) errors that can trigger a global logout.
       if (info.token.isEmpty) {
         debugPrint(
           'Skipping device registration: FCM token is empty (APNS token not ready yet).',

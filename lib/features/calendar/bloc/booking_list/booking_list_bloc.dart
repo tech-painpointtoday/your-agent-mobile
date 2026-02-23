@@ -55,8 +55,9 @@ class BookingListBloc extends Bloc<BookingListEvent, BookingListState> {
     LoadMoreBookings event,
     Emitter<BookingListState> emit,
   ) async {
-    if (state.hasReachedMax || state.status != BookingListStatus.success)
+    if (state.hasReachedMax || state.status != BookingListStatus.success) {
       return;
+    }
 
     final nextPage = state.currentPage + 1;
 

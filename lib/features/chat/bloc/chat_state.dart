@@ -23,6 +23,9 @@ class ChatLoaded extends ChatState {
   final ChatFilter currentFilter;
   final String searchQuery;
   final List<String> recentSearches;
+  final int currentPage;
+  final int lastPage;
+  final bool isLoadingMore;
 
   const ChatLoaded({
     required this.allConversations,
@@ -30,7 +33,12 @@ class ChatLoaded extends ChatState {
     this.currentFilter = ChatFilter.all,
     this.searchQuery = '',
     this.recentSearches = const [],
+    this.currentPage = 1,
+    this.lastPage = 1,
+    this.isLoadingMore = false,
   });
+
+  bool get hasMore => currentPage < lastPage;
 
   ChatLoaded copyWith({
     List<ChatBooking>? allConversations,
@@ -38,6 +46,9 @@ class ChatLoaded extends ChatState {
     ChatFilter? currentFilter,
     String? searchQuery,
     List<String>? recentSearches,
+    int? currentPage,
+    int? lastPage,
+    bool? isLoadingMore,
   }) {
     return ChatLoaded(
       allConversations: allConversations ?? this.allConversations,
@@ -46,6 +57,9 @@ class ChatLoaded extends ChatState {
       currentFilter: currentFilter ?? this.currentFilter,
       searchQuery: searchQuery ?? this.searchQuery,
       recentSearches: recentSearches ?? this.recentSearches,
+      currentPage: currentPage ?? this.currentPage,
+      lastPage: lastPage ?? this.lastPage,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -56,6 +70,9 @@ class ChatLoaded extends ChatState {
     currentFilter,
     searchQuery,
     recentSearches,
+    currentPage,
+    lastPage,
+    isLoadingMore,
   ];
 }
 

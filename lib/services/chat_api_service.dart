@@ -14,6 +14,21 @@ class ChatApiService {
     return _instance!;
   }
 
+  /// Get chats (messages + pagination)
+  /// GET /agent/chats
+  /// Response: { "success": true, "data": { "messages": [...], "pagination": {...} } }
+  Future<PaginatedChatResponse> getChats({
+    int page = 1,
+    int perPage = 15,
+  }) async {
+    final response = await _apiClient.get(
+      '/agent/chats',
+      queryParameters: <String, dynamic>{'page': page, 'per_page': perPage},
+    );
+    final json = response.data as Map<String, dynamic>;
+    return PaginatedChatResponse.fromJson(json);
+  }
+
   /// Send a chat message
   /// POST /agent/chat/send
   Future<ChatMessage> sendMessage({
@@ -33,7 +48,11 @@ class ChatApiService {
 
       final response = await _apiClient.post('/$role/chat/send', data: data);
       final responseData = response.data as Map<String, dynamic>;
-      return ChatMessage.fromJson(responseData['message'] ?? responseData);
+      // API returns { "success": true, "data": { ...message object }, "message": "Message sent successfully" }
+      final messageJson = responseData['data'] as Map<String, dynamic>? ??
+          (responseData['message'] is Map<String, dynamic> ? responseData['message'] as Map<String, dynamic> : null) ??
+          responseData;
+      return ChatMessage.fromJson(messageJson);
     } catch (e) {
       if (e is DioException && e.response != null) {
         throw Exception(

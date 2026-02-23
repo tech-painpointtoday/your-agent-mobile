@@ -36,6 +36,7 @@ class _ChatScreenContent extends StatefulWidget {
 class _ChatScreenContentState extends State<_ChatScreenContent> {
   final FocusNode _searchFocusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   bool _isSearchFocused = false;
 
   @override
@@ -46,10 +47,22 @@ class _ChatScreenContentState extends State<_ChatScreenContent> {
         _isSearchFocused = _searchFocusNode.hasFocus;
       });
     });
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final state = context.read<ChatBloc>().state;
+    if (state is! ChatLoaded || !state.hasMore || state.isLoadingMore) return;
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 200) {
+      context.read<ChatBloc>().add(const LoadMoreChatConversations());
+    }
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _searchFocusNode.dispose();
     _searchController.dispose();
     super.dispose();
@@ -93,9 +106,19 @@ class _ChatScreenContentState extends State<_ChatScreenContent> {
         color: Colors.white,
         backgroundColor: AppColors.primary,
         onRefresh: () async {
-          context.read<ChatBloc>().add(const LoadChatConversations());
+          final bloc = context.read<ChatBloc>();
+          bloc.add(const LoadChatConversations());
+          await bloc.stream
+              .skip(1)
+              .where((s) => s is ChatLoaded || s is ChatError)
+              .first
+              .timeout(
+                const Duration(seconds: 15),
+                onTimeout: () => bloc.state,
+              );
         },
         child: SingleChildScrollView(
+          controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: [
@@ -353,9 +376,12 @@ class _ConversationList extends StatelessWidget {
         }
 
         if (state is ChatLoaded) {
+          final currentFilter = state.currentFilter;
           final conversations = state.filteredConversations;
+          final hasMore = state.hasMore;
+          final isLoadingMore = state.isLoadingMore;
 
-          if (conversations.isEmpty) {
+          if (conversations.isEmpty && !isLoadingMore) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -367,11 +393,13 @@ class _ConversationList extends StatelessWidget {
                   children: [
                     Image.asset(
                       'assets/images/YA_Illustration_EmptyState_NoMessage.png',
-                      width: 280,
+                      width: 180,
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      l10n.empty_chat_message,
+                      currentFilter == ChatFilter.unread
+                          ? l10n.empty_chat_message_unread
+                          : l10n.empty_chat_message,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseGrey,
@@ -386,16 +414,35 @@ class _ConversationList extends StatelessWidget {
             );
           }
 
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: conversations.length,
-            itemBuilder: (context, index) {
-              return _ChatSessionTile(
-                conversation: conversations[index],
-                l10n: l10n,
-              );
-            },
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: conversations.length,
+                itemBuilder: (context, index) {
+                  return _ChatSessionTile(
+                    conversation: conversations[index],
+                    l10n: l10n,
+                  );
+                },
+              ),
+              if (hasMore && isLoadingMore)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           );
         }
 
@@ -421,10 +468,16 @@ class _ChatSessionTile extends StatelessWidget {
           chatBloc.add(SaveRecentSearch(currentState.searchQuery));
         }
 
-        context.push(
-          '/chat/${conversation.id}',
-          extra: conversation.participantName,
-        );
+        context
+            .push(
+              '/chat/${conversation.id}',
+              extra: conversation.participantName,
+            )
+            .then((_) {
+              if (context.mounted) {
+                context.read<ChatBloc>().add(const LoadChatConversations());
+              }
+            });
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -527,30 +580,34 @@ class _ChatSessionTile extends StatelessWidget {
     final initial = conversation.participantName.isNotEmpty
         ? conversation.participantName[0].toUpperCase()
         : '?';
-    return Center(
-      child: Text(
-        initial,
-        style: GoogleFonts.anuphan(
-          color: AppColors.baseGrey,
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
+    return Container(
+      color: AppColors.basePaleGrey,
+      child: Center(
+        child: Text(
+          initial,
+          style: GoogleFonts.anuphan(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: AppColors.primary,
+          ),
         ),
       ),
     );
   }
 
   String _formatDate(DateTime date) {
+    final local = date.toLocal();
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
-    final chatDate = DateTime(date.year, date.month, date.day);
+    final chatDate = DateTime(local.year, local.month, local.day);
 
     if (chatDate == today) {
-      return '${DateFormat('HH:mm').format(date)} ${l10n.time_unit_th}';
+      return '${DateFormat('HH:mm').format(local)} ${l10n.time_unit_th}';
     } else if (chatDate == yesterday) {
       return l10n.yesterday;
     } else {
-      return DateFormat('dd/MM/yyyy').format(date);
+      return DateFormat('dd/MM/yyyy').format(local);
     }
   }
 }

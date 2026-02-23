@@ -68,10 +68,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else {
           await CredentialsStorageService().clear();
         }
-        // Register device info after successful login
-        // Tmp disable device registration
-        // DependencyInjection.deviceService.registerDevice();
         emit(Authenticated(user));
+        // Run device registration after emit so token is committed and 401 here won't block login
+        Future.delayed(const Duration(milliseconds: 150), () {
+          DependencyInjection.deviceService.registerDeviceAfterLogin();
+        });
       },
     );
   }
@@ -89,11 +90,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         passwordConfirmation: event.passwordConfirmation,
       ),
     );
-    result.fold((failure) => emit(AuthError(failure.message)), (user) {
-      // Tmp disable device registration
-      //DependencyInjection.deviceService.registerDevice();
-      emit(RegistrationSuccess(user: user, message: 'Success'));
-    });
+    await result.fold<Future<void>>(
+      (failure) async => emit(AuthError(failure.message)),
+      (user) async {
+        emit(RegistrationSuccess(user: user, message: 'Success'));
+        Future.delayed(const Duration(milliseconds: 150), () {
+          DependencyInjection.deviceService.registerDeviceAfterLogin();
+        });
+      },
+    );
   }
 
   Future<void> _onSignOut(SignOutEvent event, Emitter<AuthState> emit) async {
@@ -218,11 +223,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
     final result = await signInWithGoogleUseCase(event.role);
-    result.fold((failure) => emit(AuthError(failure.message)), (user) {
-      // Tmp disable device registration
-      //DependencyInjection.deviceService.registerDevice();
-      emit(Authenticated(user));
-    });
+    await result.fold<Future<void>>(
+      (failure) async => emit(AuthError(failure.message)),
+      (user) async {
+        emit(Authenticated(user));
+        Future.delayed(const Duration(milliseconds: 150), () {
+          DependencyInjection.deviceService.registerDeviceAfterLogin();
+        });
+      },
+    );
   }
 
   Future<void> _onSignInWithFacebook(
@@ -231,10 +240,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
     final result = await signInWithFacebookUseCase(event.role);
-    result.fold((failure) => emit(AuthError(failure.message)), (user) {
-      // Tmp disable device registration
-      //DependencyInjection.deviceService.registerDevice();
-      emit(Authenticated(user));
-    });
+    await result.fold<Future<void>>(
+      (failure) async => emit(AuthError(failure.message)),
+      (user) async {
+        emit(Authenticated(user));
+        Future.delayed(const Duration(milliseconds: 150), () {
+          DependencyInjection.deviceService.registerDeviceAfterLogin();
+        });
+      },
+    );
   }
 }

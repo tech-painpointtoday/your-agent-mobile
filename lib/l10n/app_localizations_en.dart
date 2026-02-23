@@ -3500,6 +3500,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'No messages yet.\nOnce you start a conversation, it will appear here.';
 
   @override
+  String get empty_chat_message_unread => 'No unread messages';
+
+  @override
   String get recent_search => 'Recent Search';
 
   @override
@@ -3507,6 +3510,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get read_status => 'Read';
+
+  @override
+  String get message_sent => 'Sent';
 
   @override
   String get conversation_title => 'Conversations';

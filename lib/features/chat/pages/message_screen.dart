@@ -18,12 +18,14 @@ import '../../../widgets/modals/app_call_bottom_sheet.dart';
 class MessageScreen extends StatelessWidget {
   final int bookingId;
   final String participantName;
+  final String participantPhone;
   final bool isStaff;
 
   const MessageScreen({
     super.key,
     required this.bookingId,
     required this.participantName,
+    required this.participantPhone,
     this.isStaff = false,
   });
 
@@ -35,6 +37,7 @@ class MessageScreen extends StatelessWidget {
       child: _MessageScreenContent(
         bookingId: bookingId,
         participantName: participantName,
+        participantPhone: participantPhone,
       ),
     );
   }
@@ -43,10 +46,12 @@ class MessageScreen extends StatelessWidget {
 class _MessageScreenContent extends StatefulWidget {
   final int bookingId;
   final String participantName;
+  final String participantPhone;
 
   const _MessageScreenContent({
     required this.bookingId,
     required this.participantName,
+    required this.participantPhone,
   });
 
   @override
@@ -56,12 +61,70 @@ class _MessageScreenContent extends StatefulWidget {
 class _MessageScreenContentState extends State<_MessageScreenContent> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+
+  bool _searchVisible = false;
+  bool _isSearchFocused = false;
+  List<int> _matchIndices = [];
+  int _currentMatchIndex = 0;
+  static const double _estimatedItemHeight = 120;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchFocusNode.addListener(() {
+      if (_isSearchFocused != _searchFocusNode.hasFocus) {
+        setState(() => _isSearchFocused = _searchFocusNode.hasFocus);
+      }
+    });
+  }
 
   @override
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  void _updateSearchMatches(List<ChatMessage> messages, String query) {
+    if (query.trim().isEmpty) {
+      setState(() {
+        _matchIndices = [];
+        _currentMatchIndex = 0;
+      });
+      return;
+    }
+    final lower = query.trim().toLowerCase();
+    final indices = <int>[];
+    for (var i = 0; i < messages.length; i++) {
+      final text = messages[i].message;
+      if (text.startsWith('http')) continue; // skip image-only
+      if (text.toLowerCase().contains(lower)) indices.add(i);
+    }
+    setState(() {
+      _matchIndices = indices;
+      _currentMatchIndex = indices.isEmpty ? 0 : 0;
+    });
+    if (indices.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToMatch(0));
+    }
+  }
+
+  void _scrollToMatch(int matchListIndex) {
+    if (_matchIndices.isEmpty || !_scrollController.hasClients) return;
+    final messageIndex = _matchIndices[matchListIndex];
+    final offset = (messageIndex * _estimatedItemHeight).clamp(
+      0.0,
+      _scrollController.position.maxScrollExtent,
+    );
+    _scrollController.animateTo(
+      offset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   void _scrollToBottom() {
@@ -78,23 +141,26 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/icons/chevron-left.svg',
-            width: 18,
-            height: 18,
-            fit: BoxFit.contain,
-            colorFilter: const ColorFilter.mode(
-              AppColors.baseDarkGrey,
-              BlendMode.srcIn,
+      appBar: _searchVisible
+          ? _buildSearchOverlayAppBar(context, l10n)
+          : AppBar(
+              backgroundColor: AppColors.white,
+              leading: IconButton(
+                icon: SvgPicture.asset(
+                  'assets/icons/chevron-left.svg',
+                  width: 18,
+                  height: 18,
+                  fit: BoxFit.contain,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.baseDarkGrey,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                onPressed: () => context.pop(),
+              ),
+              titleSpacing: 0,
+              title: _buildAppBar(context),
             ),
-          ),
-          onPressed: () => context.pop(),
-        ),
-        titleSpacing: 0,
-        title: _buildAppBar(context),
-      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -125,7 +191,7 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
                   Expanded(
                     child: BlocConsumer<MessageBloc, MessageState>(
                       listener: (context, state) {
-                        if (state is MessageLoaded) {
+                        if (state is MessageLoaded && !_searchVisible) {
                           WidgetsBinding.instance.addPostFrameCallback(
                             (_) => _scrollToBottom(),
                           );
@@ -162,6 +228,13 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
                             );
                           }
 
+                          final searchQuery = _searchController.text.trim();
+                          final currentMessageIndex =
+                              _matchIndices.isNotEmpty &&
+                                  _currentMatchIndex < _matchIndices.length
+                              ? _matchIndices[_currentMatchIndex]
+                              : -1;
+
                           return ListView.builder(
                             controller: _scrollController,
                             padding: const EdgeInsets.symmetric(
@@ -175,22 +248,26 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
                                   message.senderType == SenderType.agent ||
                                   message.senderType == SenderType.staff;
 
+                              final localCreatedAt = message.createdAt
+                                  ?.toLocal();
                               bool showDate = false;
                               if (index == 0) {
                                 showDate = true;
                               } else {
                                 final prevMessage = messages[index - 1];
-                                if (message.createdAt != null &&
-                                    prevMessage.createdAt != null) {
+                                final prevLocal = prevMessage.createdAt
+                                    ?.toLocal();
+                                if (localCreatedAt != null &&
+                                    prevLocal != null) {
                                   final currentDay = DateTime(
-                                    message.createdAt!.year,
-                                    message.createdAt!.month,
-                                    message.createdAt!.day,
+                                    localCreatedAt.year,
+                                    localCreatedAt.month,
+                                    localCreatedAt.day,
                                   );
                                   final prevDay = DateTime(
-                                    prevMessage.createdAt!.year,
-                                    prevMessage.createdAt!.month,
-                                    prevMessage.createdAt!.day,
+                                    prevLocal.year,
+                                    prevLocal.month,
+                                    prevLocal.day,
                                   );
                                   if (currentDay != prevDay) {
                                     showDate = true;
@@ -198,18 +275,36 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
                                 }
                               }
 
+                              // Show time only on last message of same hour+minute group
+                              final nextCreatedAt = index < messages.length - 1
+                                  ? messages[index + 1].createdAt?.toLocal()
+                                  : null;
+                              final sameMinuteAsNext =
+                                  localCreatedAt != null &&
+                                  nextCreatedAt != null &&
+                                  localCreatedAt.hour == nextCreatedAt.hour &&
+                                  localCreatedAt.minute == nextCreatedAt.minute;
+                              final showTime = !sameMinuteAsNext;
+
                               return Column(
                                 children: [
-                                  if (showDate && message.createdAt != null)
-                                    _DateHeader(date: message.createdAt!),
+                                  if (showDate && localCreatedAt != null)
+                                    _DateHeader(date: localCreatedAt),
                                   _ChatBubble(
                                     message: message.message,
                                     isMe: isMe,
-                                    time: message.createdAt != null
+                                    isRead: message.isRead,
+                                    time: localCreatedAt != null
                                         ? DateFormat(
                                             'HH:mm',
-                                          ).format(message.createdAt!)
+                                          ).format(localCreatedAt)
                                         : '',
+                                    showTime: showTime,
+                                    searchQuery: searchQuery.isEmpty
+                                        ? null
+                                        : searchQuery,
+                                    isCurrentMatch:
+                                        index == currentMessageIndex,
                                   ),
                                 ],
                               );
@@ -241,9 +336,17 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
             shape: BoxShape.circle,
             color: AppColors.basePaleGrey,
           ),
-          child: CircleAvatar(
-            backgroundColor: AppColors.basePaleGrey,
-            child: Icon(Icons.person, color: AppColors.baseGrey, size: 24),
+          child: Center(
+            child: Text(
+              widget.participantName.isNotEmpty
+                  ? widget.participantName[0].toUpperCase()
+                  : '?',
+              style: GoogleFonts.anuphan(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.primary,
+              ),
+            ),
           ),
         ),
         const SizedBox(width: 12),
@@ -259,7 +362,17 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
         ),
         _CircleIconButton(
           iconPath: 'assets/icons/search.svg',
-          onPressed: () {},
+          onPressed: () {
+            setState(() {
+              _searchVisible = true;
+              _searchController.clear();
+              _matchIndices = [];
+              _currentMatchIndex = 0;
+            });
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _searchFocusNode.requestFocus();
+            });
+          },
         ),
         const SizedBox(width: 8),
         _CircleIconButton(
@@ -267,12 +380,209 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
           onPressed: () {
             AppCallBottomSheet.show(
               context: context,
-              options: [CallOption(label: '', phone: '089-123-4567')],
+              options: [CallOption(label: '', phone: widget.participantPhone)],
             );
           },
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 16),
       ],
+    );
+  }
+
+  PreferredSizeWidget _buildSearchOverlayAppBar(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) {
+    return PreferredSize(
+      preferredSize: Size(
+        MediaQuery.of(context).size.width,
+        kToolbarHeight + MediaQuery.of(context).padding.top,
+      ),
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).padding.top,
+          left: 12,
+          right: 8,
+          bottom: 8,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Container(
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: _isSearchFocused
+                      ? [
+                          BoxShadow(
+                            color: Color(0x0C1743C7),
+                            blurRadius: 0,
+                            offset: Offset(0, 0),
+                            spreadRadius: 4,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  focusNode: _searchFocusNode,
+                  onChanged: (query) {
+                    final state = context.read<MessageBloc>().state;
+                    if (state is MessageLoaded) {
+                      _updateSearchMatches(state.messages, query);
+                    }
+                  },
+                  style: GoogleFonts.anuphan(
+                    fontSize: 14,
+                    color: AppColors.baseBlack,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: l10n.search_messages_hint,
+                    border: InputBorder.none,
+                    hintStyle: GoogleFonts.anuphan(
+                      color: AppColors.baseGrey,
+                      fontSize: 14,
+                    ),
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: AppColors.primary,
+                        width: 1.6,
+                      ),
+                    ),
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: SvgPicture.asset(
+                        'assets/icons/search.svg',
+                        width: 16,
+                        height: 16,
+                        fit: BoxFit.scaleDown,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.baseDarkGrey,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (_matchIndices.isNotEmpty) ...[
+              const SizedBox(width: 8),
+              Text(
+                '${_currentMatchIndex + 1} / ${_matchIndices.length}',
+                style: GoogleFonts.anuphan(
+                  fontSize: 12,
+                  color: AppColors.baseDarkGrey,
+                ),
+              ),
+              SizedBox(width: 16),
+              IconButton(
+                style: IconButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                icon: SvgPicture.asset(
+                  'assets/icons/chevron-up.svg',
+                  width: 16,
+                  height: 16,
+                  fit: BoxFit.contain,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.baseDarkGrey,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _currentMatchIndex =
+                        (_currentMatchIndex - 1 + _matchIndices.length) %
+                        _matchIndices.length;
+                  });
+                  _scrollToMatch(_currentMatchIndex);
+                },
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+              ),
+              SizedBox(width: 24),
+              IconButton(
+                style: IconButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                icon: SvgPicture.asset(
+                  'assets/icons/chevron-down.svg',
+                  width: 16,
+                  height: 16,
+                  fit: BoxFit.contain,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.baseDarkGrey,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _currentMatchIndex =
+                        (_currentMatchIndex + 1) % _matchIndices.length;
+                  });
+                  _scrollToMatch(_currentMatchIndex);
+                },
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+              ),
+            ] else if (_searchController.text.trim().isNotEmpty) ...[
+              const SizedBox(width: 8),
+              Text(
+                '0',
+                style: GoogleFonts.anuphan(
+                  fontSize: 12,
+                  color: AppColors.baseGrey,
+                ),
+              ),
+            ],
+            SizedBox(width: _matchIndices.isNotEmpty ? 24 : 8),
+            IconButton(
+              style: IconButton.styleFrom(
+                side: BorderSide(color: AppColors.baseGrey),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: SvgPicture.asset(
+                'assets/icons/x.svg',
+                width: 16,
+                height: 16,
+                fit: BoxFit.contain,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.baseDarkGrey,
+                  BlendMode.srcIn,
+                ),
+              ),
+              onPressed: () {
+                setState(() {
+                  _searchVisible = false;
+                  _searchController.clear();
+                  _matchIndices = [];
+                  _currentMatchIndex = 0;
+                });
+                _searchFocusNode.unfocus();
+              },
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -462,6 +772,7 @@ class _DateHeader extends StatelessWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
+    // date is already in local time when passed from parent
     final checkDate = DateTime(date.year, date.month, date.day);
 
     if (checkDate == today) {
@@ -496,12 +807,20 @@ class _DateHeader extends StatelessWidget {
 class _ChatBubble extends StatelessWidget {
   final String message;
   final bool isMe;
+  final bool isRead;
   final String time;
+  final bool showTime;
+  final String? searchQuery;
+  final bool isCurrentMatch;
 
   const _ChatBubble({
     required this.message,
     required this.isMe,
+    this.isRead = false,
     required this.time,
+    this.showTime = true,
+    this.searchQuery,
+    this.isCurrentMatch = false,
   });
 
   @override
@@ -529,6 +848,9 @@ class _ChatBubble extends StatelessWidget {
   }
 
   Widget _buildStatusRow(AppLocalizations l10n, bool me) {
+    // Show time and read/sent only on last message of same-minute group
+    if (!showTime) return const SizedBox.shrink();
+
     return Padding(
       padding: EdgeInsets.only(left: me ? 0 : 8, right: me ? 8 : 0, bottom: 4),
       child: Column(
@@ -538,7 +860,7 @@ class _ChatBubble extends StatelessWidget {
         children: [
           if (me)
             Text(
-              l10n.read_status,
+              isRead ? l10n.read_status : l10n.message_sent,
               style: GoogleFonts.anuphan(
                 fontSize: 10,
                 color: AppColors.baseGrey,
@@ -554,6 +876,55 @@ class _ChatBubble extends StatelessWidget {
   }
 
   Widget _buildTextBubble(BuildContext context) {
+    final textColor = isMe ? Colors.white : AppColors.baseBlack;
+    final baseStyle = GoogleFonts.anuphan(
+      color: textColor,
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+    );
+
+    Widget content;
+    if (searchQuery != null &&
+        searchQuery!.isNotEmpty &&
+        message.toLowerCase().contains(searchQuery!.toLowerCase())) {
+      final lowerMessage = message.toLowerCase();
+      final lowerQuery = searchQuery!.toLowerCase();
+      final spans = <TextSpan>[];
+      int start = 0;
+      int matchStart;
+      while ((matchStart = lowerMessage.indexOf(lowerQuery, start)) != -1) {
+        if (matchStart > start) {
+          spans.add(
+            TextSpan(
+              text: message.substring(start, matchStart),
+              style: baseStyle,
+            ),
+          );
+        }
+        spans.add(
+          TextSpan(
+            text: message.substring(
+              matchStart,
+              matchStart + searchQuery!.length,
+            ),
+            style: baseStyle.copyWith(
+              backgroundColor: const Color(0xFFFEF08A), // highlight yellow
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        );
+        start = matchStart + searchQuery!.length;
+      }
+      if (start < message.length) {
+        spans.add(TextSpan(text: message.substring(start), style: baseStyle));
+      }
+      content = RichText(
+        text: TextSpan(children: spans, style: baseStyle),
+      );
+    } else {
+      content = Text(message, style: baseStyle);
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       constraints: BoxConstraints(
@@ -567,6 +938,9 @@ class _ChatBubble extends StatelessWidget {
           bottomLeft: Radius.circular(isMe ? 16 : 4),
           bottomRight: Radius.circular(isMe ? 4 : 16),
         ),
+        border: isCurrentMatch
+            ? Border.all(color: AppColors.primary, width: 2)
+            : null,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.03),
@@ -575,14 +949,7 @@ class _ChatBubble extends StatelessWidget {
           ),
         ],
       ),
-      child: Text(
-        message,
-        style: GoogleFonts.anuphan(
-          color: isMe ? Colors.white : AppColors.baseBlack,
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
+      child: content,
     );
   }
 

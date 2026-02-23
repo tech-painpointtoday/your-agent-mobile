@@ -6860,6 +6860,12 @@ abstract class AppLocalizations {
   /// **'No messages yet.\nOnce you start a conversation, it will appear here.'**
   String get empty_chat_message;
 
+  /// No description provided for @empty_chat_message_unread.
+  ///
+  /// In en, this message translates to:
+  /// **'No unread messages'**
+  String get empty_chat_message_unread;
+
   /// No description provided for @recent_search.
   ///
   /// In en, this message translates to:
@@ -6877,6 +6883,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Read'**
   String get read_status;
+
+  /// No description provided for @message_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get message_sent;
 
   /// No description provided for @conversation_title.
   ///

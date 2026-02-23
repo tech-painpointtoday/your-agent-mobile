@@ -257,8 +257,7 @@ class _CalendarAvailabilitySectionState
                       // For YourAgent, we usually display Buddhist year.
                       final thaiYear = date.year + 543;
                       final formattedLabel =
-                          DateFormat('d MMMM', 'th').format(date) +
-                          ' $thaiYear';
+                          '${DateFormat('d MMMM', 'th').format(date)} $thaiYear';
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

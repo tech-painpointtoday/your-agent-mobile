@@ -97,11 +97,36 @@ class PaginatedBookings extends Equatable {
   const PaginatedBookings({required this.bookings, required this.pagination});
 
   factory PaginatedBookings.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> data = json['data'] ?? [];
+    final rawData = json['data'];
+    List<dynamic> list;
+    Map<String, dynamic> metaJson;
+    if (rawData is List<dynamic>) {
+      list = rawData;
+      metaJson = _metaMap(json['meta']) ?? _metaMap(json['pagination']) ?? {};
+    } else if (rawData is Map<String, dynamic>) {
+      list = rawData['data'] as List<dynamic>? ??
+          rawData['bookings'] as List<dynamic>? ??
+          <dynamic>[];
+      metaJson = _metaMap(rawData['meta']) ??
+          _metaMap(rawData['pagination']) ??
+          _metaMap(json['meta']) ??
+          _metaMap(json['pagination']) ??
+          {};
+    } else {
+      list = <dynamic>[];
+      metaJson = _metaMap(json['meta']) ?? _metaMap(json['pagination']) ?? {};
+    }
     return PaginatedBookings(
-      bookings: data.map((e) => Booking.fromJson(e)).toList(),
-      pagination: Pagination.fromJson(json['meta'] ?? json['pagination'] ?? {}),
+      bookings: list
+          .map((e) => Booking.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      pagination: Pagination.fromJson(metaJson),
     );
+  }
+
+  static Map<String, dynamic>? _metaMap(dynamic value) {
+    if (value is Map<String, dynamic>) return value;
+    return null;
   }
 
   @override

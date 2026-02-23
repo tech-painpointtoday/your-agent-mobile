@@ -8,11 +8,15 @@ abstract class MessageEvent extends Equatable {
 }
 
 class LoadMessages extends MessageEvent {
+  /// For booking chat: same as channel chat.booking.{bookingId}.
+  /// For staff chat: when [conversationId] is set, channel is chat.staff.{conversationId}.
   final int bookingId;
-  const LoadMessages(this.bookingId);
+  /// Optional. For staff support channel (chat.staff.{conversation_id}). If null, staff uses [bookingId].
+  final int? conversationId;
+  const LoadMessages(this.bookingId, {this.conversationId});
 
   @override
-  List<Object?> get props => [bookingId];
+  List<Object?> get props => [bookingId, conversationId];
 }
 
 class SendMessage extends MessageEvent {

@@ -203,9 +203,11 @@ class AppRouter {
         builder: (context, state) {
           final bookingId = int.parse(state.pathParameters['bookingId']!);
           final participantName = state.extra as String? ?? 'การสนทนา';
+          final participantPhone = state.extra as String? ?? '';
           return MessageScreen(
             bookingId: bookingId,
             participantName: participantName,
+            participantPhone: participantPhone,
           );
         },
       ),

@@ -13,6 +13,10 @@ class LoadChatConversations extends ChatEvent {
   const LoadChatConversations();
 }
 
+class LoadMoreChatConversations extends ChatEvent {
+  const LoadMoreChatConversations();
+}
+
 class FilterChatConversations extends ChatEvent {
   final ChatFilter filter;
   const FilterChatConversations(this.filter);

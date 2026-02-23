@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:youragent/core/services/device_service.dart';
 import 'package:youragent/widgets/app_coming_soon_placeholder.dart';
 
 import '../../../app/router.dart';
@@ -125,6 +124,14 @@ class _HomeHeaderState extends State<HomeHeader> with RouteAware {
       final userData = await authApiService.getCurrentUser();
       final profileData = UserProfileModel.fromJson(userData);
 
+      // If no cached FCM token, fetch and save it
+      final deviceService = DependencyInjection.deviceService;
+      var cachedToken = await deviceService.getCachedFcmToken();
+      if (cachedToken == null || cachedToken.isEmpty) {
+        cachedToken = await deviceService.ensureFcmToken();
+        debugPrint('fcmToken=${cachedToken.isEmpty ? "(empty)" : cachedToken}');
+      }
+
       if (mounted) {
         setState(() {
           _profileData = profileData;
@@ -241,12 +248,11 @@ class _HomeHeaderState extends State<HomeHeader> with RouteAware {
           onTap: () => context.push('/notifications'),
           showBadge: true,
         ),
-        // tmp close
-        // SizedBox(width: 10),
-        // _HeaderActionIcon(
-        //   svgPath: 'assets/icons/message-round.svg',
-        //   onTap: () => context.push('/chat'),
-        // ),
+        SizedBox(width: 10),
+        _HeaderActionIcon(
+          svgPath: 'assets/icons/message-round.svg',
+          onTap: () => context.push('/chat'),
+        ),
       ],
     );
   }

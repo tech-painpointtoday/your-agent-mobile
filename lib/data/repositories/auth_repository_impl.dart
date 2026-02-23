@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
+import '../../core/di/dependency_injection.dart';
 import '../../core/errors/failures.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -62,6 +63,15 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
 
       // Save profile to cache
       await UserProfileStorageService().saveProfile(profile);
+
+      // If no cached FCM token, fetch and save it (e.g. after app update or first launch)
+      final deviceService = DependencyInjection.deviceService;
+      var cachedToken = await deviceService.getCachedFcmToken();
+      if (cachedToken == null || cachedToken.isEmpty) {
+        cachedToken = await deviceService.ensureFcmToken();
+        debugPrint('fcmToken=${cachedToken.isEmpty ? "(empty)" : cachedToken}');
+      }
+      debugPrint('fcmToken=${cachedToken.isEmpty ? "(empty)" : cachedToken}');
 
       notifyListeners();
     } catch (_) {
@@ -303,14 +313,23 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
   @override
   Future<Either<Failure, void>> signOut() async {
     try {
-      // 1. Backend Logout (Best Effort)
+      // 1. Unregister device token (best effort, while still authenticated)
+      try {
+        final deviceService = DependencyInjection.deviceService;
+        final info = await deviceService.getDeviceInfo();
+        if (info.token.isNotEmpty) {
+          await _authApiService.unregisterDeviceToken(info);
+        }
+      } catch (_) {}
+
+      // 2. Backend Logout (Best Effort)
       try {
         await _authApiService.logout();
       } catch (_) {
         // Ignore backend errors
       }
 
-      // 2. Third Party Logout (Best Effort)
+      // 3. Third Party Logout (Best Effort)
       try {
         await _googleSignIn.signOut();
       } catch (_) {}
@@ -319,7 +338,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
         await FacebookAuth.instance.logOut();
       } catch (_) {}
 
-      // 3. Critical Local Cleanup
+      // 4. Critical Local Cleanup
       await SessionService().clearSession();
       await UserProfileStorageService().clearProfile();
       await ApiClient().clearAuthToken();

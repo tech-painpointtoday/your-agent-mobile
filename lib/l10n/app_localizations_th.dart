@@ -3507,7 +3507,10 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get empty_chat_message =>
-      'ยังไม่มีการข้อความตอนนี้\nหากเริ่มต้นสนทนาแล้ว แชทจะปรากฏที่นี่';
+      'ยังไม่มีข้อความตอนนี้\nหากเริ่มต้นสนทนาแล้ว แชทจะปรากฏที่นี่';
+
+  @override
+  String get empty_chat_message_unread => 'ยังไม่มีข้อความที่อ่านแล้ว';
 
   @override
   String get recent_search => 'การค้นหาล่าสุด';
@@ -3517,6 +3520,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get read_status => 'อ่านแล้ว';
+
+  @override
+  String get message_sent => 'ส่งแล้ว';
 
   @override
   String get conversation_title => 'การสนทนา';
