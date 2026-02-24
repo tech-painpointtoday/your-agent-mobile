@@ -590,6 +590,8 @@
   "calendar_status_contract": "Contract",
   "calendar_status_closed": "Closed",
   "calendar_status_expired": "Expired",
+  "calendar_cancel_success": "Appointment cancelled successfully",
+  "calendar_cancel_error": "Failed to cancel appointment",
   "notifications_mark_all_read": "Mark all as read",
   "notifications_confirm_mark_all_read_title": "Mark All as Read?",
   "notifications_confirm_mark_all_read_desc": "Are you sure you want to mark all notifications as read?",

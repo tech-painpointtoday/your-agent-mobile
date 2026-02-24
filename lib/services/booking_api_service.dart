@@ -42,10 +42,7 @@ class BookingApiService {
     );
   }
 
-  Future<void> cancelBooking(int id, String reason) async {
-    await _apiClient.dio.post(
-      '/agent/bookings/$id/cancel',
-      data: {'reason': reason},
-    );
+  Future<void> cancelBooking(int id) async {
+    await _apiClient.dio.post('/agent/bookings/cancel', data: {'id': '$id'});
   }
 }

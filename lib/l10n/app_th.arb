@@ -590,6 +590,8 @@
   "calendar_status_contract": "สัญญา",
   "calendar_status_closed": "ปิดงาน",
   "calendar_status_expired": "เกินกำหนด",
+  "calendar_cancel_success": "ยกเลิกนัดหมายสำเร็จ",
+  "calendar_cancel_error": "ไม่สามารถยกเลิกนัดหมายได้",
   "notifications_mark_all_read": "อ่านทั้งหมด",
   "notifications_confirm_mark_all_read_title": "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด?",
   "notifications_confirm_mark_all_read_desc": "คุณต้องการทำเครื่องหมายการแจ้งเตือนทั้งหมดว่าอ่านแล้วใช่หรือไม่?",

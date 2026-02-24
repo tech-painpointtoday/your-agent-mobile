@@ -3386,6 +3386,18 @@ abstract class AppLocalizations {
   /// **'Expired'**
   String get calendar_status_expired;
 
+  /// No description provided for @calendar_cancel_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment cancelled successfully'**
+  String get calendar_cancel_success;
+
+  /// No description provided for @calendar_cancel_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to cancel appointment'**
+  String get calendar_cancel_error;
+
   /// No description provided for @notifications_mark_all_read.
   ///
   /// In en, this message translates to:

@@ -1703,6 +1703,12 @@ class AppLocalizationsTh extends AppLocalizations {
   String get calendar_status_expired => 'เกินกำหนด';
 
   @override
+  String get calendar_cancel_success => 'ยกเลิกนัดหมายสำเร็จ';
+
+  @override
+  String get calendar_cancel_error => 'ไม่สามารถยกเลิกนัดหมายได้';
+
+  @override
   String get notifications_mark_all_read => 'อ่านทั้งหมด';
 
   @override

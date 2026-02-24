@@ -18,12 +18,14 @@ class BookingCard extends StatelessWidget {
   // Additional callbacks will be added later for button actions
   final VoidCallback? onCoAgentTap;
   final Function(int status)? onStatusAction;
+  final VoidCallback? onCancelTap;
 
   const BookingCard({
     super.key,
     required this.booking,
     this.onCoAgentTap,
     this.onStatusAction,
+    this.onCancelTap,
   });
 
   @override
@@ -347,143 +349,59 @@ class BookingCard extends StatelessWidget {
 
   Widget _buildActions(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    // if (booking.status == BookingStatus.pending) {
-    //   return Row(
-    //     children: [
-    //       Expanded(
-    //         child: AppButton(
-    //           height: 32,
-    //           textSize: 12,
-    //           text: 'ยกเลิกนัด',
-    //           style: AppButtonStyle.outline,
-    //           onPressed: () {
-    //             AppConfirmationBottomSheet.show(
-    //               context: context,
-    //               title: 'ยกเลิกนัดหมาย?',
-    //               description: 'คุณต้องการยกเลิกนัดหมายนี้หรือไม่?',
-    //               confirmLabel: 'ยกเลิกนัด',
-    //               style: ConfirmationStyle.destructive,
-    //               onConfirm: () =>
-    //                   onStatusAction?.call(BookingStatus.reject.value),
-    //             );
-    //           },
-    //         ),
-    //       ),
-    //       const SizedBox(width: 8),
-    //       Expanded(
-    //         child: AppButton(
-    //           height: 32,
-    //           textSize: 12,
-    //           text: 'ยืนยันนัด',
-    //           style: AppButtonStyle.primary,
-    //           onPressed: () {
-    //             AppConfirmationBottomSheet.show(
-    //               context: context,
-    //               title: 'ยืนยันนัดหมาย?',
-    //               description: 'คุณต้องการยืนยันนัดหมายนี้หรือไม่?',
-    //               confirmLabel: 'ยืนยัน',
-    //               onConfirm: () =>
-    //                   onStatusAction?.call(BookingStatus.confirm.value),
-    //             );
-    //           },
-    //         ),
-    //       ),
-    //     ],
-    //   );
-    // } else if (booking.status == BookingStatus.confirm) {
-    //   return Column(
-    //     children: [
-    //       AppButton(
-    //         width: double.infinity,
-    //         height: 32,
-    //         textSize: 12,
-    //         text: 'เริ่มเดินทาง',
-    //         style: AppButtonStyle.primary,
-    //         onPressed: () {
-    //           AppConfirmationBottomSheet.show(
-    //             context: context,
-    //             title: 'เริ่มเดินทาง?',
-    //             description: 'คุณกำลังเริ่มเดินทางไปหาลูกค้าใช่หรือไม่?',
-    //             confirmLabel: 'เริ่มเดินทาง',
-    //             onConfirm: () =>
-    //                 onStatusAction?.call(BookingStatus.traveling.value),
-    //           );
-    //         },
-    //       ),
-    //       const SizedBox(height: 8),
-    //       AppButton(
-    //         width: double.infinity,
-    //         height: 32,
-    //         textSize: 12,
-    //         text: 'ยกเลิกนัด',
-    //         style: AppButtonStyle.outline,
-    //         onPressed: () {
-    //           AppConfirmationBottomSheet.show(
-    //             context: context,
-    //             title: 'ยกเลิกนัดหมาย?',
-    //             description: 'คุณต้องการยกเลิกนัดหมายนี้หรือไม่?',
-    //             confirmLabel: 'ยกเลิกนัด',
-    //             style: ConfirmationStyle.destructive,
-    //             onConfirm: () =>
-    //                 onStatusAction?.call(BookingStatus.reject.value),
-    //           );
-    //         },
-    //       ),
-    //     ],
-    //   );
-    // } else if (booking.status == BookingStatus.traveling) {
-    //   return AppButton(
-    //     width: double.infinity,
-    //     height: 32,
-    //     textSize: 12,
-    //     text: 'ถึงแล้ว',
-    //     style: AppButtonStyle.primary,
-    //     onPressed: () {
-    //       AppConfirmationBottomSheet.show(
-    //         context: context,
-    //         title: 'ถึงที่หมาย?',
-    //         description: 'คุณถึงที่หมายแล้วใช่หรือไม่?',
-    //         confirmLabel: 'ถึงแล้ว',
-    //         onConfirm: () => onStatusAction?.call(BookingStatus.arrived.value),
-    //       );
-    //     },
-    //   );
-    // } else if (booking.status == BookingStatus.arrived) {
-    //   return AppButton(
-    //     width: double.infinity,
-    //     height: 32,
-    //     textSize: 12,
-    //     text: 'เสร็จงาน',
-    //     style: AppButtonStyle.primary,
-    //     onPressed: () {
-    //       AppConfirmationBottomSheet.show(
-    //         context: context,
-    //         title: 'เสร็จสิ้นงาน?',
-    //         description: 'คุณดำเนินการเข้าชมบ้านเสร็จสิ้นแล้วใช่หรือไม่?',
-    //         confirmLabel: 'เสร็จงาน',
-    //         onConfirm: () => onStatusAction?.call(BookingStatus.met.value),
-    //       );
-    //     },
-    //   );
-    // }
 
-    if (booking.status == BookingStatus.confirm) {
+    void showCancelConfirm() {
+      AppConfirmationBottomSheet.show(
+        context: context,
+        title: l10n.calendar_confirm_cancel_title,
+        description: l10n.calendar_confirm_cancel_desc,
+        confirmLabel: l10n.calendar_cancel_label,
+        style: ConfirmationStyle.destructive,
+        onConfirm: () => onCancelTap?.call(),
+      );
+    }
+
+    if (booking.status == BookingStatus.pending) {
+      return Row(
+        children: [
+          Expanded(
+            child: AppButton(
+              height: 32,
+              textSize: 12,
+              text: l10n.calendar_cancel_label,
+              style: AppButtonStyle.outline,
+              onPressed: showCancelConfirm,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: AppButton(
+              height: 32,
+              textSize: 12,
+              text: l10n.calendar_confirm_label,
+              style: AppButtonStyle.primary,
+              onPressed: () {
+                AppConfirmationBottomSheet.show(
+                  context: context,
+                  title: l10n.booking_confirm_booking_title,
+                  description: l10n.booking_confirm_booking_desc,
+                  confirmLabel: l10n.calendar_confirm_label,
+                  onConfirm: () =>
+                      onStatusAction?.call(BookingStatus.confirm.value),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    } else if (booking.status == BookingStatus.confirm) {
       return AppButton(
         width: double.infinity,
         height: 32,
         textSize: 12,
         text: l10n.calendar_cancel_label,
         style: AppButtonStyle.outline,
-        onPressed: () {
-          AppConfirmationBottomSheet.show(
-            context: context,
-            title: l10n.calendar_confirm_cancel_title,
-            description: l10n.calendar_confirm_cancel_desc,
-            confirmLabel: l10n.calendar_confirm_label,
-            style: ConfirmationStyle.destructive,
-            onConfirm: () => onStatusAction?.call(2),
-          );
-        },
+        onPressed: showCancelConfirm,
       );
     } else {
       return const SizedBox.shrink();

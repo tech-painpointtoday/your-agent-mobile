@@ -1706,6 +1706,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calendar_status_expired => 'Expired';
 
   @override
+  String get calendar_cancel_success => 'Appointment cancelled successfully';
+
+  @override
+  String get calendar_cancel_error => 'Failed to cancel appointment';
+
+  @override
   String get notifications_mark_all_read => 'Mark all as read';
 
   @override

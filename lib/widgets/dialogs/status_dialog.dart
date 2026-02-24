@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 // ตรวจสอบ path import ให้ตรงกับโปรเจคจริงของคุณ
 import 'base_status_dialog.dart';
@@ -346,33 +345,33 @@ class StatusDialog {
     required Future<T> Function() operation,
     String? message,
   }) async {
-    _showAnimatedDialog(
+    showGeneralDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(width: 20),
-              Flexible(
-                child: Text(
-                  message ?? 'Loading...',
-                  style: GoogleFonts.anuphan(
-                    fontSize: 16,
-                    color: AppColors.baseDarkGrey,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.transparent,
+      transitionDuration: const Duration(milliseconds: 150),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(color: Colors.black.withOpacity(0.25)),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
+            const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            ),
+          ],
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+          child: child,
+        );
+      },
     );
 
     try {

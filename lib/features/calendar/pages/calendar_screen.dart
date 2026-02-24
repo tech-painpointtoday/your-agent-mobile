@@ -127,6 +127,33 @@ class _CalendarScreenState extends State<CalendarScreen>
     }
   }
 
+  Future<void> _cancelBooking(int bookingId) async {
+    try {
+      await StatusDialog.showLoadingWhile(
+        context: context,
+        operation: () =>
+            DependencyInjection.bookingApiService.cancelBooking(bookingId),
+      );
+
+      if (mounted) {
+        StatusDialog.showSuccess(
+          context: context,
+          title: AppLocalizations.of(context).success,
+          message: AppLocalizations.of(context).calendar_cancel_success,
+        );
+        _bookingListBloc.add(const FetchBookings(refresh: true));
+      }
+    } catch (e) {
+      if (mounted) {
+        StatusDialog.showError(
+          context: context,
+          title: AppLocalizations.of(context).error,
+          message: AppLocalizations.of(context).calendar_cancel_error,
+        );
+      }
+    }
+  }
+
   void _showMonthPicker() {
     showModalBottomSheet<void>(
       context: context,
@@ -512,6 +539,8 @@ class _CalendarScreenState extends State<CalendarScreen>
                                         bookings[index].id,
                                         status,
                                       ),
+                                  onCancelTap: () =>
+                                      _cancelBooking(bookings[index].id),
                                   onCoAgentTap: () {},
                                 );
                               },
