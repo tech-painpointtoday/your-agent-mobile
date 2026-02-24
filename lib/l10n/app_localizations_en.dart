@@ -1296,7 +1296,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contracts => 'Contracts';
 
   @override
-  String get availability => 'Availability';
+  String get availability => 'Calendar';
 
   @override
   String get edit_profile => 'Edit Profile';
@@ -1559,7 +1559,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get availability_error => 'An error occurred during the transaction';
 
   @override
-  String get availability_title => 'Availability';
+  String get availability_title => 'Calendar';
 
   @override
   String get availability_subtitle => 'Your available time slots';
@@ -2127,7 +2127,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusDraft => 'Draft';
 
   @override
-  String get continueAddingInfo => 'Continue adding information';
+  String get continueAddingInfo => 'Continue';
 
   @override
   String get statusPending => 'Pending Approval';
@@ -2303,6 +2303,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roomUnit => 'Rooms';
 
   @override
+  String get roomUnitTooltip => 'Your room\'s number';
+
+  @override
   String get parkingUnit => 'Spaces';
 
   @override
@@ -2473,6 +2476,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get builtHint => 'Select built date';
+
+  @override
+  String get builtTooltip => 'When was the property built?';
+
+  @override
+  String get directionTooltip => 'More accurate analysis for compatibility';
 
   @override
   String get propertyColorLabel => 'Property Color';
@@ -3219,7 +3228,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchProperty => 'Search property';
 
   @override
-  String get finance => 'Finance';
+  String get finance => 'Money';
 
   @override
   String get contactListLabel => 'Contact List';
@@ -3778,10 +3787,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get demoActivity => 'Sample Activity';
 
   @override
-  String get electrical_appliances_photos => 'Image';
+  String get electrical_appliances_photos => 'Appliances Photos';
 
   @override
-  String get furniture_photos => 'Image';
+  String get furniture_photos => 'Furniture Photos';
 
   @override
   String get buyerDataNotFound => 'Buyer data not found';
@@ -4009,6 +4018,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addAppliance => 'Add Appliance';
+
+  @override
+  String get addApplianceAndDetails => 'Add appliance items and details';
 
   @override
   String get furnitureConfirm => 'Confirm Furniture';

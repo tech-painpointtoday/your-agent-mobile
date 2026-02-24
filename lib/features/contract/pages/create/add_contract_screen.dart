@@ -243,9 +243,9 @@ class _AddContractView extends StatelessWidget {
       case 3:
         return const BuyerInfoStep();
       case 4:
-        return const ApplianceStep();
+        return ApplianceStep(step: step);
       case 5:
-        return const FurnitureStep();
+        return FurnitureStep(step: step);
       case 6:
         return const PaymentStep();
       case 7:

@@ -22,8 +22,9 @@ import 'package:youragent/core/extensions/l10n_extensions.dart';
 
 class FurnitureStep extends StatefulWidget {
   final bool hideHeader;
+  final int? step;
 
-  const FurnitureStep({super.key, this.hideHeader = false});
+  const FurnitureStep({super.key, this.hideHeader = false, this.step});
 
   @override
   State<FurnitureStep> createState() => _FurnitureStepState();
@@ -178,11 +179,33 @@ class _FurnitureStepState extends State<FurnitureStep> {
                         label: context.l10n.furniture_photos,
                         fontSize: 16,
                       ),
-                      AppBadge(
-                        color: BadgeColor.default_,
-                        label: '${state.step}/8',
-                        fontSize: 16,
-                      ),
+                      if (widget.step != null)
+                        Row(
+                          children: [
+                            AppBadge(
+                              style: BadgeStyle.plain,
+                              color: BadgeColor.default_,
+                              label: context.l10n.skip,
+                              onDismiss: () {
+                                context.read<ContractFormBloc>().add(
+                                  ContractFormStepChanged(widget.step! + 1),
+                                );
+                              },
+                            ),
+                            const SizedBox(width: 8),
+                            AppBadge(
+                              color: BadgeColor.default_,
+                              label: '${widget.step}/8',
+                              fontSize: 16,
+                            ),
+                          ],
+                        )
+                      else
+                        AppBadge(
+                          color: BadgeColor.default_,
+                          label: '${state.step}/8',
+                          fontSize: 16,
+                        ),
                     ],
                   ),
                 if (!widget.hideHeader) const SizedBox(height: 24),

@@ -514,7 +514,9 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       suggestionsCallback: (pattern) async {
         List<T> currentItems() => itemsGetter?.call() ?? items;
 
-        if (currentItems().isEmpty && onFetchNeeded != null && context.mounted) {
+        if (currentItems().isEmpty &&
+            onFetchNeeded != null &&
+            context.mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) onFetchNeeded();
           });
@@ -812,8 +814,10 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         label: AppLocalizations.of(context).projectNameHint,
                         hintText: AppLocalizations.of(context).projectNameHint,
                         items: state.condoProjects,
-                        itemsGetter: () =>
-                            context.read<PropertyFormBloc>().state.condoProjects,
+                        itemsGetter: () => context
+                            .read<PropertyFormBloc>()
+                            .state
+                            .condoProjects,
                         isRequired: isCondoOrApt,
                         fetchingSelector: (s) => s.isFetchingProjects,
                         validator: (value) {
@@ -891,8 +895,10 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                         label: AppLocalizations.of(context).projectNameHint,
                         hintText: AppLocalizations.of(context).projectNameHint,
                         items: state.houseProjects,
-                        itemsGetter: () =>
-                            context.read<PropertyFormBloc>().state.houseProjects,
+                        itemsGetter: () => context
+                            .read<PropertyFormBloc>()
+                            .state
+                            .houseProjects,
                         isRequired: false,
                         fetchingSelector: (s) => s.isFetchingProjects,
                         nameSelector: (p) => isTh ? p.nameTh : p.nameEn,
@@ -1005,6 +1011,28 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                       }
                       return null;
                     },
+                    suffix: Tooltip(
+                      triggerMode: TooltipTriggerMode.tap,
+                      preferBelow: false,
+                      message: AppLocalizations.of(context).roomUnitTooltip,
+                      decoration: BoxDecoration(
+                        color: AppColors.baseBlack,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      textStyle: GoogleFonts.anuphan(
+                        color: AppColors.baseWhite,
+                        fontSize: 12,
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/icons/info.svg',
+                        width: 16,
+                        height: 16,
+                        colorFilter: ColorFilter.mode(
+                          AppColors.baseGrey,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   AppTextFormField(

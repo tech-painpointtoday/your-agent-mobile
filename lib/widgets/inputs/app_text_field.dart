@@ -155,7 +155,7 @@ class _AppTextFieldState extends State<AppTextField> {
             suffixIcon: Padding(
               padding: widget.showScrollbar
                   ? EdgeInsets.only(right: 32)
-                  : EdgeInsets.symmetric(horizontal: 8),
+                  : EdgeInsets.symmetric(horizontal: 16),
               child: _buildSuffixIcon(),
             ),
             prefixIcon: widget.prefix,

@@ -94,7 +94,9 @@ class EditContractMenuScreen extends StatelessWidget {
                   title: isRent
                       ? context.l10n.renterInfo
                       : context.l10n.buyerInfo,
-                  subtitle: context.l10n.dataAddress,
+                  subtitle: isRent
+                      ? context.l10n.renterInfo
+                      : context.l10n.buyerInfo,
                   iconPath: 'assets/icons/user.svg', // Using user icon
                   iconColor: const Color(0xFF7F56D9), // Purple
                   bgColor: const Color(0xFFF9F5FF), // Light Purple
@@ -113,8 +115,8 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: context.l10n.electrical_appliances_photos,
-                  subtitle: context.l10n.addDetails,
+                  title: context.l10n.appliance,
+                  subtitle: context.l10n.addApplianceAndDetails,
                   iconPath: 'assets/icons/television.svg',
                   iconColor: AppColors.supportOrangeDark,
                   bgColor: AppColors.supportOrangeLight,
@@ -124,7 +126,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.appliances,
-                        'title': context.l10n.electrical_appliances_photos,
+                        'title': context.l10n.appliance,
                         'bloc': bloc,
                       },
                     );
@@ -133,7 +135,7 @@ class EditContractMenuScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMenuItem(
                   context,
-                  title: context.l10n.furniture_photos,
+                  title: context.l10n.furnitureTitle,
                   subtitle: context.l10n.addFurnitureDetails,
                   iconPath: 'assets/icons/sofa.svg',
                   iconColor: AppColors.supportRedDark,
@@ -144,7 +146,7 @@ class EditContractMenuScreen extends StatelessWidget {
                       extra: {
                         'contract': contract,
                         'stepType': EditContractStepType.furniture,
-                        'title': context.l10n.furniture_photos,
+                        'title': context.l10n.furnitureTitle,
                         'bloc': bloc,
                       },
                     );

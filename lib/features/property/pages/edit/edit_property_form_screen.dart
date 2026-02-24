@@ -205,7 +205,7 @@ class EditPropertyFormScreen extends StatelessWidget {
           children: [
             Expanded(
               child: AppButton(
-                text: AppLocalizations.of(context).statusCancelled,
+                text: AppLocalizations.of(context).cancel,
                 style: AppButtonStyle.outline,
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -239,9 +239,9 @@ class EditPropertyFormScreen extends StatelessWidget {
                               onConfirm: () {
                                 context.read<PropertyFormBloc>().add(
                                   PropertyFormSubmitted(
-                                    validationErrorMessage:
-                                        AppLocalizations.of(context)
-                                            .pleaseFillAllFields,
+                                    validationErrorMessage: AppLocalizations.of(
+                                      context,
+                                    ).pleaseFillAllFields,
                                   ),
                                 );
                               },

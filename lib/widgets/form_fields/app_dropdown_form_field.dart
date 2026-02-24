@@ -5,6 +5,7 @@ import '../inputs/app_dropdown.dart';
 
 class AppDropdownFormField<T> extends StatelessWidget {
   final String label;
+  final String? subLabel;
   final T? value;
   final String hint;
   final List<T> items;
@@ -16,6 +17,7 @@ class AppDropdownFormField<T> extends StatelessWidget {
   const AppDropdownFormField({
     super.key,
     required this.label,
+    this.subLabel,
     required this.value,
     required this.hint,
     required this.items,
@@ -40,6 +42,17 @@ class AppDropdownFormField<T> extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
               children: [
+                if (subLabel != null && subLabel!.isNotEmpty) ...[
+                  const TextSpan(text: ' '),
+                  TextSpan(
+                    text: subLabel,
+                    style: GoogleFonts.anuphan(
+                      color: AppColors.baseGrey,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
                 if (isRequired)
                   TextSpan(
                     text: ' *',

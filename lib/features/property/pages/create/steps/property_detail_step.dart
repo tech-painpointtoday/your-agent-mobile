@@ -67,40 +67,28 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
       final raw = _priceController.text.replaceAll(',', '').trim();
       final value = raw.isEmpty ? 0.0 : (double.tryParse(raw) ?? 0.0);
       context.read<PropertyFormBloc>().add(
-        PropertyFormDataUpdated(
-          key: 'price',
-          value: value,
-        ),
+        PropertyFormDataUpdated(key: 'price', value: value),
       );
     });
     _monthlyRentalPriceController.addListener(() {
       final raw = _monthlyRentalPriceController.text.replaceAll(',', '').trim();
       final value = raw.isEmpty ? 0.0 : (double.tryParse(raw) ?? 0.0);
       context.read<PropertyFormBloc>().add(
-        PropertyFormDataUpdated(
-          key: 'monthly_rental_price',
-          value: value,
-        ),
+        PropertyFormDataUpdated(key: 'monthly_rental_price', value: value),
       );
     });
     _landSizeController.addListener(() {
       final raw = _landSizeController.text.trim();
       final value = raw.isEmpty ? 0.0 : (double.tryParse(raw) ?? 0.0);
       context.read<PropertyFormBloc>().add(
-        PropertyFormDataUpdated(
-          key: 'land_size',
-          value: value,
-        ),
+        PropertyFormDataUpdated(key: 'land_size', value: value),
       );
     });
     _buildingSizeController.addListener(() {
       final raw = _buildingSizeController.text.trim();
       final value = raw.isEmpty ? 0.0 : (double.tryParse(raw) ?? 0.0);
       context.read<PropertyFormBloc>().add(
-        PropertyFormDataUpdated(
-          key: 'building_size',
-          value: value,
-        ),
+        PropertyFormDataUpdated(key: 'building_size', value: value),
       );
     });
   }
@@ -362,7 +350,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
                 // Construction Date (Built)
                 AppTextFormField(
-                  label: AppLocalizations.of(context).builtLabel,
+                  label: '${AppLocalizations.of(context).builtLabel} ✦',
                   controller: _builtController,
                   isRequired: true,
                   readOnly: false,
@@ -374,10 +362,20 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                     }
                     return null;
                   },
-                  suffix: Padding(
-                    padding: const EdgeInsets.all(16),
+                  suffix: Tooltip(
+                    triggerMode: TooltipTriggerMode.tap,
+                    preferBelow: false,
+                    message: AppLocalizations.of(context).builtTooltip,
+                    decoration: BoxDecoration(
+                      color: AppColors.baseBlack,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    textStyle: GoogleFonts.anuphan(
+                      color: AppColors.baseWhite,
+                      fontSize: 12,
+                    ),
                     child: SvgPicture.asset(
-                      'assets/icons/calendar.svg',
+                      'assets/icons/info.svg',
                       width: 16,
                       height: 16,
                       colorFilter: ColorFilter.mode(
@@ -405,7 +403,7 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
                 // Property Color (Asset Color) - Updated to use AppDropdownFormField
                 AppDropdownFormField<PropertyColor>(
-                  label: AppLocalizations.of(context).propertyColor,
+                  label: '${AppLocalizations.of(context).propertyColor} ✦',
                   value: state.houseColor,
                   isRequired: true,
                   hint: AppLocalizations.of(context).propertyColorHint,
@@ -540,7 +538,10 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
 
                 // Direction - Updated to use AppDropdownFormField
                 AppDropdownFormField<PropertyDirection>(
-                  label: AppLocalizations.of(context).propertyDirectionLabel,
+                  label:
+                      '${AppLocalizations.of(context).propertyDirectionLabel} ✦',
+                  subLabel:
+                      '( ${AppLocalizations.of(context).directionTooltip} )',
                   value: state.direction,
                   hint: AppLocalizations.of(context).propertyDirectionHint,
                   items: PropertyDirection.values,

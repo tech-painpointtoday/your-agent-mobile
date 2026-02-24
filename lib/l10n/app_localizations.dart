@@ -2603,7 +2603,7 @@ abstract class AppLocalizations {
   /// No description provided for @availability.
   ///
   /// In en, this message translates to:
-  /// **'Availability'**
+  /// **'Calendar'**
   String get availability;
 
   /// No description provided for @edit_profile.
@@ -3107,7 +3107,7 @@ abstract class AppLocalizations {
   /// No description provided for @availability_title.
   ///
   /// In en, this message translates to:
-  /// **'Availability'**
+  /// **'Calendar'**
   String get availability_title;
 
   /// No description provided for @availability_subtitle.
@@ -4193,7 +4193,7 @@ abstract class AppLocalizations {
   /// No description provided for @continueAddingInfo.
   ///
   /// In en, this message translates to:
-  /// **'Continue adding information'**
+  /// **'Continue'**
   String get continueAddingInfo;
 
   /// No description provided for @statusPending.
@@ -4538,6 +4538,12 @@ abstract class AppLocalizations {
   /// **'Rooms'**
   String get roomUnit;
 
+  /// No description provided for @roomUnitTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Your room\'s number'**
+  String get roomUnitTooltip;
+
   /// No description provided for @parkingUnit.
   ///
   /// In en, this message translates to:
@@ -4879,6 +4885,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select built date'**
   String get builtHint;
+
+  /// No description provided for @builtTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'When was the property built?'**
+  String get builtTooltip;
+
+  /// No description provided for @directionTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'More accurate analysis for compatibility'**
+  String get directionTooltip;
 
   /// No description provided for @propertyColorLabel.
   ///
@@ -6299,7 +6317,7 @@ abstract class AppLocalizations {
   /// No description provided for @finance.
   ///
   /// In en, this message translates to:
-  /// **'Finance'**
+  /// **'Money'**
   String get finance;
 
   /// No description provided for @contactListLabel.
@@ -7373,13 +7391,13 @@ abstract class AppLocalizations {
   /// No description provided for @electrical_appliances_photos.
   ///
   /// In en, this message translates to:
-  /// **'Image'**
+  /// **'Appliances Photos'**
   String get electrical_appliances_photos;
 
   /// No description provided for @furniture_photos.
   ///
   /// In en, this message translates to:
-  /// **'Image'**
+  /// **'Furniture Photos'**
   String get furniture_photos;
 
   /// No description provided for @buyerDataNotFound.
@@ -7801,6 +7819,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add Appliance'**
   String get addAppliance;
+
+  /// No description provided for @addApplianceAndDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Add appliance items and details'**
+  String get addApplianceAndDetails;
 
   /// No description provided for @furnitureConfirm.
   ///

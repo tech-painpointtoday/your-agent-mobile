@@ -6,12 +6,12 @@ import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/backgrounds/blue_wave_background.dart';
-import 'package:youragent/widgets/app_coming_soon_placeholder.dart';
 
 import '../widgets/money_property_card.dart';
 import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
 import 'payment_detail_screen.dart';
 import 'payment_receipt_screen.dart';
+import 'package:youragent/core/enums/thai_month.dart';
 
 class MoneyScreen extends StatefulWidget {
   const MoneyScreen({super.key});
@@ -28,6 +28,10 @@ class _MoneyScreenState extends State<MoneyScreen>
   double _appBarOpacity = 0.0;
   final double _fadeThreshold = 100.0;
 
+  // History month selector state
+  late List<DateTime> _historyMonths;
+  late DateTime _selectedHistoryMonth;
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +44,12 @@ class _MoneyScreenState extends State<MoneyScreen>
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
     _searchController = TextEditingController();
+
+    final now = DateTime.now();
+    _historyMonths = List.generate(12, (i) {
+      return DateTime(now.year, now.month - i, 1);
+    });
+    _selectedHistoryMonth = _historyMonths.first;
   }
 
   @override
@@ -76,70 +86,31 @@ class _MoneyScreenState extends State<MoneyScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final double headerHeight = constraints.maxHeight * 0.38;
-
-          return Stack(
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: headerHeight,
-                child: const BlueWaveBackground(),
-              ),
-              SafeArea(child: Center(child: const AppComingSoonPlaceholder())),
-              Positioned(
-                top: kToolbarHeight,
-                left: 16,
-                child: IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icons/chevron-left.svg',
-                    width: 24,
-                    height: 24,
-                    fit: BoxFit.contain,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.white,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
-            ],
-          );
+      backgroundColor: Colors.white,
+      body: NestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [_buildSliverAppBar()];
         },
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 32),
+              child: _buildCollectionSection(context),
+            ),
+            SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 32),
+              child: _buildOverdueSection(context),
+            ),
+            SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 32),
+              child: _buildHistorySection(context),
+            ),
+          ],
+        ),
       ),
     );
-
-    // return Scaffold(
-    //   backgroundColor: Colors.white,
-    //   body: NestedScrollView(
-    //     controller: _scrollController,
-    //     headerSliverBuilder: (context, innerBoxIsScrolled) {
-    //       return [_buildSliverAppBar()];
-    //     },
-    //     body: TabBarView(
-    //       controller: _tabController,
-    //       children: [
-    //         SingleChildScrollView(
-    //           padding: const EdgeInsets.only(bottom: 32),
-    //           child: _buildCollectionSection(context),
-    //         ),
-    //         SingleChildScrollView(
-    //           padding: const EdgeInsets.only(bottom: 32),
-    //           child: _buildOverdueSection(context),
-    //         ),
-    //         SingleChildScrollView(
-    //           padding: const EdgeInsets.only(bottom: 32),
-    //           child: _buildHistorySection(context),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 
   Widget _buildSliverAppBar() {
@@ -627,9 +598,9 @@ class _MoneyScreenState extends State<MoneyScreen>
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'รายการที่ชำระแล้วทั้งหมด 5 รายการ',
-                  style: TextStyle(
+                Text(
+                  'รายการที่ชำระแล้วทั้งหมด ${2} รายการ',
+                  style: const TextStyle(
                     color: Color(0xFF737373),
                     fontSize: 12,
                     fontFamily: 'Anuphan',
@@ -639,35 +610,45 @@ class _MoneyScreenState extends State<MoneyScreen>
               ],
             ),
           ),
-          const SizedBox(height: 16),
           // Month Selector
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(width: 1, color: Color(0xFFE9EAEB)),
-                  borderRadius: BorderRadius.circular(12),
+            child: GestureDetector(
+              onTap: _showMonthPicker,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
                 ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'มกราคม 2569',
-                    style: GoogleFonts.anuphan(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFF181D27),
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(width: 1, color: Color(0xFFE9EAEB)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      ThaiMonth.fromDateTime(
+                        _selectedHistoryMonth,
+                      ).localizedNameWithYear(
+                        context,
+                        _selectedHistoryMonth.year,
+                      ),
+                      style: GoogleFonts.anuphan(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF181D27),
+                      ),
                     ),
-                  ),
-                  const Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Color(0xFF717680),
-                  ),
-                ],
+                    const Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Color(0xFF717680),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -739,6 +720,109 @@ class _MoneyScreenState extends State<MoneyScreen>
           ),
         ],
       ),
+    );
+  }
+
+  void _showMonthPicker() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE9EAEB),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  AppLocalizations.of(context).calendar_select_month,
+                  style: GoogleFonts.anuphan(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.baseBlack,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _historyMonths.length,
+                  itemBuilder: (ctx, i) {
+                    final monthDate = _historyMonths[i];
+                    final isSelected = monthDate == _selectedHistoryMonth;
+                    final thaiMonth = ThaiMonth.fromDateTime(monthDate);
+                    return InkWell(
+                      onTap: () {
+                        setState(() => _selectedHistoryMonth = monthDate);
+                        Navigator.pop(ctx);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.supportBlueLight
+                              : Colors.transparent,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              thaiMonth.localizedNameWithYear(
+                                context,
+                                monthDate.year,
+                              ),
+                              style: GoogleFonts.anuphan(
+                                fontSize: 15,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
+                                color: isSelected
+                                    ? AppColors.supportBlueDeep
+                                    : AppColors.baseBlack,
+                              ),
+                            ),
+                            if (isSelected)
+                              const Icon(
+                                Icons.check_rounded,
+                                size: 18,
+                                color: AppColors.supportBlueDeep,
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
     );
   }
 }

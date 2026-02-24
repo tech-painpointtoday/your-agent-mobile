@@ -2300,6 +2300,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get roomUnit => 'ห้อง';
 
   @override
+  String get roomUnitTooltip => 'ห้องของคุณอยู่ชั้นที่เท่าไหร่';
+
+  @override
   String get parkingUnit => 'ที่';
 
   @override
@@ -2469,6 +2472,12 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get builtHint => 'เลือกวันที่สร้าง';
+
+  @override
+  String get builtTooltip => 'ทรัพย์นี้สร้างเสร็จสมบูรณ์เมื่อไหร่?';
+
+  @override
+  String get directionTooltip => 'วิเคราะห์ฮวงจุ้ยได้แม่นยำขึ้น';
 
   @override
   String get propertyColorLabel => 'สีทรัพย์';
@@ -4019,6 +4028,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get addAppliance => 'เพิ่มเครื่องใช้ไฟฟ้า';
+
+  @override
+  String get addApplianceAndDetails => 'เพิ่มเครื่องใช้ไฟฟ้าและรายละเอียด';
 
   @override
   String get furnitureConfirm => 'ยืนยันเฟอร์นิเจอร์';
