@@ -29,17 +29,28 @@ class CalendarAvailabilitySection extends StatefulWidget {
 class _CalendarAvailabilitySectionState
     extends State<CalendarAvailabilitySection> {
   _ViewMode _viewMode = _ViewMode.list;
-  int _selectedHistoryMonthIndex = DateTime.now().month - 1;
 
   // Calendar state — default to today
-  late DateTime _focusedMonth = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-  );
-  late DateTime _selectedDay = DateTime.now();
+  late DateTime _focusedMonth;
+  late DateTime _selectedDay;
   // Continuous drag height — 1 row = 36 px (30 cell + 3*2 margin)
   static const double _kRowHeight = 36.0;
   double _calendarGridHeight = _kRowHeight; // start collapsed (1 row)
+
+  late List<DateTime> _historyMonths;
+  late DateTime _selectedMonth;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _selectedDay = now;
+    _historyMonths = List.generate(12, (i) {
+      return DateTime(now.year, now.month - i, 1);
+    });
+    _selectedMonth = _historyMonths.first;
+    _focusedMonth = _selectedMonth;
+  }
 
   @override
   void dispose() {
@@ -271,18 +282,26 @@ class _CalendarAvailabilitySectionState
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  ThaiMonth.values[_selectedHistoryMonthIndex]
-                                      .localizedName(context),
+                                  ThaiMonth.fromDateTime(
+                                    _selectedMonth,
+                                  ).localizedNameWithYear(
+                                    context,
+                                    _selectedMonth.year,
+                                  ),
                                   style: GoogleFonts.anuphan(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400,
                                     color: AppColors.baseBlack,
                                   ),
                                 ),
-                                const Icon(
-                                  Icons.keyboard_arrow_down_rounded,
-                                  size: 20,
-                                  color: AppColors.baseDarkGrey,
+                                SvgPicture.asset(
+                                  'assets/icons/chevron-down.svg',
+                                  width: 20,
+                                  height: 20,
+                                  colorFilter: const ColorFilter.mode(
+                                    AppColors.baseDarkGrey,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ],
                             ),
@@ -463,12 +482,21 @@ class _CalendarAvailabilitySectionState
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: ThaiMonth.values.length,
+                  itemCount: _historyMonths.length,
                   itemBuilder: (ctx, i) {
-                    final isSelected = i == _selectedHistoryMonthIndex;
+                    final monthDate = _historyMonths[i];
+                    final isSelected =
+                        monthDate.year == _selectedMonth.year &&
+                        monthDate.month == _selectedMonth.month;
                     return InkWell(
                       onTap: () {
-                        setState(() => _selectedHistoryMonthIndex = i);
+                        setState(() {
+                          _selectedMonth = monthDate;
+                          _focusedMonth = monthDate;
+                        });
+                        context.read<AvailabilityBloc>().add(
+                          FetchAvailability(date: monthDate),
+                        );
                         Navigator.pop(ctx);
                       },
                       child: Container(
@@ -485,7 +513,9 @@ class _CalendarAvailabilitySectionState
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              ThaiMonth.values[i].localizedName(ctx),
+                              ThaiMonth.fromDateTime(
+                                monthDate,
+                              ).localizedNameWithYear(context, monthDate.year),
                               style: GoogleFonts.anuphan(
                                 fontSize: 15,
                                 fontWeight: isSelected
