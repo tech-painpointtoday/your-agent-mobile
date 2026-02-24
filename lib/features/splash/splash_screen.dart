@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 
@@ -86,10 +87,10 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             const SizedBox(height: 32),
-            // Circular Progress Indicator
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-              strokeWidth: 3,
+            // Loading spinner
+            SpinKitFadingCircle(
+              color: AppColors.primary,
+              size: 36,
             ),
           ],
         ),

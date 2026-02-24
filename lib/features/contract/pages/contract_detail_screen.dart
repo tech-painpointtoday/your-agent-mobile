@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -173,7 +174,12 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
                         _buildBottomActions(context, effectiveState),
                       ] else
                         const Expanded(
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Center(
+                            child: SpinKitFadingCircle(
+                              color: AppColors.primary,
+                              size: 32,
+                            ),
+                          ),
                         ),
                     ],
                   ),
@@ -424,7 +430,10 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(),
+            const SpinKitFadingCircle(
+              color: AppColors.primary,
+              size: 32,
+            ),
             const SizedBox(height: 16),
             Text(
               context.l10n.loadingPdf,
@@ -444,7 +453,10 @@ class _ContractDetailScreenState extends State<ContractDetailScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(),
+            const SpinKitFadingCircle(
+              color: AppColors.primary,
+              size: 32,
+            ),
             const SizedBox(height: 16),
             Text(
               context.l10n.preparingPdf,

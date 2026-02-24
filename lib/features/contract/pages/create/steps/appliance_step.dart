@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
@@ -325,10 +326,9 @@ class _PropertyPhotoSelectionSheet extends StatelessWidget {
                           Container(
                             color: Colors.grey[200],
                             padding: const EdgeInsets.all(32),
-                            child: CircularProgressIndicator(
-                              value: progress.progress,
-                              strokeWidth: 2,
+                            child: const SpinKitFadingCircle(
                               color: AppColors.primary,
+                              size: 24,
                             ),
                           ),
                       errorWidget: (context, url, error) => Container(
@@ -716,12 +716,13 @@ class _ApplianceItemCardState extends State<_ApplianceItemCard> {
                           ? CachedNetworkImage(
                               imageUrl: path,
                               fit: BoxFit.cover,
-                              progressIndicatorBuilder:
-                                  (context, url, progress) => Center(
-                                    child: CircularProgressIndicator(
-                                      value: progress.progress,
-                                    ),
-                                  ),
+                      progressIndicatorBuilder:
+                          (context, url, progress) => const Center(
+                            child: SpinKitFadingCircle(
+                              color: AppColors.primary,
+                              size: 24,
+                            ),
+                          ),
                               errorWidget: (context, url, error) => Container(
                                 color: Colors.grey[200],
                                 child: const Icon(

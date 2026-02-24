@@ -96,76 +96,76 @@ class NotificationListItem extends StatelessWidget {
           ),
         ],
       ),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: AppColors.baseLightGrey, width: 1),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.baseBlack.withOpacity(0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Type indicator circle
-              Container(
-                width: 8,
-                height: 8,
-                margin: const EdgeInsets.only(top: 6, right: 12),
-                decoration: BoxDecoration(
-                  color: NotificationColors.getPrimaryColor(notification.type),
-                  shape: BoxShape.circle,
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      notification.title,
-                      style: GoogleFonts.anuphan(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        notification.title,
+                        style: GoogleFonts.anuphan(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      notification.message,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.anuphan(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.baseDarkGrey,
-                        height: 1.4,
+                      const SizedBox(height: 4),
+                      Text(
+                        notification.message,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.anuphan(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.baseDarkGrey,
+                          height: 1.4,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      _formatTimestamp(context, notification.timestamp),
-                      style: GoogleFonts.anuphan(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.baseDarkGrey,
+                      const SizedBox(height: 6),
+                      Text(
+                        _formatTimestamp(context, notification.timestamp),
+                        style: GoogleFonts.anuphan(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.baseDarkGrey,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              if (!notification.isRead)
-                Container(
-                  width: 8,
-                  height: 8,
-                  margin: const EdgeInsets.only(top: 4),
-                  decoration: const BoxDecoration(
-                    color: AppColors.supportRedDeep,
-                    shape: BoxShape.circle,
+                    ],
                   ),
                 ),
-            ],
+                const SizedBox(width: 12),
+                if (!notification.isRead)
+                  Container(
+                    width: 8,
+                    height: 8,
+                    margin: const EdgeInsets.only(top: 4),
+                    decoration: const BoxDecoration(
+                      color: AppColors.supportRedDeep,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

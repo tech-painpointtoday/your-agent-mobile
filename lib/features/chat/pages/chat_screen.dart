@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -358,7 +359,10 @@ class _ConversationList extends StatelessWidget {
           return const Center(
             child: Padding(
               padding: EdgeInsets.all(32.0),
-              child: CircularProgressIndicator(color: AppColors.primary),
+              child: SpinKitFadingCircle(
+                color: AppColors.primary,
+                size: 32,
+              ),
             ),
           );
         }
@@ -435,9 +439,9 @@ class _ConversationList extends StatelessWidget {
                     child: SizedBox(
                       width: 24,
                       height: 24,
-                      child: CircularProgressIndicator(
+                      child: SpinKitFadingCircle(
                         color: AppColors.primary,
-                        strokeWidth: 2,
+                        size: 24,
                       ),
                     ),
                   ),

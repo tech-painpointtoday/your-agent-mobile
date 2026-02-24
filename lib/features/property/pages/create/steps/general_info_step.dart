@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -560,7 +561,10 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       loadingBuilder: (context) => const Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: CircularProgressIndicator(),
+          child: SpinKitFadingCircle(
+            color: AppColors.primary,
+            size: 24,
+          ),
         ),
       ),
       emptyBuilder: (context) {

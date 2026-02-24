@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
@@ -157,7 +158,12 @@ class _PropertyScreenState extends State<PropertyScreen> {
     List<Property> filteredProperties,
   ) {
     if (state.status == PropertyListStatus.initial) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: SpinKitFadingCircle(
+          color: AppColors.primary,
+          size: 32,
+        ),
+      );
     }
 
     if (state.status == PropertyListStatus.failure) {

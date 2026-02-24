@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:youragent/domain/entities/property.dart';
@@ -59,10 +60,10 @@ class PropertyListItem extends StatelessWidget {
                   width: 70,
                   height: 70,
                   color: AppColors.basePaleGrey,
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
+                  child: Center(
+                    child: SpinKitFadingCircle(
                       color: AppColors.baseGrey,
+                      size: 20,
                     ),
                   ),
                 ),

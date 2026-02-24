@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -222,7 +223,12 @@ class _AddContractView extends StatelessWidget {
                   children: [
                     _buildStepBody(state.step),
                     if (state.status == ContractFormStatus.loading)
-                      const Center(child: CircularProgressIndicator()),
+                      const Center(
+                        child: SpinKitFadingCircle(
+                          color: AppColors.primary,
+                          size: 32,
+                        ),
+                      ),
                   ],
                 );
               },

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -201,8 +202,9 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
                       builder: (context, state) {
                         if (state is MessageLoading) {
                           return const Center(
-                            child: CircularProgressIndicator(
+                            child: SpinKitFadingCircle(
                               color: AppColors.primary,
+                              size: 32,
                             ),
                           );
                         }
@@ -696,12 +698,12 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                   ),
                   child: isSending
-                      ? Center(
-                          child: const Padding(
+                      ? const Center(
+                          child: Padding(
                             padding: EdgeInsets.all(12.0),
-                            child: CircularProgressIndicator(
+                            child: SpinKitFadingCircle(
                               color: Colors.white,
-                              strokeWidth: 2,
+                              size: 20,
                             ),
                           ),
                         )
@@ -976,7 +978,12 @@ class _ChatBubble extends StatelessWidget {
           placeholder: (context, url) => Container(
             height: 200,
             color: AppColors.basePaleGrey,
-            child: const Center(child: CircularProgressIndicator()),
+            child: const Center(
+              child: SpinKitFadingCircle(
+                color: AppColors.primary,
+                size: 32,
+              ),
+            ),
           ),
           errorWidget: (context, url, error) => const Icon(Icons.error),
         ),

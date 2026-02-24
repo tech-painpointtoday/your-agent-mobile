@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 
@@ -137,13 +138,11 @@ class _ImageModalState extends State<ImageModal> {
                                     placeholder: (context, url) => Container(
                                       color: const Color(0xFFF5F5F5),
                                       child: Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                Theme.of(
-                                                  context,
-                                                ).colorScheme.primary,
-                                              ),
+                                        child: SpinKitFadingCircle(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                          size: 32,
                                         ),
                                       ),
                                     ),
@@ -253,21 +252,19 @@ class _ImageModalState extends State<ImageModal> {
                                         child: CachedNetworkImage(
                                           imageUrl: widget.images[index],
                                           fit: BoxFit.cover,
-                                          placeholder: (context, url) => Container(
-                                            color: const Color(0xFFF5F5F5),
-                                            child: Center(
-                                              child: CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                      Color
-                                                    >(
-                                                      Theme.of(
+                                            placeholder: (context, url) =>
+                                                Container(
+                                                  color: const Color(0xFFF5F5F5),
+                                                  child: Center(
+                                                    child:
+                                                        SpinKitFadingCircle(
+                                                      color: Theme.of(
                                                         context,
                                                       ).colorScheme.primary,
+                                                      size: 24,
                                                     ),
-                                              ),
-                                            ),
-                                          ),
+                                                  ),
+                                                ),
                                           errorWidget: (context, url, error) =>
                                               Container(
                                                 color: const Color(0xFFF5F5F5),

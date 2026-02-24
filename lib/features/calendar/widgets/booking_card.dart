@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -217,7 +218,12 @@ class BookingCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Center(child: CircularProgressIndicator()),
+            child: const Center(
+              child: SpinKitFadingCircle(
+                color: AppColors.primary,
+                size: 24,
+              ),
+            ),
           ),
           errorWidget: (context, url, error) => Container(
             width: 70,

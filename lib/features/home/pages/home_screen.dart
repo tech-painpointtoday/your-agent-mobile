@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youragent/widgets/app_coming_soon_placeholder.dart';
@@ -610,9 +611,9 @@ class _RecommendedSectionState extends State<RecommendedSection> {
                     placeholder: (context, url) => Container(
                       color: AppColors.basePaleGrey,
                       child: const Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
+                        child: SpinKitFadingCircle(
                           color: AppColors.primary,
+                          size: 24,
                         ),
                       ),
                     ),

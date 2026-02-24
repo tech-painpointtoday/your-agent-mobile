@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:youragent/core/theme/app_colors.dart';
@@ -236,12 +237,10 @@ class _MapViewState extends State<MapView> {
                     color: AppColors.basePaleGrey,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.primary,
-                      ),
+                  child: Center(
+                    child: SpinKitFadingCircle(
+                      color: AppColors.primary,
+                      size: 32,
                     ),
                   ),
                 );

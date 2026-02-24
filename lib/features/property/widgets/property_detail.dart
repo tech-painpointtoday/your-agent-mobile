@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/property.dart';
-import 'package:intl/intl.dart';
-import 'package:youragent/features/property/pages/expandable_description.dart';
-import 'package:youragent/widgets/map/fullscreen_map_screen.dart';
-import 'package:youragent/utils/app_utils.dart';
-import '../widgets/property_image_carousel.dart';
-import '../widgets/property_detail_section.dart';
-import '../widgets/property_status_badge.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_bloc.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_event.dart';
 import 'package:youragent/features/property/bloc/property_metadata/property_metadata_state.dart';
-import 'package:youragent/widgets/map/map_view.dart';
+import 'package:youragent/features/property/pages/expandable_description.dart';
+import 'package:youragent/features/property/widgets/property_detail_section.dart';
+import 'package:youragent/features/property/widgets/property_image_carousel.dart';
+import 'package:youragent/features/property/widgets/property_status_badge.dart';
 import 'package:youragent/l10n/app_localizations.dart';
-
-import 'package:go_router/go_router.dart';
+import 'package:youragent/utils/app_utils.dart';
+import 'package:youragent/widgets/map/fullscreen_map_screen.dart';
+import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
+import 'package:go_router/go_router.dart';
 
 const double carouselHeight = 280;
 const double overlap = 40;
@@ -530,7 +530,9 @@ class _PropertyDetailState extends State<PropertyDetail> {
       return [
         const Padding(
           padding: EdgeInsets.only(top: 24),
-          child: Center(child: CircularProgressIndicator()),
+          child: Center(
+            child: SpinKitFadingCircle(color: AppColors.primary, size: 24),
+          ),
         ),
       ];
     }

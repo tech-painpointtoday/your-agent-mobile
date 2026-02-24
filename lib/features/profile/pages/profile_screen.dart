@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -91,7 +92,10 @@ class ProfileView extends StatelessWidget {
         if (state is ProfileLoading) {
           return const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+              child: SpinKitFadingCircle(
+                color: AppColors.primary,
+                size: 32,
+              ),
             ),
           );
         }

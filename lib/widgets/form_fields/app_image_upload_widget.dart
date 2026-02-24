@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -164,10 +165,9 @@ class AppImageUploadWidget extends StatelessWidget {
                   placeholder: (context, url) => Container(
                     color: AppColors.basePaleGrey,
                     child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Theme.of(context).colorScheme.primary,
-                        ),
+                      child: SpinKitFadingCircle(
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 24,
                       ),
                     ),
                   ),

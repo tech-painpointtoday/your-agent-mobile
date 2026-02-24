@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -306,11 +307,9 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
                   return Container(
                     color: AppColors.basePaleGrey,
                     child: const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.primary,
-                        ),
+                      child: SpinKitFadingCircle(
+                        color: AppColors.primary,
+                        size: 32,
                       ),
                     ),
                   );
@@ -472,10 +471,10 @@ class _FullscreenMapScreenState extends State<FullscreenMapScreen> {
                                             fit: BoxFit.cover,
                                             placeholder: (context, url) =>
                                                 const Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                      ),
+                                                  child: SpinKitFadingCircle(
+                                                    color: AppColors.primary,
+                                                    size: 20,
+                                                  ),
                                                 ),
                                             errorWidget:
                                                 (

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:printing/printing.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -198,7 +199,10 @@ class ContractPdfPreviewPage extends StatelessWidget {
                     initialPageFormat: null,
                     pdfFileName: 'Contract_${state.contractId ?? "Draft"}.pdf',
                     loadingWidget: const Center(
-                      child: CircularProgressIndicator(),
+                      child: SpinKitFadingCircle(
+                        color: AppColors.primary,
+                        size: 32,
+                      ),
                     ),
                     onError: (context, error) => Center(
                       child: Text('เกิดข้อผิดพลาดในการสร้าง PDF: $error'),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -109,8 +110,9 @@ class _PropertyImageCarouselState extends State<PropertyImageCarousel> {
                   placeholder: (context, url) => Container(
                     color: AppColors.basePaleGrey,
                     child: const Center(
-                      child: CircularProgressIndicator(
+                      child: SpinKitFadingCircle(
                         color: AppColors.primary,
+                        size: 24,
                       ),
                     ),
                   ),

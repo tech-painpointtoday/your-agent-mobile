@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -460,8 +461,9 @@ class _MapSelectionState extends State<MapSelection> {
                               child: SizedBox(
                                 width: 18,
                                 height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                                child: SpinKitFadingCircle(
+                                  color: AppColors.primary,
+                                  size: 18,
                                 ),
                               ),
                             ),
@@ -518,7 +520,10 @@ class _MapSelectionState extends State<MapSelection> {
             SizedBox(
               width: 16,
               height: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child: SpinKitFadingCircle(
+                color: AppColors.primary,
+                size: 16,
+              ),
             ),
             SizedBox(width: 10),
             Text('กำลังค้นหา…'),

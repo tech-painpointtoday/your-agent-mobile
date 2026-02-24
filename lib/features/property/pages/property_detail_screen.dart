@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
@@ -75,7 +76,12 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(backgroundColor: Colors.white, elevation: 0),
-        body: const Center(child: CircularProgressIndicator()),
+        body: const Center(
+          child: SpinKitFadingCircle(
+            color: AppColors.primary,
+            size: 32,
+          ),
+        ),
       );
     }
 

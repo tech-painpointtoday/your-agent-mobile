@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
@@ -134,7 +135,12 @@ class _ContractScreenState extends State<ContractScreen> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => const Center(child: CircularProgressIndicator()),
+      builder: (context) => const Center(
+        child: SpinKitFadingCircle(
+          color: AppColors.primary,
+          size: 32,
+        ),
+      ),
       );
 
       final results = await _propertyApiService.getProperties();
@@ -382,7 +388,12 @@ class _ContractScreenState extends State<ContractScreen> {
     return BlocBuilder<ContractListBloc, ContractListState>(
       builder: (context, state) {
         if (state.status == ContractListStatus.initial) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: SpinKitFadingCircle(
+              color: AppColors.primary,
+              size: 32,
+            ),
+          );
         }
 
         if (state.status == ContractListStatus.failure) {
@@ -441,7 +452,12 @@ class _ContractScreenState extends State<ContractScreen> {
         if (index >= filteredContracts.length) {
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 32),
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(
+              child: SpinKitFadingCircle(
+                color: AppColors.primary,
+                size: 24,
+              ),
+            ),
           );
         }
 

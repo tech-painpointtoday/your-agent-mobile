@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -388,7 +389,12 @@ class _CalendarScreenState extends State<CalendarScreen>
       builder: (context, state) {
         if (state.status == BookingListStatus.initial ||
             state.status == BookingListStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: SpinKitFadingCircle(
+              color: AppColors.primary,
+              size: 32,
+            ),
+          );
         }
 
         if (state.status == BookingListStatus.failure) {
@@ -550,9 +556,9 @@ class _CalendarScreenState extends State<CalendarScreen>
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 24),
                         child: Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
+                          child: SpinKitFadingCircle(
                             color: AppColors.primary,
+                            size: 24,
                           ),
                         ),
                       ),
@@ -694,7 +700,10 @@ class _CalendarScreenState extends State<CalendarScreen>
                           ? const Center(
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 32),
-                                child: CircularProgressIndicator(),
+                                child: SpinKitFadingCircle(
+                                  color: AppColors.primary,
+                                  size: 32,
+                                ),
                               ),
                             )
                           : state.status == BookingListStatus.failure
@@ -799,9 +808,9 @@ class _CalendarScreenState extends State<CalendarScreen>
                                   const Padding(
                                     padding: EdgeInsets.symmetric(vertical: 24),
                                     child: Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 3,
+                                      child: SpinKitFadingCircle(
                                         color: AppColors.primary,
+                                        size: 24,
                                       ),
                                     ),
                                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../core/theme/app_colors.dart';
@@ -146,9 +147,9 @@ class AppButton extends StatelessWidget {
               SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
+                child: SpinKitFadingCircle(
                   color: textCol,
+                  size: 20,
                 ),
               )
             else ...[

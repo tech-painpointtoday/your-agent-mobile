@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
@@ -318,7 +319,12 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
     return BlocBuilder<PropertyListBloc, PropertyListState>(
       builder: (context, state) {
         if (state.status == PropertyListStatus.initial) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: SpinKitFadingCircle(
+              color: AppColors.primary,
+              size: 32,
+            ),
+          );
         }
 
         if (state.status == PropertyListStatus.failure) {
@@ -377,7 +383,12 @@ class _AllPropertiesScreenState extends State<AllPropertiesScreen> {
         if (index >= filteredProperties.length) {
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 32),
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(
+              child: SpinKitFadingCircle(
+                color: AppColors.primary,
+                size: 24,
+              ),
+            ),
           );
         }
 

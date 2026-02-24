@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -200,7 +201,10 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
                       loadingBuilder: (context) => const Center(
                         child: Padding(
                           padding: EdgeInsets.all(16.0),
-                          child: CircularProgressIndicator(),
+                          child: SpinKitFadingCircle(
+                            color: AppColors.primary,
+                            size: 24,
+                          ),
                         ),
                       ),
                       emptyBuilder: (context) {
@@ -208,7 +212,10 @@ class _BuyerInfoStepState extends State<BuyerInfoStep> {
                           return const Center(
                             child: Padding(
                               padding: EdgeInsets.all(16.0),
-                              child: CircularProgressIndicator(),
+                              child: SpinKitFadingCircle(
+                                color: AppColors.primary,
+                                size: 24,
+                              ),
                             ),
                           );
                         }

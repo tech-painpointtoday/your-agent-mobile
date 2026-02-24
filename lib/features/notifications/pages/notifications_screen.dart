@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -82,6 +83,7 @@ class _NotificationsScreenContentState
                   elevation: 0,
                   scrolledUnderElevation: 0,
                   pinned: true,
+                  titleSpacing: 0,
                   leading: IconButton(
                     icon: SvgPicture.asset(
                       'assets/icons/chevron-left.svg',
@@ -103,23 +105,23 @@ class _NotificationsScreenContentState
                     ),
                   ),
                   actions: [
-                    TextButton(
-                      onPressed: hasUnread
-                          ? () => _markAllAsRead(context)
-                          : null,
-                      child: Text(
-                        AppLocalizations.of(
-                          context,
-                        ).notifications_mark_all_read,
-                        style: GoogleFonts.anuphan(
-                          fontSize: 14,
-                          color: hasUnread
-                              ? AppColors.primary
-                              : AppColors.baseGrey,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
+                    // TextButton(
+                    //   onPressed: hasUnread
+                    //       ? () => _markAllAsRead(context)
+                    //       : null,
+                    //   child: Text(
+                    //     AppLocalizations.of(
+                    //       context,
+                    //     ).notifications_mark_all_read,
+                    //     style: GoogleFonts.anuphan(
+                    //       fontSize: 14,
+                    //       color: hasUnread
+                    //           ? AppColors.primary
+                    //           : AppColors.baseGrey,
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(width: 8),
                   ],
                 ),
 
@@ -131,10 +133,6 @@ class _NotificationsScreenContentState
                       color: AppColors.white,
                       child: Column(
                         children: [
-                          const Divider(
-                            height: 1,
-                            color: AppColors.baseLightGrey,
-                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
@@ -199,8 +197,9 @@ class _NotificationsScreenContentState
                 if (state is NotificationLoading)
                   const SliverFillRemaining(
                     child: Center(
-                      child: CircularProgressIndicator(
+                      child: SpinKitFadingCircle(
                         color: AppColors.primary,
+                        size: 32,
                       ),
                     ),
                   )

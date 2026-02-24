@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
@@ -329,7 +330,12 @@ class _CalendarAvailabilitySectionState
                         ),
                         const SizedBox(height: 16),
                         if (state.status == AvailabilityStatus.loading)
-                          const Center(child: CircularProgressIndicator())
+                          const Center(
+                            child: SpinKitFadingCircle(
+                              color: AppColors.primary,
+                              size: 32,
+                            ),
+                          )
                         else if (slotsForSelectedDay.isEmpty)
                           Center(
                             child: Text(
@@ -368,7 +374,12 @@ class _CalendarAvailabilitySectionState
                       if (_viewMode == _ViewMode.list) ...[
                         if (state.status == AvailabilityStatus.loading &&
                             state.times.isEmpty)
-                          const Center(child: CircularProgressIndicator())
+                          const Center(
+                            child: SpinKitFadingCircle(
+                              color: AppColors.primary,
+                              size: 32,
+                            ),
+                          )
                         else if (groupedTimes.isEmpty)
                           Center(
                             child: Padding(
@@ -424,7 +435,12 @@ class _CalendarAvailabilitySectionState
                         if (state.isLoadingMore)
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 16),
-                            child: Center(child: CircularProgressIndicator()),
+                            child: Center(
+                              child: SpinKitFadingCircle(
+                                color: AppColors.primary,
+                                size: 24,
+                              ),
+                            ),
                           ),
                       ],
                     ],

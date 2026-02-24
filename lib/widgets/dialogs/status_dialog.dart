@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 // ตรวจสอบ path import ให้ตรงกับโปรเจคจริงของคุณ
 import 'base_status_dialog.dart';
@@ -322,8 +323,11 @@ class StatusDialog {
               ),
             ),
             // Centered loading spinner
-            const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+            Center(
+              child: SpinKitFadingCircle(
+                color: AppColors.primary,
+                size: 40,
+              ),
             ),
           ],
         );
@@ -360,8 +364,11 @@ class StatusDialog {
                 child: Container(color: Colors.black.withOpacity(0.25)),
               ),
             ),
-            const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+            Center(
+              child: SpinKitFadingCircle(
+                color: AppColors.primary,
+                size: 40,
+              ),
             ),
           ],
         );
