@@ -9,6 +9,7 @@ import 'package:youragent/features/contract/pages/edit/edit_contract_form_screen
 import 'package:youragent/features/contract/pages/edit/edit_contract_menu_screen.dart';
 import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:youragent/features/contract/pages/create/add_contract_screen.dart';
+import 'package:youragent/features/calendar/pages/booking_detail_screen.dart';
 import 'package:youragent/features/home/pages/home_screen.dart';
 import 'package:youragent/features/property/pages/create/create_property_screen.dart';
 import 'package:youragent/features/property/pages/edit/edit_property_form_screen.dart';
@@ -183,6 +184,13 @@ class AppRouter {
         path: '/calendar',
         builder: (context, state) =>
             const MainNavigationScreen(initialIndex: 3),
+      ),
+      GoRoute(
+        path: '/booking/:id',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return BookingDetailScreen(bookingId: id);
+        },
       ),
       GoRoute(
         path: '/contact',

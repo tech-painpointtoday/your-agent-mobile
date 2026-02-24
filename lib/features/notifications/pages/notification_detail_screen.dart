@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../bloc/notification_bloc.dart';
@@ -15,38 +17,29 @@ class NotificationDetailScreen extends StatelessWidget {
 
   const NotificationDetailScreen({super.key, required this.notificationId});
 
-  String _formatTimestamp(DateTime timestamp) {
-    final months = [
-      'มกราคม',
-      'กุมภาพันธ์',
-      'มีนาคม',
-      'เมษายน',
-      'พฤษภาคม',
-      'มิถุนายน',
-      'กรกฎาคม',
-      'สิงหาคม',
-      'กันยายน',
-      'ตุลาคม',
-      'พฤศจิกายน',
-      'ธันวาคม',
-    ];
+  String _formatTimestamp(BuildContext context, DateTime timestamp) {
+    final locale = Localizations.localeOf(context).languageCode;
 
-    final day = timestamp.day;
-    final month = months[timestamp.month - 1];
-    final year = timestamp.year + 543; // Buddhist year
-    final hour = timestamp.hour.toString().padLeft(2, '0');
-    final minute = timestamp.minute.toString().padLeft(2, '0');
-
-    return '$day ${month.substring(0, 3)}. $year, $hour:$minute น.';
+    if (locale == 'th') {
+      final year = timestamp.year + 543;
+      final dateFormat = DateFormat('d MMM', 'th');
+      final timeFormat = DateFormat('HH:mm');
+      return '${dateFormat.format(timestamp)}. $year, ${timeFormat.format(timestamp)} น.';
+    } else {
+      return DateFormat('d MMM yyyy, HH:mm').format(timestamp);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
         backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           icon: SvgPicture.asset(
             'assets/icons/chevron-left.svg',
@@ -61,7 +54,7 @@ class NotificationDetailScreen extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'การแจ้งเตือน',
+          l10n.notifications_title,
           style: GoogleFonts.anuphan(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -80,7 +73,7 @@ class NotificationDetailScreen extends StatelessWidget {
             (n) => n.id == notificationId,
             orElse: () => NotificationModel(
               id: '',
-              title: 'Notification not found',
+              title: l10n.notifications_not_found,
               message: '',
               type: NotificationType.info,
               timestamp: DateTime.now(),
@@ -90,7 +83,7 @@ class NotificationDetailScreen extends StatelessWidget {
           if (notification.id.isEmpty) {
             return Center(
               child: Text(
-                'ไม่พบการแจ้งเตือน',
+                l10n.notifications_not_found,
                 style: GoogleFonts.anuphan(
                   fontSize: 16,
                   color: AppColors.baseDarkGrey,
@@ -151,7 +144,7 @@ class NotificationDetailScreen extends StatelessWidget {
                             const SizedBox(height: 4),
                             // Timestamp
                             Text(
-                              _formatTimestamp(notification.timestamp),
+                              _formatTimestamp(context, notification.timestamp),
                               style: GoogleFonts.anuphan(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,

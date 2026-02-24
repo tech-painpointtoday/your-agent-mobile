@@ -9,6 +9,7 @@ enum BadgeColor {
   red,
   orange,
   green,
+  yellow,
   blue,
   purple,
   pink,
@@ -194,6 +195,8 @@ class _AppBadgeState extends State<AppBadge> {
         return AppColors.supportOrangeLight; // Light orange-yellow
       case BadgeColor.green:
         return AppColors.supportGreenLight; // Light green
+      case BadgeColor.yellow:
+        return Colors.white; // Light yellow
       case BadgeColor.blue:
         return AppColors.supportBlueLight; // Light blue
       case BadgeColor.purple:
@@ -215,6 +218,8 @@ class _AppBadgeState extends State<AppBadge> {
         return AppColors.supportOrangeDark; // Darker orange
       case BadgeColor.green:
         return AppColors.supportGreenDark; // Darker green
+      case BadgeColor.yellow:
+        return Colors.orange; // Darker yellow
       case BadgeColor.blue:
         return AppColors.supportBlueDeep; // Medium blue
       case BadgeColor.purple:

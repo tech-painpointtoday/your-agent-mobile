@@ -9,16 +9,43 @@ class BookingApiService {
   Future<PaginatedBookings> getBookings({
     int page = 1,
     int perPage = 15,
+    String? from,
+    String? to,
+    String? search,
   }) async {
-    final queryParams = <String, dynamic>{'page': page, 'per_page': perPage};
+    final queryParams = <String, dynamic>{
+      'page': page,
+      'per_page': perPage,
+      if (from != null) 'from': from,
+      if (to != null) 'to': to,
+      if (search != null && search.isNotEmpty) 'search': search,
+    };
 
     final response = await _apiClient.dio.get(
       '/agent/bookings',
       queryParameters: queryParams,
     );
 
-    // The API sends {"success": true, "data": [...]}
-    // So response.data is the full JSON object.
     return PaginatedBookings.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<Booking> getBookingById(int id) async {
+    final response = await _apiClient.dio.get('/agent/bookings/$id');
+    final data = response.data['data'] as Map<String, dynamic>;
+    return Booking.fromJson(data);
+  }
+
+  Future<void> updateBookingStatus(int id, int status) async {
+    await _apiClient.dio.patch(
+      '/agent/bookings/$id/status',
+      data: {'status': status},
+    );
+  }
+
+  Future<void> cancelBooking(int id, String reason) async {
+    await _apiClient.dio.post(
+      '/agent/bookings/$id/cancel',
+      data: {'reason': reason},
+    );
   }
 }

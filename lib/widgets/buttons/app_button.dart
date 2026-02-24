@@ -28,6 +28,7 @@ class AppButton extends StatelessWidget {
   final double? width;
   final double? textSize;
   final double elevation;
+  final double iconSpace;
 
   const AppButton({
     super.key,
@@ -48,6 +49,7 @@ class AppButton extends StatelessWidget {
     this.width,
     this.textSize,
     this.elevation = 0,
+    this.iconSpace = 8,
   });
 
   @override
@@ -152,19 +154,21 @@ class AppButton extends StatelessWidget {
             else ...[
               if (icon != null || iconPath != null) ...[
                 if (iconPath != null)
-                  SvgPicture.asset(
-                    iconPath!,
-                    width: iconSize ?? 20,
-                    height: iconSize ?? 20,
-                    fit: BoxFit.scaleDown,
-                    colorFilter: ColorFilter.mode(
-                      textColor ?? AppColors.baseBlack,
-                      BlendMode.srcIn,
+                  Center(
+                    child: SvgPicture.asset(
+                      iconPath!,
+                      width: iconSize ?? 20,
+                      height: iconSize ?? 20,
+                      fit: BoxFit.scaleDown,
+                      colorFilter: ColorFilter.mode(
+                        textColor ?? AppColors.baseBlack,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   )
                 else
                   Icon(icon, size: 20),
-                const SizedBox(width: 8),
+                SizedBox(width: iconSpace),
               ],
               Flexible(
                 child: Text(

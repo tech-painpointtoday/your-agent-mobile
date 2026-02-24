@@ -4,14 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/widgets/app_search_bar.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/features/calendar/widgets/calendar_availability_bottom_sheet.dart';
 import 'package:youragent/features/calendar/bloc/availability/availability_bloc.dart';
 import 'package:youragent/features/calendar/bloc/availability/availability_state.dart';
 import 'package:youragent/features/calendar/bloc/availability/availability_event.dart';
 import 'package:youragent/domain/entities/available_time.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:youragent/core/enums/thai_month.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 enum _ViewMode { list, calendar }
 
@@ -27,7 +29,7 @@ class CalendarAvailabilitySection extends StatefulWidget {
 class _CalendarAvailabilitySectionState
     extends State<CalendarAvailabilitySection> {
   _ViewMode _viewMode = _ViewMode.list;
-  final TextEditingController _searchCtrl = TextEditingController();
+  int _selectedHistoryMonthIndex = DateTime.now().month - 1;
 
   // Calendar state — default to today
   late DateTime _focusedMonth = DateTime(
@@ -41,248 +43,474 @@ class _CalendarAvailabilitySectionState
 
   @override
   void dispose() {
-    _searchCtrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AvailabilityBloc, AvailabilityState>(
-      builder: (context, state) {
-        final groupedTimes = state.groupedTimes;
-        final selectedDayStr = DateFormat('yyyy-MM-dd').format(_selectedDay);
-        final slotsForSelectedDay = groupedTimes[selectedDayStr] ?? [];
+    return BlocListener<AvailabilityBloc, AvailabilityState>(
+      listenWhen: (previous, current) {
+        return (current.action == AvailabilityAction.delete ||
+                current.action == AvailabilityAction.create ||
+                current.action == AvailabilityAction.update) &&
+            previous.status == AvailabilityStatus.loading &&
+            current.status != AvailabilityStatus.loading;
+      },
+      listener: (context, state) {
+        if (state.status == AvailabilityStatus.success) {
+          String? successTitle;
+          if (state.action == AvailabilityAction.delete) {
+            successTitle = AppLocalizations.of(
+              context,
+            ).availability_delete_success;
+          } else if (state.action == AvailabilityAction.create) {
+            successTitle = AppLocalizations.of(
+              context,
+            ).availability_create_success;
+          } else if (state.action == AvailabilityAction.update) {
+            successTitle = AppLocalizations.of(
+              context,
+            ).availability_update_success;
+          }
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 32),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                // ── Header row ──────────────────────────────────────────────
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'ช่วงเวลาว่าง',
-                            style: GoogleFonts.anuphan(
-                              color: const Color(0xFF1743C7),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'ช่วงเวลาว่างของคุณที่พร้อมให้บริการ',
-                            style: GoogleFonts.anuphan(
-                              color: const Color(0xFF737373),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Add button
-                    GestureDetector(
-                      onTap: () {
-                        CalendarAvailabilityBottomSheet.show(
-                          context,
-                          mode: AvailabilityMode.add,
-                          initialDate: _selectedDay,
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: ShapeDecoration(
-                          color: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
+          if (successTitle != null) {
+            StatusDialog.showSuccess(context: context, title: successTitle);
+          }
+        } else if (state.status == AvailabilityStatus.failure) {
+          StatusDialog.showError(
+            context: context,
+            title:
+                state.errorMessage ??
+                AppLocalizations.of(context).availability_error,
+          );
+        }
+      },
+      child: BlocBuilder<AvailabilityBloc, AvailabilityState>(
+        builder: (context, state) {
+          final locale = Localizations.localeOf(context).languageCode;
+          final groupedTimes = state.groupedTimes;
+          final selectedDayStr = DateFormat('yyyy-MM-dd').format(_selectedDay);
+          final slotsForSelectedDay = groupedTimes[selectedDayStr] ?? [];
 
-                // ── View toggle ─────────────────────────────────────────────
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => setState(() => _viewMode = _ViewMode.list),
-                      child: AppBadge(
-                        label: 'มุมมองรายการ',
-                        style: BadgeStyle.plain,
-                        customBackgroundColor: _viewMode == _ViewMode.list
-                            ? AppColors.primary
-                            : Colors.white,
-                        customTextColor: _viewMode == _ViewMode.list
-                            ? AppColors.supportBlueLight
-                            : AppColors.baseDarkGrey,
-                        hasBorder: true,
-                        borderColor: _viewMode == _ViewMode.list
-                            ? AppColors.primary
-                            : AppColors.baseLightGrey,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: () =>
-                          setState(() => _viewMode = _ViewMode.calendar),
-                      child: AppBadge(
-                        label: 'มุมมองปฏิทิน',
-                        style: BadgeStyle.plain,
-                        customBackgroundColor: _viewMode == _ViewMode.calendar
-                            ? AppColors.primary
-                            : Colors.white,
-                        customTextColor: _viewMode == _ViewMode.calendar
-                            ? AppColors.supportBlueLight
-                            : AppColors.baseDarkGrey,
-                        hasBorder: true,
-                        borderColor: _viewMode == _ViewMode.calendar
-                            ? AppColors.primary
-                            : AppColors.baseLightGrey,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                // ── Search bar + filter (list view only) ────────────────────
-                if (_viewMode == _ViewMode.list) ...[
-                  Row(
+          return NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (_viewMode == _ViewMode.list &&
+                  !state.hasReachedMax &&
+                  !state.isLoadingMore &&
+                  scrollInfo.metrics.pixels >=
+                      scrollInfo.metrics.maxScrollExtent - 200) {
+                context.read<AvailabilityBloc>().add(
+                  const LoadMoreAvailability(),
+                );
+              }
+              return false;
+            },
+            child: RefreshIndicator(
+              onRefresh: () async {
+                context.read<AvailabilityBloc>().add(
+                  FetchAvailability(date: _focusedMonth, forceRefresh: true),
+                );
+                await context.read<AvailabilityBloc>().stream.firstWhere(
+                  (s) => s.status != AvailabilityStatus.loading,
+                );
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(bottom: 32),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: AppSearchBar(
-                          controller: _searchCtrl,
-                          hintText: 'ค้นหา...',
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      _FilterButton(),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                ],
-
-                // ── Calendar (calendar view only) ───────────────────────────
-                if (_viewMode == _ViewMode.calendar) ...[
-                  _MiniCalendar(
-                    focusedMonth: _focusedMonth,
-                    selectedDay: _selectedDay,
-                    gridHeight: _calendarGridHeight,
-                    onDaySelected: (d) => setState(() => _selectedDay = d),
-                    onMonthChanged: (m) {
-                      setState(() => _focusedMonth = m);
-                      context.read<AvailabilityBloc>().add(
-                        FetchAvailability(date: m),
-                      );
-                    },
-                    onGridHeightChanged: (h) =>
-                        setState(() => _calendarGridHeight = h),
-                  ),
-                  const SizedBox(height: 16),
-                  if (state.status == AvailabilityStatus.loading)
-                    const Center(child: CircularProgressIndicator())
-                  else if (slotsForSelectedDay.isEmpty)
-                    Center(
-                      child: Text(
-                        'ไม่มีช่วงเวลาว่างในวันที่เลือก',
-                        style: GoogleFonts.anuphan(
-                          color: AppColors.baseGrey,
-                          fontSize: 14,
-                        ),
-                      ),
-                    )
-                  else
-                    ...slotsForSelectedDay.map((slot) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: _SlotCard(
-                          time:
-                              '${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)} น.',
-                          available: slot.isAvailable,
-                          onEdit: () => _editSlot(context, slot),
-                          onDelete: () => _deleteSlot(context, slot),
-                        ),
-                      );
-                    }),
-                ],
-
-                // ── Grouped list (list view only) ───────────────────────────
-                if (_viewMode == _ViewMode.list) ...[
-                  if (state.status == AvailabilityStatus.loading &&
-                      state.times.isEmpty)
-                    const Center(child: CircularProgressIndicator())
-                  else if (groupedTimes.isEmpty)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 40),
-                        child: Text(
-                          'ไม่มีช่วงเวลาว่าง',
-                          style: GoogleFonts.anuphan(
-                            color: AppColors.baseGrey,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    )
-                  else
-                    ...groupedTimes.entries.map((entry) {
-                      // entries is MapEntry<String, List<AvailableTime>>
-                      // entry.key is yyyy-MM-dd
-                      final date = DateTime.parse(entry.key);
-                      // For YourAgent, we usually display Buddhist year.
-                      final thaiYear = date.year + 543;
-                      final formattedLabel =
-                          '${DateFormat('d MMMM', 'th').format(date)} $thaiYear';
-
-                      return Column(
+                      const SizedBox(height: 16),
+                      // ── Header row ──────────────────────────────────────────────
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _DateHeader(label: formattedLabel),
-                          const SizedBox(height: 8),
-                          ...entry.value.map(
-                            (slot) => Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _SlotCard(
-                                time:
-                                    '${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)} น.',
-                                available: slot.isAvailable,
-                                onEdit: () => _editSlot(context, slot),
-                                onDelete: () => _deleteSlot(context, slot),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  ).availability_title,
+                                  style: GoogleFonts.anuphan(
+                                    color: const Color(0xFF1743C7),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  ).availability_subtitle,
+                                  style: GoogleFonts.anuphan(
+                                    color: const Color(0xFF737373),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Add button
+                          GestureDetector(
+                            onTap: () {
+                              CalendarAvailabilityBottomSheet.show(
+                                context,
+                                mode: AvailabilityMode.add,
+                                initialDate: _selectedDay,
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: ShapeDecoration(
+                                color: AppColors.primary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 20,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 4),
                         ],
-                      );
-                    }),
-                ],
-              ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      // ── View toggle ─────────────────────────────────────────────
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () =>
+                                setState(() => _viewMode = _ViewMode.list),
+                            child: AppBadge(
+                              label: AppLocalizations.of(
+                                context,
+                              ).availability_view_list,
+                              style: BadgeStyle.plain,
+                              customBackgroundColor: _viewMode == _ViewMode.list
+                                  ? AppColors.primary
+                                  : Colors.white,
+                              customTextColor: _viewMode == _ViewMode.list
+                                  ? AppColors.supportBlueLight
+                                  : AppColors.baseDarkGrey,
+                              hasBorder: true,
+                              borderColor: _viewMode == _ViewMode.list
+                                  ? AppColors.primary
+                                  : AppColors.baseLightGrey,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () =>
+                                setState(() => _viewMode = _ViewMode.calendar),
+                            child: AppBadge(
+                              label: AppLocalizations.of(
+                                context,
+                              ).availability_view_calendar,
+                              style: BadgeStyle.plain,
+                              customBackgroundColor:
+                                  _viewMode == _ViewMode.calendar
+                                  ? AppColors.primary
+                                  : Colors.white,
+                              customTextColor: _viewMode == _ViewMode.calendar
+                                  ? AppColors.supportBlueLight
+                                  : AppColors.baseDarkGrey,
+                              hasBorder: true,
+                              borderColor: _viewMode == _ViewMode.calendar
+                                  ? AppColors.primary
+                                  : AppColors.baseLightGrey,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      if (_viewMode == _ViewMode.list) ...[
+                        GestureDetector(
+                          onTap: _showMonthPicker,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                  width: 1,
+                                  color: AppColors.baseLightGrey,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              shadows: const [
+                                BoxShadow(
+                                  color: Color(0x0C000000),
+                                  blurRadius: 2,
+                                  offset: Offset(0, 1),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  ThaiMonth.values[_selectedHistoryMonthIndex]
+                                      .localizedName(context),
+                                  style: GoogleFonts.anuphan(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.baseBlack,
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  size: 20,
+                                  color: AppColors.baseDarkGrey,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+
+                      // ── Calendar (calendar view only) ───────────────────────────
+                      if (_viewMode == _ViewMode.calendar) ...[
+                        _MiniCalendar(
+                          focusedMonth: _focusedMonth,
+                          selectedDay: _selectedDay,
+                          gridHeight: _calendarGridHeight,
+                          onDaySelected: (d) =>
+                              setState(() => _selectedDay = d),
+                          onMonthChanged: (m) {
+                            setState(() => _focusedMonth = m);
+                            context.read<AvailabilityBloc>().add(
+                              FetchAvailability(date: m),
+                            );
+                          },
+                          onGridHeightChanged: (h) =>
+                              setState(() => _calendarGridHeight = h),
+                        ),
+                        const SizedBox(height: 16),
+                        if (state.status == AvailabilityStatus.loading)
+                          const Center(child: CircularProgressIndicator())
+                        else if (slotsForSelectedDay.isEmpty)
+                          Center(
+                            child: Text(
+                              AppLocalizations.of(
+                                context,
+                              ).availability_empty_day,
+                              style: GoogleFonts.anuphan(
+                                color: AppColors.baseGrey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          )
+                        else
+                          ...slotsForSelectedDay.map((slot) {
+                            final now = DateTime.now();
+                            final slotDateTime = DateTime.parse(
+                              '${slot.date} ${slot.endTime}',
+                            );
+                            final canEdit = slotDateTime.isAfter(now);
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _SlotCard(
+                                time: locale == 'th'
+                                    ? '${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)} น.'
+                                    : '${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)}',
+                                available: slot.isAvailable,
+                                showEdit: canEdit,
+                                onEdit: () => _editSlot(context, slot),
+                                onDelete: () => _deleteSlot(context, slot),
+                              ),
+                            );
+                          }),
+                      ],
+
+                      // ── Grouped list (list view only) ───────────────────────────
+                      if (_viewMode == _ViewMode.list) ...[
+                        if (state.status == AvailabilityStatus.loading &&
+                            state.times.isEmpty)
+                          const Center(child: CircularProgressIndicator())
+                        else if (groupedTimes.isEmpty)
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 40),
+                              child: Text(
+                                AppLocalizations.of(
+                                  context,
+                                ).availability_empty_list,
+                                style: GoogleFonts.anuphan(
+                                  color: AppColors.baseGrey,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          ...groupedTimes.entries.map((entry) {
+                            // entries is MapEntry<String, List<AvailableTime>>
+                            // entry.key is yyyy-MM-dd
+                            final date = DateTime.parse(entry.key);
+                            // For YourAgent, we usually display Buddhist year.
+                            final thaiYear = date.year + 543;
+                            final formattedLabel = locale == 'th'
+                                ? '${DateFormat('d MMMM', 'th').format(date)} $thaiYear'
+                                : DateFormat('d MMMM yyyy', 'en').format(date);
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _DateHeader(label: formattedLabel),
+                                const SizedBox(height: 8),
+                                ...entry.value.map(
+                                  (slot) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 12),
+                                    child: _SlotCard(
+                                      time: locale == 'th'
+                                          ? '${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)} น.'
+                                          : '${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)}',
+                                      available: slot.isAvailable,
+                                      showEdit: DateTime.parse(
+                                        '${slot.date} ${slot.endTime}',
+                                      ).isAfter(DateTime.now()),
+                                      onEdit: () => _editSlot(context, slot),
+                                      onDelete: () =>
+                                          _deleteSlot(context, slot),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                              ],
+                            );
+                          }),
+                        if (state.isLoadingMore)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
             ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showMonthPicker() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE9EAEB),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  AppLocalizations.of(context).availability_select_month,
+                  style: GoogleFonts.anuphan(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.baseBlack,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: ThaiMonth.values.length,
+                  itemBuilder: (ctx, i) {
+                    final isSelected = i == _selectedHistoryMonthIndex;
+                    return InkWell(
+                      onTap: () {
+                        setState(() => _selectedHistoryMonthIndex = i);
+                        Navigator.pop(ctx);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.supportBlueLight
+                              : Colors.transparent,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              ThaiMonth.values[i].localizedName(ctx),
+                              style: GoogleFonts.anuphan(
+                                fontSize: 15,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
+                                color: isSelected
+                                    ? AppColors.supportBlueDeep
+                                    : AppColors.baseBlack,
+                              ),
+                            ),
+                            if (isSelected)
+                              const Icon(
+                                Icons.check_rounded,
+                                size: 18,
+                                color: AppColors.supportBlueDeep,
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
           ),
         );
       },
@@ -311,41 +539,17 @@ class _CalendarAvailabilitySectionState
   }
 
   void _deleteSlot(BuildContext context, AvailableTime slot) {
-    StatusDialog.showDestructive(
+    AppConfirmationBottomSheet.show(
       context: context,
-      title: 'ลบช่วงเวลาว่าง?',
-      message: 'คุณต้องการลบช่วงเวลาว่างนี้ใช่หรือไม่?',
-      actionLabel: 'ลบ',
-      onAction: () {
+      style: ConfirmationStyle.destructive,
+      title: AppLocalizations.of(context).availability_confirm_delete_title,
+      description: AppLocalizations.of(
+        context,
+      ).availability_confirm_delete_desc,
+      confirmLabel: AppLocalizations.of(context).availability_delete_label,
+      onConfirm: () {
         context.read<AvailabilityBloc>().add(DeleteAvailability(id: slot.id));
       },
-    );
-  }
-}
-
-// ── Filter button ────────────────────────────────────────────────────────────
-class _FilterButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE9EAEB)),
-      ),
-      child: Center(
-        child: SvgPicture.asset(
-          'assets/icons/filter.svg',
-          width: 16,
-          height: 16,
-          colorFilter: const ColorFilter.mode(
-            AppColors.baseGrey,
-            BlendMode.srcIn,
-          ),
-        ),
-      ),
     );
   }
 }
@@ -387,12 +591,14 @@ class _DateHeader extends StatelessWidget {
 class _SlotCard extends StatelessWidget {
   final String time;
   final bool available;
+  final bool showEdit;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
   const _SlotCard({
     required this.time,
     required this.available,
+    this.showEdit = true,
     this.onEdit,
     this.onDelete,
   });
@@ -429,7 +635,13 @@ class _SlotCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 AppBadge(
-                  label: available ? 'พร้อมให้บริการ' : 'ไม่พร้อมให้บริการ',
+                  label: available
+                      ? AppLocalizations.of(
+                          context,
+                        ).availability_status_available
+                      : AppLocalizations.of(
+                          context,
+                        ).availability_status_unavailable,
                   style: available ? BadgeStyle.done : BadgeStyle.plain,
                   color: available ? BadgeColor.green : BadgeColor.red,
                   fontSize: 12,
@@ -442,26 +654,28 @@ class _SlotCard extends StatelessWidget {
             ),
           ),
           // Edit
-          IconButton(
-            onPressed: onEdit,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            style: IconButton.styleFrom(
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          if (showEdit) ...[
+            IconButton(
+              onPressed: onEdit,
               padding: EdgeInsets.zero,
-            ),
-            icon: SvgPicture.asset(
-              'assets/icons/edit.svg',
-              width: 20,
-              height: 20,
-              colorFilter: const ColorFilter.mode(
-                AppColors.baseGrey,
-                BlendMode.srcIn,
+              constraints: const BoxConstraints(),
+              style: IconButton.styleFrom(
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                padding: EdgeInsets.zero,
+              ),
+              icon: SvgPicture.asset(
+                'assets/icons/edit.svg',
+                width: 20,
+                height: 20,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.baseGrey,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
+          ],
           // Delete
           IconButton(
             onPressed: onDelete,
@@ -512,28 +726,23 @@ class _MiniCalendar extends StatelessWidget {
     required this.onGridHeightChanged,
   });
 
-  static const _weekdays = ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'];
-  static const _thaiMonths = [
-    'มกราคม',
-    'กุมภาพันธ์',
-    'มีนาคม',
-    'เมษายน',
-    'พฤษภาคม',
-    'มิถุนายน',
-    'กรกฎาคม',
-    'สิงหาคม',
-    'กันยายน',
-    'ตุลาคม',
-    'พฤศจิกายน',
-    'ธันวาคม',
-  ];
-
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
     final year = focusedMonth.year;
     final month = focusedMonth.month;
-    final beYear = year + 543;
+    final locale = Localizations.localeOf(context).languageCode;
+    final displayYear = locale == 'th' ? year + 543 : year;
+    final l10n = AppLocalizations.of(context);
+    final weekdays = [
+      l10n.calendar_mon,
+      l10n.calendar_tue,
+      l10n.calendar_wed,
+      l10n.calendar_thu,
+      l10n.calendar_fri,
+      l10n.calendar_sat,
+      l10n.calendar_sun,
+    ];
 
     // Build day grid
     final firstDay = DateTime(year, month, 1);
@@ -574,10 +783,7 @@ class _MiniCalendar extends StatelessWidget {
     );
     final selectedRow = selectedRowIndex >= 0 ? selectedRowIndex ~/ 7 : 0;
     final totalRows = (days.length / 7).ceil();
-    final maxHeight = totalRows * _kRowHeight;
-    final clampedHeight = gridHeight.clamp(_kRowHeight, maxHeight);
-    // Offset so the grid starts at the selected-day's row when shrunken
-    final visibleRows = (clampedHeight / _kRowHeight).round();
+    final visibleRows = (gridHeight / _kRowHeight).round();
     final startRow = (selectedRow + visibleRows > totalRows)
         ? (totalRows - visibleRows).clamp(0, totalRows)
         : selectedRow;
@@ -627,7 +833,7 @@ class _MiniCalendar extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          '$beYear',
+                          '$displayYear',
                           style: GoogleFonts.anuphan(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -640,7 +846,7 @@ class _MiniCalendar extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  _thaiMonths[month - 1],
+                  ThaiMonth.fromDateTime(focusedMonth).localizedName(context),
                   style: GoogleFonts.anuphan(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -665,7 +871,7 @@ class _MiniCalendar extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Row(
-              children: _weekdays
+              children: weekdays
                   .map(
                     (d) => Expanded(
                       child: Center(

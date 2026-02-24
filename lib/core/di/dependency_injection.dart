@@ -19,6 +19,7 @@ import 'package:youragent/services/contract_api_service.dart';
 import 'package:youragent/services/address_lookup_service.dart';
 import 'package:youragent/services/google_places_service.dart';
 import 'package:youragent/services/settings_api_service.dart';
+import 'package:youragent/services/notification_api_service.dart';
 import 'package:youragent/services/available_time_api_service.dart';
 import 'package:youragent/core/services/deep_link_service.dart';
 import 'package:youragent/core/config/app_config.dart';
@@ -102,6 +103,9 @@ class DependencyInjection {
     apiClient: _apiClient,
   );
 
+  static final NotificationApiService _notificationApiService =
+      NotificationApiService(_apiClient);
+
   static final PushNotificationService _pushNotificationService =
       PushNotificationService();
 
@@ -176,6 +180,9 @@ class DependencyInjection {
       _availableTimeApiService;
 
   static BookingApiService get bookingApiService => _bookingApiService;
+
+  static NotificationApiService get notificationApiService =>
+      _notificationApiService;
 
   static PushNotificationService get pushNotificationService =>
       _pushNotificationService;

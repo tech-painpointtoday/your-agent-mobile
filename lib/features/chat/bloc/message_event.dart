@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:equatable/equatable.dart';
 
 abstract class MessageEvent extends Equatable {
@@ -11,6 +12,7 @@ class LoadMessages extends MessageEvent {
   /// For booking chat: same as channel chat.booking.{bookingId}.
   /// For staff chat: when [conversationId] is set, channel is chat.staff.{conversationId}.
   final int bookingId;
+
   /// Optional. For staff support channel (chat.staff.{conversation_id}). If null, staff uses [bookingId].
   final int? conversationId;
   const LoadMessages(this.bookingId, {this.conversationId});
@@ -22,10 +24,15 @@ class LoadMessages extends MessageEvent {
 class SendMessage extends MessageEvent {
   final int bookingId;
   final String message;
-  const SendMessage({required this.bookingId, required this.message});
+  final File? image;
+  const SendMessage({
+    required this.bookingId,
+    required this.message,
+    this.image,
+  });
 
   @override
-  List<Object?> get props => [bookingId, message];
+  List<Object?> get props => [bookingId, message, image];
 }
 
 class MarkAsRead extends MessageEvent {

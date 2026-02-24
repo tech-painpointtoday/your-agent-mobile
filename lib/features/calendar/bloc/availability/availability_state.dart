@@ -3,17 +3,27 @@ import 'package:youragent/domain/entities/available_time.dart';
 
 enum AvailabilityStatus { initial, loading, success, failure }
 
+enum AvailabilityAction { none, fetch, loadMore, create, update, delete }
+
 class AvailabilityState extends Equatable {
   final AvailabilityStatus status;
   final List<AvailableTime> times;
   final String? errorMessage;
   final DateTime? lastFetchedDate;
+  final bool hasReachedMax;
+  final int currentPage;
+  final bool isLoadingMore;
+  final AvailabilityAction action;
 
   const AvailabilityState({
     this.status = AvailabilityStatus.initial,
     this.times = const [],
     this.errorMessage,
     this.lastFetchedDate,
+    this.hasReachedMax = false,
+    this.currentPage = 1,
+    this.isLoadingMore = false,
+    this.action = AvailabilityAction.none,
   });
 
   AvailabilityState copyWith({
@@ -21,12 +31,20 @@ class AvailabilityState extends Equatable {
     List<AvailableTime>? times,
     String? errorMessage,
     DateTime? lastFetchedDate,
+    bool? hasReachedMax,
+    int? currentPage,
+    bool? isLoadingMore,
+    AvailabilityAction? action,
   }) {
     return AvailabilityState(
       status: status ?? this.status,
       times: times ?? this.times,
       errorMessage: errorMessage,
       lastFetchedDate: lastFetchedDate ?? this.lastFetchedDate,
+      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      currentPage: currentPage ?? this.currentPage,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      action: action ?? this.action,
     );
   }
 
@@ -46,5 +64,14 @@ class AvailabilityState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, times, errorMessage, lastFetchedDate];
+  List<Object?> get props => [
+    status,
+    times,
+    errorMessage,
+    lastFetchedDate,
+    hasReachedMax,
+    currentPage,
+    isLoadingMore,
+    action,
+  ];
 }

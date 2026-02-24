@@ -23,6 +23,25 @@ class ChatBooking extends Equatable {
     // Handling possible variations in API response
     final user = json['user'] as Map<String, dynamic>?;
     final lastMsg = json['last_message'] as Map<String, dynamic>?;
+    final messageText =
+        lastMsg?['message'] as String? ??
+        json['last_message_text'] as String? ??
+        '';
+    final imageUrl =
+        lastMsg?['image_url'] as String? ??
+        json['last_message_image_url'] as String?;
+
+    String finalMessage = messageText;
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      final senderType = (lastMsg?['sender_type'] ?? json['sender_type'])
+          ?.toString()
+          .toLowerCase();
+      if (senderType == 'agent' || senderType == 'staff') {
+        finalMessage = "You: sent an image";
+      } else {
+        finalMessage = "Have an image message";
+      }
+    }
 
     return ChatBooking(
       id: json['id'] as int,
@@ -31,9 +50,7 @@ class ChatBooking extends Equatable {
           json['participant_name'] as String? ??
           'Unknown',
       participantPhone: user?['phone'] as String?,
-      lastMessage:
-          lastMsg?['message'] as String? ??
-          json['last_message_text'] as String?,
+      lastMessage: finalMessage,
       unreadCount: json['unread_count'] as int? ?? 0,
       lastActiveAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])

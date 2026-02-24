@@ -2888,6 +2888,768 @@ abstract class AppLocalizations {
   /// **'December'**
   String get month_december;
 
+  /// No description provided for @calendar_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get calendar_all;
+
+  /// No description provided for @calendar_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get calendar_today;
+
+  /// No description provided for @calendar_tomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get calendar_tomorrow;
+
+  /// No description provided for @calendar_this_week.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get calendar_this_week;
+
+  /// No description provided for @calendar_appointments_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointments'**
+  String get calendar_appointments_title;
+
+  /// No description provided for @calendar_total_appointments.
+  ///
+  /// In en, this message translates to:
+  /// **'Total appointments {count} items'**
+  String calendar_total_appointments(int count);
+
+  /// No description provided for @calendar_no_appointments.
+  ///
+  /// In en, this message translates to:
+  /// **'No appointments'**
+  String get calendar_no_appointments;
+
+  /// No description provided for @calendar_history_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment History'**
+  String get calendar_history_title;
+
+  /// No description provided for @calendar_total_history.
+  ///
+  /// In en, this message translates to:
+  /// **'Total past appointments {count} items'**
+  String calendar_total_history(int count);
+
+  /// No description provided for @calendar_history_personal_note.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Note: {note}'**
+  String calendar_history_personal_note(String note);
+
+  /// No description provided for @calendar_history_expired_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'This appointment has expired without updates'**
+  String get calendar_history_expired_desc;
+
+  /// No description provided for @calendar_history_reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {reason}'**
+  String calendar_history_reason(String reason);
+
+  /// No description provided for @calendar_history_no_show.
+  ///
+  /// In en, this message translates to:
+  /// **'The visitor did not show up'**
+  String get calendar_history_no_show;
+
+  /// No description provided for @calendar_history_contact_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Visitor'**
+  String get calendar_history_contact_button;
+
+  /// No description provided for @calendar_history_reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get calendar_history_reject;
+
+  /// No description provided for @calendar_sun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get calendar_sun;
+
+  /// No description provided for @calendar_mon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get calendar_mon;
+
+  /// No description provided for @calendar_tue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get calendar_tue;
+
+  /// No description provided for @calendar_wed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get calendar_wed;
+
+  /// No description provided for @calendar_thu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get calendar_thu;
+
+  /// No description provided for @calendar_fri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get calendar_fri;
+
+  /// No description provided for @calendar_sat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get calendar_sat;
+
+  /// No description provided for @calendar_select_month.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Month'**
+  String get calendar_select_month;
+
+  /// No description provided for @calendar_visitor_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitor'**
+  String get calendar_visitor_label;
+
+  /// No description provided for @calendar_datetime_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & Time'**
+  String get calendar_datetime_label;
+
+  /// No description provided for @calendar_co_agent_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Co-agent Required'**
+  String get calendar_co_agent_required;
+
+  /// No description provided for @calendar_pending_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Confirmation'**
+  String get calendar_pending_confirmation;
+
+  /// No description provided for @calendar_arriving_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Arriving at {time}'**
+  String calendar_arriving_status(String time);
+
+  /// No description provided for @calendar_not_started_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Not started'**
+  String get calendar_not_started_status;
+
+  /// No description provided for @calendar_tab_appointments.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointments'**
+  String get calendar_tab_appointments;
+
+  /// No description provided for @calendar_tab_history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get calendar_tab_history;
+
+  /// No description provided for @calendar_tab_availability.
+  ///
+  /// In en, this message translates to:
+  /// **'Availability'**
+  String get calendar_tab_availability;
+
+  /// No description provided for @availability_delete_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Availability deleted successfully'**
+  String get availability_delete_success;
+
+  /// No description provided for @availability_create_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Availability added successfully'**
+  String get availability_create_success;
+
+  /// No description provided for @availability_update_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Availability updated successfully'**
+  String get availability_update_success;
+
+  /// No description provided for @availability_error.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred during the transaction'**
+  String get availability_error;
+
+  /// No description provided for @availability_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Availability'**
+  String get availability_title;
+
+  /// No description provided for @availability_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your available time slots'**
+  String get availability_subtitle;
+
+  /// No description provided for @availability_view_list.
+  ///
+  /// In en, this message translates to:
+  /// **'List View'**
+  String get availability_view_list;
+
+  /// No description provided for @availability_view_calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar View'**
+  String get availability_view_calendar;
+
+  /// No description provided for @availability_empty_day.
+  ///
+  /// In en, this message translates to:
+  /// **'No availability for the selected date'**
+  String get availability_empty_day;
+
+  /// No description provided for @availability_empty_list.
+  ///
+  /// In en, this message translates to:
+  /// **'No availability'**
+  String get availability_empty_list;
+
+  /// No description provided for @availability_confirm_delete_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Availability?'**
+  String get availability_confirm_delete_title;
+
+  /// No description provided for @availability_confirm_delete_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this availability?'**
+  String get availability_confirm_delete_desc;
+
+  /// No description provided for @availability_status_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get availability_status_available;
+
+  /// No description provided for @availability_status_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get availability_status_unavailable;
+
+  /// No description provided for @availability_edit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Availability'**
+  String get availability_edit_title;
+
+  /// No description provided for @availability_add_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Availability'**
+  String get availability_add_title;
+
+  /// No description provided for @availability_instruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your schedule first to prevent double-booking the same day.'**
+  String get availability_instruction;
+
+  /// No description provided for @availability_date_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get availability_date_label;
+
+  /// No description provided for @availability_start_time_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Time'**
+  String get availability_start_time_label;
+
+  /// No description provided for @availability_end_time_label.
+  ///
+  /// In en, this message translates to:
+  /// **'End Time'**
+  String get availability_end_time_label;
+
+  /// No description provided for @availability_status_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get availability_status_label;
+
+  /// No description provided for @availability_cancel_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get availability_cancel_button;
+
+  /// No description provided for @availability_save_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get availability_save_button;
+
+  /// No description provided for @availability_add_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Now'**
+  String get availability_add_button;
+
+  /// No description provided for @availability_invalid_time_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Time'**
+  String get availability_invalid_time_title;
+
+  /// No description provided for @availability_past_time_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot select time in the past'**
+  String get availability_past_time_error;
+
+  /// No description provided for @availability_end_before_start_error.
+  ///
+  /// In en, this message translates to:
+  /// **'End time must be after start time'**
+  String get availability_end_before_start_error;
+
+  /// No description provided for @availability_confirm_edit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm editing availability?'**
+  String get availability_confirm_edit_title;
+
+  /// No description provided for @availability_confirm_edit_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to save the changes?'**
+  String get availability_confirm_edit_desc;
+
+  /// No description provided for @availability_confirm_add_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm adding availability?'**
+  String get availability_confirm_add_title;
+
+  /// No description provided for @availability_confirm_add_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to add this availability?'**
+  String get availability_confirm_add_desc;
+
+  /// No description provided for @availability_delete_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get availability_delete_label;
+
+  /// No description provided for @availability_confirm_add_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get availability_confirm_add_label;
+
+  /// No description provided for @availability_select_month.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Month'**
+  String get availability_select_month;
+
+  /// No description provided for @calendar_success_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Status updated successfully'**
+  String get calendar_success_update;
+
+  /// No description provided for @calendar_error_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update status'**
+  String get calendar_error_update;
+
+  /// No description provided for @calendar_unspecified_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Unspecified Name'**
+  String get calendar_unspecified_name;
+
+  /// No description provided for @calendar_unspecified_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Unspecified Location'**
+  String get calendar_unspecified_location;
+
+  /// No description provided for @calendar_confirm_cancel_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Appointment?'**
+  String get calendar_confirm_cancel_title;
+
+  /// No description provided for @calendar_confirm_cancel_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel this appointment?'**
+  String get calendar_confirm_cancel_desc;
+
+  /// No description provided for @calendar_confirm_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get calendar_confirm_label;
+
+  /// No description provided for @calendar_cancel_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Appointment'**
+  String get calendar_cancel_label;
+
+  /// No description provided for @calendar_status_confirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get calendar_status_confirmed;
+
+  /// No description provided for @calendar_status_cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get calendar_status_cancelled;
+
+  /// No description provided for @calendar_status_finished.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get calendar_status_finished;
+
+  /// No description provided for @calendar_status_traveling.
+  ///
+  /// In en, this message translates to:
+  /// **'Traveling'**
+  String get calendar_status_traveling;
+
+  /// No description provided for @calendar_status_arrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get calendar_status_arrived;
+
+  /// No description provided for @calendar_status_offer.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer'**
+  String get calendar_status_offer;
+
+  /// No description provided for @calendar_status_contract.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract'**
+  String get calendar_status_contract;
+
+  /// No description provided for @calendar_status_closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get calendar_status_closed;
+
+  /// No description provided for @calendar_status_expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get calendar_status_expired;
+
+  /// No description provided for @notifications_mark_all_read.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get notifications_mark_all_read;
+
+  /// No description provided for @notifications_confirm_mark_all_read_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark All as Read?'**
+  String get notifications_confirm_mark_all_read_title;
+
+  /// No description provided for @notifications_confirm_mark_all_read_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to mark all notifications as read?'**
+  String get notifications_confirm_mark_all_read_desc;
+
+  /// No description provided for @notifications_filter_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get notifications_filter_all;
+
+  /// No description provided for @notifications_filter_unread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get notifications_filter_unread;
+
+  /// No description provided for @notifications_error.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred: {message}'**
+  String notifications_error(String message);
+
+  /// No description provided for @notifications_empty_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notifications_empty_title;
+
+  /// No description provided for @notifications_empty_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We will update you here when there are notifications'**
+  String get notifications_empty_subtitle;
+
+  /// No description provided for @notifications_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification not found'**
+  String get notifications_not_found;
+
+  /// No description provided for @notifications_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get notifications_now;
+
+  /// No description provided for @notifications_minutes_ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}m ago'**
+  String notifications_minutes_ago(int count);
+
+  /// No description provided for @notifications_hours_ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h ago'**
+  String notifications_hours_ago(int count);
+
+  /// No description provided for @notifications_days_ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d ago'**
+  String notifications_days_ago(int count);
+
+  /// No description provided for @notifications_archive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get notifications_archive;
+
+  /// No description provided for @notifications_unarchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Unarchive'**
+  String get notifications_unarchive;
+
+  /// No description provided for @notifications_delete_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete notification?'**
+  String get notifications_delete_confirm_title;
+
+  /// No description provided for @notifications_delete_confirm_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this notification? This action cannot be undone.'**
+  String get notifications_delete_confirm_desc;
+
+  /// No description provided for @notifications_delete_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get notifications_delete_label;
+
+  /// No description provided for @notifications_cancel_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get notifications_cancel_label;
+
+  /// No description provided for @calendar_delay_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'You may be arriving {minutes} minutes late'**
+  String calendar_delay_warning(int minutes);
+
+  /// No description provided for @booking_detail_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Details'**
+  String get booking_detail_title;
+
+  /// No description provided for @booking_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Date'**
+  String get booking_date;
+
+  /// No description provided for @booking_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Time'**
+  String get booking_time;
+
+  /// No description provided for @booking_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get booking_location;
+
+  /// No description provided for @booking_property_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Information'**
+  String get booking_property_info;
+
+  /// No description provided for @booking_client.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Client'**
+  String get booking_client;
+
+  /// No description provided for @booking_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking information not found'**
+  String get booking_not_found;
+
+  /// No description provided for @booking_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get booking_retry;
+
+  /// No description provided for @booking_status_pending_client.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for client confirmation'**
+  String get booking_status_pending_client;
+
+  /// No description provided for @booking_status_traveling_client.
+  ///
+  /// In en, this message translates to:
+  /// **'Client is traveling'**
+  String get booking_status_traveling_client;
+
+  /// No description provided for @booking_status_arrived_client.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived at destination'**
+  String get booking_status_arrived_client;
+
+  /// No description provided for @booking_confirm_booking.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Booking'**
+  String get booking_confirm_booking;
+
+  /// No description provided for @booking_confirm_booking_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Booking?'**
+  String get booking_confirm_booking_title;
+
+  /// No description provided for @booking_confirm_booking_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to confirm this booking?'**
+  String get booking_confirm_booking_desc;
+
+  /// No description provided for @booking_start_traveling.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Traveling'**
+  String get booking_start_traveling;
+
+  /// No description provided for @booking_confirm_traveling_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Traveling?'**
+  String get booking_confirm_traveling_title;
+
+  /// No description provided for @booking_confirm_traveling_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you starting your journey to the client?'**
+  String get booking_confirm_traveling_desc;
+
+  /// No description provided for @booking_confirm_arrived_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived at Destination?'**
+  String get booking_confirm_arrived_title;
+
+  /// No description provided for @booking_confirm_arrived_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Have you arrived at the destination?'**
+  String get booking_confirm_arrived_desc;
+
+  /// No description provided for @booking_finish_work.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish Work'**
+  String get booking_finish_work;
+
+  /// No description provided for @booking_confirm_finish_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish Work?'**
+  String get booking_confirm_finish_title;
+
+  /// No description provided for @booking_confirm_finish_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Have you finished the property viewing?'**
+  String get booking_confirm_finish_desc;
+
+  /// No description provided for @booking_unspecified_property.
+  ///
+  /// In en, this message translates to:
+  /// **'Unspecified Property'**
+  String get booking_unspecified_property;
+
+  /// No description provided for @booking_status_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Status'**
+  String get booking_status_unknown;
+
   /// No description provided for @not_specified.
   ///
   /// In en, this message translates to:

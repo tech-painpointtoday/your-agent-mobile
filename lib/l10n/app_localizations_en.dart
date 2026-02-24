@@ -1440,6 +1440,421 @@ class AppLocalizationsEn extends AppLocalizations {
   String get month_december => 'December';
 
   @override
+  String get calendar_all => 'All';
+
+  @override
+  String get calendar_today => 'Today';
+
+  @override
+  String get calendar_tomorrow => 'Tomorrow';
+
+  @override
+  String get calendar_this_week => 'This Week';
+
+  @override
+  String get calendar_appointments_title => 'Appointments';
+
+  @override
+  String calendar_total_appointments(int count) {
+    return 'Total appointments $count items';
+  }
+
+  @override
+  String get calendar_no_appointments => 'No appointments';
+
+  @override
+  String get calendar_history_title => 'Appointment History';
+
+  @override
+  String calendar_total_history(int count) {
+    return 'Total past appointments $count items';
+  }
+
+  @override
+  String calendar_history_personal_note(String note) {
+    return 'Personal Note: $note';
+  }
+
+  @override
+  String get calendar_history_expired_desc =>
+      'This appointment has expired without updates';
+
+  @override
+  String calendar_history_reason(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get calendar_history_no_show => 'The visitor did not show up';
+
+  @override
+  String get calendar_history_contact_button => 'Contact Visitor';
+
+  @override
+  String get calendar_history_reject => 'Rejected';
+
+  @override
+  String get calendar_sun => 'Sun';
+
+  @override
+  String get calendar_mon => 'Mon';
+
+  @override
+  String get calendar_tue => 'Tue';
+
+  @override
+  String get calendar_wed => 'Wed';
+
+  @override
+  String get calendar_thu => 'Thu';
+
+  @override
+  String get calendar_fri => 'Fri';
+
+  @override
+  String get calendar_sat => 'Sat';
+
+  @override
+  String get calendar_select_month => 'Select Month';
+
+  @override
+  String get calendar_visitor_label => 'Visitor';
+
+  @override
+  String get calendar_datetime_label => 'Date & Time';
+
+  @override
+  String get calendar_co_agent_required => 'Co-agent Required';
+
+  @override
+  String get calendar_pending_confirmation => 'Pending Confirmation';
+
+  @override
+  String calendar_arriving_status(String time) {
+    return 'Arriving at $time';
+  }
+
+  @override
+  String get calendar_not_started_status => 'Not started';
+
+  @override
+  String get calendar_tab_appointments => 'Appointments';
+
+  @override
+  String get calendar_tab_history => 'History';
+
+  @override
+  String get calendar_tab_availability => 'Availability';
+
+  @override
+  String get availability_delete_success => 'Availability deleted successfully';
+
+  @override
+  String get availability_create_success => 'Availability added successfully';
+
+  @override
+  String get availability_update_success => 'Availability updated successfully';
+
+  @override
+  String get availability_error => 'An error occurred during the transaction';
+
+  @override
+  String get availability_title => 'Availability';
+
+  @override
+  String get availability_subtitle => 'Your available time slots';
+
+  @override
+  String get availability_view_list => 'List View';
+
+  @override
+  String get availability_view_calendar => 'Calendar View';
+
+  @override
+  String get availability_empty_day => 'No availability for the selected date';
+
+  @override
+  String get availability_empty_list => 'No availability';
+
+  @override
+  String get availability_confirm_delete_title => 'Delete Availability?';
+
+  @override
+  String get availability_confirm_delete_desc =>
+      'Are you sure you want to delete this availability?';
+
+  @override
+  String get availability_status_available => 'Available';
+
+  @override
+  String get availability_status_unavailable => 'Unavailable';
+
+  @override
+  String get availability_edit_title => 'Edit Availability';
+
+  @override
+  String get availability_add_title => 'Add Availability';
+
+  @override
+  String get availability_instruction =>
+      'Please check your schedule first to prevent double-booking the same day.';
+
+  @override
+  String get availability_date_label => 'Date';
+
+  @override
+  String get availability_start_time_label => 'Start Time';
+
+  @override
+  String get availability_end_time_label => 'End Time';
+
+  @override
+  String get availability_status_label => 'Status';
+
+  @override
+  String get availability_cancel_button => 'Cancel';
+
+  @override
+  String get availability_save_button => 'Save';
+
+  @override
+  String get availability_add_button => 'Add Now';
+
+  @override
+  String get availability_invalid_time_title => 'Invalid Time';
+
+  @override
+  String get availability_past_time_error => 'Cannot select time in the past';
+
+  @override
+  String get availability_end_before_start_error =>
+      'End time must be after start time';
+
+  @override
+  String get availability_confirm_edit_title => 'Confirm editing availability?';
+
+  @override
+  String get availability_confirm_edit_desc =>
+      'Do you want to save the changes?';
+
+  @override
+  String get availability_confirm_add_title => 'Confirm adding availability?';
+
+  @override
+  String get availability_confirm_add_desc =>
+      'Do you want to add this availability?';
+
+  @override
+  String get availability_delete_label => 'Delete';
+
+  @override
+  String get availability_confirm_add_label => 'Add';
+
+  @override
+  String get availability_select_month => 'Select Month';
+
+  @override
+  String get calendar_success_update => 'Status updated successfully';
+
+  @override
+  String get calendar_error_update => 'Failed to update status';
+
+  @override
+  String get calendar_unspecified_name => 'Unspecified Name';
+
+  @override
+  String get calendar_unspecified_location => 'Unspecified Location';
+
+  @override
+  String get calendar_confirm_cancel_title => 'Cancel Appointment?';
+
+  @override
+  String get calendar_confirm_cancel_desc =>
+      'Are you sure you want to cancel this appointment?';
+
+  @override
+  String get calendar_confirm_label => 'Confirm';
+
+  @override
+  String get calendar_cancel_label => 'Cancel Appointment';
+
+  @override
+  String get calendar_status_confirmed => 'Confirmed';
+
+  @override
+  String get calendar_status_cancelled => 'Cancelled';
+
+  @override
+  String get calendar_status_finished => 'Finished';
+
+  @override
+  String get calendar_status_traveling => 'Traveling';
+
+  @override
+  String get calendar_status_arrived => 'Arrived';
+
+  @override
+  String get calendar_status_offer => 'Offer';
+
+  @override
+  String get calendar_status_contract => 'Contract';
+
+  @override
+  String get calendar_status_closed => 'Closed';
+
+  @override
+  String get calendar_status_expired => 'Expired';
+
+  @override
+  String get notifications_mark_all_read => 'Mark all as read';
+
+  @override
+  String get notifications_confirm_mark_all_read_title => 'Mark All as Read?';
+
+  @override
+  String get notifications_confirm_mark_all_read_desc =>
+      'Are you sure you want to mark all notifications as read?';
+
+  @override
+  String get notifications_filter_all => 'All';
+
+  @override
+  String get notifications_filter_unread => 'Unread';
+
+  @override
+  String notifications_error(String message) {
+    return 'An error occurred: $message';
+  }
+
+  @override
+  String get notifications_empty_title => 'No notifications yet';
+
+  @override
+  String get notifications_empty_subtitle =>
+      'We will update you here when there are notifications';
+
+  @override
+  String get notifications_not_found => 'Notification not found';
+
+  @override
+  String get notifications_now => 'Now';
+
+  @override
+  String notifications_minutes_ago(int count) {
+    return '${count}m ago';
+  }
+
+  @override
+  String notifications_hours_ago(int count) {
+    return '${count}h ago';
+  }
+
+  @override
+  String notifications_days_ago(int count) {
+    return '${count}d ago';
+  }
+
+  @override
+  String get notifications_archive => 'Archive';
+
+  @override
+  String get notifications_unarchive => 'Unarchive';
+
+  @override
+  String get notifications_delete_confirm_title => 'Delete notification?';
+
+  @override
+  String get notifications_delete_confirm_desc =>
+      'Are you sure you want to delete this notification? This action cannot be undone.';
+
+  @override
+  String get notifications_delete_label => 'Delete';
+
+  @override
+  String get notifications_cancel_label => 'Cancel';
+
+  @override
+  String calendar_delay_warning(int minutes) {
+    return 'You may be arriving $minutes minutes late';
+  }
+
+  @override
+  String get booking_detail_title => 'Booking Details';
+
+  @override
+  String get booking_date => 'Booking Date';
+
+  @override
+  String get booking_time => 'Booking Time';
+
+  @override
+  String get booking_location => 'Location';
+
+  @override
+  String get booking_property_info => 'Property Information';
+
+  @override
+  String get booking_client => 'Booking Client';
+
+  @override
+  String get booking_not_found => 'Booking information not found';
+
+  @override
+  String get booking_retry => 'Retry';
+
+  @override
+  String get booking_status_pending_client => 'Waiting for client confirmation';
+
+  @override
+  String get booking_status_traveling_client => 'Client is traveling';
+
+  @override
+  String get booking_status_arrived_client => 'Arrived at destination';
+
+  @override
+  String get booking_confirm_booking => 'Confirm Booking';
+
+  @override
+  String get booking_confirm_booking_title => 'Confirm Booking?';
+
+  @override
+  String get booking_confirm_booking_desc =>
+      'Do you want to confirm this booking?';
+
+  @override
+  String get booking_start_traveling => 'Start Traveling';
+
+  @override
+  String get booking_confirm_traveling_title => 'Start Traveling?';
+
+  @override
+  String get booking_confirm_traveling_desc =>
+      'Are you starting your journey to the client?';
+
+  @override
+  String get booking_confirm_arrived_title => 'Arrived at Destination?';
+
+  @override
+  String get booking_confirm_arrived_desc =>
+      'Have you arrived at the destination?';
+
+  @override
+  String get booking_finish_work => 'Finish Work';
+
+  @override
+  String get booking_confirm_finish_title => 'Finish Work?';
+
+  @override
+  String get booking_confirm_finish_desc =>
+      'Have you finished the property viewing?';
+
+  @override
+  String get booking_unspecified_property => 'Unspecified Property';
+
+  @override
+  String get booking_status_unknown => 'Unknown Status';
+
+  @override
   String get not_specified => 'Not specified';
 
   @override

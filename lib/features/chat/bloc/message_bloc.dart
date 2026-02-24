@@ -121,6 +121,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
         role: role,
         bookingId: event.bookingId,
         message: event.message,
+        image: event.image,
       );
 
       // Reload messages after sending

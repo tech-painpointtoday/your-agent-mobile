@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -292,6 +293,7 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
                                     _DateHeader(date: localCreatedAt),
                                   _ChatBubble(
                                     message: message.message,
+                                    imageUrl: message.imageUrl,
                                     isMe: isMe,
                                     isRead: message.isRead,
                                     time: localCreatedAt != null
@@ -645,17 +647,15 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
                         context: context,
                         onImagesPicked: (paths) {
                           if (paths.isNotEmpty) {
-                            // For mock/demonstration: send a house image URL
-                            // In real app, you'd upload and send the returned URL
-                            final mockImageUrl =
-                                'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80';
-
-                            context.read<MessageBloc>().add(
-                              SendMessage(
-                                bookingId: widget.bookingId,
-                                message: mockImageUrl,
-                              ),
-                            );
+                            for (final path in paths) {
+                              context.read<MessageBloc>().add(
+                                SendMessage(
+                                  bookingId: widget.bookingId,
+                                  message: '',
+                                  image: File(path),
+                                ),
+                              );
+                            }
                           }
                         },
                       );
@@ -806,6 +806,7 @@ class _DateHeader extends StatelessWidget {
 
 class _ChatBubble extends StatelessWidget {
   final String message;
+  final String? imageUrl;
   final bool isMe;
   final bool isRead;
   final String time;
@@ -815,6 +816,7 @@ class _ChatBubble extends StatelessWidget {
 
   const _ChatBubble({
     required this.message,
+    this.imageUrl,
     required this.isMe,
     this.isRead = false,
     required this.time,
@@ -826,7 +828,6 @@ class _ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final isImage = message.startsWith('http');
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -837,7 +838,7 @@ class _ChatBubble extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (isMe) _buildStatusRow(l10n, true),
-          if (isImage)
+          if (imageUrl != null)
             _buildImageBubble(context)
           else
             _buildTextBubble(context),
@@ -970,7 +971,7 @@ class _ChatBubble extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: CachedNetworkImage(
-          imageUrl: message,
+          imageUrl: imageUrl!,
           fit: BoxFit.cover,
           placeholder: (context, url) => Container(
             height: 200,

@@ -2,64 +2,71 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:youragent/core/enums/booking_status.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/booking.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
+import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 class BookingCard extends StatelessWidget {
   final Booking booking;
 
   // Additional callbacks will be added later for button actions
   final VoidCallback? onCoAgentTap;
-  final VoidCallback? onPrimaryActionTap;
+  final Function(int status)? onStatusAction;
 
   const BookingCard({
     super.key,
     required this.booking,
     this.onCoAgentTap,
-    this.onPrimaryActionTap,
+    this.onStatusAction,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: ShapeDecoration(
-        color: AppColors.baseWhite,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: AppColors.baseOffWhite),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 16,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
+    return InkWell(
+      onTap: () => context.push('/booking/${booking.id}'),
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: ShapeDecoration(
+          color: AppColors.baseWhite,
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(width: 1, color: AppColors.baseOffWhite),
+            borderRadius: BorderRadius.circular(12),
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildHeader(),
-          const SizedBox(height: 16),
-          _buildStatusAndSubtext(),
-          _buildWarningSection(),
-          const SizedBox(height: 16),
-          _buildActions(context),
-        ],
+          shadows: const [
+            BoxShadow(
+              color: Color(0x0A000000),
+              blurRadius: 16,
+              offset: Offset(0, 4),
+              spreadRadius: 0,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context),
+            const SizedBox(height: 16),
+            _buildStatusAndSubtext(context),
+            _buildWarningSection(context),
+            const SizedBox(height: 16),
+            _buildActions(context),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final locationInfo = [
       booking.property?.title ?? booking.property?.name,
       booking.property?.subdistrict,
@@ -67,7 +74,7 @@ class BookingCard extends StatelessWidget {
       booking.property?.city,
     ].where((e) => e != null && e.isNotEmpty).join(' ');
 
-    final buyerName = booking.buyer?.name ?? 'ไม่ระบุชื่อ';
+    final buyerName = booking.buyer?.name ?? l10n.calendar_unspecified_name;
 
     // Format Date: e.g. 20251127 -> 27 พ.ย. 2568
     String displayDate = '';
@@ -78,14 +85,22 @@ class BookingCard extends StatelessWidget {
         final month = int.parse(ymd.substring(4, 6));
         final day = int.parse(ymd.substring(6, 8));
         final dt = DateTime(year, month, day);
-        final thaiYear = year + 543;
-        final formatter = DateFormat('d MMM', 'th');
-        displayDate = '${formatter.format(dt)} $thaiYear, ${booking.time} น.';
+
+        final locale = Localizations.localeOf(context).languageCode;
+        if (locale == 'th') {
+          final thaiYear = year + 543;
+          final formatter = DateFormat('d MMM', 'th');
+          displayDate =
+              '${formatter.format(dt)} $thaiYear, ${booking.time} ${l10n.now.contains('น') ? 'น.' : ''}';
+        } else {
+          final formatter = DateFormat('d MMM yyyy', 'en');
+          displayDate = '${formatter.format(dt)}, ${booking.time}';
+        }
       } else {
-        displayDate = '${booking.ymd}, ${booking.time} น.';
+        displayDate = '${booking.ymd}, ${booking.time}';
       }
     } catch (_) {
-      displayDate = '${booking.ymd}, ${booking.time} น.';
+      displayDate = '${booking.ymd}, ${booking.time}';
     }
 
     final imageUrl = booking.property?.imageUrl;
@@ -156,7 +171,9 @@ class BookingCard extends StatelessWidget {
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
-                      locationInfo.isEmpty ? 'ไม่ระบุตำแหน่ง' : locationInfo,
+                      locationInfo.isEmpty
+                          ? l10n.calendar_unspecified_location
+                          : locationInfo,
                       style: GoogleFonts.anuphan(
                         color: AppColors.baseDarkGrey,
                         fontSize: 12,
@@ -227,58 +244,61 @@ class BookingCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusAndSubtext() {
-    String statusLabel = 'ลูกค้ารอยืนยัน';
-    BadgeColor badgeColor = BadgeColor.blue;
-    String subtext = '';
+  Widget _buildStatusAndSubtext(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    String statusLabel = 'Unknown';
+    BadgeColor badgeColor = BadgeColor.default_;
 
-    if (booking.status == 1) {
-      statusLabel = 'ยืนยันนัดแล้ว';
-      badgeColor = BadgeColor.green;
-      subtext = 'ผู้จองเข้าชมบ้านยังไม่เริ่มเดินทาง';
-    } else if (booking.status == 2) {
-      statusLabel = 'ยกเลิกนัดหมาย';
-      badgeColor = BadgeColor.red;
-      subtext = 'เหตุผล : ผู้จองเข้าชมไม่มาตามนัด';
-    } else if (booking.status == 3) {
-      statusLabel = 'เสร็จสิ้น';
-      badgeColor = BadgeColor.green;
-      subtext = 'เวลา 11:55 - 12:30 --- ระยะเวลา 35 นาที';
-    } else if (booking.status == 4) {
-      statusLabel = 'ลูกค้ากำลังเดินทาง';
-      badgeColor = BadgeColor.blue;
-      subtext = 'เริ่มเดินทาง 11:20 --- จะถึงตอน 11:55';
-    } else {
-      statusLabel = 'ลูกค้ารอยืนยัน';
-      badgeColor = BadgeColor.blue;
-      subtext = 'รอการยืนยันจากตัวแทน';
+    switch (booking.status) {
+      case BookingStatus.pending:
+        return SizedBox.shrink();
+      case BookingStatus.confirm:
+        statusLabel = l10n.calendar_status_confirmed;
+        badgeColor = BadgeColor.green;
+        break;
+      case BookingStatus.reject:
+        statusLabel = l10n.calendar_status_cancelled;
+        badgeColor = BadgeColor.red;
+        break;
+      case BookingStatus.met:
+        statusLabel = l10n.calendar_status_finished;
+        badgeColor = BadgeColor.green;
+        break;
+      case BookingStatus.traveling:
+        statusLabel = l10n.calendar_status_traveling;
+        badgeColor = BadgeColor.blue;
+        break;
+      case BookingStatus.arrived:
+        statusLabel = l10n.calendar_status_arrived;
+        badgeColor = BadgeColor.blue;
+        break;
+      case BookingStatus.offer:
+        statusLabel = l10n.calendar_status_offer;
+        badgeColor = BadgeColor.orange;
+        break;
+      case BookingStatus.contract:
+        statusLabel = l10n.calendar_status_contract;
+        badgeColor = BadgeColor.orange;
+        break;
+      case BookingStatus.closeDeal:
+        statusLabel = l10n.calendar_status_closed;
+        badgeColor = BadgeColor.green;
+        break;
+      case BookingStatus.expired:
+        statusLabel = l10n.calendar_status_expired;
+        badgeColor = BadgeColor.orange;
+        break;
+      case BookingStatus.cancelled:
+        statusLabel = l10n.calendar_status_cancelled;
+        badgeColor = BadgeColor.red;
+        break;
     }
 
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppBadges.status(label: statusLabel, color: badgeColor),
-          if (subtext.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              subtext,
-              style: GoogleFonts.anuphan(
-                color: AppColors.baseDarkGrey,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
+    return AppBadges.status(label: statusLabel, color: badgeColor);
   }
 
-  Widget _buildWarningSection() {
+  Widget _buildWarningSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     // Mocking delay warning for now. In reality, check booking data.
     final hasDelay =
         booking.timeUntilBookingSeconds != null &&
@@ -313,7 +333,7 @@ class BookingCard extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            'คุณอาจจะไปถึงช้าประมาณ 10 นาที',
+            l10n.calendar_delay_warning(10),
             style: GoogleFonts.anuphan(
               color: AppColors.supportOrangeDark,
               fontSize: 12,
@@ -326,93 +346,143 @@ class BookingCard extends StatelessWidget {
   }
 
   Widget _buildActions(BuildContext context) {
-    if (booking.status == 0) {
-      return Row(
-        children: [
-          Expanded(
-            child: AppButton(
-              height: 32,
-              textSize: 12,
-              text: 'ยกเลิกนัด',
-              style: AppButtonStyle.outline,
-              onPressed: () {
-                StatusDialog.showDestructive(
-                  context: context,
-                  title: 'ยกเลิกนัดหมาย?',
-                  message: 'คุณต้องการยกเลิกนัดหมายนี้หรือไม่?',
-                  actionLabel: 'ยกเลิกนัด',
-                  onAction: () {
-                    // TODO: Dispatch event
-                  },
-                );
-              },
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: AppButton(
-              height: 32,
-              textSize: 12,
-              text: 'ยืนยันนัด',
-              style: AppButtonStyle.primary,
-              onPressed: () {
-                StatusDialog.confirm(
-                  context: context,
-                  title: 'ยืนยันนัดหมาย?',
-                  message: 'คุณต้องการยืนยันนัดหมายนี้หรือไม่?',
-                  confirmLabel: 'ยืนยัน',
-                  onConfirm: onPrimaryActionTap,
-                );
-              },
-            ),
-          ),
-        ],
-      );
-    } else if (booking.status == 1) {
+    final l10n = AppLocalizations.of(context);
+    // if (booking.status == BookingStatus.pending) {
+    //   return Row(
+    //     children: [
+    //       Expanded(
+    //         child: AppButton(
+    //           height: 32,
+    //           textSize: 12,
+    //           text: 'ยกเลิกนัด',
+    //           style: AppButtonStyle.outline,
+    //           onPressed: () {
+    //             AppConfirmationBottomSheet.show(
+    //               context: context,
+    //               title: 'ยกเลิกนัดหมาย?',
+    //               description: 'คุณต้องการยกเลิกนัดหมายนี้หรือไม่?',
+    //               confirmLabel: 'ยกเลิกนัด',
+    //               style: ConfirmationStyle.destructive,
+    //               onConfirm: () =>
+    //                   onStatusAction?.call(BookingStatus.reject.value),
+    //             );
+    //           },
+    //         ),
+    //       ),
+    //       const SizedBox(width: 8),
+    //       Expanded(
+    //         child: AppButton(
+    //           height: 32,
+    //           textSize: 12,
+    //           text: 'ยืนยันนัด',
+    //           style: AppButtonStyle.primary,
+    //           onPressed: () {
+    //             AppConfirmationBottomSheet.show(
+    //               context: context,
+    //               title: 'ยืนยันนัดหมาย?',
+    //               description: 'คุณต้องการยืนยันนัดหมายนี้หรือไม่?',
+    //               confirmLabel: 'ยืนยัน',
+    //               onConfirm: () =>
+    //                   onStatusAction?.call(BookingStatus.confirm.value),
+    //             );
+    //           },
+    //         ),
+    //       ),
+    //     ],
+    //   );
+    // } else if (booking.status == BookingStatus.confirm) {
+    //   return Column(
+    //     children: [
+    //       AppButton(
+    //         width: double.infinity,
+    //         height: 32,
+    //         textSize: 12,
+    //         text: 'เริ่มเดินทาง',
+    //         style: AppButtonStyle.primary,
+    //         onPressed: () {
+    //           AppConfirmationBottomSheet.show(
+    //             context: context,
+    //             title: 'เริ่มเดินทาง?',
+    //             description: 'คุณกำลังเริ่มเดินทางไปหาลูกค้าใช่หรือไม่?',
+    //             confirmLabel: 'เริ่มเดินทาง',
+    //             onConfirm: () =>
+    //                 onStatusAction?.call(BookingStatus.traveling.value),
+    //           );
+    //         },
+    //       ),
+    //       const SizedBox(height: 8),
+    //       AppButton(
+    //         width: double.infinity,
+    //         height: 32,
+    //         textSize: 12,
+    //         text: 'ยกเลิกนัด',
+    //         style: AppButtonStyle.outline,
+    //         onPressed: () {
+    //           AppConfirmationBottomSheet.show(
+    //             context: context,
+    //             title: 'ยกเลิกนัดหมาย?',
+    //             description: 'คุณต้องการยกเลิกนัดหมายนี้หรือไม่?',
+    //             confirmLabel: 'ยกเลิกนัด',
+    //             style: ConfirmationStyle.destructive,
+    //             onConfirm: () =>
+    //                 onStatusAction?.call(BookingStatus.reject.value),
+    //           );
+    //         },
+    //       ),
+    //     ],
+    //   );
+    // } else if (booking.status == BookingStatus.traveling) {
+    //   return AppButton(
+    //     width: double.infinity,
+    //     height: 32,
+    //     textSize: 12,
+    //     text: 'ถึงแล้ว',
+    //     style: AppButtonStyle.primary,
+    //     onPressed: () {
+    //       AppConfirmationBottomSheet.show(
+    //         context: context,
+    //         title: 'ถึงที่หมาย?',
+    //         description: 'คุณถึงที่หมายแล้วใช่หรือไม่?',
+    //         confirmLabel: 'ถึงแล้ว',
+    //         onConfirm: () => onStatusAction?.call(BookingStatus.arrived.value),
+    //       );
+    //     },
+    //   );
+    // } else if (booking.status == BookingStatus.arrived) {
+    //   return AppButton(
+    //     width: double.infinity,
+    //     height: 32,
+    //     textSize: 12,
+    //     text: 'เสร็จงาน',
+    //     style: AppButtonStyle.primary,
+    //     onPressed: () {
+    //       AppConfirmationBottomSheet.show(
+    //         context: context,
+    //         title: 'เสร็จสิ้นงาน?',
+    //         description: 'คุณดำเนินการเข้าชมบ้านเสร็จสิ้นแล้วใช่หรือไม่?',
+    //         confirmLabel: 'เสร็จงาน',
+    //         onConfirm: () => onStatusAction?.call(BookingStatus.met.value),
+    //       );
+    //     },
+    //   );
+    // }
+
+    if (booking.status == BookingStatus.confirm) {
       return AppButton(
         width: double.infinity,
         height: 32,
         textSize: 12,
-        text: 'เริ่มเดินทาง',
-        style: AppButtonStyle.primary,
+        text: l10n.calendar_cancel_label,
+        style: AppButtonStyle.outline,
         onPressed: () {
-          StatusDialog.confirm(
+          AppConfirmationBottomSheet.show(
             context: context,
-            title: 'เริ่มเดินทาง?',
-            message: 'คุณกำลังเริ่มเดินทางไปหาลูกค้าใช่หรือไม่?',
-            confirmLabel: 'เริ่มเดินทาง',
-            onConfirm: onPrimaryActionTap,
+            title: l10n.calendar_confirm_cancel_title,
+            description: l10n.calendar_confirm_cancel_desc,
+            confirmLabel: l10n.calendar_confirm_label,
+            style: ConfirmationStyle.destructive,
+            onConfirm: () => onStatusAction?.call(2),
           );
-        },
-      );
-    } else if (booking.status == 4) {
-      return AppButton(
-        width: double.infinity,
-        height: 32,
-        textSize: 12,
-        text: 'ถึงแล้ว',
-        style: AppButtonStyle.primary,
-        onPressed: () {
-          StatusDialog.confirm(
-            context: context,
-            title: 'ถึงที่หมาย?',
-            message: 'คุณถึงที่หมายแล้วใช่หรือไม่?',
-            confirmLabel: 'ถึงแล้ว',
-            onConfirm: onPrimaryActionTap,
-          );
-        },
-      );
-    } else if (booking.status == 3) {
-      // Completed - optionally show Contact button if requested
-      // For now, based on user input, we hide it or keep it simple.
-      return AppButton(
-        width: double.infinity,
-        height: 32,
-        textSize: 12,
-        text: 'ติดต่อผู้จอง',
-        style: AppButtonStyle.primary,
-        onPressed: () {
-          // TODO: Open contact info
         },
       );
     } else {

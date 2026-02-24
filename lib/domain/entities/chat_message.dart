@@ -2,12 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'pagination.dart';
 
 /// ChatMessage entity matching the old Laravel ChatMessage model
-enum SenderType {
-  buyer,
-  agent,
-  seller,
-  staff,
-}
+enum SenderType { buyer, agent, seller, staff }
 
 class ChatMessage extends Equatable {
   final int? id;
@@ -21,6 +16,7 @@ class ChatMessage extends Equatable {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final String? senderName; // Computed attribute
+  final String? imageUrl;
 
   const ChatMessage({
     this.id,
@@ -34,25 +30,39 @@ class ChatMessage extends Equatable {
     this.createdAt,
     this.updatedAt,
     this.senderName,
+    this.imageUrl,
   });
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
+    // If we're parsing a conversation object that has a nested 'last_message'
+    final lastMsg = json['last_message'] as Map<String, dynamic>?;
+    final effectiveJson = lastMsg ?? json;
+
     return ChatMessage(
       id: json['id'] as int?,
-      bookingId: json['booking_id'] as int?,
+      bookingId:
+          json['booking_id'] as int? ??
+          (lastMsg != null ? json['id'] as int? : null),
       staffConversationId: json['staff_conversation_id'] as int?,
-      senderType: _parseSenderType(json['sender_type']),
-      senderId: json['sender_id'] as int,
-      message: json['message'] as String,
-      isRead: json['is_read'] as bool? ?? false,
-      readAt: json['read_at'] != null ? DateTime.parse(json['read_at']) : null,
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+      senderType: _parseSenderType(effectiveJson['sender_type']),
+      senderId: (effectiveJson['sender_id'] as num? ?? 0).toInt(),
+      message:
+          (effectiveJson['message'] ?? effectiveJson['last_message_text'] ?? '')
+              .toString(),
+      isRead: (effectiveJson['is_read'] ?? json['unread_count'] == 0) as bool,
+      readAt: effectiveJson['read_at'] != null
+          ? DateTime.parse(effectiveJson['read_at'])
           : null,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
+      createdAt: (effectiveJson['created_at'] ?? json['updated_at']) != null
+          ? DateTime.parse((effectiveJson['created_at'] ?? json['updated_at']))
           : null,
-      senderName: json['sender_name'] as String?,
+      updatedAt: effectiveJson['updated_at'] != null
+          ? DateTime.parse(effectiveJson['updated_at'])
+          : null,
+      senderName:
+          json['sender_name'] as String? ??
+          (json['user'] as Map?)?['name'] as String?,
+      imageUrl: effectiveJson['image_url'] as String?,
     );
   }
 
@@ -87,23 +97,25 @@ class ChatMessage extends Equatable {
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'sender_name': senderName,
+      'image_url': imageUrl,
     };
   }
 
   @override
   List<Object?> get props => [
-        id,
-        bookingId,
-        staffConversationId,
-        senderType,
-        senderId,
-        message,
-        isRead,
-        readAt,
-        createdAt,
-        updatedAt,
-        senderName,
-      ];
+    id,
+    bookingId,
+    staffConversationId,
+    senderType,
+    senderId,
+    message,
+    isRead,
+    readAt,
+    createdAt,
+    updatedAt,
+    senderName,
+    imageUrl,
+  ];
 }
 
 /// Response from GET /agent/chats: { "data": { "messages": [...], "pagination": {...} } }
@@ -121,14 +133,12 @@ class PaginatedChatResponse extends Equatable {
     List<dynamic> messageList;
     Map<String, dynamic> paginationJson;
     if (rawData is Map<String, dynamic>) {
-      messageList =
-          rawData['messages'] is List<dynamic>
-              ? rawData['messages'] as List<dynamic>
-              : <dynamic>[];
-      paginationJson =
-          rawData['pagination'] is Map<String, dynamic>
-              ? rawData['pagination'] as Map<String, dynamic>
-              : <String, dynamic>{};
+      messageList = rawData['messages'] is List<dynamic>
+          ? rawData['messages'] as List<dynamic>
+          : <dynamic>[];
+      paginationJson = rawData['pagination'] is Map<String, dynamic>
+          ? rawData['pagination'] as Map<String, dynamic>
+          : <String, dynamic>{};
     } else {
       messageList = <dynamic>[];
       paginationJson = <String, dynamic>{};

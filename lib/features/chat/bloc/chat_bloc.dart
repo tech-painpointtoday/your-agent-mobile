@@ -110,17 +110,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     List<ChatBooking> existing,
     List<ChatBooking> incoming,
   ) {
-    final byId = <int, ChatBooking>{
-      for (final c in existing) c.id: c,
-    };
+    final byId = <int, ChatBooking>{for (final c in existing) c.id: c};
     for (final c in incoming) {
       byId[c.id] = c;
     }
     final list = byId.values.toList()
       ..sort(
-        (a, b) =>
-            (b.lastActiveAt ?? DateTime(0))
-                .compareTo(a.lastActiveAt ?? DateTime(0)),
+        (a, b) => (b.lastActiveAt ?? DateTime(0)).compareTo(
+          a.lastActiveAt ?? DateTime(0),
+        ),
       );
     return list;
   }
@@ -136,35 +134,44 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     final list = <ChatBooking>[];
     for (final entry in byBooking.entries) {
       final bookingMessages = entry.value
-        ..sort((a, b) =>
-            (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
+        ..sort(
+          (a, b) => (b.createdAt ?? DateTime(0)).compareTo(
+            a.createdAt ?? DateTime(0),
+          ),
+        );
       final latest = bookingMessages.first;
       String participantName = latest.senderName ?? 'Unknown';
       if (latest.senderType == SenderType.agent) {
         final fromOther = bookingMessages
-            .where((m) => m.senderType != SenderType.agent && (m.senderName ?? '').isNotEmpty)
+            .where(
+              (m) =>
+                  m.senderType != SenderType.agent &&
+                  (m.senderName ?? '').isNotEmpty,
+            )
             .map((m) => m.senderName!);
         if (fromOther.isNotEmpty) {
           participantName = fromOther.first;
         }
       }
       final unreadCount = bookingMessages
-          .where((m) =>
-              m.senderType != SenderType.agent && !m.isRead)
+          .where((m) => m.senderType != SenderType.agent && !m.isRead)
           .length;
       list.add(
         ChatBooking(
           id: entry.key,
           participantName: participantName,
-          lastMessage: latest.message,
+          lastMessage: _formatLastMessage(latest),
           unreadCount: unreadCount,
           lastActiveAt: latest.createdAt,
           avatarUrl: null,
         ),
       );
     }
-    list.sort((a, b) =>
-        (b.lastActiveAt ?? DateTime(0)).compareTo(a.lastActiveAt ?? DateTime(0)));
+    list.sort(
+      (a, b) => (b.lastActiveAt ?? DateTime(0)).compareTo(
+        a.lastActiveAt ?? DateTime(0),
+      ),
+    );
     return list;
   }
 
@@ -256,5 +263,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
 
     return result;
+  }
+
+  String _formatLastMessage(ChatMessage message) {
+    if (message.imageUrl != null && message.imageUrl!.isNotEmpty) {
+      if (message.senderType == SenderType.agent ||
+          message.senderType == SenderType.staff) {
+        return "You: sent an image";
+      } else {
+        return "Have an image message";
+      }
+    }
+    return message.message;
   }
 }

@@ -288,7 +288,7 @@
   "logout_message": "คุณต้องการออกจากระบบใช่หรือไม่",
   "logout_button": "ออกจากระบบ",
   "cancel_button": "ยกเลิก",
-  "notifications_title": "แจ้งเตือน",
+  "notifications_title": "การแจ้งเตือน",
   "read_all": "อ่านทั้งหมด",
   "no_notifications": "ไม่มีแจ้งเตือน",
   "now": "ตอนนี้",
@@ -472,6 +472,203 @@
   "month_october": "ตุลาคม",
   "month_november": "พฤศจิกายน",
   "month_december": "ธันวาคม",
+  "calendar_all": "ทั้งหมด",
+  "calendar_today": "วันนี้",
+  "calendar_tomorrow": "พรุ่งนี้",
+  "calendar_this_week": "สัปดาห์นี้",
+  "calendar_appointments_title": "รายการนัดหมาย",
+  "calendar_total_appointments": "รายการนัดหมายทั้งหมด {count} รายการ",
+  "@calendar_total_appointments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendar_no_appointments": "ไม่มีรายการนัดหมาย",
+  "calendar_history_title": "ประวัติการนัด",
+  "calendar_total_history": "รายการนัดหมายย้อนหลังทั้งหมด {count} รายการ",
+  "calendar_history_personal_note": "โน้ตส่วนตัว: {note}",
+  "@calendar_history_personal_note": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "calendar_history_expired_desc": "การนัดหมายนี้เลยกำหนดเวลาแล้ว โดยไม่มีการอัปเดต",
+  "calendar_history_reason": "เหตุผล: {reason}",
+  "@calendar_history_reason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "calendar_history_no_show": "ผู้จองเข้าชมไม่มาตามนัด",
+  "calendar_history_contact_button": "ติดต่อผู้จอง",
+  "calendar_history_reject": "ปฏิเสธ",
+  "calendar_sun": "อา.",
+  "calendar_mon": "จ.",
+  "calendar_tue": "อ.",
+  "calendar_wed": "พ.",
+  "calendar_thu": "พฤ.",
+  "calendar_fri": "ศ.",
+  "calendar_sat": "ส.",
+  "@calendar_total_history": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendar_select_month": "เลือกเดือน",
+  "calendar_visitor_label": "ผู้จองเข้าชม",
+  "calendar_datetime_label": "วันที่และเวลา",
+  "calendar_co_agent_required": "ต้องการ Co-agent",
+  "calendar_pending_confirmation": "รอการยืนยัน",
+  "calendar_arriving_status": "จะถึง {time}",
+  "@calendar_arriving_status": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "calendar_not_started_status": "ยังไม่เริ่มเดินทาง",
+  "calendar_tab_appointments": "นัดหมาย",
+  "calendar_tab_history": "ประวัติ",
+  "calendar_tab_availability": "เวลาว่าง",
+  "availability_delete_success": "ลบช่วงเวลาว่างสำเร็จ",
+  "availability_create_success": "เพิ่มช่วงเวลาว่างสำเร็จ",
+  "availability_update_success": "อัปเดตช่วงเวลาว่างสำเร็จ",
+  "availability_error": "เกิดข้อผิดพลาดในการทำรายการ",
+  "availability_title": "ช่วงเวลาว่าง",
+  "availability_subtitle": "ช่วงเวลาว่างของคุณที่พร้อมให้บริการ",
+  "availability_view_list": "มุมมองรายการ",
+  "availability_view_calendar": "มุมมองปฏิทิน",
+  "availability_empty_day": "ไม่มีช่วงเวลาว่างในวันที่เลือก",
+  "availability_empty_list": "ไม่มีช่วงเวลาว่าง",
+  "availability_confirm_delete_title": "ลบช่วงเวลาว่าง?",
+  "availability_confirm_delete_desc": "คุณต้องการลบช่วงเวลาว่างนี้ใช่หรือไม่?",
+  "availability_status_available": "พร้อมให้บริการ",
+  "availability_status_unavailable": "ไม่พร้อมให้บริการ",
+  "availability_edit_title": "แก้ไขช่วงเวลาว่าง",
+  "availability_add_title": "เพิ่มช่วงเวลาว่าง",
+  "availability_instruction": "กรุณาตรวจสอบตารางเวลาของคุณก่อน เพื่อป้องกันการเพิ่มช่วงเวลาที่ซ้อนกันในวันเดียวกัน",
+  "availability_date_label": "วันที่",
+  "availability_start_time_label": "เวลาเริ่มต้น",
+  "availability_end_time_label": "เวลาสิ้นสุด",
+  "availability_status_label": "สถานะ",
+  "availability_cancel_button": "ยกเลิก",
+  "availability_save_button": "บันทึก",
+  "availability_add_button": "เพิ่มเลย",
+  "availability_invalid_time_title": "เวลาไม่ถูกต้อง",
+  "availability_past_time_error": "ไม่สามารถเลือกเวลาในอดีตได้",
+  "availability_end_before_start_error": "เวลาสิ้นสุดต้องอยู่หลังเวลาเริ่มต้น",
+  "availability_confirm_edit_title": "ยืนยันการแก้ไขช่วงเวลาว่าง?",
+  "availability_confirm_edit_desc": "คุณต้องการบันทึกการเปลี่ยนแปลงใช่หรือไม่?",
+  "availability_confirm_add_title": "ยืนยันการเพิ่มช่วงเวลาว่าง?",
+  "availability_confirm_add_desc": "คุณต้องการเพิ่มช่วงเวลาว่างนี้ใช่หรือไม่?",
+  "availability_delete_label": "ลบ",
+  "availability_confirm_add_label": "เพิ่ม",
+  "availability_select_month": "เลือกเดือน",
+  "calendar_success_update": "อัปเดตสถานะเรียบร้อยแล้ว",
+  "calendar_error_update": "ไม่สามารถอัปเดตสถานะได้",
+  "calendar_unspecified_name": "ไม่ระบุชื่อ",
+  "calendar_unspecified_location": "ไม่ระบุตำแหน่ง",
+  "calendar_confirm_cancel_title": "ยกเลิกนัดหมาย?",
+  "calendar_confirm_cancel_desc": "คุณต้องการยกเลิกนัดหมายนี้หรือไม่?",
+  "calendar_confirm_label": "ยืนยัน",
+  "calendar_cancel_label": "ยกเลิกนัดหมาย",
+  "calendar_status_confirmed": "ยืนยันนัดแล้ว",
+  "calendar_status_cancelled": "ยกเลิกแล้ว",
+  "calendar_status_finished": "เสร็จสิ้น",
+  "calendar_status_traveling": "กำลังเดินทาง",
+  "calendar_status_arrived": "ถึงแล้ว",
+  "calendar_status_offer": "ข้อเสนอ",
+  "calendar_status_contract": "สัญญา",
+  "calendar_status_closed": "ปิดงาน",
+  "calendar_status_expired": "เกินกำหนด",
+  "notifications_mark_all_read": "อ่านทั้งหมด",
+  "notifications_confirm_mark_all_read_title": "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด?",
+  "notifications_confirm_mark_all_read_desc": "คุณต้องการทำเครื่องหมายการแจ้งเตือนทั้งหมดว่าอ่านแล้วใช่หรือไม่?",
+  "notifications_filter_all": "ทั้งหมด",
+  "notifications_filter_unread": "ยังไม่ได้อ่าน",
+  "notifications_error": "เกิดข้อผิดพลาด: {message}",
+  "@notifications_error": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "notifications_empty_title": "ยังไม่มีการแจ้งเตือนตอนนี้",
+  "notifications_empty_subtitle": "เราจะอัปเดตให้คุณทราบที่นี่เมื่อมีแจ้งเตือน",
+  "notifications_not_found": "ไม่พบการแจ้งเตือน",
+  "notifications_now": "ตอนนี้",
+  "notifications_minutes_ago": "{count} นาทีที่แล้ว",
+  "@notifications_minutes_ago": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifications_hours_ago": "{count} ชั่วโมงที่แล้ว",
+  "@notifications_hours_ago": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifications_days_ago": "{count} วันที่แล้ว",
+  "@notifications_days_ago": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifications_archive": "เก็บถาวร",
+  "notifications_unarchive": "เลิกเก็บถาวร",
+  "notifications_delete_confirm_title": "ลบการแจ้งเตือน?",
+  "notifications_delete_confirm_desc": "คุณต้องการลบการแจ้งเตือนนี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้",
+  "notifications_delete_label": "ลบ",
+  "notifications_cancel_label": "ยกเลิก",
+  "calendar_delay_warning": "คุณอาจจะไปถึงช้าประมาณ {minutes} นาที",
+  "@calendar_delay_warning": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "booking_detail_title": "ข้อมูลการนัดหมาย",
+  "booking_date": "วันที่นัด",
+  "booking_time": "เวลานัด",
+  "booking_location": "สถานที่",
+  "booking_property_info": "ข้อมูลอสังหาริมทรัพย์",
+  "booking_client": "ผู้จองเข้าชม",
+  "booking_not_found": "ไม่พบข้อมูลการนัดหมาย",
+  "booking_retry": "ลองใหม่",
+  "booking_status_pending_client": "ลูกค้ารอยืนยัน",
+  "booking_status_traveling_client": "ลูกค้ากำลังเดินทาง",
+  "booking_status_arrived_client": "ถึงที่หมายแล้ว",
+  "booking_confirm_booking": "ยืนยันนัด",
+  "booking_confirm_booking_title": "ยืนยันนัดหมาย?",
+  "booking_confirm_booking_desc": "คุณต้องการยืนยันนัดหมายนี้หรือไม่?",
+  "booking_start_traveling": "เริ่มเดินทาง",
+  "booking_confirm_traveling_title": "เริ่มเดินทาง?",
+  "booking_confirm_traveling_desc": "คุณกำลังเริ่มเดินทางไปหาลูกค้าใช่หรือไม่?",
+  "booking_confirm_arrived_title": "ถึงที่หมาย?",
+  "booking_confirm_arrived_desc": "คุณถึงที่หมายแล้วใช่หรือไม่?",
+  "booking_finish_work": "เสร็จงาน",
+  "booking_confirm_finish_title": "เสร็จสิ้นงาน?",
+  "booking_confirm_finish_desc": "คุณดำเนินการเข้าชมบ้านเสร็จสิ้นแล้วใช่หรือไม่?",
+  "booking_unspecified_property": "ไม่ระบุชื่อทรัพย์",
+  "booking_status_unknown": "ไม่ทราบสถานะ",
   "email_not_verified": "ยังไม่ได้ยืนยัน",
   "full_name_label": "ชื่อเต็ม",
   "email_address": "ที่อยู่อีเมล",

@@ -4,6 +4,7 @@ class UserProfileModel {
   final String email;
   final String? profilePhoto;
   final DateTime? emailVerifiedAt;
+  final List<String>? deviceTokens;
 
   UserProfileModel({
     required this.id,
@@ -11,6 +12,7 @@ class UserProfileModel {
     required this.email,
     this.profilePhoto,
     this.emailVerifiedAt,
+    this.deviceTokens,
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,9 @@ class UserProfileModel {
       email: (json['email'] ?? '').toString(),
       profilePhoto: profilePhotoRaw?.toString(),
       emailVerifiedAt: parseDateNullable(emailVerifiedRaw),
+      deviceTokens: json['device_tokens'] != null
+          ? List<String>.from(json['device_tokens'] as Iterable)
+          : null,
     );
   }
 
@@ -58,6 +63,7 @@ class UserProfileModel {
       'email': email,
       'profile_photo': profilePhoto,
       'email_verified_at': emailVerifiedAt?.toIso8601String(),
+      'device_tokens': deviceTokens,
     };
   }
 }

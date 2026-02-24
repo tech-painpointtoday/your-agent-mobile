@@ -17,6 +17,10 @@ class FetchAvailability extends AvailabilityEvent {
   List<Object?> get props => [date, forceRefresh];
 }
 
+class LoadMoreAvailability extends AvailabilityEvent {
+  const LoadMoreAvailability();
+}
+
 class CreateAvailability extends AvailabilityEvent {
   final DateTime date;
   final String startTime;

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../../core/theme/app_colors.dart';
+import 'package:youragent/core/theme/app_colors.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 class NotificationEmptyState extends StatelessWidget {
   const NotificationEmptyState({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40.0),
@@ -24,7 +25,7 @@ class NotificationEmptyState extends StatelessWidget {
             const SizedBox(height: 24),
 
             Text(
-              'ยังไม่มีการแจ้งเตือนตอนนี้\nเราจะอัปเดตให้คุณทราบที่นี่เมื่อมีแจ้งเตือน',
+              '${l10n.notifications_empty_title}\n${l10n.notifications_empty_subtitle}',
               textAlign: TextAlign.center,
               style: GoogleFonts.anuphan(
                 fontSize: 14,

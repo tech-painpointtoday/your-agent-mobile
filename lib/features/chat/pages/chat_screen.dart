@@ -520,7 +520,9 @@ class _ChatSessionTile extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          conversation.lastMessage ?? l10n.no_messages,
+                          (conversation.lastMessage?.isNotEmpty ?? false)
+                              ? conversation.lastMessage!
+                              : l10n.no_messages,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.anuphan(

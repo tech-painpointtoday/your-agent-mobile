@@ -10,8 +10,10 @@ import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 
 import '../../../app/router.dart';
+import '../../../core/config/app_config.dart';
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../domain/entities/device_info_model.dart';
 import '../../../utils/image_url_helper.dart';
 import '../../../widgets/badges/app_badge.dart';
 import '../../../widgets/buttons/app_button.dart';
@@ -241,7 +243,7 @@ class ProfileView extends StatelessWidget {
               ),
               // Change Password Button Overlap
               Positioned(
-                top: 36,
+                top: 56 - MediaQuery.of(context).padding.top,
                 right: 0,
                 child: AppButton(
                   text: AppLocalizations.of(context).changePasswordButton,
@@ -316,6 +318,10 @@ class ProfileView extends StatelessWidget {
               _buildWorkInfoCard(context, agent),
               const SizedBox(height: 16),
               _buildServiceAreaCard(context, agent),
+              if (AppConfig.isDev) ...[
+                const SizedBox(height: 16),
+                _buildDebugInfoCard(context),
+              ],
               const SizedBox(height: 64),
             ],
           ),
@@ -815,6 +821,84 @@ class ProfileView extends StatelessWidget {
           }),
         ),
       ],
+    );
+  }
+
+  Widget _buildDebugInfoCard(BuildContext context) {
+    return FutureBuilder<DeviceInfoModel>(
+      future: DependencyInjection.deviceService.getDeviceInfo(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const SizedBox.shrink();
+        final info = snapshot.data!;
+        return _ProfileCard(
+          title: 'Debug Info (Dev Only)',
+          onCopy: (context) {
+            Clipboard.setData(
+              ClipboardData(
+                text: 'FCM Token: ${info.token}\nDevice ID: ${info.deviceId}',
+              ),
+            );
+            StatusDialog.showSuccess(
+              context: context,
+              title: 'Debug Info Copied',
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDebugRow('Platform', info.platform),
+              _buildDebugRow('Model', info.deviceModel),
+              _buildDebugRow('OS', info.deviceOsVersion),
+              _buildDebugRow('App Version', info.appVersion),
+              _buildDebugRow('Device ID', info.deviceId),
+              const SizedBox(height: 8),
+              Text(
+                'FCM Token:',
+                style: GoogleFonts.anuphan(
+                  fontSize: 12,
+                  color: AppColors.baseGrey,
+                ),
+              ),
+              const SizedBox(height: 4),
+              SelectableText(
+                info.token.isEmpty ? 'Not Available' : info.token,
+                style: GoogleFonts.anuphan(
+                  fontSize: 10,
+                  color: AppColors.baseBlack,
+                  fontFeatures: [const FontFeature.tabularFigures()],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDebugRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Text(
+            '$label: ',
+            style: GoogleFonts.anuphan(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: AppColors.baseBlack,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: GoogleFonts.anuphan(
+                fontSize: 12,
+                color: AppColors.baseBlack,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

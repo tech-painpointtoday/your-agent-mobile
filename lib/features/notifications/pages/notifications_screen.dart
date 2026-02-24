@@ -12,6 +12,7 @@ import '../bloc/notification_event.dart';
 import '../bloc/notification_state.dart';
 import '../widgets/notification_empty_state.dart';
 import '../widgets/notification_list_item.dart';
+import '../../../l10n/app_localizations.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
@@ -47,12 +48,13 @@ class _NotificationsScreenContentState
   }
 
   void _markAllAsRead(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     AppConfirmationBottomSheet.show(
       context: context,
-      title: 'Mark All as Read',
-      description: 'Are you sure you want to mark all notifications as read?',
-      confirmLabel: 'Mark as Read',
-      cancelLabel: 'Cancel',
+      title: l10n.notifications_confirm_mark_all_read_title,
+      description: l10n.notifications_confirm_mark_all_read_desc,
+      confirmLabel: l10n.notifications_mark_all_read,
+      cancelLabel: l10n.notifications_cancel_label,
       style: ConfirmationStyle.normal,
       onConfirm: () {
         context.read<NotificationBloc>().add(const MarkAllAsRead());
@@ -76,7 +78,9 @@ class _NotificationsScreenContentState
                 // App Bar
                 SliverAppBar(
                   backgroundColor: AppColors.white,
+                  surfaceTintColor: AppColors.white,
                   elevation: 0,
+                  scrolledUnderElevation: 0,
                   pinned: true,
                   leading: IconButton(
                     icon: SvgPicture.asset(
@@ -92,7 +96,7 @@ class _NotificationsScreenContentState
                     onPressed: () => context.pop(),
                   ),
                   title: Text(
-                    'การแจ้งเตือน',
+                    AppLocalizations.of(context).notifications_title,
                     style: GoogleFonts.anuphan(
                       fontSize: 18,
                       color: AppColors.baseBlack,
@@ -104,7 +108,9 @@ class _NotificationsScreenContentState
                           ? () => _markAllAsRead(context)
                           : null,
                       child: Text(
-                        'อ่านทั้งหมด',
+                        AppLocalizations.of(
+                          context,
+                        ).notifications_mark_all_read,
                         style: GoogleFonts.anuphan(
                           fontSize: 14,
                           color: hasUnread
@@ -148,7 +154,9 @@ class _NotificationsScreenContentState
                                     return Row(
                                       children: [
                                         _FilterBadge(
-                                          label: 'ทั้งหมด',
+                                          label: AppLocalizations.of(
+                                            context,
+                                          ).notifications_filter_all,
                                           isSelected:
                                               currentFilter ==
                                               NotificationFilter.all,
@@ -162,7 +170,9 @@ class _NotificationsScreenContentState
                                         ),
                                         const SizedBox(width: 8),
                                         _FilterBadge(
-                                          label: 'ยังไม่ได้อ่าน',
+                                          label: AppLocalizations.of(
+                                            context,
+                                          ).notifications_filter_unread,
                                           isSelected:
                                               currentFilter ==
                                               NotificationFilter.unread,
@@ -198,7 +208,9 @@ class _NotificationsScreenContentState
                   SliverFillRemaining(
                     child: Center(
                       child: Text(
-                        'เกิดข้อผิดพลาด: ${state.message}',
+                        AppLocalizations.of(
+                          context,
+                        ).notifications_error(state.message),
                         style: GoogleFonts.anuphan(
                           color: AppColors.supportRedDeep,
                           fontSize: 14,

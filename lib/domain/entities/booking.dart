@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:youragent/domain/entities/buyer.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/pagination.dart';
+import 'package:youragent/core/enums/booking_status.dart';
 
 class Booking extends Equatable {
   final int id;
@@ -10,7 +11,7 @@ class Booking extends Equatable {
   final int? agentId;
   final String ymd;
   final String time;
-  final int status;
+  final BookingStatus status;
   final bool autoMatched;
   final DateTime? cancelledAt;
   final DateTime? confirmedAt;
@@ -46,7 +47,7 @@ class Booking extends Equatable {
       agentId: json['agent_id'] as int?,
       ymd: json['ymd'] as String,
       time: json['time'] as String,
-      status: json['status'] as int? ?? 0,
+      status: BookingStatus.fromInt(json['status'] as int? ?? 0),
       autoMatched: json['auto_matched'] as bool? ?? false,
       cancelledAt: json['cancelled_at'] != null
           ? DateTime.tryParse(json['cancelled_at'].toString())
@@ -104,10 +105,12 @@ class PaginatedBookings extends Equatable {
       list = rawData;
       metaJson = _metaMap(json['meta']) ?? _metaMap(json['pagination']) ?? {};
     } else if (rawData is Map<String, dynamic>) {
-      list = rawData['data'] as List<dynamic>? ??
+      list =
+          rawData['data'] as List<dynamic>? ??
           rawData['bookings'] as List<dynamic>? ??
           <dynamic>[];
-      metaJson = _metaMap(rawData['meta']) ??
+      metaJson =
+          _metaMap(rawData['meta']) ??
           _metaMap(rawData['pagination']) ??
           _metaMap(json['meta']) ??
           _metaMap(json['pagination']) ??

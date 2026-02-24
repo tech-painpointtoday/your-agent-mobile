@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
@@ -23,44 +25,32 @@ class NotificationListItem extends StatelessWidget {
   String _formatTimestamp(BuildContext context, DateTime timestamp) {
     final now = DateTime.now();
     final difference = now.difference(timestamp);
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).languageCode;
 
     if (difference.inMinutes < 1) {
-      return 'ตอนนี้';
+      return l10n.notifications_now;
     } else if (difference.inHours < 1) {
-      return '${difference.inMinutes} นาทีที่แล้ว';
-    } else if (difference.inDays < 1) {
-      return '${difference.inHours} ชั่วโมงที่แล้ว';
+      return l10n.notifications_minutes_ago(difference.inMinutes);
+    } else if (difference.inHours < 24) {
+      return l10n.notifications_hours_ago(difference.inHours);
     } else if (difference.inDays < 30) {
-      return '${difference.inDays} วันที่แล้ว';
+      return l10n.notifications_days_ago(difference.inDays);
     } else {
-      // Format as date: DD MMM YYYY, HH:mm
-      final months = [
-        'มกราคม',
-        'กุมภาพันธ์',
-        'มีนาคม',
-        'เมษายน',
-        'พฤษภาคม',
-        'มิถุนายน',
-        'กรกฎาคม',
-        'สิงหาคม',
-        'กันยายน',
-        'ตุลาคม',
-        'พฤศจิกายน',
-        'ธันวาคม',
-      ];
-
-      final day = timestamp.day;
-      final month = months[timestamp.month - 1];
-      final year = timestamp.year + 543; // Buddhist year
-      final hour = timestamp.hour.toString().padLeft(2, '0');
-      final minute = timestamp.minute.toString().padLeft(2, '0');
-
-      return '$day ${month.substring(0, 3)}. $year, $hour:$minute น.';
+      if (locale == 'th') {
+        final year = timestamp.year + 543;
+        final dateFormat = DateFormat('d MMM', 'th');
+        final timeFormat = DateFormat('HH:mm');
+        return '${dateFormat.format(timestamp)}. $year, ${timeFormat.format(timestamp)} น.';
+      } else {
+        return DateFormat('d MMM yyyy, HH:mm').format(timestamp);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Slidable(
       key: ValueKey(notification.id),
       endActionPane: ActionPane(
@@ -76,24 +66,25 @@ class NotificationListItem extends StatelessWidget {
             backgroundColor: AppColors.warning,
             foregroundColor: AppColors.white,
             icon: notification.isArchived ? Icons.unarchive : Icons.archive,
-            label: notification.isArchived ? 'ยกเลิก' : 'เก็บถาวร',
+            label: notification.isArchived
+                ? l10n.notifications_cancel_label
+                : l10n.notifications_archive,
           ),
           // Delete action
           SlidableAction(
             onPressed: (context) {
               AppConfirmationBottomSheet.show(
                 context: context,
-                title: 'ลบการแจ้งเตือน?',
-                description:
-                    'คุณต้องการลบการแจ้งเตือนนี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้',
-                confirmLabel: 'ลบ',
-                cancelLabel: 'ยกเลิก',
+                title: l10n.notifications_delete_confirm_title,
+                description: l10n.notifications_delete_confirm_desc,
+                confirmLabel: l10n.notifications_delete_label,
+                cancelLabel: l10n.notifications_cancel_label,
                 style: ConfirmationStyle.destructive,
                 onConfirm: () {
                   if (context.mounted) {
                     context.read<NotificationBloc>().add(
-                          DeleteNotification(notification.id),
-                        );
+                      DeleteNotification(notification.id),
+                    );
                   }
                 },
               );
@@ -101,7 +92,7 @@ class NotificationListItem extends StatelessWidget {
             backgroundColor: AppColors.supportRedDeep,
             foregroundColor: AppColors.white,
             icon: Icons.delete,
-            label: 'ลบ',
+            label: l10n.notifications_delete_label,
           ),
         ],
       ),

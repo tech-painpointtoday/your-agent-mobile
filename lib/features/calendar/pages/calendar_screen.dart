@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/widgets/app_search_bar.dart';
@@ -9,13 +12,16 @@ import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
 import 'package:youragent/features/calendar/bloc/availability/availability_bloc.dart';
 import 'package:youragent/features/calendar/bloc/availability/availability_event.dart';
+import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
 import '../widgets/calendar_history_card.dart';
 import '../widgets/calendar_availability_section.dart';
 import 'package:youragent/features/calendar/bloc/booking_list/booking_list_bloc.dart';
 import 'package:youragent/features/calendar/bloc/booking_list/booking_list_event.dart';
 import 'package:youragent/features/calendar/bloc/booking_list/booking_list_state.dart';
+import 'package:youragent/features/calendar/bloc/booking_list/booking_date_filter.dart';
 import '../widgets/booking_card.dart';
-import 'package:intl/intl.dart';
+import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:youragent/core/enums/thai_month.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -29,30 +35,21 @@ class _CalendarScreenState extends State<CalendarScreen>
   late TabController _tabController;
   late AvailabilityBloc _availabilityBloc;
   late BookingListBloc _bookingListBloc;
+  late BookingListBloc _historyBloc;
   late ScrollController _scrollController;
   late TextEditingController _searchController;
   double _appBarOpacity = 0.0;
   final double _fadeThreshold = 100.0;
-
-  int _activeFilterIndex = 0;
-  final List<String> _filters = ['ทั้งหมด', 'วันนี้', 'พรุ่งนี้', 'สัปดาห์นี้'];
+  List<String> get _filters => [
+    AppLocalizations.of(context).calendar_all,
+    AppLocalizations.of(context).calendar_today,
+    AppLocalizations.of(context).calendar_tomorrow,
+    AppLocalizations.of(context).calendar_this_week,
+  ];
 
   // History month selector state
-  int _selectedHistoryMonthIndex = 0; // 0 = มกราคม
-  static const List<String> _thaiMonths = [
-    'มกราคม 2569',
-    'กุมภาพันธ์ 2569',
-    'มีนาคม 2569',
-    'เมษายน 2569',
-    'พฤษภาคม 2569',
-    'มิถุนายน 2569',
-    'กรกฎาคม 2569',
-    'สิงหาคม 2569',
-    'กันยายน 2569',
-    'ตุลาคม 2569',
-    'พฤศจิกายน 2569',
-    'ธันวาคม 2569',
-  ];
+  late List<DateTime> _historyMonths;
+  late DateTime _selectedHistoryMonth;
 
   @override
   void initState() {
@@ -66,12 +63,28 @@ class _CalendarScreenState extends State<CalendarScreen>
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
     _searchController = TextEditingController();
+    final now = DateTime.now();
+    _historyMonths = List.generate(12, (i) {
+      return DateTime(now.year, now.month - i, 1);
+    });
+    _selectedHistoryMonth = _historyMonths.first;
+
     _availabilityBloc = AvailabilityBloc(
       apiService: DependencyInjection.availableTimeApiService,
     )..add(FetchAvailability(date: DateTime.now()));
     _bookingListBloc = BookingListBloc(
       apiService: DependencyInjection.bookingApiService,
     )..add(const FetchBookings());
+    _historyBloc = BookingListBloc(
+      apiService: DependencyInjection.bookingApiService,
+    );
+    _fetchHistoryForMonth(_selectedHistoryMonth);
+  }
+
+  void _fetchHistoryForMonth(DateTime month) {
+    final firstDay = DateTime(month.year, month.month, 1);
+    final lastDay = DateTime(month.year, month.month + 1, 0);
+    _historyBloc.add(SetCustomDateRange(firstDay, lastDay));
   }
 
   @override
@@ -82,7 +95,36 @@ class _CalendarScreenState extends State<CalendarScreen>
     _searchController.dispose();
     _availabilityBloc.close();
     _bookingListBloc.close();
+    _historyBloc.close();
     super.dispose();
+  }
+
+  Future<void> _updateBookingStatus(int bookingId, int status) async {
+    try {
+      await StatusDialog.showLoadingWhile(
+        context: context,
+        operation: () => DependencyInjection.bookingApiService
+            .updateBookingStatus(bookingId, status),
+      );
+
+      if (mounted) {
+        StatusDialog.showSuccess(
+          context: context,
+          title: AppLocalizations.of(context).success,
+          message: AppLocalizations.of(context).calendar_success_update,
+        );
+        _bookingListBloc.add(const FetchBookings());
+        _historyBloc.add(const FetchBookings());
+      }
+    } catch (e) {
+      if (mounted) {
+        StatusDialog.showError(
+          context: context,
+          title: AppLocalizations.of(context).error,
+          message: '${AppLocalizations.of(context).calendar_error_update}: $e',
+        );
+      }
+    }
   }
 
   void _showMonthPicker() {
@@ -99,22 +141,25 @@ class _CalendarScreenState extends State<CalendarScreen>
             maxHeight: MediaQuery.of(context).size.height * 0.7,
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 12),
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE9EAEB),
-                  borderRadius: BorderRadius.circular(2),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE9EAEB),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  'เลือกเดือน',
+                  AppLocalizations.of(context).calendar_select_month,
                   style: GoogleFonts.anuphan(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -123,17 +168,19 @@ class _CalendarScreenState extends State<CalendarScreen>
                 ),
               ),
               const SizedBox(height: 8),
-              const Divider(height: 1, color: AppColors.basePaleGrey),
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: _thaiMonths.length,
+                  itemCount: _historyMonths.length,
                   itemBuilder: (ctx, i) {
-                    final isSelected = i == _selectedHistoryMonthIndex;
+                    final monthDate = _historyMonths[i];
+                    final isSelected = monthDate == _selectedHistoryMonth;
+                    final thaiMonth = ThaiMonth.fromDateTime(monthDate);
                     return InkWell(
                       onTap: () {
-                        setState(() => _selectedHistoryMonthIndex = i);
+                        setState(() => _selectedHistoryMonth = monthDate);
                         Navigator.pop(ctx);
+                        _fetchHistoryForMonth(monthDate);
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -149,7 +196,10 @@ class _CalendarScreenState extends State<CalendarScreen>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              _thaiMonths[i],
+                              thaiMonth.localizedNameWithYear(
+                                context,
+                                monthDate.year,
+                              ),
                               style: GoogleFonts.anuphan(
                                 fontSize: 15,
                                 fontWeight: isSelected
@@ -231,7 +281,7 @@ class _CalendarScreenState extends State<CalendarScreen>
       automaticallyImplyLeading: false,
       centerTitle: true,
       title: Text(
-        'ตารางเวลา',
+        AppLocalizations.of(context).availability,
         style: GoogleFonts.anuphan(
           color: Colors.white,
           fontSize: 18,
@@ -295,10 +345,10 @@ class _CalendarScreenState extends State<CalendarScreen>
           labelPadding: EdgeInsets.zero,
           dividerColor: Colors.transparent,
           indicatorSize: TabBarIndicatorSize.tab,
-          tabs: const [
-            Tab(text: 'รายการนัดหมาย'),
-            Tab(text: 'ประวัติการนัด'),
-            Tab(text: 'ช่วงเวลาว่าง'),
+          tabs: [
+            Tab(text: AppLocalizations.of(context).calendar_tab_appointments),
+            Tab(text: AppLocalizations.of(context).calendar_tab_history),
+            Tab(text: AppLocalizations.of(context).calendar_tab_availability),
           ],
         ),
       ),
@@ -315,130 +365,171 @@ class _CalendarScreenState extends State<CalendarScreen>
         }
 
         if (state.status == BookingListStatus.failure) {
-          return Center(child: Text('เกิดข้อผิดพลาด: ${state.errorMessage}'));
+          return Center(
+            child: Text(
+              '${AppLocalizations.of(context).error}: ${state.errorMessage}',
+            ),
+          );
         }
+        final bookings = state.filteredBookings;
 
-        final now = DateTime.now();
-        final todayStr = DateFormat('yyyyMMdd').format(now);
-        final tomorrowStr = DateFormat(
-          'yyyyMMdd',
-        ).format(now.add(const Duration(days: 1)));
-        final next7Days = List.generate(
-          7,
-          (i) => DateFormat('yyyyMMdd').format(now.add(Duration(days: i))),
-        );
-
-        final bookings = state.bookings.where((b) {
-          if (_activeFilterIndex == 0) return true;
-          if (_activeFilterIndex == 1) return b.ymd == todayStr;
-          if (_activeFilterIndex == 2) return b.ymd == tomorrowStr;
-          if (_activeFilterIndex == 3) return next7Days.contains(b.ymd);
-          return true;
-        }).toList();
-
-        return SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 32),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.only(top: 16, bottom: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'รายการนัดหมาย',
-                        style: GoogleFonts.anuphan(
-                          color: const Color(0xFF1743C7),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'รายการนัดหมายทั้งหมด ${bookings.length} รายการ',
-                        style: GoogleFonts.anuphan(
-                          color: const Color(0xFF737373),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                // Filter badges
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: List.generate(_filters.length, (index) {
-                      final isSelected = _activeFilterIndex == index;
-                      return AppBadge(
-                        label: _filters[index],
-                        customBackgroundColor: isSelected
-                            ? AppColors.supportBlueDeep
-                            : AppColors.white,
-                        customTextColor: isSelected
-                            ? AppColors.supportBlueLight
-                            : AppColors.baseDarkGrey,
-                        hasBorder: !isSelected,
-                        borderColor: const Color(0xFFE9EAEB),
-                        onDismiss: () =>
-                            setState(() => _activeFilterIndex = index),
-                      );
-                    }),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                // Search bar
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: AppSearchBar(
-                    controller: _searchController,
-                    hintText: AppLocalizations.of(context).searchHint,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // Appointment list
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: bookings.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 32),
-                            child: Text(
-                              'ไม่มีรายการนัดหมาย',
-                              style: GoogleFonts.anuphan(
-                                fontSize: 14,
-                                color: AppColors.baseGrey,
-                              ),
+        return NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (scrollInfo.metrics.pixels >=
+                scrollInfo.metrics.maxScrollExtent - 200) {
+              context.read<BookingListBloc>().add(const LoadMoreBookings());
+            }
+            return false;
+          },
+          child: RefreshIndicator(
+            onRefresh: () async {
+              _bookingListBloc.add(const FetchBookings(refresh: true));
+              await _bookingListBloc.stream.firstWhere(
+                (s) => s.status != BookingListStatus.loading,
+              );
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: 32),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(top: 16, bottom: 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(
+                              context,
+                            ).calendar_appointments_title,
+                            style: GoogleFonts.anuphan(
+                              color: const Color(0xFF1743C7),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
-                        )
-                      : ListView.separated(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: bookings.length,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 12),
-                          itemBuilder: (context, index) {
-                            return BookingCard(
-                              booking: bookings[index],
-                              onPrimaryActionTap: () {},
-                              onCoAgentTap: () {},
+                          const SizedBox(height: 4),
+                          Text(
+                            AppLocalizations.of(
+                              context,
+                            ).calendar_total_appointments(bookings.length),
+                            style: GoogleFonts.anuphan(
+                              color: const Color(0xFF737373),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Filter badges
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: List.generate(
+                          BookingDateFilter.values.length,
+                          (index) {
+                            final filterToken = BookingDateFilter.values[index];
+                            final isSelected =
+                                state.selectedFilter == filterToken;
+                            final label = (index < _filters.length)
+                                ? _filters[index]
+                                : filterToken.name;
+                            return AppBadge(
+                              label: label,
+                              customBackgroundColor: isSelected
+                                  ? AppColors.supportBlueDeep
+                                  : AppColors.white,
+                              customTextColor: isSelected
+                                  ? AppColors.supportBlueLight
+                                  : AppColors.baseDarkGrey,
+                              hasBorder: !isSelected,
+                              borderColor: const Color(0xFFE9EAEB),
+                              onDismiss: () {
+                                context.read<BookingListBloc>().add(
+                                  FilterBookings(filterToken),
+                                );
+                              },
                             );
                           },
                         ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // ── Month selector (tappable dropdown) ───────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: AppSearchBar(
+                        controller: _searchController,
+                        hintText: AppLocalizations.of(context).searchHint,
+                        onChanged: (value) {
+                          context.read<BookingListBloc>().add(
+                            SearchBookings(value),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Appointment list
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: bookings.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 32,
+                                ),
+                                child: Text(
+                                  'ไม่มีรายการนัดหมาย',
+                                  style: GoogleFonts.anuphan(
+                                    fontSize: 14,
+                                    color: AppColors.baseGrey,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : ListView.separated(
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: bookings.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 12),
+                              itemBuilder: (context, index) {
+                                return BookingCard(
+                                  booking: bookings[index],
+                                  onStatusAction: (status) =>
+                                      _updateBookingStatus(
+                                        bookings[index].id,
+                                        status,
+                                      ),
+                                  onCoAgentTap: () {},
+                                );
+                              },
+                            ),
+                    ),
+                    if (state.isLoadingMore)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         );
@@ -448,164 +539,255 @@ class _CalendarScreenState extends State<CalendarScreen>
 
   // ── Tab 2: Appointment history ──────────────────────────────────────────
   Widget _buildHistorySection(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 32),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.only(top: 16, bottom: 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ── Header ──────────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'ประวัติการนัด',
-                    style: GoogleFonts.anuphan(
-                      color: AppColors.brandBlue,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'รายการนัดหมายย้อนหลังทั้งหมด 5 รายการ',
-                    style: GoogleFonts.anuphan(
-                      color: AppColors.baseDarkGrey,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            // ── Month selector (tappable dropdown) ───────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: GestureDetector(
-                onTap: _showMonthPicker,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        width: 1,
-                        color: AppColors.baseLightGrey,
+    return BlocBuilder<BookingListBloc, BookingListState>(
+      bloc: _historyBloc,
+      builder: (context, state) {
+        final bookings = state.filteredBookings;
+
+        return NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (scrollInfo.metrics.pixels >=
+                scrollInfo.metrics.maxScrollExtent - 200) {
+              _historyBloc.add(const LoadMoreBookings());
+            }
+            return false;
+          },
+          child: RefreshIndicator(
+            onRefresh: () async {
+              _fetchHistoryForMonth(_selectedHistoryMonth);
+              await _historyBloc.stream.firstWhere(
+                (s) => s.status != BookingListStatus.loading,
+              );
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: 32),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(top: 16, bottom: 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Header ──────────────────────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context).calendar_history_title,
+                            style: GoogleFonts.anuphan(
+                              color: AppColors.brandBlue,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            AppLocalizations.of(
+                              context,
+                            ).calendar_total_history(bookings.length),
+                            style: GoogleFonts.anuphan(
+                              color: AppColors.baseDarkGrey,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                      borderRadius: BorderRadius.circular(12),
                     ),
-                    shadows: const [
-                      BoxShadow(
-                        color: Color(0x0C000000),
-                        blurRadius: 2,
-                        offset: Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _thaiMonths[_selectedHistoryMonthIndex],
-                        style: GoogleFonts.anuphan(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.baseBlack,
+                    const SizedBox(height: 16),
+                    // ── Month selector (tappable dropdown) ───────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: GestureDetector(
+                        onTap: _showMonthPicker,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                width: 1,
+                                color: AppColors.baseLightGrey,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            shadows: const [
+                              BoxShadow(
+                                color: Color(0x0C000000),
+                                blurRadius: 2,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                ThaiMonth.fromDateTime(
+                                  _selectedHistoryMonth,
+                                ).localizedNameWithYear(
+                                  context,
+                                  _selectedHistoryMonth.year,
+                                ),
+                                style: GoogleFonts.anuphan(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.baseBlack,
+                                ),
+                              ),
+                              SvgPicture.asset(
+                                'assets/icons/chevron-down.svg',
+                                width: 20,
+                                height: 20,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.baseDarkGrey,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      const Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        size: 20,
-                        color: AppColors.baseDarkGrey,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 16),
+                    // ── History cards ────────────────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child:
+                          state.status == BookingListStatus.initial ||
+                              state.status == BookingListStatus.loading
+                          ? const Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 32),
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          : state.status == BookingListStatus.failure
+                          ? Center(
+                              child: Text(
+                                '${AppLocalizations.of(context).error}: ${state.errorMessage}',
+                              ),
+                            )
+                          : bookings.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 32,
+                                ),
+                                child: Text(
+                                  'ไม่มีรายการนัดหมาย',
+                                  style: GoogleFonts.anuphan(
+                                    fontSize: 14,
+                                    color: AppColors.baseGrey,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                ListView.separated(
+                                  padding: EdgeInsets.zero,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: bookings.length,
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(height: 12),
+                                  itemBuilder: (context, index) {
+                                    String displayDate = '';
+                                    try {
+                                      final ymd = bookings[index].ymd;
+                                      if (ymd.length == 8) {
+                                        final year = int.parse(
+                                          ymd.substring(0, 4),
+                                        );
+                                        final month = int.parse(
+                                          ymd.substring(4, 6),
+                                        );
+                                        final day = int.parse(
+                                          ymd.substring(6, 8),
+                                        );
+                                        final dt = DateTime(year, month, day);
+                                        final thaiYear = year + 543;
+                                        final formatter = DateFormat(
+                                          'd MMM',
+                                          'th',
+                                        );
+                                        displayDate =
+                                            '${formatter.format(dt)} $thaiYear, ${bookings[index].time} น.';
+                                      } else {
+                                        displayDate =
+                                            '${bookings[index].ymd}, ${bookings[index].time} น.';
+                                      }
+                                    } catch (_) {
+                                      displayDate =
+                                          '${bookings[index].ymd}, ${bookings[index].time} น.';
+                                    }
+
+                                    final booking = bookings[index];
+                                    return CalendarHistoryCard(
+                                      propertyAddress:
+                                          booking.property?.title ??
+                                          'Unknown Address',
+                                      imageUrl:
+                                          booking.property?.images.isNotEmpty ==
+                                              true
+                                          ? booking.property!.images.first.url
+                                          : null,
+                                      visitorName:
+                                          booking.buyer?.name ?? 'Unknown',
+                                      dateStr: displayDate,
+                                      status: booking.status,
+                                      onContactTap: booking.buyer?.phone != null
+                                          ? () {
+                                              AppCallBottomSheet.show(
+                                                context: context,
+                                                options: [
+                                                  CallOption(
+                                                    label:
+                                                        booking.buyer?.name ??
+                                                        'Unknown',
+                                                    phone:
+                                                        booking.buyer?.phone ??
+                                                        '',
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                          : null,
+                                      onTap: () => context.push(
+                                        '/booking/${booking.id}',
+                                      ),
+                                    );
+                                  },
+                                ),
+                                if (state.isLoadingMore)
+                                  const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 24),
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 3,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            // ── History cards ────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ListView.separated(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _mockHistory.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final item = _mockHistory[index];
-                  return CalendarHistoryCard(
-                    propertyTitle: item['title']!,
-                    propertyAddress: item['address']!,
-                    imageUrl: item['image'],
-                    visitorName: item['visitor']!,
-                    dateTime: item['dateTime']!,
-                    status: item['status'] == 'visited'
-                        ? AppointmentHistoryStatus.visited
-                        : AppointmentHistoryStatus.cancelled,
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
-
-  static const List<Map<String, String?>> _mockHistory = [
-    {
-      'title':
-          'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
-      'address': 'ปุณณวิถี 33 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260',
-      'image':
-          'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
-      'visitor': 'สมชาย ใจดี',
-      'dateTime': '5 ม.ค. 2569, 08:00 น.',
-      'status': 'visited',
-    },
-    {
-      'title':
-          'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
-      'address': 'ปุณณวิถี 33 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260',
-      'image':
-          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400',
-      'visitor': 'สมชาย ใจดี',
-      'dateTime': '5 ม.ค. 2569, 08:00 น.',
-      'status': 'cancelled',
-    },
-    {
-      'title':
-          'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
-      'address': 'ปุณณวิถี 33 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260',
-      'image':
-          'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400',
-      'visitor': 'สมชาย ใจดี',
-      'dateTime': '5 ม.ค. 2569, 08:00 น.',
-      'status': 'visited',
-    },
-    {
-      'title':
-          'อสังหาริมทรัพย์ที่ 1 บ้านเช่าถูก ปุณณวิถี ใกล้บีทีเอส เดินทางสะดวก',
-      'address': 'ปุณณวิถี 33 แขวงบางจาก เขตพระโขนง กรุงเทพมหานคร 10260',
-      'image':
-          'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
-      'visitor': 'สมชาย ใจดี',
-      'dateTime': '5 ม.ค. 2569, 08:00 น.',
-      'status': 'visited',
-    },
-  ];
 
   // ── Tab 3: Availability ───────────────────────────────────────────────
   Widget _buildAvailabilitySection(BuildContext context) {

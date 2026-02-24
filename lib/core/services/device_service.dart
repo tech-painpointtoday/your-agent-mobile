@@ -164,8 +164,6 @@ class DeviceService {
     }
   }
 
-  static const String _lastRegisteredTokenKey = 'last_registered_fcm_token';
-
   Future<void> registerDevice() async {
     try {
       final info = await getDeviceInfo();
@@ -176,18 +174,19 @@ class DeviceService {
         return;
       }
 
-      final prefs = await SharedPreferences.getInstance();
-      final lastRegistered = prefs.getString(_lastRegisteredTokenKey);
+      final authRepo = DependencyInjection.authRepository;
+      final user = authRepo.currentUser;
 
-      if (lastRegistered == info.token) {
+      if (user != null &&
+          user.deviceTokens != null &&
+          user.deviceTokens!.contains(info.token)) {
         debugPrint(
-          'Device token already registered and matches current token. Skipping API call.',
+          'Device token already registered on server. Skipping API call.',
         );
         return;
       }
 
       await DependencyInjection.authApiService.registerDeviceToken(info);
-      await prefs.setString(_lastRegisteredTokenKey, info.token);
       debugPrint('Device registered successfully');
     } catch (e) {
       debugPrint('Failed to register device: $e');

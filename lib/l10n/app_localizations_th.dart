@@ -869,7 +869,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get cancel_button => 'ยกเลิก';
 
   @override
-  String get notifications_title => 'แจ้งเตือน';
+  String get notifications_title => 'การแจ้งเตือน';
 
   @override
   String get read_all => 'อ่านทั้งหมด';
@@ -1435,6 +1435,421 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get month_december => 'ธันวาคม';
+
+  @override
+  String get calendar_all => 'ทั้งหมด';
+
+  @override
+  String get calendar_today => 'วันนี้';
+
+  @override
+  String get calendar_tomorrow => 'พรุ่งนี้';
+
+  @override
+  String get calendar_this_week => 'สัปดาห์นี้';
+
+  @override
+  String get calendar_appointments_title => 'รายการนัดหมาย';
+
+  @override
+  String calendar_total_appointments(int count) {
+    return 'รายการนัดหมายทั้งหมด $count รายการ';
+  }
+
+  @override
+  String get calendar_no_appointments => 'ไม่มีรายการนัดหมาย';
+
+  @override
+  String get calendar_history_title => 'ประวัติการนัด';
+
+  @override
+  String calendar_total_history(int count) {
+    return 'รายการนัดหมายย้อนหลังทั้งหมด $count รายการ';
+  }
+
+  @override
+  String calendar_history_personal_note(String note) {
+    return 'โน้ตส่วนตัว: $note';
+  }
+
+  @override
+  String get calendar_history_expired_desc =>
+      'การนัดหมายนี้เลยกำหนดเวลาแล้ว โดยไม่มีการอัปเดต';
+
+  @override
+  String calendar_history_reason(String reason) {
+    return 'เหตุผล: $reason';
+  }
+
+  @override
+  String get calendar_history_no_show => 'ผู้จองเข้าชมไม่มาตามนัด';
+
+  @override
+  String get calendar_history_contact_button => 'ติดต่อผู้จอง';
+
+  @override
+  String get calendar_history_reject => 'ปฏิเสธ';
+
+  @override
+  String get calendar_sun => 'อา.';
+
+  @override
+  String get calendar_mon => 'จ.';
+
+  @override
+  String get calendar_tue => 'อ.';
+
+  @override
+  String get calendar_wed => 'พ.';
+
+  @override
+  String get calendar_thu => 'พฤ.';
+
+  @override
+  String get calendar_fri => 'ศ.';
+
+  @override
+  String get calendar_sat => 'ส.';
+
+  @override
+  String get calendar_select_month => 'เลือกเดือน';
+
+  @override
+  String get calendar_visitor_label => 'ผู้จองเข้าชม';
+
+  @override
+  String get calendar_datetime_label => 'วันที่และเวลา';
+
+  @override
+  String get calendar_co_agent_required => 'ต้องการ Co-agent';
+
+  @override
+  String get calendar_pending_confirmation => 'รอการยืนยัน';
+
+  @override
+  String calendar_arriving_status(String time) {
+    return 'จะถึง $time';
+  }
+
+  @override
+  String get calendar_not_started_status => 'ยังไม่เริ่มเดินทาง';
+
+  @override
+  String get calendar_tab_appointments => 'นัดหมาย';
+
+  @override
+  String get calendar_tab_history => 'ประวัติ';
+
+  @override
+  String get calendar_tab_availability => 'เวลาว่าง';
+
+  @override
+  String get availability_delete_success => 'ลบช่วงเวลาว่างสำเร็จ';
+
+  @override
+  String get availability_create_success => 'เพิ่มช่วงเวลาว่างสำเร็จ';
+
+  @override
+  String get availability_update_success => 'อัปเดตช่วงเวลาว่างสำเร็จ';
+
+  @override
+  String get availability_error => 'เกิดข้อผิดพลาดในการทำรายการ';
+
+  @override
+  String get availability_title => 'ช่วงเวลาว่าง';
+
+  @override
+  String get availability_subtitle => 'ช่วงเวลาว่างของคุณที่พร้อมให้บริการ';
+
+  @override
+  String get availability_view_list => 'มุมมองรายการ';
+
+  @override
+  String get availability_view_calendar => 'มุมมองปฏิทิน';
+
+  @override
+  String get availability_empty_day => 'ไม่มีช่วงเวลาว่างในวันที่เลือก';
+
+  @override
+  String get availability_empty_list => 'ไม่มีช่วงเวลาว่าง';
+
+  @override
+  String get availability_confirm_delete_title => 'ลบช่วงเวลาว่าง?';
+
+  @override
+  String get availability_confirm_delete_desc =>
+      'คุณต้องการลบช่วงเวลาว่างนี้ใช่หรือไม่?';
+
+  @override
+  String get availability_status_available => 'พร้อมให้บริการ';
+
+  @override
+  String get availability_status_unavailable => 'ไม่พร้อมให้บริการ';
+
+  @override
+  String get availability_edit_title => 'แก้ไขช่วงเวลาว่าง';
+
+  @override
+  String get availability_add_title => 'เพิ่มช่วงเวลาว่าง';
+
+  @override
+  String get availability_instruction =>
+      'กรุณาตรวจสอบตารางเวลาของคุณก่อน เพื่อป้องกันการเพิ่มช่วงเวลาที่ซ้อนกันในวันเดียวกัน';
+
+  @override
+  String get availability_date_label => 'วันที่';
+
+  @override
+  String get availability_start_time_label => 'เวลาเริ่มต้น';
+
+  @override
+  String get availability_end_time_label => 'เวลาสิ้นสุด';
+
+  @override
+  String get availability_status_label => 'สถานะ';
+
+  @override
+  String get availability_cancel_button => 'ยกเลิก';
+
+  @override
+  String get availability_save_button => 'บันทึก';
+
+  @override
+  String get availability_add_button => 'เพิ่มเลย';
+
+  @override
+  String get availability_invalid_time_title => 'เวลาไม่ถูกต้อง';
+
+  @override
+  String get availability_past_time_error => 'ไม่สามารถเลือกเวลาในอดีตได้';
+
+  @override
+  String get availability_end_before_start_error =>
+      'เวลาสิ้นสุดต้องอยู่หลังเวลาเริ่มต้น';
+
+  @override
+  String get availability_confirm_edit_title => 'ยืนยันการแก้ไขช่วงเวลาว่าง?';
+
+  @override
+  String get availability_confirm_edit_desc =>
+      'คุณต้องการบันทึกการเปลี่ยนแปลงใช่หรือไม่?';
+
+  @override
+  String get availability_confirm_add_title => 'ยืนยันการเพิ่มช่วงเวลาว่าง?';
+
+  @override
+  String get availability_confirm_add_desc =>
+      'คุณต้องการเพิ่มช่วงเวลาว่างนี้ใช่หรือไม่?';
+
+  @override
+  String get availability_delete_label => 'ลบ';
+
+  @override
+  String get availability_confirm_add_label => 'เพิ่ม';
+
+  @override
+  String get availability_select_month => 'เลือกเดือน';
+
+  @override
+  String get calendar_success_update => 'อัปเดตสถานะเรียบร้อยแล้ว';
+
+  @override
+  String get calendar_error_update => 'ไม่สามารถอัปเดตสถานะได้';
+
+  @override
+  String get calendar_unspecified_name => 'ไม่ระบุชื่อ';
+
+  @override
+  String get calendar_unspecified_location => 'ไม่ระบุตำแหน่ง';
+
+  @override
+  String get calendar_confirm_cancel_title => 'ยกเลิกนัดหมาย?';
+
+  @override
+  String get calendar_confirm_cancel_desc =>
+      'คุณต้องการยกเลิกนัดหมายนี้หรือไม่?';
+
+  @override
+  String get calendar_confirm_label => 'ยืนยัน';
+
+  @override
+  String get calendar_cancel_label => 'ยกเลิกนัดหมาย';
+
+  @override
+  String get calendar_status_confirmed => 'ยืนยันนัดแล้ว';
+
+  @override
+  String get calendar_status_cancelled => 'ยกเลิกแล้ว';
+
+  @override
+  String get calendar_status_finished => 'เสร็จสิ้น';
+
+  @override
+  String get calendar_status_traveling => 'กำลังเดินทาง';
+
+  @override
+  String get calendar_status_arrived => 'ถึงแล้ว';
+
+  @override
+  String get calendar_status_offer => 'ข้อเสนอ';
+
+  @override
+  String get calendar_status_contract => 'สัญญา';
+
+  @override
+  String get calendar_status_closed => 'ปิดงาน';
+
+  @override
+  String get calendar_status_expired => 'เกินกำหนด';
+
+  @override
+  String get notifications_mark_all_read => 'อ่านทั้งหมด';
+
+  @override
+  String get notifications_confirm_mark_all_read_title =>
+      'ทำเครื่องหมายว่าอ่านแล้วทั้งหมด?';
+
+  @override
+  String get notifications_confirm_mark_all_read_desc =>
+      'คุณต้องการทำเครื่องหมายการแจ้งเตือนทั้งหมดว่าอ่านแล้วใช่หรือไม่?';
+
+  @override
+  String get notifications_filter_all => 'ทั้งหมด';
+
+  @override
+  String get notifications_filter_unread => 'ยังไม่ได้อ่าน';
+
+  @override
+  String notifications_error(String message) {
+    return 'เกิดข้อผิดพลาด: $message';
+  }
+
+  @override
+  String get notifications_empty_title => 'ยังไม่มีการแจ้งเตือนตอนนี้';
+
+  @override
+  String get notifications_empty_subtitle =>
+      'เราจะอัปเดตให้คุณทราบที่นี่เมื่อมีแจ้งเตือน';
+
+  @override
+  String get notifications_not_found => 'ไม่พบการแจ้งเตือน';
+
+  @override
+  String get notifications_now => 'ตอนนี้';
+
+  @override
+  String notifications_minutes_ago(int count) {
+    return '$count นาทีที่แล้ว';
+  }
+
+  @override
+  String notifications_hours_ago(int count) {
+    return '$count ชั่วโมงที่แล้ว';
+  }
+
+  @override
+  String notifications_days_ago(int count) {
+    return '$count วันที่แล้ว';
+  }
+
+  @override
+  String get notifications_archive => 'เก็บถาวร';
+
+  @override
+  String get notifications_unarchive => 'เลิกเก็บถาวร';
+
+  @override
+  String get notifications_delete_confirm_title => 'ลบการแจ้งเตือน?';
+
+  @override
+  String get notifications_delete_confirm_desc =>
+      'คุณต้องการลบการแจ้งเตือนนี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้';
+
+  @override
+  String get notifications_delete_label => 'ลบ';
+
+  @override
+  String get notifications_cancel_label => 'ยกเลิก';
+
+  @override
+  String calendar_delay_warning(int minutes) {
+    return 'คุณอาจจะไปถึงช้าประมาณ $minutes นาที';
+  }
+
+  @override
+  String get booking_detail_title => 'ข้อมูลการนัดหมาย';
+
+  @override
+  String get booking_date => 'วันที่นัด';
+
+  @override
+  String get booking_time => 'เวลานัด';
+
+  @override
+  String get booking_location => 'สถานที่';
+
+  @override
+  String get booking_property_info => 'ข้อมูลอสังหาริมทรัพย์';
+
+  @override
+  String get booking_client => 'ผู้จองเข้าชม';
+
+  @override
+  String get booking_not_found => 'ไม่พบข้อมูลการนัดหมาย';
+
+  @override
+  String get booking_retry => 'ลองใหม่';
+
+  @override
+  String get booking_status_pending_client => 'ลูกค้ารอยืนยัน';
+
+  @override
+  String get booking_status_traveling_client => 'ลูกค้ากำลังเดินทาง';
+
+  @override
+  String get booking_status_arrived_client => 'ถึงที่หมายแล้ว';
+
+  @override
+  String get booking_confirm_booking => 'ยืนยันนัด';
+
+  @override
+  String get booking_confirm_booking_title => 'ยืนยันนัดหมาย?';
+
+  @override
+  String get booking_confirm_booking_desc =>
+      'คุณต้องการยืนยันนัดหมายนี้หรือไม่?';
+
+  @override
+  String get booking_start_traveling => 'เริ่มเดินทาง';
+
+  @override
+  String get booking_confirm_traveling_title => 'เริ่มเดินทาง?';
+
+  @override
+  String get booking_confirm_traveling_desc =>
+      'คุณกำลังเริ่มเดินทางไปหาลูกค้าใช่หรือไม่?';
+
+  @override
+  String get booking_confirm_arrived_title => 'ถึงที่หมาย?';
+
+  @override
+  String get booking_confirm_arrived_desc => 'คุณถึงที่หมายแล้วใช่หรือไม่?';
+
+  @override
+  String get booking_finish_work => 'เสร็จงาน';
+
+  @override
+  String get booking_confirm_finish_title => 'เสร็จสิ้นงาน?';
+
+  @override
+  String get booking_confirm_finish_desc =>
+      'คุณดำเนินการเข้าชมบ้านเสร็จสิ้นแล้วใช่หรือไม่?';
+
+  @override
+  String get booking_unspecified_property => 'ไม่ระบุชื่อทรัพย์';
+
+  @override
+  String get booking_status_unknown => 'ไม่ทราบสถานะ';
 
   @override
   String get not_specified => 'ไม่ระบุ';

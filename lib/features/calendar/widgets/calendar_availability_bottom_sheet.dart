@@ -9,7 +9,10 @@ import 'package:youragent/widgets/inputs/app_dropdown.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youragent/features/calendar/bloc/availability/availability_bloc.dart';
 import 'package:youragent/features/calendar/bloc/availability/availability_event.dart';
+import 'package:youragent/features/calendar/bloc/availability/availability_state.dart';
+import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 enum AvailabilityMode { add, edit }
 
@@ -192,265 +195,326 @@ class _CalendarAvailabilityBottomSheetState
   Widget build(BuildContext context) {
     final bool isEdit = widget.mode == AvailabilityMode.edit;
 
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+    return BlocListener<AvailabilityBloc, AvailabilityState>(
+      listenWhen: (previous, current) {
+        return (current.action == AvailabilityAction.create ||
+                current.action == AvailabilityAction.update) &&
+            previous.status == AvailabilityStatus.loading &&
+            current.status == AvailabilityStatus.success;
+      },
+      listener: (context, state) {
+        if (state.status == AvailabilityStatus.success) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
         ),
-      ),
-      padding: EdgeInsets.fromLTRB(
-        24,
-        12,
-        24,
-        MediaQuery.of(context).viewInsets.bottom + 32,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Handle bar
-          Center(
-            child: Container(
-              width: 48,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.baseLightGrey,
-                borderRadius: BorderRadius.circular(2),
+        padding: EdgeInsets.fromLTRB(
+          24,
+          12,
+          24,
+          MediaQuery.of(context).viewInsets.bottom + 32,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 48,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.baseLightGrey,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 24),
+            const SizedBox(height: 24),
 
-          // Title
-          Text(
-            isEdit ? 'แก้ไขช่วงเวลาว่าง' : 'เพิ่มช่วงเวลาว่าง',
-            style: GoogleFonts.anuphan(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.brandBlue,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'กรุณาตรวจสอบตารางเวลาของคุณก่อน เพื่อป้องกันการเพิ่มช่วงเวลาที่ซ้อนกันในวันเดียวกัน',
-            style: GoogleFonts.anuphan(fontSize: 14, color: AppColors.baseGrey),
-          ),
-          const SizedBox(height: 32),
-
-          // Date field
-          AppTextField(
-            label: 'วันที่',
-            controller: _dateCtrl,
-            isRequired: true,
-            showCursor: false,
-            onTap: _selectDate,
-            suffix: Padding(
-              padding: const EdgeInsets.all(12),
-              child: SvgPicture.asset(
-                'assets/icons/calendar.svg',
-                colorFilter: const ColorFilter.mode(
-                  AppColors.baseGrey,
-                  BlendMode.srcIn,
-                ),
-                width: 20,
-                height: 20,
+            // Title
+            Text(
+              isEdit
+                  ? AppLocalizations.of(context).availability_edit_title
+                  : AppLocalizations.of(context).availability_add_title,
+              style: GoogleFonts.anuphan(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.brandBlue,
               ),
             ),
-          ),
-          const SizedBox(height: 20),
+            const SizedBox(height: 4),
+            Text(
+              AppLocalizations.of(context).availability_instruction,
+              style: GoogleFonts.anuphan(
+                fontSize: 14,
+                color: AppColors.baseGrey,
+              ),
+            ),
+            const SizedBox(height: 32),
 
-          // Time fields
-          Row(
-            children: [
-              Expanded(
-                child: AppTextField(
-                  label: 'เวลาเริ่มต้น',
-                  controller: _startCtrl,
-                  isRequired: true,
-                  showCursor: false,
-                  onTap: _selectStartTime,
-                  suffix: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: SvgPicture.asset(
-                      'assets/icons/clock.svg',
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.baseGrey,
-                        BlendMode.srcIn,
-                      ),
-                      width: 20,
-                      height: 20,
-                    ),
+            // Date field
+            AppTextField(
+              label: AppLocalizations.of(context).availability_date_label,
+              controller: _dateCtrl,
+              isRequired: true,
+              showCursor: false,
+              onTap: _selectDate,
+              suffix: Padding(
+                padding: const EdgeInsets.all(12),
+                child: SvgPicture.asset(
+                  'assets/icons/calendar.svg',
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.baseGrey,
+                    BlendMode.srcIn,
                   ),
+                  width: 20,
+                  height: 20,
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: AppTextField(
-                  label: 'เวลาสิ้นสุด',
-                  controller: _endCtrl,
-                  showCursor: false,
-                  isRequired: true,
-                  onTap: _selectEndTime,
-                  suffix: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: SvgPicture.asset(
-                      'assets/icons/clock.svg',
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.baseGrey,
-                        BlendMode.srcIn,
-                      ),
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
+            ),
+            const SizedBox(height: 20),
 
-          // Status field (only in Edit mode according to image, or always if useful)
-          // The image shows "สถานะ" for edit.
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text.rich(
-                TextSpan(
-                  text: 'สถานะ',
-                  style: GoogleFonts.anuphan(
-                    color: AppColors.baseBlack,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: ' *',
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.supportRedDeep,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              AppDropdown<bool>(
-                value: _available,
-                items: const [true, false],
-                itemLabel: (val) =>
-                    val ? 'พร้อมให้บริการ' : 'ไม่พร้อมให้บริการ',
-                onChanged: (val) {
-                  if (val != null) {
-                    setState(() => _available = val);
-                  }
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 40),
-
-          // Actions
-          Row(
-            children: [
-              Expanded(
-                child: AppButton(
-                  text: 'ยกเลิก',
-                  style: AppButtonStyle.outline,
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: AppButton(
-                  text: isEdit ? 'บันทึก' : 'เพิ่มเลย',
-                  style: AppButtonStyle.primary,
-                  onPressed: () {
-                    if (_startTime == null || _endTime == null) return;
-
-                    final now = DateTime.now();
-                    final selectedStart = DateTime(
-                      _selectedDate.year,
-                      _selectedDate.month,
-                      _selectedDate.day,
-                      _startTime!.hour,
-                      _startTime!.minute,
-                    );
-
-                    final nowNormalized = DateTime(
-                      now.year,
-                      now.month,
-                      now.day,
-                      now.hour,
-                      now.minute,
-                    );
-
-                    // Only validate "past time" if selected date is TODAY
-                    final isToday =
-                        _selectedDate.year == now.year &&
-                        _selectedDate.month == now.month &&
-                        _selectedDate.day == now.day;
-
-                    if (isToday && selectedStart.isBefore(nowNormalized)) {
-                      StatusDialog.showError(
-                        context: context,
-                        title: 'เวลาไม่ถูกต้อง',
-                        message: 'ไม่สามารถเลือกเวลาในอดีตได้',
-                      );
-                      return;
-                    }
-
-                    if (_endTime!.hour < _startTime!.hour ||
-                        (_endTime!.hour == _startTime!.hour &&
-                            _endTime!.minute <= _startTime!.minute)) {
-                      StatusDialog.showError(
-                        context: context,
-                        title: 'เวลาไม่ถูกต้อง',
-                        message: 'เวลาสิ้นสุดต้องอยู่หลังเวลาเริ่มต้น',
-                      );
-                      return;
-                    }
-
-                    final startTimeStr = _formatTime(_startTime);
-                    final endTimeStr = _formatTime(_endTime);
-
-                    if (isEdit) {
-                      StatusDialog.confirm(
-                        context: context,
-                        title: 'ยืนยันการแก้ไข?',
-                        message: 'คุณต้องการบันทึกการเปลี่ยนแปลงใช่หรือไม่?',
-                        confirmLabel: 'บันทึก',
-                        onConfirm: () {
-                          context.read<AvailabilityBloc>().add(
-                            UpdateAvailability(
-                              id: widget.availableTimeId!,
-                              startTime: startTimeStr,
-                              endTime: endTimeStr,
-                              isAvailable: _available,
-                            ),
-                          );
-                          Navigator.pop(context);
-                        },
-                      );
-                    } else {
-                      context.read<AvailabilityBloc>().add(
-                        CreateAvailability(
-                          date: _selectedDate,
-                          startTime: startTimeStr,
-                          endTime: endTimeStr,
+            // Time fields
+            Row(
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    label: AppLocalizations.of(
+                      context,
+                    ).availability_start_time_label,
+                    controller: _startCtrl,
+                    isRequired: true,
+                    showCursor: false,
+                    onTap: _selectStartTime,
+                    suffix: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: SvgPicture.asset(
+                        'assets/icons/clock.svg',
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.baseGrey,
+                          BlendMode.srcIn,
                         ),
-                      );
-                      Navigator.pop(context);
+                        width: 20,
+                        height: 20,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AppTextField(
+                    label: AppLocalizations.of(
+                      context,
+                    ).availability_end_time_label,
+                    controller: _endCtrl,
+                    showCursor: false,
+                    isRequired: true,
+                    onTap: _selectEndTime,
+                    suffix: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: SvgPicture.asset(
+                        'assets/icons/clock.svg',
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.baseGrey,
+                          BlendMode.srcIn,
+                        ),
+                        width: 20,
+                        height: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Status field (only in Edit mode according to image, or always if useful)
+            // The image shows "สถานะ" for edit.
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text.rich(
+                  TextSpan(
+                    text: AppLocalizations.of(
+                      context,
+                    ).availability_status_label,
+                    style: GoogleFonts.anuphan(
+                      color: AppColors.baseBlack,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: ' *',
+                        style: GoogleFonts.anuphan(
+                          color: AppColors.supportRedDeep,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                AppDropdown<bool>(
+                  value: _available,
+                  items: const [true, false],
+                  itemLabel: (val) => val
+                      ? AppLocalizations.of(
+                          context,
+                        ).availability_status_available
+                      : AppLocalizations.of(
+                          context,
+                        ).availability_status_unavailable,
+                  onChanged: (val) {
+                    if (val != null) {
+                      setState(() => _available = val);
                     }
                   },
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+            const SizedBox(height: 40),
+
+            // Actions
+            Row(
+              children: [
+                Expanded(
+                  child: AppButton(
+                    text: AppLocalizations.of(
+                      context,
+                    ).availability_cancel_button,
+                    style: AppButtonStyle.outline,
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AppButton(
+                    text: isEdit
+                        ? AppLocalizations.of(context).availability_save_button
+                        : AppLocalizations.of(context).availability_add_button,
+                    style: AppButtonStyle.primary,
+                    onPressed: () {
+                      if (_startTime == null || _endTime == null) return;
+
+                      final now = DateTime.now();
+                      final selectedStart = DateTime(
+                        _selectedDate.year,
+                        _selectedDate.month,
+                        _selectedDate.day,
+                        _startTime!.hour,
+                        _startTime!.minute,
+                      );
+
+                      final nowNormalized = DateTime(
+                        now.year,
+                        now.month,
+                        now.day,
+                        now.hour,
+                        now.minute,
+                      );
+
+                      // Only validate "past time" if selected date is TODAY
+                      final isToday =
+                          _selectedDate.year == now.year &&
+                          _selectedDate.month == now.month &&
+                          _selectedDate.day == now.day;
+
+                      if (isToday && selectedStart.isBefore(nowNormalized)) {
+                        StatusDialog.showError(
+                          context: context,
+                          title: AppLocalizations.of(
+                            context,
+                          ).availability_invalid_time_title,
+                          message: AppLocalizations.of(
+                            context,
+                          ).availability_past_time_error,
+                        );
+                        return;
+                      }
+
+                      if (_endTime!.hour < _startTime!.hour ||
+                          (_endTime!.hour == _startTime!.hour &&
+                              _endTime!.minute <= _startTime!.minute)) {
+                        StatusDialog.showError(
+                          context: context,
+                          title: AppLocalizations.of(
+                            context,
+                          ).availability_invalid_time_title,
+                          message: AppLocalizations.of(
+                            context,
+                          ).availability_end_before_start_error,
+                        );
+                        return;
+                      }
+
+                      final startTimeStr = _formatTime(_startTime);
+                      final endTimeStr = _formatTime(_endTime);
+
+                      if (isEdit) {
+                        AppConfirmationBottomSheet.show(
+                          context: context,
+                          title: AppLocalizations.of(
+                            context,
+                          ).availability_confirm_edit_title,
+                          description: AppLocalizations.of(
+                            context,
+                          ).availability_confirm_edit_desc,
+                          confirmLabel: AppLocalizations.of(
+                            context,
+                          ).availability_save_button,
+                          onConfirm: () {
+                            context.read<AvailabilityBloc>().add(
+                              UpdateAvailability(
+                                id: widget.availableTimeId!,
+                                startTime: startTimeStr,
+                                endTime: endTimeStr,
+                                isAvailable: _available,
+                              ),
+                            );
+                            Navigator.pop(context);
+                          },
+                        );
+                      } else {
+                        AppConfirmationBottomSheet.show(
+                          context: context,
+                          title: AppLocalizations.of(
+                            context,
+                          ).availability_confirm_add_title,
+                          description: AppLocalizations.of(
+                            context,
+                          ).availability_confirm_add_desc,
+                          confirmLabel: AppLocalizations.of(
+                            context,
+                          ).availability_confirm_add_label,
+                          onConfirm: () {
+                            context.read<AvailabilityBloc>().add(
+                              CreateAvailability(
+                                date: _selectedDate,
+                                startTime: startTimeStr,
+                                endTime: endTimeStr,
+                              ),
+                            );
+                            Navigator.pop(context);
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

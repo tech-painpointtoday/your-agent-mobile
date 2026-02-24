@@ -11,6 +11,7 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
     : _apiService = apiService,
       super(const AvailabilityState()) {
     on<FetchAvailability>(_onFetch);
+    on<LoadMoreAvailability>(_onLoadMore);
     on<CreateAvailability>(_onCreate);
     on<UpdateAvailability>(_onUpdate);
     on<DeleteAvailability>(_onDelete);
@@ -20,35 +21,42 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
     FetchAvailability event,
     Emitter<AvailabilityState> emit,
   ) async {
-    // If we've already fetched recently and it's the exact same month/year, we could cache.
-    // For simplicity, let's fetch roughly the full month around the given date.
-
     emit(
-      state.copyWith(status: AvailabilityStatus.loading, errorMessage: null),
+      state.copyWith(
+        status: AvailabilityStatus.loading,
+        errorMessage: null,
+        hasReachedMax: false,
+        currentPage: 1,
+        isLoadingMore: false,
+        action: AvailabilityAction.fetch,
+      ),
     );
 
     try {
-      // Calculate start and end date (e.g. 1st of month to end of month)
       final start = DateTime(event.date.year, event.date.month, 1);
       final end = DateTime(event.date.year, event.date.month + 1, 0);
 
       final startDateStr = DateFormat('yyyy-MM-dd').format(start);
       final endDateStr = DateFormat('yyyy-MM-dd').format(end);
 
-      // Fetch from API
-      // In a real app we might handle pagination or fetch all to display on calendar
       final response = await _apiService.getAvailableTimes(
         startDate: startDateStr,
         endDate: endDateStr,
         isAvailable: true,
-        perPage: 100, // Fetch a large chunk for the calendar view
+        page: 1,
+        perPage: 10,
       );
+
+      final bool hasReachedMax =
+          response.pagination.currentPage >= response.pagination.lastPage;
 
       emit(
         state.copyWith(
           status: AvailabilityStatus.success,
           times: response.times,
           lastFetchedDate: event.date,
+          hasReachedMax: hasReachedMax,
+          currentPage: 1,
         ),
       );
     } catch (e) {
@@ -61,13 +69,64 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
     }
   }
 
+  Future<void> _onLoadMore(
+    LoadMoreAvailability event,
+    Emitter<AvailabilityState> emit,
+  ) async {
+    if (state.hasReachedMax ||
+        state.isLoadingMore ||
+        state.status != AvailabilityStatus.success ||
+        state.lastFetchedDate == null) {
+      return;
+    }
+
+    emit(state.copyWith(isLoadingMore: true));
+
+    try {
+      final date = state.lastFetchedDate!;
+      final start = DateTime(date.year, date.month, 1);
+      final end = DateTime(date.year, date.month + 1, 0);
+
+      final startDateStr = DateFormat('yyyy-MM-dd').format(start);
+      final endDateStr = DateFormat('yyyy-MM-dd').format(end);
+
+      final nextPage = state.currentPage + 1;
+
+      final response = await _apiService.getAvailableTimes(
+        startDate: startDateStr,
+        endDate: endDateStr,
+        isAvailable: true,
+        page: nextPage,
+        perPage: 10,
+      );
+
+      final bool hasReachedMax =
+          response.pagination.currentPage >= response.pagination.lastPage;
+
+      emit(
+        state.copyWith(
+          times: List.of(state.times)..addAll(response.times),
+          hasReachedMax: hasReachedMax,
+          currentPage: nextPage,
+          isLoadingMore: false,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(isLoadingMore: false, errorMessage: e.toString()));
+    }
+  }
+
   Future<void> _onCreate(
     CreateAvailability event,
     Emitter<AvailabilityState> emit,
   ) async {
     final currentTimes = List.of(state.times);
     emit(
-      state.copyWith(status: AvailabilityStatus.loading, errorMessage: null),
+      state.copyWith(
+        status: AvailabilityStatus.loading,
+        errorMessage: null,
+        action: AvailabilityAction.create,
+      ),
     );
 
     try {
@@ -82,6 +141,7 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
         state.copyWith(
           status: AvailabilityStatus.success,
           times: [...currentTimes, newTime],
+          action: AvailabilityAction.create,
         ),
       );
     } catch (e) {
@@ -90,6 +150,7 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
           status: AvailabilityStatus.failure,
           errorMessage: e.toString(),
           times: currentTimes, // Restore on failure
+          action: AvailabilityAction.create,
         ),
       );
     }
@@ -101,7 +162,11 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
   ) async {
     final currentTimes = List.of(state.times);
     emit(
-      state.copyWith(status: AvailabilityStatus.loading, errorMessage: null),
+      state.copyWith(
+        status: AvailabilityStatus.loading,
+        errorMessage: null,
+        action: AvailabilityAction.update,
+      ),
     );
 
     try {
@@ -118,7 +183,11 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
       }
 
       emit(
-        state.copyWith(status: AvailabilityStatus.success, times: currentTimes),
+        state.copyWith(
+          status: AvailabilityStatus.success,
+          times: currentTimes,
+          action: AvailabilityAction.update,
+        ),
       );
     } catch (e) {
       emit(
@@ -126,6 +195,7 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
           status: AvailabilityStatus.failure,
           errorMessage: e.toString(),
           times: currentTimes, // Restore
+          action: AvailabilityAction.update,
         ),
       );
     }
@@ -137,7 +207,11 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
   ) async {
     final currentTimes = List.of(state.times);
     emit(
-      state.copyWith(status: AvailabilityStatus.loading, errorMessage: null),
+      state.copyWith(
+        status: AvailabilityStatus.loading,
+        errorMessage: null,
+        action: AvailabilityAction.delete,
+      ),
     );
 
     try {
@@ -146,7 +220,11 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
       currentTimes.removeWhere((t) => t.id == event.id);
 
       emit(
-        state.copyWith(status: AvailabilityStatus.success, times: currentTimes),
+        state.copyWith(
+          status: AvailabilityStatus.success,
+          times: currentTimes,
+          action: AvailabilityAction.delete,
+        ),
       );
     } catch (e) {
       emit(
@@ -154,6 +232,7 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
           status: AvailabilityStatus.failure,
           errorMessage: e.toString(),
           times: currentTimes, // Restore
+          action: AvailabilityAction.delete,
         ),
       );
     }

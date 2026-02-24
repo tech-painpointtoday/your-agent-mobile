@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:youragent/core/theme/app_colors.dart';
@@ -78,10 +79,10 @@ class _PropertyImageCarouselState extends State<PropertyImageCarousel> {
         width: double.infinity,
         height: widget.height,
         color: AppColors.basePaleGrey,
-        child: const Icon(
-          Icons.image_outlined,
-          size: 80,
-          color: AppColors.baseGrey,
+        child: SvgPicture.asset(
+          'assets/icons/image.svg',
+          width: 80,
+          height: 80,
         ),
       );
     }
@@ -115,10 +116,15 @@ class _PropertyImageCarouselState extends State<PropertyImageCarousel> {
                   ),
                   errorWidget: (context, url, error) => Container(
                     color: AppColors.basePaleGrey,
-                    child: const Icon(
-                      Icons.broken_image_outlined,
-                      size: 80,
-                      color: AppColors.baseGrey,
+                    child: SvgPicture.asset(
+                      'assets/icons/image.svg',
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.scaleDown,
+                      colorFilter: ColorFilter.mode(
+                        AppColors.baseGrey,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 );
@@ -133,10 +139,15 @@ class _PropertyImageCarouselState extends State<PropertyImageCarousel> {
 
               return Container(
                 color: AppColors.basePaleGrey,
-                child: const Icon(
-                  Icons.broken_image_outlined,
-                  size: 80,
-                  color: AppColors.baseGrey,
+                child: SvgPicture.asset(
+                  'assets/icons/image.svg',
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.scaleDown,
+                  colorFilter: ColorFilter.mode(
+                    AppColors.baseGrey,
+                    BlendMode.srcIn,
+                  ),
                 ),
               );
             },

@@ -9,6 +9,7 @@ class User extends Equatable {
   final String? photoUrl;
   final UserRole role;
   final String provider;
+  final List<String>? deviceTokens;
 
   const User({
     this.id,
@@ -17,9 +18,17 @@ class User extends Equatable {
     this.photoUrl,
     required this.role,
     required this.provider,
+    this.deviceTokens,
   });
 
   @override
-  List<Object?> get props => [id, email, displayName, photoUrl, role, provider];
+  List<Object?> get props => [
+    id,
+    email,
+    displayName,
+    photoUrl,
+    role,
+    provider,
+    deviceTokens,
+  ];
 }
-

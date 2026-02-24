@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import '../domain/entities/chat_message.dart';
 import 'api_client.dart';
@@ -37,20 +38,38 @@ class ChatApiService {
     required String message,
     String? senderType,
     int? senderId,
+    File? image,
   }) async {
     try {
-      final data = {
-        'booking_id': bookingId,
-        'message': message,
-        if (senderType != null) 'sender_type': senderType,
-        if (senderId != null) 'sender_id': senderId,
-      };
+      dynamic data;
+      if (image != null) {
+        data = FormData.fromMap({
+          'booking_id': bookingId,
+          'message': message,
+          if (senderType != null) 'sender_type': senderType,
+          if (senderId != null) 'sender_id': senderId,
+          'image': await MultipartFile.fromFile(
+            image.path,
+            filename: image.path.split('/').last,
+          ),
+        });
+      } else {
+        data = {
+          'booking_id': bookingId,
+          'message': message,
+          if (senderType != null) 'sender_type': senderType,
+          if (senderId != null) 'sender_id': senderId,
+        };
+      }
 
       final response = await _apiClient.post('/$role/chat/send', data: data);
       final responseData = response.data as Map<String, dynamic>;
       // API returns { "success": true, "data": { ...message object }, "message": "Message sent successfully" }
-      final messageJson = responseData['data'] as Map<String, dynamic>? ??
-          (responseData['message'] is Map<String, dynamic> ? responseData['message'] as Map<String, dynamic> : null) ??
+      final messageJson =
+          responseData['data'] as Map<String, dynamic>? ??
+          (responseData['message'] is Map<String, dynamic>
+              ? responseData['message'] as Map<String, dynamic>
+              : null) ??
           responseData;
       return ChatMessage.fromJson(messageJson);
     } catch (e) {
@@ -77,17 +96,15 @@ class ChatApiService {
 
       if (messagesList is List) {
         return messagesList
-            .map(
-              (json) => ChatMessage.fromJson(
-                json as Map<String, dynamic>,
-              ),
-            )
+            .map((json) => ChatMessage.fromJson(json as Map<String, dynamic>))
             .toList();
       }
       return [];
     } catch (e) {
       if (e is DioException && e.response != null) {
-        throw Exception(e.response?.data['message'] ?? 'Failed to get messages');
+        throw Exception(
+          e.response?.data['message'] ?? 'Failed to get messages',
+        );
       }
       throw Exception('Failed to get messages: $e');
     }
@@ -117,10 +134,7 @@ class ChatApiService {
 
   /// Mark as Read
   /// POST /agent/chat/{chatId}/mark-read
-  Future<void> markAsRead({
-    required String role,
-    required int chatId,
-  }) async {
+  Future<void> markAsRead({required String role, required int chatId}) async {
     try {
       await _apiClient.post('/$role/chat/$chatId/mark-read');
     } catch (e) {

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:youragent/l10n/app_localizations.dart';
 
 /// Appointment confirmation status
 enum AppointmentStatus { confirmed, pending }
@@ -89,6 +90,7 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -177,13 +179,13 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                     children: [
                       Expanded(
                         child: _InfoColumn(
-                          label: 'ผู้จองเข้าชม',
+                          label: l10n.calendar_visitor_label,
                           value: widget.visitorName,
                         ),
                       ),
                       Expanded(
                         child: _InfoColumn(
-                          label: 'วันที่และเวลา',
+                          label: l10n.calendar_datetime_label,
                           value: widget.dateTime,
                           crossAxisAlignment: CrossAxisAlignment.end,
                         ),
@@ -196,9 +198,9 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     children: [
-                      _buildConfirmBadge(),
+                      _buildConfirmBadge(context),
                       const SizedBox(width: 8),
-                      _buildTravelBadge(),
+                      _buildTravelBadge(context),
                     ],
                   ),
                 ),
@@ -236,7 +238,7 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                           width: 12,
                           height: 12,
                           fit: BoxFit.scaleDown,
-                          colorFilter: ColorFilter.mode(
+                          colorFilter: const ColorFilter.mode(
                             AppColors.baseDarkGrey,
                             BlendMode.srcIn,
                           ),
@@ -250,29 +252,12 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
                 Expanded(
                   child: AppButton(
                     text: widget.confirmStatus == AppointmentStatus.confirmed
-                        ? 'ต้องการ Co-agent'
-                        : 'ยกเลิกนัด',
+                        ? l10n.calendar_co_agent_required
+                        : l10n.calendar_cancel_label,
                     style: AppButtonStyle.outline,
                     height: 32,
                     textSize: 12,
                     onPressed: widget.onSecondaryAction,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                // Primary action
-                Expanded(
-                  child: AppButton(
-                    text: widget.confirmStatus == AppointmentStatus.confirmed
-                        ? 'เริ่มเดินทาง'
-                        : 'ยืนยันนัด',
-                    style: AppButtonStyle.primary,
-                    height: 32,
-                    textSize: 12,
-                    backgroundColor:
-                        widget.confirmStatus == AppointmentStatus.confirmed
-                        ? AppColors.supportGreenDark
-                        : AppColors.primary,
-                    onPressed: widget.onPrimaryAction,
                   ),
                 ),
               ],
@@ -283,10 +268,11 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
     );
   }
 
-  Widget _buildConfirmBadge() {
+  Widget _buildConfirmBadge(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (widget.confirmStatus == AppointmentStatus.confirmed) {
       return AppBadge(
-        label: 'ยืนยันแล้ว',
+        label: l10n.calendar_status_confirmed,
         style: BadgeStyle.done,
         customBackgroundColor: const Color(0xFFDCFCE7),
         customTextColor: const Color(0xFF16A34A),
@@ -295,7 +281,7 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
       );
     }
     return AppBadge(
-      label: 'รอการยืนยัน',
+      label: l10n.calendar_pending_confirmation,
       customBackgroundColor: const Color(0xFFF2F4F7),
       customTextColor: const Color(0xFF737373),
       fontSize: 12,
@@ -303,11 +289,12 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
     );
   }
 
-  Widget _buildTravelBadge() {
+  Widget _buildTravelBadge(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (widget.travelStatus == TravelStatus.arriving &&
         widget.arrivingIn != null) {
       return AppBadge(
-        label: 'จะถึง ${widget.arrivingIn}',
+        label: l10n.calendar_arriving_status(widget.arrivingIn!),
         customBackgroundColor: const Color(0xFFEFF6FF),
         customTextColor: const Color(0xFF2563EB),
         fontSize: 12,
@@ -315,7 +302,7 @@ class _CalendarAppointmentCardState extends State<CalendarAppointmentCard>
       );
     }
     return AppBadge(
-      label: 'ยังไม่เริ่มเดินทาง',
+      label: l10n.calendar_not_started_status,
       customBackgroundColor: const Color(0xFFF2F4F7),
       customTextColor: const Color(0xFF737373),
       fontSize: 12,

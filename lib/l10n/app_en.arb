@@ -472,6 +472,203 @@
   "month_october": "October",
   "month_november": "November",
   "month_december": "December",
+  "calendar_all": "All",
+  "calendar_today": "Today",
+  "calendar_tomorrow": "Tomorrow",
+  "calendar_this_week": "This Week",
+  "calendar_appointments_title": "Appointments",
+  "calendar_total_appointments": "Total appointments {count} items",
+  "@calendar_total_appointments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendar_no_appointments": "No appointments",
+  "calendar_history_title": "Appointment History",
+  "calendar_total_history": "Total past appointments {count} items",
+  "calendar_history_personal_note": "Personal Note: {note}",
+  "@calendar_history_personal_note": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "calendar_history_expired_desc": "This appointment has expired without updates",
+  "calendar_history_reason": "Reason: {reason}",
+  "@calendar_history_reason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "calendar_history_no_show": "The visitor did not show up",
+  "calendar_history_contact_button": "Contact Visitor",
+  "calendar_history_reject": "Rejected",
+  "calendar_sun": "Sun",
+  "calendar_mon": "Mon",
+  "calendar_tue": "Tue",
+  "calendar_wed": "Wed",
+  "calendar_thu": "Thu",
+  "calendar_fri": "Fri",
+  "calendar_sat": "Sat",
+  "@calendar_total_history": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendar_select_month": "Select Month",
+  "calendar_visitor_label": "Visitor",
+  "calendar_datetime_label": "Date & Time",
+  "calendar_co_agent_required": "Co-agent Required",
+  "calendar_pending_confirmation": "Pending Confirmation",
+  "calendar_arriving_status": "Arriving at {time}",
+  "@calendar_arriving_status": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "calendar_not_started_status": "Not started",
+  "calendar_tab_appointments": "Appointments",
+  "calendar_tab_history": "History",
+  "calendar_tab_availability": "Availability",
+  "availability_delete_success": "Availability deleted successfully",
+  "availability_create_success": "Availability added successfully",
+  "availability_update_success": "Availability updated successfully",
+  "availability_error": "An error occurred during the transaction",
+  "availability_title": "Availability",
+  "availability_subtitle": "Your available time slots",
+  "availability_view_list": "List View",
+  "availability_view_calendar": "Calendar View",
+  "availability_empty_day": "No availability for the selected date",
+  "availability_empty_list": "No availability",
+  "availability_confirm_delete_title": "Delete Availability?",
+  "availability_confirm_delete_desc": "Are you sure you want to delete this availability?",
+  "availability_status_available": "Available",
+  "availability_status_unavailable": "Unavailable",
+  "availability_edit_title": "Edit Availability",
+  "availability_add_title": "Add Availability",
+  "availability_instruction": "Please check your schedule first to prevent double-booking the same day.",
+  "availability_date_label": "Date",
+  "availability_start_time_label": "Start Time",
+  "availability_end_time_label": "End Time",
+  "availability_status_label": "Status",
+  "availability_cancel_button": "Cancel",
+  "availability_save_button": "Save",
+  "availability_add_button": "Add Now",
+  "availability_invalid_time_title": "Invalid Time",
+  "availability_past_time_error": "Cannot select time in the past",
+  "availability_end_before_start_error": "End time must be after start time",
+  "availability_confirm_edit_title": "Confirm editing availability?",
+  "availability_confirm_edit_desc": "Do you want to save the changes?",
+  "availability_confirm_add_title": "Confirm adding availability?",
+  "availability_confirm_add_desc": "Do you want to add this availability?",
+  "availability_delete_label": "Delete",
+  "availability_confirm_add_label": "Add",
+  "availability_select_month": "Select Month",
+  "calendar_success_update": "Status updated successfully",
+  "calendar_error_update": "Failed to update status",
+  "calendar_unspecified_name": "Unspecified Name",
+  "calendar_unspecified_location": "Unspecified Location",
+  "calendar_confirm_cancel_title": "Cancel Appointment?",
+  "calendar_confirm_cancel_desc": "Are you sure you want to cancel this appointment?",
+  "calendar_confirm_label": "Confirm",
+  "calendar_cancel_label": "Cancel Appointment",
+  "calendar_status_confirmed": "Confirmed",
+  "calendar_status_cancelled": "Cancelled",
+  "calendar_status_finished": "Finished",
+  "calendar_status_traveling": "Traveling",
+  "calendar_status_arrived": "Arrived",
+  "calendar_status_offer": "Offer",
+  "calendar_status_contract": "Contract",
+  "calendar_status_closed": "Closed",
+  "calendar_status_expired": "Expired",
+  "notifications_mark_all_read": "Mark all as read",
+  "notifications_confirm_mark_all_read_title": "Mark All as Read?",
+  "notifications_confirm_mark_all_read_desc": "Are you sure you want to mark all notifications as read?",
+  "notifications_filter_all": "All",
+  "notifications_filter_unread": "Unread",
+  "notifications_error": "An error occurred: {message}",
+  "@notifications_error": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "notifications_empty_title": "No notifications yet",
+  "notifications_empty_subtitle": "We will update you here when there are notifications",
+  "notifications_not_found": "Notification not found",
+  "notifications_now": "Now",
+  "notifications_minutes_ago": "{count}m ago",
+  "@notifications_minutes_ago": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifications_hours_ago": "{count}h ago",
+  "@notifications_hours_ago": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifications_days_ago": "{count}d ago",
+  "@notifications_days_ago": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifications_archive": "Archive",
+  "notifications_unarchive": "Unarchive",
+  "notifications_delete_confirm_title": "Delete notification?",
+  "notifications_delete_confirm_desc": "Are you sure you want to delete this notification? This action cannot be undone.",
+  "notifications_delete_label": "Delete",
+  "notifications_cancel_label": "Cancel",
+  "calendar_delay_warning": "You may be arriving {minutes} minutes late",
+  "@calendar_delay_warning": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "booking_detail_title": "Booking Details",
+  "booking_date": "Booking Date",
+  "booking_time": "Booking Time",
+  "booking_location": "Location",
+  "booking_property_info": "Property Information",
+  "booking_client": "Booking Client",
+  "booking_not_found": "Booking information not found",
+  "booking_retry": "Retry",
+  "booking_status_pending_client": "Waiting for client confirmation",
+  "booking_status_traveling_client": "Client is traveling",
+  "booking_status_arrived_client": "Arrived at destination",
+  "booking_confirm_booking": "Confirm Booking",
+  "booking_confirm_booking_title": "Confirm Booking?",
+  "booking_confirm_booking_desc": "Do you want to confirm this booking?",
+  "booking_start_traveling": "Start Traveling",
+  "booking_confirm_traveling_title": "Start Traveling?",
+  "booking_confirm_traveling_desc": "Are you starting your journey to the client?",
+  "booking_confirm_arrived_title": "Arrived at Destination?",
+  "booking_confirm_arrived_desc": "Have you arrived at the destination?",
+  "booking_finish_work": "Finish Work",
+  "booking_confirm_finish_title": "Finish Work?",
+  "booking_confirm_finish_desc": "Have you finished the property viewing?",
+  "booking_unspecified_property": "Unspecified Property",
+  "booking_status_unknown": "Unknown Status",
   "not_specified": "Not specified",
   "email_not_verified": "Not verified",
   "full_name_label": "Full Name",

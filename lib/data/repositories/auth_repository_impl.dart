@@ -59,6 +59,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
         photoUrl: profile.profilePhoto,
         role: role,
         provider: 'email',
+        deviceTokens: profile.deviceTokens,
       );
 
       // Save profile to cache
@@ -123,6 +124,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
         photoUrl: profile.profilePhoto,
         role: role,
         provider: 'email',
+        deviceTokens: profile.deviceTokens,
       );
 
       // Save profile to cache
