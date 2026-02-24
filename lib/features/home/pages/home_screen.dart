@@ -136,13 +136,9 @@ class _HomeHeaderState extends State<HomeHeader> with RouteAware {
       final userData = await authApiService.getCurrentUser();
       final profileData = UserProfileModel.fromJson(userData);
 
-      // If no cached FCM token, fetch and save it
+      // Ensure device is registered with current FCM token
       final deviceService = DependencyInjection.deviceService;
-      var cachedToken = await deviceService.getCachedFcmToken();
-      if (cachedToken == null || cachedToken.isEmpty) {
-        cachedToken = await deviceService.ensureFcmToken();
-        debugPrint('fcmToken=${cachedToken.isEmpty ? "(empty)" : cachedToken}');
-      }
+      await deviceService.registerDevice();
 
       if (mounted) {
         setState(() {

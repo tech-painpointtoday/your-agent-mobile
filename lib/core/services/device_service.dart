@@ -19,14 +19,31 @@ class DeviceService {
 
   Future<void> init() async {
     await _loadFromPrefs();
+    await _requestNotificationPermission();
     _listenToFcmTokenRefresh();
+
+    if (DependencyInjection.authRepository.isAuthenticated) {
+      await registerDeviceAfterLogin();
+    }
+  }
+
+  Future<void> _requestNotificationPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    debugPrint('User granted permission: ${settings.authorizationStatus}');
   }
 
   /// When FCM token is refreshed (e.g. by Firebase), save it and re-register so backend has the latest token.
   void _listenToFcmTokenRefresh() {
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
       if (newToken.isEmpty) return;
-      debugPrint('FCM token refreshed, updating storage and re-registering device');
+      debugPrint(
+        'FCM token refreshed, updating storage and re-registering device',
+      );
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('fcm_token', newToken);
       if (_cachedInfo != null) {
@@ -68,6 +85,38 @@ class DeviceService {
     return info.token;
   }
 
+  Future<String?> _fetchFreshFcmToken() async {
+    try {
+      if (Platform.isIOS) {
+        String? apnsToken;
+        for (int i = 0; i < 10; i++) {
+          apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+          if (apnsToken != null) break;
+          debugPrint('Waiting for APNS Token... retry $i');
+          await Future.delayed(Duration(seconds: 1));
+        }
+
+        if (apnsToken == null) {
+          debugPrint('Failed to get APNS Token after 10 retries');
+          return null;
+        }
+      }
+
+      // ดึง FCM Token
+      String? token = await FirebaseMessaging.instance.getToken();
+
+      // บันทึกเก็บไว้เสมอเมื่อได้อันใหม่
+      if (token != null && token.isNotEmpty) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('fcm_token', token);
+      }
+      return token;
+    } catch (e) {
+      debugPrint('Error fetching FCM token: $e');
+      return null;
+    }
+  }
+
   Future<DeviceInfoModel> getDeviceInfo() async {
     final deviceInfo = DeviceInfoPlugin();
     final packageInfo = await PackageInfo.fromPlatform();
@@ -75,63 +124,34 @@ class DeviceService {
     String deviceId = '';
     String model = '';
     String osVersion = '';
-    String platform = Platform.isAndroid ? 'android' : 'ios';
-
     if (Platform.isAndroid) {
       final androidInfo = await deviceInfo.androidInfo;
       deviceId = androidInfo.id;
       model = androidInfo.model;
       osVersion = 'Android ${androidInfo.version.release}';
-    } else if (Platform.isIOS) {
+    } else {
       final iosInfo = await deviceInfo.iosInfo;
       deviceId = iosInfo.identifierForVendor ?? 'unknown_ios_id';
       model = iosInfo.utsname.machine;
       osVersion = 'iOS ${iosInfo.systemVersion}';
     }
 
-    // Use cached FCM token if we have it; otherwise fetch and save
-    String fcmToken = '';
-    final prefs = await SharedPreferences.getInstance();
-    fcmToken = prefs.getString('fcm_token') ?? '';
-    debugPrint('fcmToken: $fcmToken');
+    // ส่วนของ Token: พยายามดึงใหม่ถ้าในเครื่องไม่มี
+    String fcmToken = await getCachedFcmToken() ?? '';
     if (fcmToken.isEmpty) {
-      try {
-        if (Platform.isIOS) {
-          String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-          if (apnsToken == null) {
-            await Future<void>.delayed(const Duration(seconds: 3));
-            apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-          }
-          if (apnsToken == null) {
-            debugPrint('APNS token is still null. Check your Xcode setup.');
-          }
-        }
-        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
-      } catch (e) {
-        debugPrint('Error getting FCM token: $e');
-      }
+      fcmToken = await _fetchFreshFcmToken() ?? '';
     }
 
     _cachedInfo = DeviceInfoModel(
       token: fcmToken,
       deviceId: deviceId,
-      platform: platform,
+      platform: Platform.isAndroid ? 'android' : 'ios',
       appVersion: packageInfo.version,
       deviceModel: model,
       deviceOsVersion: osVersion,
     );
 
-    await _saveToPrefs();
     return _cachedInfo!;
-  }
-
-  Future<void> _saveToPrefs() async {
-    if (_cachedInfo == null) return;
-    final prefs = await SharedPreferences.getInstance();
-    // We can store individual fields or a JSON string.
-    // Given the requirement "save device info in sharepref", we'll store salient parts.
-    await prefs.setString('device_id', _cachedInfo!.deviceId);
-    await prefs.setString('fcm_token', _cachedInfo!.token);
   }
 
   /// Call after login: ensures FCM token (fetches and saves if missing), then registers device.
@@ -144,6 +164,8 @@ class DeviceService {
     }
   }
 
+  static const String _lastRegisteredTokenKey = 'last_registered_fcm_token';
+
   Future<void> registerDevice() async {
     try {
       final info = await getDeviceInfo();
@@ -154,7 +176,18 @@ class DeviceService {
         return;
       }
 
+      final prefs = await SharedPreferences.getInstance();
+      final lastRegistered = prefs.getString(_lastRegisteredTokenKey);
+
+      if (lastRegistered == info.token) {
+        debugPrint(
+          'Device token already registered and matches current token. Skipping API call.',
+        );
+        return;
+      }
+
       await DependencyInjection.authApiService.registerDeviceToken(info);
+      await prefs.setString(_lastRegisteredTokenKey, info.token);
       debugPrint('Device registered successfully');
     } catch (e) {
       debugPrint('Failed to register device: $e');

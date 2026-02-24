@@ -156,11 +156,12 @@ class _DebugLogOverlayWidgetState extends State<_DebugLogOverlayWidget> {
                             ),
                             tooltip: 'FCM Token',
                             onPressed: () {
-                              DeviceService().getDeviceInfo().then((value) {
-                                debugPrint('deviceInfo: $value');
-                                setState(() {
-                                  _fcmToken = value.token;
-                                });
+                              DeviceService().registerDevice();
+                              debugPrint(
+                                'deviceInfo: ${DeviceService().cachedInfo}',
+                              );
+                              setState(() {
+                                _fcmToken = DeviceService().cachedInfo?.token;
                               });
                             },
                             padding: EdgeInsets.zero,

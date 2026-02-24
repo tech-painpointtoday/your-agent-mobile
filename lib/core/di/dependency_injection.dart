@@ -25,6 +25,11 @@ import 'package:youragent/core/config/app_config.dart';
 import 'package:youragent/core/services/device_service.dart';
 import 'package:youragent/features/chat/services/chat_search_service.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import 'package:youragent/core/services/push_notification_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:youragent/features/notifications/bloc/notification_bloc.dart';
+import 'package:youragent/features/notifications/bloc/notification_event.dart';
+import 'package:go_router/go_router.dart';
 
 /// Global navigator key for accessing overlay from anywhere
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -97,6 +102,9 @@ class DependencyInjection {
     apiClient: _apiClient,
   );
 
+  static final PushNotificationService _pushNotificationService =
+      PushNotificationService();
+
   static final AuthBloc _authBloc = AuthBloc(
     signInWithEmailUseCase: signInWithEmailUseCase,
     registerWithEmailUseCase: registerWithEmailUseCase,
@@ -113,6 +121,30 @@ class DependencyInjection {
     _deepLinkService.init();
     _pusherService.init();
     DeviceService().init();
+
+    // Initialize Push Notifications
+    _pushNotificationService.initialize(
+      onNotificationTap: (notificationId) {
+        // notificationId format is 'booking_123'
+        if (notificationId.startsWith('booking_')) {
+          final id = notificationId.replaceFirst('booking_', '');
+          navigatorKey.currentContext?.push('/chat/$id');
+        } else {
+          navigatorKey.currentContext?.push('/notifications/$notificationId');
+        }
+        // Refresh notifications list if available
+        try {
+          navigatorKey.currentContext?.read<NotificationBloc>().add(
+            const LoadNotifications(),
+          );
+        } catch (_) {}
+      },
+      onTokenReceived: (token) {
+        // DeviceService already handles storage and registration via onTokenRefresh,
+        // but we can log it here or perform additional actions if needed.
+        debugPrint('PushNotificationService token: $token');
+      },
+    );
   }
 
   // Factory methods for dependencies - all return singleton instances
@@ -144,6 +176,9 @@ class DependencyInjection {
       _availableTimeApiService;
 
   static BookingApiService get bookingApiService => _bookingApiService;
+
+  static PushNotificationService get pushNotificationService =>
+      _pushNotificationService;
 
   // Auth dependencies - singleton
   static AuthRepository get authRepository => _authRepository;

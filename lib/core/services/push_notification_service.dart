@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'local_notification_service.dart';
+import '../di/dependency_injection.dart';
+import 'device_service.dart';
 
 /// Service for handling Firebase Cloud Messaging (Push Notifications)
 class PushNotificationService {
@@ -27,12 +30,26 @@ class PushNotificationService {
       await _requestPermissions();
 
       // Get FCM token
+      if (Platform.isIOS) {
+        String? apnsToken = await _messaging.getAPNSToken();
+        int retryCount = 0;
+        while (apnsToken == null && retryCount < 5) {
+          debugPrint('APNS Token ยังไม่มา รอก่อน... (retry ${retryCount + 1})');
+          await Future<void>.delayed(const Duration(seconds: 1));
+          apnsToken = await _messaging.getAPNSToken();
+          retryCount++;
+        }
+      }
+
       _fcmToken = await _messaging.getToken();
       if (_fcmToken != null) {
         debugPrint('FCM Token: $_fcmToken');
         onTokenReceived(_fcmToken!);
-        // TODO: Send token to your backend
-        // await _sendTokenToBackend(_fcmToken!);
+
+        // Ensure device is registered with backend if authenticated
+        if (DependencyInjection.authRepository.isAuthenticated) {
+          DeviceService().registerDevice();
+        }
       }
 
       // Listen for token refresh
@@ -95,19 +112,6 @@ class PushNotificationService {
       body: notification.body ?? '',
       payload: message.data['notificationId'],
     );
-  }
-
-  /// TODO: Send FCM token to your backend
-  Future<void> _sendTokenToBackend(String token) async {
-    // Example:
-    // await http.post(
-    //   Uri.parse('https://your-api.com/api/users/fcm-token'),
-    //   headers: {'Authorization': 'Bearer $authToken'},
-    //   body: json.encode({
-    //     'token': token,
-    //     'platform': Platform.isIOS ? 'ios' : 'android',
-    //   }),
-    // );
   }
 
   /// Subscribe to a topic
