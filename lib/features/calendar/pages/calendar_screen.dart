@@ -390,10 +390,7 @@ class _CalendarScreenState extends State<CalendarScreen>
         if (state.status == BookingListStatus.initial ||
             state.status == BookingListStatus.loading) {
           return const Center(
-            child: SpinKitFadingCircle(
-              color: AppColors.primary,
-              size: 32,
-            ),
+            child: SpinKitFadingCircle(color: AppColors.primary, size: 32),
           );
         }
 
@@ -781,6 +778,7 @@ class _CalendarScreenState extends State<CalendarScreen>
                                           booking.buyer?.name ?? 'Unknown',
                                       dateStr: displayDate,
                                       status: booking.status,
+                                      statusLabel: booking.statusLabel,
                                       onContactTap: booking.buyer?.phone != null
                                           ? () {
                                               AppCallBottomSheet.show(

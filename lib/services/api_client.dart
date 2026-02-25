@@ -9,6 +9,8 @@ import '../features/auth/bloc/auth_event.dart';
 import 'session_service.dart';
 
 class ApiClient {
+  static String currentLocale = 'th';
+
   static final ApiClient _instance = ApiClient._internal();
   factory ApiClient() => _instance;
 
@@ -59,6 +61,18 @@ class ApiClient {
               options.headers['Authorization'] = 'Bearer $token';
             }
           }
+
+          // Add locale parameter to all GET requests
+          if (options.method.toUpperCase() == 'GET') {
+            final queryParams = Map<String, dynamic>.from(
+              options.queryParameters,
+            );
+            if (!queryParams.containsKey('locale')) {
+              queryParams['locale'] = currentLocale;
+              options.queryParameters = queryParams;
+            }
+          }
+
           handler.next(options);
         },
         onError: (error, handler) async {

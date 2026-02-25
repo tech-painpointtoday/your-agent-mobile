@@ -2,11 +2,9 @@ enum BookingStatus {
   pending,
   confirm,
   reject,
-  met,
-  traveling,
-  arrived,
   expired,
   cancelled,
+  met,
   offer,
   contract,
   closeDeal;
@@ -20,20 +18,16 @@ enum BookingStatus {
       case 2:
         return BookingStatus.reject;
       case 3:
-        return BookingStatus.met;
-      case 4:
-        return BookingStatus.traveling;
-      case 5:
-        return BookingStatus.arrived;
-      case 6:
         return BookingStatus.expired;
-      case 7:
+      case 4:
         return BookingStatus.cancelled;
-      case 8:
+      case 5:
+        return BookingStatus.met;
+      case 6:
         return BookingStatus.offer;
-      case 9:
+      case 7:
         return BookingStatus.contract;
-      case 10:
+      case 8:
         return BookingStatus.closeDeal;
       default:
         return BookingStatus.pending;
@@ -48,22 +42,18 @@ enum BookingStatus {
         return 1;
       case BookingStatus.reject:
         return 2;
-      case BookingStatus.met:
-        return 3;
-      case BookingStatus.traveling:
-        return 4;
-      case BookingStatus.arrived:
-        return 5;
       case BookingStatus.expired:
-        return 6;
+        return 3;
       case BookingStatus.cancelled:
-        return 7;
+        return 4;
+      case BookingStatus.met:
+        return 5;
       case BookingStatus.offer:
-        return 8;
+        return 6;
       case BookingStatus.contract:
-        return 9;
+        return 7;
       case BookingStatus.closeDeal:
-        return 10;
+        return 8;
     }
   }
 }

@@ -219,10 +219,7 @@ class BookingCard extends StatelessWidget {
               ),
             ),
             child: const Center(
-              child: SpinKitFadingCircle(
-                color: AppColors.primary,
-                size: 24,
-              ),
+              child: SpinKitFadingCircle(color: AppColors.primary, size: 24),
             ),
           ),
           errorWidget: (context, url, error) => Container(
@@ -253,56 +250,37 @@ class BookingCard extends StatelessWidget {
   }
 
   Widget _buildStatusAndSubtext(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    String statusLabel = 'Unknown';
     BadgeColor badgeColor = BadgeColor.default_;
 
     switch (booking.status) {
       case BookingStatus.pending:
-        return SizedBox.shrink();
+        badgeColor = BadgeColor.yellow;
+        break;
       case BookingStatus.confirm:
-        statusLabel = l10n.calendar_status_confirmed;
+      case BookingStatus.closeDeal:
         badgeColor = BadgeColor.green;
         break;
       case BookingStatus.reject:
-        statusLabel = l10n.calendar_status_cancelled;
+      case BookingStatus.cancelled:
         badgeColor = BadgeColor.red;
-        break;
-      case BookingStatus.met:
-        statusLabel = l10n.calendar_status_finished;
-        badgeColor = BadgeColor.green;
-        break;
-      case BookingStatus.traveling:
-        statusLabel = l10n.calendar_status_traveling;
-        badgeColor = BadgeColor.blue;
-        break;
-      case BookingStatus.arrived:
-        statusLabel = l10n.calendar_status_arrived;
-        badgeColor = BadgeColor.blue;
-        break;
-      case BookingStatus.offer:
-        statusLabel = l10n.calendar_status_offer;
-        badgeColor = BadgeColor.orange;
-        break;
-      case BookingStatus.contract:
-        statusLabel = l10n.calendar_status_contract;
-        badgeColor = BadgeColor.orange;
-        break;
-      case BookingStatus.closeDeal:
-        statusLabel = l10n.calendar_status_closed;
-        badgeColor = BadgeColor.green;
         break;
       case BookingStatus.expired:
-        statusLabel = l10n.calendar_status_expired;
         badgeColor = BadgeColor.orange;
         break;
-      case BookingStatus.cancelled:
-        statusLabel = l10n.calendar_status_cancelled;
-        badgeColor = BadgeColor.red;
+      case BookingStatus.met:
+        badgeColor = BadgeColor.purple;
+        break;
+      case BookingStatus.offer:
+      case BookingStatus.contract:
+        badgeColor = BadgeColor.blue;
         break;
     }
 
-    return AppBadges.status(label: statusLabel, color: badgeColor);
+    return AppBadge(
+      label: booking.statusLabel,
+      color: badgeColor,
+      style: BadgeStyle.dot,
+    );
   }
 
   Widget _buildWarningSection(BuildContext context) {
@@ -368,37 +346,13 @@ class BookingCard extends StatelessWidget {
     }
 
     if (booking.status == BookingStatus.pending) {
-      return Row(
-        children: [
-          Expanded(
-            child: AppButton(
-              height: 32,
-              textSize: 12,
-              text: l10n.calendar_cancel_label,
-              style: AppButtonStyle.outline,
-              onPressed: showCancelConfirm,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: AppButton(
-              height: 32,
-              textSize: 12,
-              text: l10n.calendar_confirm_label,
-              style: AppButtonStyle.primary,
-              onPressed: () {
-                AppConfirmationBottomSheet.show(
-                  context: context,
-                  title: l10n.booking_confirm_booking_title,
-                  description: l10n.booking_confirm_booking_desc,
-                  confirmLabel: l10n.calendar_confirm_label,
-                  onConfirm: () =>
-                      onStatusAction?.call(BookingStatus.confirm.value),
-                );
-              },
-            ),
-          ),
-        ],
+      return AppButton(
+        width: double.infinity,
+        height: 32,
+        textSize: 12,
+        text: l10n.calendar_cancel_label,
+        style: AppButtonStyle.outline,
+        onPressed: showCancelConfirm,
       );
     } else if (booking.status == BookingStatus.confirm) {
       return AppButton(

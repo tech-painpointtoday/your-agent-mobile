@@ -35,6 +35,8 @@ class AppColors {
   static const supportPinkLight = Color(0xFFFFF1F8);
   static const supportPurpleDark = Color(0xFFA053FF);
   static const supportPurpleLight = Color(0xFFF9F0FF);
+  static const supportYellowDark = Color(0xFFF5A623);
+  static const supportYellowLight = Color(0xFFFFF8E1);
 
   // ==========================================
   // 2. Primary & Semantic Aliases (เรียกใช้ใน App)

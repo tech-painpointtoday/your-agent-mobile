@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'app/router.dart';
+import 'services/api_client.dart';
 import 'core/di/dependency_injection.dart';
 import 'core/theme/app_theme.dart';
 import 'flavors.dart';
@@ -29,10 +30,12 @@ class _AppState extends State<App> {
     super.initState();
     // Attempt restore
     DependencyInjection.authRepository.restoreAuthState();
+    ApiClient.currentLocale = _locale.languageCode;
   }
 
   void _changeLocale(Locale locale) {
     setState(() => _locale = Locale(locale.languageCode));
+    ApiClient.currentLocale = locale.languageCode;
   }
 
   @override

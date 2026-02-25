@@ -95,10 +95,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
         backgroundColor: Colors.white,
         appBar: AppBar(backgroundColor: Colors.white, elevation: 0),
         body: const Center(
-          child: SpinKitFadingCircle(
-            color: AppColors.primary,
-            size: 32,
-          ),
+          child: SpinKitFadingCircle(color: AppColors.primary, size: 32),
         ),
       );
     }
@@ -244,47 +241,32 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
       headerDisplayInfo = devName;
     }
 
-    String statusLabel = 'Unknown';
     BadgeColor badgeColor = BadgeColor.default_;
 
-    final l10n = AppLocalizations.of(context);
     switch (booking.status) {
       case BookingStatus.pending:
-        statusLabel = l10n.booking_status_pending_client;
         badgeColor = BadgeColor.yellow;
         break;
       case BookingStatus.confirm:
-        statusLabel = l10n.calendar_status_confirmed;
+      case BookingStatus.closeDeal:
         badgeColor = BadgeColor.green;
         break;
       case BookingStatus.reject:
-        statusLabel = l10n.calendar_status_cancelled;
+      case BookingStatus.cancelled:
         badgeColor = BadgeColor.red;
-        break;
-      case BookingStatus.met:
-        statusLabel = l10n.calendar_status_finished;
-        badgeColor = BadgeColor.green;
-        break;
-      case BookingStatus.traveling:
-        statusLabel = l10n.booking_status_traveling_client;
-        badgeColor = BadgeColor.blue;
-        break;
-      case BookingStatus.arrived:
-        statusLabel = l10n.booking_status_arrived_client;
-        badgeColor = BadgeColor.blue;
         break;
       case BookingStatus.expired:
-        statusLabel = l10n.calendar_status_expired;
         badgeColor = BadgeColor.orange;
         break;
-      case BookingStatus.cancelled:
-        statusLabel = l10n.calendar_status_cancelled;
-        badgeColor = BadgeColor.red;
+      case BookingStatus.met:
+        badgeColor = BadgeColor.purple;
+        break;
+      case BookingStatus.offer:
+      case BookingStatus.contract:
+        badgeColor = BadgeColor.blue;
         break;
       default:
-        statusLabel = l10n.booking_status_unknown;
         badgeColor = BadgeColor.default_;
-        break;
     }
 
     return Container(
@@ -335,7 +317,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
             ),
           ],
           const SizedBox(height: 12),
-          AppBadges.status(label: statusLabel, color: badgeColor),
+          AppBadges.status(label: booking.statusLabel, color: badgeColor),
         ],
       ),
     );
@@ -665,101 +647,140 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     final l10n = AppLocalizations.of(context);
     Widget? actionButton;
 
+    // if (booking.status == BookingStatus.pending) {
+    //   actionButton = Row(
+    //     children: [
+    //       Expanded(
+    //         child: AppButton(
+    //           text: AppLocalizations.of(context).calendar_cancel_label,
+    //           style: AppButtonStyle.outline,
+    //           onPressed: () {
+    //             AppConfirmationBottomSheet.show(
+    //               context: context,
+    //               title: AppLocalizations.of(
+    //                 context,
+    //               ).calendar_confirm_cancel_title,
+    //               description: AppLocalizations.of(
+    //                 context,
+    //               ).calendar_confirm_cancel_desc,
+    //               confirmLabel: AppLocalizations.of(
+    //                 context,
+    //               ).calendar_confirm_label,
+    //               style: ConfirmationStyle.destructive,
+    //               onConfirm: () => _updateStatus(BookingStatus.reject.value),
+    //             );
+    //           },
+    //         ),
+    //       ),
+    //       const SizedBox(width: 12),
+    //       Expanded(
+    //         child: AppButton(
+    //           text: AppLocalizations.of(context).booking_confirm_booking,
+    //           style: AppButtonStyle.primary,
+    //           onPressed: () {
+    //             AppConfirmationBottomSheet.show(
+    //               context: context,
+    //               title: AppLocalizations.of(
+    //                 context,
+    //               ).booking_confirm_booking_title,
+    //               description: AppLocalizations.of(
+    //                 context,
+    //               ).booking_confirm_booking_desc,
+    //               confirmLabel: AppLocalizations.of(
+    //                 context,
+    //               ).calendar_confirm_label,
+    //               onConfirm: () => _updateStatus(BookingStatus.confirm.value),
+    //             );
+    //           },
+    //         ),
+    //       ),
+    //     ],
+    //   );
+    // } else if (booking.status == BookingStatus.confirm) {
+    //   actionButton = AppButton(
+    //     width: double.infinity,
+    //     text: AppLocalizations.of(context).booking_start_traveling,
+    //     style: AppButtonStyle.primary,
+    //     onPressed: () {
+    //       AppConfirmationBottomSheet.show(
+    //         context: context,
+    //         title: AppLocalizations.of(context).booking_confirm_traveling_title,
+    //         description: AppLocalizations.of(
+    //           context,
+    //         ).booking_confirm_traveling_desc,
+    //         confirmLabel: AppLocalizations.of(context).booking_start_traveling,
+    //         onConfirm: () => _updateStatus(BookingStatus.met.value),
+    //       );
+    //     },
+    //   );
+    // }
+    // else if (booking.status == BookingStatus.met) {
+    //   actionButton = AppButton(
+    //     width: double.infinity,
+    //     text: AppLocalizations.of(context).booking_status_arrived_client,
+    //     style: AppButtonStyle.primary,
+    //     onPressed: () {
+    //       AppConfirmationBottomSheet.show(
+    //         context: context,
+    //         title: AppLocalizations.of(context).booking_confirm_arrived_title,
+    //         description: AppLocalizations.of(
+    //           context,
+    //         ).booking_confirm_arrived_desc,
+    //         confirmLabel: l10n.booking_status_arrived_client,
+    //         onConfirm: () => _updateStatus(BookingStatus.offer.value),
+    //       );
+    //     },
+    //   );
+    // } else if (booking.status == BookingStatus.offer) {
+    //   actionButton = AppButton(
+    //     width: double.infinity,
+    //     text: l10n.booking_finish_work,
+    //     style: AppButtonStyle.primary,
+    //     onPressed: () {
+    //       AppConfirmationBottomSheet.show(
+    //         context: context,
+    //         title: l10n.booking_confirm_finish_title,
+    //         description: l10n.booking_confirm_finish_desc,
+    //         confirmLabel: l10n.booking_finish_work,
+    //         onConfirm: () => _updateStatus(BookingStatus.contract.value),
+    //       );
+    //     },
+    //   );
+    // }
+
     if (booking.status == BookingStatus.pending) {
-      actionButton = Row(
-        children: [
-          Expanded(
-            child: AppButton(
-              text: AppLocalizations.of(context).calendar_cancel_label,
-              style: AppButtonStyle.outline,
-              onPressed: () {
-                AppConfirmationBottomSheet.show(
-                  context: context,
-                  title: AppLocalizations.of(
-                    context,
-                  ).calendar_confirm_cancel_title,
-                  description: AppLocalizations.of(
-                    context,
-                  ).calendar_confirm_cancel_desc,
-                  confirmLabel: AppLocalizations.of(
-                    context,
-                  ).calendar_confirm_label,
-                  style: ConfirmationStyle.destructive,
-                  onConfirm: () => _updateStatus(BookingStatus.reject.value),
-                );
-              },
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: AppButton(
-              text: AppLocalizations.of(context).booking_confirm_booking,
-              style: AppButtonStyle.primary,
-              onPressed: () {
-                AppConfirmationBottomSheet.show(
-                  context: context,
-                  title: AppLocalizations.of(
-                    context,
-                  ).booking_confirm_booking_title,
-                  description: AppLocalizations.of(
-                    context,
-                  ).booking_confirm_booking_desc,
-                  confirmLabel: AppLocalizations.of(
-                    context,
-                  ).calendar_confirm_label,
-                  onConfirm: () => _updateStatus(BookingStatus.confirm.value),
-                );
-              },
-            ),
-          ),
-        ],
+      actionButton = AppButton(
+        width: double.infinity,
+        text: AppLocalizations.of(context).calendar_cancel_label,
+        style: AppButtonStyle.outline,
+        onPressed: () {
+          AppConfirmationBottomSheet.show(
+            context: context,
+            title: AppLocalizations.of(context).calendar_confirm_cancel_title,
+            description: AppLocalizations.of(
+              context,
+            ).calendar_confirm_cancel_desc,
+            confirmLabel: AppLocalizations.of(context).calendar_confirm_label,
+            style: ConfirmationStyle.destructive,
+            onConfirm: () => _updateStatus(BookingStatus.reject.value),
+          );
+        },
       );
     } else if (booking.status == BookingStatus.confirm) {
       actionButton = AppButton(
         width: double.infinity,
-        text: AppLocalizations.of(context).booking_start_traveling,
-        style: AppButtonStyle.primary,
+        text: AppLocalizations.of(context).calendar_cancel_label,
+        style: AppButtonStyle.outline,
         onPressed: () {
           AppConfirmationBottomSheet.show(
             context: context,
-            title: AppLocalizations.of(context).booking_confirm_traveling_title,
+            title: AppLocalizations.of(context).calendar_confirm_cancel_title,
             description: AppLocalizations.of(
               context,
-            ).booking_confirm_traveling_desc,
-            confirmLabel: AppLocalizations.of(context).booking_start_traveling,
-            onConfirm: () => _updateStatus(BookingStatus.traveling.value),
-          );
-        },
-      );
-    } else if (booking.status == BookingStatus.traveling) {
-      actionButton = AppButton(
-        width: double.infinity,
-        text: AppLocalizations.of(context).booking_status_arrived_client,
-        style: AppButtonStyle.primary,
-        onPressed: () {
-          AppConfirmationBottomSheet.show(
-            context: context,
-            title: AppLocalizations.of(context).booking_confirm_arrived_title,
-            description: AppLocalizations.of(
-              context,
-            ).booking_confirm_arrived_desc,
-            confirmLabel: l10n.booking_status_arrived_client,
-            onConfirm: () => _updateStatus(BookingStatus.arrived.value),
-          );
-        },
-      );
-    } else if (booking.status == BookingStatus.arrived) {
-      actionButton = AppButton(
-        width: double.infinity,
-        text: l10n.booking_finish_work,
-        style: AppButtonStyle.primary,
-        onPressed: () {
-          AppConfirmationBottomSheet.show(
-            context: context,
-            title: l10n.booking_confirm_finish_title,
-            description: l10n.booking_confirm_finish_desc,
-            confirmLabel: l10n.booking_finish_work,
-            onConfirm: () => _updateStatus(BookingStatus.met.value),
+            ).calendar_confirm_cancel_desc,
+            confirmLabel: AppLocalizations.of(context).calendar_confirm_label,
+            style: ConfirmationStyle.destructive,
+            onConfirm: () => _updateStatus(BookingStatus.reject.value),
           );
         },
       );

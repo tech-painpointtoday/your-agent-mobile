@@ -12,6 +12,7 @@ class Booking extends Equatable {
   final String ymd;
   final String time;
   final BookingStatus status;
+  final String statusLabel;
   final bool autoMatched;
   final DateTime? cancelledAt;
   final DateTime? confirmedAt;
@@ -29,6 +30,7 @@ class Booking extends Equatable {
     required this.ymd,
     required this.time,
     required this.status,
+    required this.statusLabel,
     required this.autoMatched,
     this.cancelledAt,
     this.confirmedAt,
@@ -48,6 +50,7 @@ class Booking extends Equatable {
       ymd: json['ymd'] as String,
       time: json['time'] as String,
       status: BookingStatus.fromInt(json['status'] as int? ?? 0),
+      statusLabel: json['status_label']?.toString() ?? '',
       autoMatched: json['auto_matched'] as bool? ?? false,
       cancelledAt: json['cancelled_at'] != null
           ? DateTime.tryParse(json['cancelled_at'].toString())
@@ -80,6 +83,7 @@ class Booking extends Equatable {
     ymd,
     time,
     status,
+    statusLabel,
     autoMatched,
     cancelledAt,
     confirmedAt,

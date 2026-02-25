@@ -9,6 +9,7 @@ import 'package:youragent/l10n/app_localizations.dart';
 
 class CalendarHistoryCard extends StatelessWidget {
   final BookingStatus status;
+  final String? statusLabel;
   final String dateStr;
   final String propertyAddress;
   final String? imageUrl;
@@ -24,6 +25,7 @@ class CalendarHistoryCard extends StatelessWidget {
   const CalendarHistoryCard({
     super.key,
     required this.status,
+    this.statusLabel,
     required this.dateStr,
     required this.visitorName,
     required this.propertyAddress,
@@ -149,7 +151,7 @@ class CalendarHistoryCard extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             // Status Badge
-            _buildStatusBadge(context),
+            _buildStatusBadge(context, statusLabel),
             const SizedBox(height: 16),
             // Additional Context
             if (status == BookingStatus.met) ...[
@@ -184,7 +186,8 @@ class CalendarHistoryCard extends StatelessWidget {
                   color: AppColors.baseDarkGrey,
                 ),
               ),
-            ] else if (status == BookingStatus.cancelled) ...[
+            ] else if (status == BookingStatus.cancelled &&
+                cancelReason != null) ...[
               Text(
                 AppLocalizations.of(context).calendar_history_reason(
                   cancelReason ??
@@ -220,71 +223,38 @@ class CalendarHistoryCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context) {
-    BadgeColor bgColor;
-    Color textColor;
-    String label;
+  Widget _buildStatusBadge(BuildContext context, String? statusLabel) {
+    BadgeColor badgeColor;
 
     switch (status) {
       case BookingStatus.pending:
-        return const SizedBox.shrink();
+        badgeColor = BadgeColor.yellow;
+        break;
       case BookingStatus.confirm:
-        bgColor = BadgeColor.green;
-        textColor = AppColors.supportGreenDark;
-        label = AppLocalizations.of(context).calendar_status_confirmed;
+        badgeColor = BadgeColor.green;
         break;
       case BookingStatus.reject:
-        bgColor = BadgeColor.red;
-        textColor = AppColors.supportRedDark;
-        label = AppLocalizations.of(context).calendar_history_reject;
+      case BookingStatus.cancelled:
+        badgeColor = BadgeColor.red;
         break;
       case BookingStatus.expired:
-        bgColor = BadgeColor.orange;
-        textColor = AppColors.supportOrangeDark;
-        label = AppLocalizations.of(context).calendar_status_expired;
-        break;
-      case BookingStatus.cancelled:
-        bgColor = BadgeColor.red;
-        textColor = AppColors.supportRedDark;
-        label = AppLocalizations.of(context).calendar_status_cancelled;
+        badgeColor = BadgeColor.orange;
         break;
       case BookingStatus.met:
-        bgColor = BadgeColor.green;
-        textColor = AppColors.supportGreenDark;
-        label = AppLocalizations.of(context).calendar_status_finished;
-        break;
-      case BookingStatus.traveling:
-        bgColor = BadgeColor.blue;
-        textColor = AppColors.supportBlueDeep;
-        label = AppLocalizations.of(context).calendar_status_traveling;
-        break;
-      case BookingStatus.arrived:
-        bgColor = BadgeColor.blue;
-        textColor = AppColors.supportBlueDeep;
-        label = AppLocalizations.of(context).calendar_status_arrived;
+        badgeColor = BadgeColor.purple;
         break;
       case BookingStatus.offer:
-        bgColor = BadgeColor.blue;
-        textColor = AppColors.supportBlueDeep;
-        label = AppLocalizations.of(context).calendar_status_offer;
-        break;
       case BookingStatus.contract:
-        bgColor = BadgeColor.orange;
-        textColor = AppColors.supportOrangeDark;
-        label = AppLocalizations.of(context).calendar_status_contract;
+        badgeColor = BadgeColor.blue;
         break;
-      case BookingStatus.closeDeal:
-        bgColor = BadgeColor.green;
-        textColor = AppColors.supportGreenDark;
-        label = AppLocalizations.of(context).calendar_status_closed;
-        break;
+      default:
+        badgeColor = BadgeColor.default_;
     }
 
     return AppBadge(
-      label: label,
+      label: statusLabel ?? 'Unknown',
+      color: badgeColor,
       style: BadgeStyle.dot,
-      color: bgColor,
-      customTextColor: textColor,
     );
   }
 
