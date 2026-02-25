@@ -2303,7 +2303,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get propertyDirectionHint => 'Select property direction';
 
   @override
-  String get floorUnit => 'Floors';
+  String get floorUnit => 'Floor No.';
 
   @override
   String get roomUnit => 'Rooms';
@@ -2478,10 +2478,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thaiContemporary => 'Thai Contemporary';
 
   @override
-  String get builtLabel => 'Built Date';
+  String get builtLabel => 'Property Built Date';
 
   @override
-  String get builtHint => 'Select built date';
+  String get builtHint => 'Select property built date';
 
   @override
   String get builtTooltip => 'When was the property built?';

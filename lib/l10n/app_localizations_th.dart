@@ -2300,7 +2300,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get propertyDirectionHint => 'เลือกทิศหน้าบ้าน';
 
   @override
-  String get floorUnit => 'ชั้น';
+  String get floorUnit => 'ชั้นที่';
 
   @override
   String get roomUnit => 'ห้อง';
@@ -2474,10 +2474,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get thaiContemporary => 'ไทยร่วมสมัย';
 
   @override
-  String get builtLabel => 'วันที่สร้าง';
+  String get builtLabel => 'วันที่สร้างทรัพย์';
 
   @override
-  String get builtHint => 'เลือกวันที่สร้าง';
+  String get builtHint => 'เลือกวันที่สร้างทรัพย์';
 
   @override
   String get builtTooltip => 'ทรัพย์นี้สร้างเสร็จสมบูรณ์เมื่อไหร่?';

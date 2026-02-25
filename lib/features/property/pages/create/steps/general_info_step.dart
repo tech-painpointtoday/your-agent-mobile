@@ -561,10 +561,7 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
       loadingBuilder: (context) => const Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: SpinKitFadingCircle(
-            color: AppColors.primary,
-            size: 24,
-          ),
+          child: SpinKitFadingCircle(color: AppColors.primary, size: 24),
         ),
       ),
       emptyBuilder: (context) {
