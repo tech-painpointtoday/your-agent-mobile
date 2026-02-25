@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,16 +31,79 @@ class _PolicyScreenState extends State<PolicyScreen> {
   late ScrollController _scrollController;
   bool _hasScrolledToBottom = false;
 
+  String? _termsContent;
+  String? _privacyContent;
+  bool _termsLoaded = false;
+  bool _privacyLoaded = false;
+  String? _termsError;
+  String? _privacyError;
+
+  static const String _termsAsset = 'assets/etc/term_and_condition.txt';
+  static const String _privacyAsset = 'assets/etc/privacy.txt';
+
   @override
   void initState() {
     super.initState();
     _selectedPolicy = widget.initialPolicyType ?? PolicyType.terms;
     _scrollController = ScrollController();
     _scrollController.addListener(_checkScrollPosition);
-    // Check if content fits on screen after first frame
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkIfContentFits();
-    });
+    _loadTerms();
+    _loadPrivacy();
+    // For disclaimer (static content), check if content fits after first frame.
+    // For terms/privacy, scroll-to-bottom is re-checked after asset content loads.
+    if (_selectedPolicy == PolicyType.disclaimer) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkIfContentFits();
+      });
+    }
+  }
+
+  Future<void> _loadTerms() async {
+    try {
+      final content = await rootBundle.loadString(_termsAsset);
+      if (mounted) {
+        setState(() {
+          _termsContent = content;
+          _termsLoaded = true;
+          _termsError = null;
+          _hasScrolledToBottom = false; // Require user to scroll again after content loads
+        });
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _checkIfContentFits();
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _termsError = e.toString();
+          _termsLoaded = true;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadPrivacy() async {
+    try {
+      final content = await rootBundle.loadString(_privacyAsset);
+      if (mounted) {
+        setState(() {
+          _privacyContent = content;
+          _privacyLoaded = true;
+          _privacyError = null;
+          _hasScrolledToBottom = false; // Require user to scroll again after content loads
+        });
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _checkIfContentFits();
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _privacyError = e.toString();
+          _privacyLoaded = true;
+        });
+      }
+    }
   }
 
   void _checkIfContentFits() {
@@ -243,28 +308,74 @@ class _PolicyScreenState extends State<PolicyScreen> {
   }
 
   Widget _buildTermsContent() {
-    final items = <String>[
-      'ผู้ใช้บริการตกลงที่จะใช้บริการของบริษัท ยัวร์เอเจนต์ แพลตฟอร์ม จำกัด ตามข้อกำหนดและเงื่อนไขที่กำหนดไว้ในเอกสารฉบับนี้ โดยการเข้าใช้งานหรือใช้บริการใดๆ ของแพลตฟอร์ม ถือว่าผู้ใช้บริการยอมรับและผูกพันตามข้อกำหนดและเงื่อนไขทั้งหมด',
-      'บริษัทขอสงวนสิทธิ์ในการแก้ไข เปลี่ยนแปลง หรือยกเลิกข้อกำหนดและเงื่อนไขการใช้งานได้ตลอดเวลา โดยจะแจ้งให้ผู้ใช้บริการทราบผ่านทางเว็บไซต์หรือช่องทางอื่นๆ ที่เหมาะสม การแก้ไขใดๆ จะมีผลบังคับใช้ทันทีหลังจากประกาศ',
-      'ผู้ใช้บริการต้องรับผิดชอบต่อข้อมูลที่ให้ไว้ในแพลตฟอร์ม และต้องให้ข้อมูลที่ถูกต้อง ครบถ้วน และเป็นปัจจุบัน บริษัทไม่รับผิดชอบต่อความเสียหายใดๆ ที่เกิดจากการให้ข้อมูลที่ไม่ถูกต้องหรือไม่ครบถ้วน',
-      'ผู้ใช้บริการตกลงที่จะไม่ใช้บริการในทางที่ผิดกฎหมาย หรือเพื่อวัตถุประสงค์ที่ผิดกฎหมาย รวมถึงการละเมิดสิทธิ์ของผู้อื่น การส่งข้อมูลที่เป็นเท็จ หรือการกระทำใดๆ ที่อาจก่อให้เกิดความเสียหายต่อบริษัทหรือบุคคลที่สาม',
-      'บริษัทขอสงวนสิทธิ์ในการระงับหรือยกเลิกการให้บริการแก่ผู้ใช้บริการที่ละเมิดข้อกำหนดและเงื่อนไขการใช้งาน โดยไม่ต้องแจ้งให้ทราบล่วงหน้า และไม่ต้องรับผิดชอบต่อความเสียหายใดๆ ที่เกิดขึ้นจากการระงับหรือยกเลิกการให้บริการ',
-      'ข้อกำหนดและเงื่อนไขการใช้งานนี้อยู่ภายใต้กฎหมายไทย หากเกิดข้อพิพาทใดๆ ให้ศาลที่มีเขตอำนาจในกรุงเทพมหานครเป็นผู้ชี้ขาด',
-    ];
-
-    return _numberedList(items);
+    if (!_termsLoaded) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 32),
+          child: SpinKitFadingCircle(
+            color: AppColors.primary,
+            size: 32,
+          ),
+        ),
+      );
+    }
+    if (_termsError != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Text(
+          _termsError!,
+          style: GoogleFonts.anuphan(
+            fontSize: 14,
+            color: AppColors.supportRedDeep,
+          ),
+        ),
+      );
+    }
+    if (_termsContent == null || _termsContent!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return _buildTextFromAsset(_termsContent!);
   }
 
   Widget _buildPrivacyContent() {
-    final items = <String>[
-      'บริษัท ยัวร์เอเจนต์ แพลตฟอร์ม จำกัด ให้ความสำคัญกับการคุ้มครองข้อมูลส่วนบุคคลของผู้ใช้บริการ โดยจะเก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลตามนโยบายความเป็นส่วนตัวนี้เท่านั้น',
-      'ข้อมูลส่วนบุคคลที่บริษัทเก็บรวบรวม ได้แก่ ชื่อ นามสกุล อีเมล หมายเลขโทรศัพท์ ที่อยู่ และข้อมูลอื่นๆ ที่ผู้ใช้บริการให้ไว้ในระหว่างการใช้งานแพลตฟอร์ม',
-      'บริษัทจะใช้ข้อมูลส่วนบุคคลเพื่อการให้บริการ การปรับปรุงบริการ การส่งข้อมูลข่าวสาร และวัตถุประสงค์อื่นๆ ที่เกี่ยวข้องกับบริการของบริษัทเท่านั้น',
-      'บริษัทจะไม่เปิดเผยข้อมูลส่วนบุคคลให้แก่บุคคลที่สามโดยไม่ได้รับความยินยอมจากผู้ใช้บริการ ยกเว้นในกรณีที่กฎหมายกำหนด หรือเพื่อการป้องกันหรือระงับอันตรายต่อชีวิต ร่างกาย หรือสุขภาพ',
-      'ผู้ใช้บริการมีสิทธิ์ในการเข้าถึง แก้ไข หรือลบข้อมูลส่วนบุคคลของตนได้ตลอดเวลา โดยติดต่อผ่านช่องทางที่บริษัทกำหนด',
-    ];
+    if (!_privacyLoaded) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 32),
+          child: SpinKitFadingCircle(
+            color: AppColors.primary,
+            size: 32,
+          ),
+        ),
+      );
+    }
+    if (_privacyError != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Text(
+          _privacyError!,
+          style: GoogleFonts.anuphan(
+            fontSize: 14,
+            color: AppColors.supportRedDeep,
+          ),
+        ),
+      );
+    }
+    if (_privacyContent == null || _privacyContent!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return _buildTextFromAsset(_privacyContent!);
+  }
 
-    return _numberedList(items);
+  Widget _buildTextFromAsset(String text) {
+    return SelectableText(
+      text.trim(),
+      style: GoogleFonts.anuphan(
+        fontSize: 14,
+        height: 1.6,
+        color: AppColors.baseDarkGrey,
+      ),
+    );
   }
 
   Widget _buildDisclaimerContent() {
