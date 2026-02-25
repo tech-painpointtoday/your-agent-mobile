@@ -51,6 +51,8 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   String? _selectedBusinessType;
+  bool _hasOpenedTermsPolicy = false;
+  bool _hasOpenedPrivacyPolicy = false;
 
   @override
   Widget build(BuildContext context) {
@@ -166,9 +168,11 @@ class _RegisterFormState extends State<RegisterForm> {
             onLinkTap: () async {
               final accepted = await context.push<bool>('/policy?type=terms');
               if (accepted == true) {
+                setState(() => _hasOpenedTermsPolicy = true);
                 widget.onTermsChanged(true);
               }
             },
+            hasReadPolicy: _hasOpenedTermsPolicy,
           ),
           const SizedBox(height: 8),
           _policyCheckbox(
@@ -177,11 +181,14 @@ class _RegisterFormState extends State<RegisterForm> {
             onChanged: widget.onPrivacyChanged,
             linkText: l10n.link_privacy_policy,
             onLinkTap: () async {
-              final accepted = await context.push<bool>('/policy?type=privacy');
+              final accepted =
+                  await context.push<bool>('/policy?type=privacy');
               if (accepted == true) {
+                setState(() => _hasOpenedPrivacyPolicy = true);
                 widget.onPrivacyChanged(true);
               }
             },
+            hasReadPolicy: _hasOpenedPrivacyPolicy,
           ),
           const SizedBox(height: 24),
           AppButton(
@@ -217,19 +224,43 @@ class _RegisterFormState extends State<RegisterForm> {
     required ValueChanged<bool> onChanged,
     required String linkText,
     required VoidCallback onLinkTap,
+    required bool hasReadPolicy,
   }) {
     final l10n = AppLocalizations.of(context);
+    // When user tries to check: open policy screen and require scroll-to-bottom + accept.
+    // Only after they have accepted once (hasReadPolicy) can they check directly.
+    void onTapToAccept() => onLinkTap();
     return Row(
       children: [
         Checkbox(
           value: checked,
-          onChanged: (v) => onChanged(v ?? false),
+          onChanged: (v) {
+            if (v == true) {
+              if (hasReadPolicy) {
+                onChanged(true);
+              } else {
+                onTapToAccept();
+              }
+            } else {
+              onChanged(false);
+            }
+          },
           activeColor: AppColors.primary,
           side: const BorderSide(color: AppColors.baseLightGrey),
         ),
         Expanded(
           child: GestureDetector(
-            onTap: () => onChanged(!checked),
+            onTap: () {
+              if (checked) {
+                onChanged(false);
+              } else {
+                if (hasReadPolicy) {
+                  onChanged(true);
+                } else {
+                  onTapToAccept();
+                }
+              }
+            },
             child: Text.rich(
               TextSpan(
                 style: GoogleFonts.anuphan(
