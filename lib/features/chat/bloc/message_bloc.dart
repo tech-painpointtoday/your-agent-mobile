@@ -12,9 +12,11 @@ import 'message_state.dart';
 
 class MessageBloc extends Bloc<MessageEvent, MessageState> {
   final bool isStaff;
+  final bool isInquiry;
   String? _currentChannel;
 
-  MessageBloc({this.isStaff = false}) : super(MessageInitial()) {
+  MessageBloc({this.isStaff = false, this.isInquiry = false})
+      : super(MessageInitial()) {
     on<LoadMessages>(_onLoadMessages);
     on<SendMessage>(_onSendMessage);
     on<MarkAsRead>(_onMarkAsRead);
@@ -39,19 +41,28 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       final role = authRepo.currentRole == UserRole.agent ? 'agent' : 'agency';
 
       // Load initial messages
-      final messages = await DependencyInjection.chatApiService.getMessages(
-        role: role,
-        chatId: event.bookingId,
-      );
+      final messages = isInquiry
+          ? await DependencyInjection.chatApiService.getInquiryMessages(
+              inquiryId: event.bookingId,
+            )
+          : await DependencyInjection.chatApiService.getMessages(
+              role: role,
+              chatId: event.bookingId,
+            );
 
       emit(MessageLoaded(messages: messages));
 
-      // Pusher: chat.booking.{booking_id} or chat.staff.{conversation_id}
+      // Pusher:
+      // - chat.booking.{booking_id}
+      // - chat.staff.{conversation_id}
+      // - chat.inquiry.{property_inquiry_id}
       _currentChannel = isStaff
           ? PusherChannels.chatStaffChannel(
               event.conversationId ?? event.bookingId,
             )
-          : PusherChannels.chatBookingChannel(event.bookingId);
+          : (isInquiry
+              ? PusherChannels.chatInquiryChannel(event.bookingId)
+              : PusherChannels.chatBookingChannel(event.bookingId));
       DependencyInjection.pusherService.subscribe(
         channelName: _currentChannel!,
         onEvent: (event) {
@@ -117,18 +128,35 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       final authRepo = DependencyInjection.authRepository;
       final role = authRepo.currentRole == UserRole.agent ? 'agent' : 'agency';
 
-      await DependencyInjection.chatApiService.sendMessage(
-        role: role,
-        bookingId: event.bookingId,
-        message: event.message,
-        image: event.image,
-      );
+      if (isInquiry) {
+        await DependencyInjection.chatApiService.sendInquiryMessage(
+          inquiryId: event.bookingId,
+          message: event.message,
+          image: event.image,
+        );
 
-      // Reload messages after sending
-      final updatedMessages = await DependencyInjection.chatApiService
-          .getMessages(role: role, chatId: event.bookingId);
+        // Reload messages after sending
+        final updatedMessages =
+            await DependencyInjection.chatApiService.getInquiryMessages(
+          inquiryId: event.bookingId,
+        );
 
-      emit(MessageLoaded(messages: updatedMessages));
+        emit(MessageLoaded(messages: updatedMessages));
+      } else {
+        await DependencyInjection.chatApiService.sendMessage(
+          role: role,
+          bookingId: event.bookingId,
+          message: event.message,
+          image: event.image,
+        );
+
+        // Reload messages after sending
+        final updatedMessages = await DependencyInjection.chatApiService
+            .getMessages(role: role, chatId: event.bookingId);
+
+        emit(MessageLoaded(messages: updatedMessages));
+      }
+
     } catch (e) {
       // Keep existing messages but show error if we had a way to toast
       emit(MessageError(e.toString()));
@@ -140,13 +168,20 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     Emitter<MessageState> emit,
   ) async {
     try {
-      final authRepo = DependencyInjection.authRepository;
-      final role = authRepo.currentRole == UserRole.agent ? 'agent' : 'agency';
+      if (isInquiry) {
+        await DependencyInjection.chatApiService.markInquiryAsRead(
+          inquiryId: event.bookingId,
+        );
+      } else {
+        final authRepo = DependencyInjection.authRepository;
+        final role =
+            authRepo.currentRole == UserRole.agent ? 'agent' : 'agency';
 
-      await DependencyInjection.chatApiService.markAsRead(
-        role: role,
-        chatId: event.bookingId,
-      );
+        await DependencyInjection.chatApiService.markAsRead(
+          role: role,
+          chatId: event.bookingId,
+        );
+      }
     } catch (_) {
       // Silently fail for mark as read as it's not critical for the UI flow
     }

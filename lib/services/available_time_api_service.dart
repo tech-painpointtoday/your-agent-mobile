@@ -8,17 +8,17 @@ class AvailableTimeApiService {
     : _apiClient = apiClient;
 
   Future<PaginatedAvailableTimes> getAvailableTimes({
-    required String startDate,
-    required String endDate,
+    String? startDate,
+    String? endDate,
     bool? isAvailable,
     int page = 1,
     int perPage = 15,
   }) async {
     final queryParams = <String, dynamic>{
-      'start_date': startDate,
-      'end_date': endDate,
       'page': page,
       'per_page': perPage,
+      if (startDate != null) 'start_date': startDate,
+      if (endDate != null) 'end_date': endDate,
     };
     if (isAvailable != null) {
       queryParams['is_available'] = isAvailable;

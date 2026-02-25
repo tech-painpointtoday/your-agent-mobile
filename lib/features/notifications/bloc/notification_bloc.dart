@@ -171,9 +171,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       final currentState = state as NotificationLoaded;
 
       try {
-        DependencyInjection.notificationApiService.markAllAsRead();
+        await DependencyInjection.notificationApiService.markAllAsRead();
       } catch (e) {
-        // Continue with local update
+        // Continue with local update even if API call fails
       }
 
       // Mark all unread notifications as read

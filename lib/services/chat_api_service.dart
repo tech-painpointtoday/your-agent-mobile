@@ -20,10 +20,26 @@ class ChatApiService {
   /// Response: { "success": true, "data": { "messages": [...], "pagination": {...} } }
   Future<PaginatedChatResponse> getChats({
     int page = 1,
-    int perPage = 15,
+    int perPage = 10,
   }) async {
     final response = await _apiClient.get(
       '/agent/chats',
+      queryParameters: <String, dynamic>{'page': page, 'per_page': perPage},
+    );
+    final json = response.data as Map<String, dynamic>;
+    return PaginatedChatResponse.fromJson(json);
+  }
+
+  /// Get inquiry chats (messages + pagination)
+  /// GET /agent/property-inquiries
+  /// Expected response shape is similar to /agent/chats:
+  /// { "success": true, "data": { "messages": [...], "pagination": {...} } }
+  Future<PaginatedChatResponse> getInquiryChats({
+    int page = 1,
+    int perPage = 10,
+  }) async {
+    final response = await _apiClient.get(
+      '/agent/property-inquiries',
       queryParameters: <String, dynamic>{'page': page, 'per_page': perPage},
     );
     final json = response.data as Map<String, dynamic>;
@@ -110,6 +126,35 @@ class ChatApiService {
     }
   }
 
+  /// Get messages for a property inquiry chat
+  /// GET /agent/property-inquiries/{inquiryId}/messages
+  Future<List<ChatMessage>> getInquiryMessages({
+    required int inquiryId,
+  }) async {
+    try {
+      final response = await _apiClient.get(
+        '/agent/property-inquiries/$inquiryId/messages',
+      );
+      final data = response.data as Map<String, dynamic>;
+
+      final dynamic messagesList = data['messages'] ?? data['data'];
+
+      if (messagesList is List) {
+        return messagesList
+            .map((json) => ChatMessage.fromJson(json as Map<String, dynamic>))
+            .toList();
+      }
+      return [];
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        throw Exception(
+          e.response?.data['message'] ?? 'Failed to get inquiry messages',
+        );
+      }
+      throw Exception('Failed to get inquiry messages: $e');
+    }
+  }
+
   /// Get unread bookings
   /// GET /agent/chat/unread-bookings
   Future<List<Map<String, dynamic>>> getUnreadBookings({
@@ -144,6 +189,66 @@ class ChatApiService {
         );
       }
       throw Exception('Failed to mark as read: $e');
+    }
+  }
+
+  /// Send a chat message for a property inquiry
+  /// POST /agent/property-inquiries/{inquiryId}/send
+  Future<ChatMessage> sendInquiryMessage({
+    required int inquiryId,
+    required String message,
+    File? image,
+  }) async {
+    try {
+      dynamic data;
+      if (image != null) {
+        data = FormData.fromMap({
+          'message': message,
+          'image': await MultipartFile.fromFile(
+            image.path,
+            filename: image.path.split('/').last,
+          ),
+        });
+      } else {
+        data = {
+          'message': message,
+        };
+      }
+
+      final response = await _apiClient.post(
+        '/agent/property-inquiries/$inquiryId/send',
+        data: data,
+      );
+      final responseData = response.data as Map<String, dynamic>;
+      final messageJson =
+          responseData['data'] as Map<String, dynamic>? ??
+          (responseData['message'] is Map<String, dynamic>
+              ? responseData['message'] as Map<String, dynamic>
+              : null) ??
+          responseData;
+      return ChatMessage.fromJson(messageJson);
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        throw Exception(
+          e.response?.data['message'] ?? 'Failed to send inquiry message',
+        );
+      }
+      throw Exception('Failed to send inquiry message: $e');
+    }
+  }
+
+  /// Mark inquiry as read
+  /// POST /agent/property-inquiries/{inquiryId}/mark-read
+  Future<void> markInquiryAsRead({required int inquiryId}) async {
+    try {
+      await _apiClient.post('/agent/property-inquiries/$inquiryId/mark-read');
+    } catch (e) {
+      if (e is DioException && e.response != null) {
+        throw Exception(
+          e.response?.data['message'] ?? 'Failed to mark inquiry as read',
+        );
+      }
+      throw Exception('Failed to mark inquiry as read: $e');
     }
   }
 }

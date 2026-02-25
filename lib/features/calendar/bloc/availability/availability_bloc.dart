@@ -33,11 +33,14 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
     );
 
     try {
-      final start = DateTime(event.date.year, event.date.month, 1);
-      final end = DateTime(event.date.year, event.date.month + 1, 0);
-
-      final startDateStr = DateFormat('yyyy-MM-dd').format(start);
-      final endDateStr = DateFormat('yyyy-MM-dd').format(end);
+      String? startDateStr;
+      String? endDateStr;
+      if (event.date != null) {
+        final start = DateTime(event.date!.year, event.date!.month, 1);
+        final end = DateTime(event.date!.year, event.date!.month + 1, 0);
+        startDateStr = DateFormat('yyyy-MM-dd').format(start);
+        endDateStr = DateFormat('yyyy-MM-dd').format(end);
+      }
 
       final response = await _apiService.getAvailableTimes(
         startDate: startDateStr,
@@ -75,20 +78,22 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
   ) async {
     if (state.hasReachedMax ||
         state.isLoadingMore ||
-        state.status != AvailabilityStatus.success ||
-        state.lastFetchedDate == null) {
+        state.status != AvailabilityStatus.success) {
       return;
     }
 
     emit(state.copyWith(isLoadingMore: true));
 
     try {
-      final date = state.lastFetchedDate!;
-      final start = DateTime(date.year, date.month, 1);
-      final end = DateTime(date.year, date.month + 1, 0);
-
-      final startDateStr = DateFormat('yyyy-MM-dd').format(start);
-      final endDateStr = DateFormat('yyyy-MM-dd').format(end);
+      String? startDateStr;
+      String? endDateStr;
+      if (state.lastFetchedDate != null) {
+        final date = state.lastFetchedDate!;
+        final start = DateTime(date.year, date.month, 1);
+        final end = DateTime(date.year, date.month + 1, 0);
+        startDateStr = DateFormat('yyyy-MM-dd').format(start);
+        endDateStr = DateFormat('yyyy-MM-dd').format(end);
+      }
 
       final nextPage = state.currentPage + 1;
 

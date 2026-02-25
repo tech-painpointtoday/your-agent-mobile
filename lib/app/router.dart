@@ -220,6 +220,20 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: '/chat/inquiry/:inquiryId',
+        builder: (context, state) {
+          final inquiryId = int.parse(state.pathParameters['inquiryId']!);
+          final participantName = state.extra as String? ?? 'การสนทนา';
+          final participantPhone = state.extra as String? ?? '';
+          return MessageScreen(
+            bookingId: inquiryId,
+            participantName: participantName,
+            participantPhone: participantPhone,
+            isInquiry: true,
+          );
+        },
+      ),
+      GoRoute(
         path: '/profile/edit',
         builder: (context, state) {
           final agent = state.extra as AgentDetails?;

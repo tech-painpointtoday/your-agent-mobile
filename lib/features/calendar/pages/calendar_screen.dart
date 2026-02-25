@@ -51,6 +51,7 @@ class _CalendarScreenState extends State<CalendarScreen>
   // History month selector state
   late List<DateTime> _historyMonths;
   late DateTime _selectedHistoryMonth;
+  bool _isAllHistory = false;
 
   @override
   void initState() {
@@ -65,10 +66,12 @@ class _CalendarScreenState extends State<CalendarScreen>
     _scrollController.addListener(_scrollListener);
     _searchController = TextEditingController();
     final now = DateTime.now();
-    _historyMonths = List.generate(12, (i) {
+    // Current month + last 12 months (total 13 options)
+    _historyMonths = List.generate(13, (i) {
       return DateTime(now.year, now.month - i, 1);
     });
     _selectedHistoryMonth = _historyMonths.first;
+    _isAllHistory = false;
 
     _availabilityBloc = AvailabilityBloc(
       apiService: DependencyInjection.availableTimeApiService,
@@ -79,13 +82,25 @@ class _CalendarScreenState extends State<CalendarScreen>
     _historyBloc = BookingListBloc(
       apiService: DependencyInjection.bookingApiService,
     );
-    _fetchHistoryForMonth(_selectedHistoryMonth);
+    _refreshHistory();
   }
 
   void _fetchHistoryForMonth(DateTime month) {
     final firstDay = DateTime(month.year, month.month, 1);
     final lastDay = DateTime(month.year, month.month + 1, 0);
     _historyBloc.add(SetCustomDateRange(firstDay, lastDay));
+  }
+
+  void _fetchHistoryAllTime() {
+    _historyBloc.add(const FilterBookings(BookingDateFilter.all));
+  }
+
+  void _refreshHistory() {
+    if (_isAllHistory) {
+      _fetchHistoryAllTime();
+    } else {
+      _fetchHistoryForMonth(_selectedHistoryMonth);
+    }
   }
 
   @override
@@ -199,14 +214,68 @@ class _CalendarScreenState extends State<CalendarScreen>
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: _historyMonths.length,
+                  // First option = "All time", followed by current + last 12 months
+                  itemCount: _historyMonths.length + 1,
                   itemBuilder: (ctx, i) {
-                    final monthDate = _historyMonths[i];
-                    final isSelected = monthDate == _selectedHistoryMonth;
+                    if (i == 0) {
+                      final isSelected = _isAllHistory;
+                      final label =
+                          AppLocalizations.of(context).calendar_all;
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            _isAllHistory = true;
+                          });
+                          Navigator.pop(ctx);
+                          _fetchHistoryAllTime();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? AppColors.supportBlueLight
+                                : Colors.transparent,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                label,
+                                style: GoogleFonts.anuphan(
+                                  fontSize: 15,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                                  color: isSelected
+                                      ? AppColors.supportBlueDeep
+                                      : AppColors.baseBlack,
+                                ),
+                              ),
+                              if (isSelected)
+                                const Icon(
+                                  Icons.check_rounded,
+                                  size: 18,
+                                  color: AppColors.supportBlueDeep,
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    final monthDate = _historyMonths[i - 1];
+                    final isSelected =
+                        !_isAllHistory && monthDate == _selectedHistoryMonth;
                     final thaiMonth = ThaiMonth.fromDateTime(monthDate);
                     return InkWell(
                       onTap: () {
-                        setState(() => _selectedHistoryMonth = monthDate);
+                        setState(() {
+                          _isAllHistory = false;
+                          _selectedHistoryMonth = monthDate;
+                        });
                         Navigator.pop(ctx);
                         _fetchHistoryForMonth(monthDate);
                       },
@@ -586,7 +655,7 @@ class _CalendarScreenState extends State<CalendarScreen>
           },
           child: RefreshIndicator(
             onRefresh: () async {
-              _fetchHistoryForMonth(_selectedHistoryMonth);
+              _refreshHistory();
               await _historyBloc.stream.firstWhere(
                 (s) => s.status != BookingListStatus.loading,
               );
@@ -661,12 +730,14 @@ class _CalendarScreenState extends State<CalendarScreen>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                ThaiMonth.fromDateTime(
-                                  _selectedHistoryMonth,
-                                ).localizedNameWithYear(
-                                  context,
-                                  _selectedHistoryMonth.year,
-                                ),
+                                _isAllHistory
+                                    ? AppLocalizations.of(context).calendar_all
+                                    : ThaiMonth.fromDateTime(
+                                        _selectedHistoryMonth,
+                                      ).localizedNameWithYear(
+                                        context,
+                                        _selectedHistoryMonth.year,
+                                      ),
                                 style: GoogleFonts.anuphan(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,

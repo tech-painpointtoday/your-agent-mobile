@@ -7,10 +7,13 @@ import '../core/config/app_config.dart';
 /// Pusher channel and event names for chat.
 /// - Booking chat (buyer ↔ seller/agent): chat.booking.{booking_id}, event "new-message"
 /// - Staff support (staff ↔ buyer/seller/agent): chat.staff.{conversation_id}, event "new-message"
+/// - Property inquiry chat: chat.inquiry.{property_inquiry_id}, event "new-message"
 abstract class PusherChannels {
   static String chatBookingChannel(int bookingId) => 'chat.booking.$bookingId';
   static String chatStaffChannel(int conversationId) =>
       'chat.staff.$conversationId';
+  static String chatInquiryChannel(int inquiryId) =>
+      'chat.inquiry.$inquiryId';
   static const String newMessageEvent = 'new-message';
 }
 

@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+enum ChatConversationType { booking, inquiry }
+
 class ChatBooking extends Equatable {
   final int id;
   final String participantName;
@@ -8,6 +10,8 @@ class ChatBooking extends Equatable {
   final int unreadCount;
   final DateTime? lastActiveAt;
   final String? avatarUrl;
+  final ChatConversationType type;
+  final int? inquiryId;
 
   const ChatBooking({
     required this.id,
@@ -17,6 +21,8 @@ class ChatBooking extends Equatable {
     this.unreadCount = 0,
     this.lastActiveAt,
     this.avatarUrl,
+    this.type = ChatConversationType.booking,
+    this.inquiryId,
   });
 
   factory ChatBooking.fromJson(Map<String, dynamic> json) {
@@ -59,6 +65,8 @@ class ChatBooking extends Equatable {
                 : null),
       avatarUrl:
           user?['profile_photo'] as String? ?? json['avatar_url'] as String?,
+      type: ChatConversationType.booking,
+      inquiryId: null,
     );
   }
 
@@ -70,5 +78,7 @@ class ChatBooking extends Equatable {
     unreadCount,
     lastActiveAt,
     avatarUrl,
+    type,
+    inquiryId,
   ];
 }

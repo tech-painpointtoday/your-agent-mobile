@@ -7,6 +7,8 @@ enum SenderType { buyer, agent, seller, staff }
 class ChatMessage extends Equatable {
   final int? id;
   final int? bookingId;
+  /// For property inquiry chats: property_inquiry_id from API
+  final int? propertyInquiryId;
   final int? staffConversationId;
   final SenderType senderType;
   final int senderId;
@@ -21,6 +23,7 @@ class ChatMessage extends Equatable {
   const ChatMessage({
     this.id,
     this.bookingId,
+    this.propertyInquiryId,
     this.staffConversationId,
     required this.senderType,
     required this.senderId,
@@ -43,6 +46,7 @@ class ChatMessage extends Equatable {
       bookingId:
           json['booking_id'] as int? ??
           (lastMsg != null ? json['id'] as int? : null),
+      propertyInquiryId: json['property_inquiry_id'] as int?,
       staffConversationId: json['staff_conversation_id'] as int?,
       senderType: _parseSenderType(effectiveJson['sender_type']),
       senderId: (effectiveJson['sender_id'] as num? ?? 0).toInt(),
@@ -88,6 +92,7 @@ class ChatMessage extends Equatable {
     return {
       'id': id,
       'booking_id': bookingId,
+      'property_inquiry_id': propertyInquiryId,
       'staff_conversation_id': staffConversationId,
       'sender_type': senderType.name,
       'sender_id': senderId,
@@ -105,6 +110,7 @@ class ChatMessage extends Equatable {
   List<Object?> get props => [
     id,
     bookingId,
+    propertyInquiryId,
     staffConversationId,
     senderType,
     senderId,

@@ -40,16 +40,19 @@ class _CalendarAvailabilitySectionState
 
   late List<DateTime> _historyMonths;
   late DateTime _selectedMonth;
+  bool _isAllMonths = false;
 
   @override
   void initState() {
     super.initState();
     final now = DateTime.now();
     _selectedDay = now;
-    _historyMonths = List.generate(12, (i) {
+    // Current month + last 12 months (13 total)
+    _historyMonths = List.generate(13, (i) {
       return DateTime(now.year, now.month - i, 1);
     });
     _selectedMonth = _historyMonths.first;
+    _isAllMonths = false;
     _focusedMonth = _selectedMonth;
   }
 
@@ -283,12 +286,14 @@ class _CalendarAvailabilitySectionState
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  ThaiMonth.fromDateTime(
-                                    _selectedMonth,
-                                  ).localizedNameWithYear(
-                                    context,
-                                    _selectedMonth.year,
-                                  ),
+                                  _isAllMonths
+                                      ? AppLocalizations.of(context).calendar_all
+                                      : ThaiMonth.fromDateTime(
+                                          _selectedMonth,
+                                        ).localizedNameWithYear(
+                                          context,
+                                          _selectedMonth.year,
+                                        ),
                                   style: GoogleFonts.anuphan(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400,
@@ -327,6 +332,7 @@ class _CalendarAvailabilitySectionState
                           },
                           onGridHeightChanged: (h) =>
                               setState(() => _calendarGridHeight = h),
+                          onYearTap: _showMonthPicker,
                         ),
                         const SizedBox(height: 16),
                         if (state.status == AvailabilityStatus.loading)
@@ -498,21 +504,75 @@ class _CalendarAvailabilitySectionState
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: _historyMonths.length,
+                  // First option = "All", then current + last 12 months
+                  itemCount: _historyMonths.length + 1,
                   itemBuilder: (ctx, i) {
-                    final monthDate = _historyMonths[i];
+                    if (i == 0) {
+                      final isSelected = _isAllMonths;
+                      final label =
+                          AppLocalizations.of(context).calendar_all;
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            _isAllMonths = true;
+                          });
+                          context.read<AvailabilityBloc>().add(
+                                const FetchAvailability(date: null),
+                              );
+                          Navigator.pop(ctx);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? AppColors.supportBlueLight
+                                : Colors.transparent,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                label,
+                                style: GoogleFonts.anuphan(
+                                  fontSize: 15,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                                  color: isSelected
+                                      ? AppColors.supportBlueDeep
+                                      : AppColors.baseBlack,
+                                ),
+                              ),
+                              if (isSelected)
+                                const Icon(
+                                  Icons.check_rounded,
+                                  size: 18,
+                                  color: AppColors.supportBlueDeep,
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    final monthDate = _historyMonths[i - 1];
                     final isSelected =
+                        !_isAllMonths &&
                         monthDate.year == _selectedMonth.year &&
                         monthDate.month == _selectedMonth.month;
                     return InkWell(
                       onTap: () {
                         setState(() {
+                          _isAllMonths = false;
                           _selectedMonth = monthDate;
                           _focusedMonth = monthDate;
                         });
                         context.read<AvailabilityBloc>().add(
-                          FetchAvailability(date: monthDate),
-                        );
+                              FetchAvailability(date: monthDate),
+                            );
                         Navigator.pop(ctx);
                       },
                       child: Container(
@@ -760,6 +820,7 @@ class _MiniCalendar extends StatelessWidget {
 
   /// Called with the new desired height; parent clamps and stores it.
   final ValueChanged<double> onGridHeightChanged;
+  final VoidCallback onYearTap;
 
   static const double _kRowHeight = 36.0;
 
@@ -770,6 +831,7 @@ class _MiniCalendar extends StatelessWidget {
     required this.onDaySelected,
     required this.onMonthChanged,
     required this.onGridHeightChanged,
+    required this.onYearTap,
   });
 
   @override
@@ -856,7 +918,7 @@ class _MiniCalendar extends StatelessWidget {
               children: [
                 // Year pill
                 GestureDetector(
-                  onTap: () {},
+                  onTap: onYearTap,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,

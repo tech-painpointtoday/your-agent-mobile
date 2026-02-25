@@ -472,9 +472,13 @@ class _ChatSessionTile extends StatelessWidget {
           chatBloc.add(SaveRecentSearch(currentState.searchQuery));
         }
 
+        final routePath = conversation.type == ChatConversationType.inquiry
+            ? '/chat/inquiry/${conversation.id}'
+            : '/chat/${conversation.id}';
+
         context
             .push(
-              '/chat/${conversation.id}',
+              routePath,
               extra: conversation.participantName,
             )
             .then((_) {

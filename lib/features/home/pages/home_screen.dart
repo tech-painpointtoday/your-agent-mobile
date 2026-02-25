@@ -117,6 +117,12 @@ class _HomeHeaderState extends State<HomeHeader> with RouteAware {
   void didPopNext() {
     // Refresh user profile when returning to this screen
     _fetchUserProfile();
+
+    // Refresh notifications (badge/count) when coming back from
+    // notifications/chat/profile screens.
+    try {
+      context.read<NotificationBloc>().add(const LoadNotifications());
+    } catch (_) {}
   }
 
   Future<void> _fetchUserProfile() async {

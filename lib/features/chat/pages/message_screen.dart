@@ -22,6 +22,7 @@ class MessageScreen extends StatelessWidget {
   final String participantName;
   final String participantPhone;
   final bool isStaff;
+  final bool isInquiry;
 
   const MessageScreen({
     super.key,
@@ -29,13 +30,15 @@ class MessageScreen extends StatelessWidget {
     required this.participantName,
     required this.participantPhone,
     this.isStaff = false,
+    this.isInquiry = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          MessageBloc(isStaff: isStaff)..add(LoadMessages(bookingId)),
+          MessageBloc(isStaff: isStaff, isInquiry: isInquiry)
+            ..add(LoadMessages(bookingId)),
       child: _MessageScreenContent(
         bookingId: bookingId,
         participantName: participantName,

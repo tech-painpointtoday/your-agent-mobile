@@ -8,10 +8,10 @@ abstract class AvailabilityEvent extends Equatable {
 }
 
 class FetchAvailability extends AvailabilityEvent {
-  final DateTime date;
+  final DateTime? date;
   final bool forceRefresh;
 
-  const FetchAvailability({required this.date, this.forceRefresh = false});
+  const FetchAvailability({this.date, this.forceRefresh = false});
 
   @override
   List<Object?> get props => [date, forceRefresh];

@@ -4541,7 +4541,7 @@ abstract class AppLocalizations {
   /// No description provided for @floorUnit.
   ///
   /// In en, this message translates to:
-  /// **'Floors'**
+  /// **'Floor No.'**
   String get floorUnit;
 
   /// No description provided for @roomUnit.
@@ -4889,13 +4889,13 @@ abstract class AppLocalizations {
   /// No description provided for @builtLabel.
   ///
   /// In en, this message translates to:
-  /// **'Built Date'**
+  /// **'Property Built Date'**
   String get builtLabel;
 
   /// No description provided for @builtHint.
   ///
   /// In en, this message translates to:
-  /// **'Select built date'**
+  /// **'Select property built date'**
   String get builtHint;
 
   /// No description provided for @builtTooltip.

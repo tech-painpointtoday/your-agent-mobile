@@ -35,14 +35,27 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         return;
       }
 
-      const perPage = 15;
-      final response = await DependencyInjection.chatApiService.getChats(
-        page: 1,
-        perPage: perPage,
-      );
+      const perPage = 10;
+      final bookingResponse = await DependencyInjection.chatApiService
+          .getChats(page: 1, perPage: perPage);
 
-      final conversations = _conversationsFromMessages(response.messages);
-      final pagination = response.pagination;
+      // Load inquiry chats (property inquiries) and merge into the same list.
+      // If this endpoint is not yet available or fails, we still show booking chats.
+      PaginatedChatResponse? inquiryResponse;
+      try {
+        inquiryResponse = await DependencyInjection.chatApiService
+            .getInquiryChats(page: 1, perPage: perPage);
+      } catch (_) {
+        inquiryResponse = null;
+      }
+
+      final allMessages = <ChatMessage>[
+        ...bookingResponse.messages,
+        if (inquiryResponse != null) ...inquiryResponse.messages,
+      ];
+
+      final conversations = _conversationsFromMessages(allMessages);
+      final pagination = bookingResponse.pagination;
       final recentSearches = await _searchService.getRecentSearches();
 
       emit(
@@ -73,7 +86,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(currentState.copyWith(isLoadingMore: true));
 
     try {
-      const perPage = 15;
+      const perPage = 10;
       final nextPage = currentState.currentPage + 1;
       final response = await DependencyInjection.chatApiService.getChats(
         page: nextPage,
@@ -110,11 +123,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     List<ChatBooking> existing,
     List<ChatBooking> incoming,
   ) {
-    final byId = <int, ChatBooking>{for (final c in existing) c.id: c};
+    final byKey = <String, ChatBooking>{
+      for (final c in existing)
+        _conversationKey(c.type, c.id): c,
+    };
     for (final c in incoming) {
-      byId[c.id] = c;
+      byKey[_conversationKey(c.type, c.id)] = c;
     }
-    final list = byId.values.toList()
+    final list = byKey.values.toList()
       ..sort(
         (a, b) => (b.lastActiveAt ?? DateTime(0)).compareTo(
           a.lastActiveAt ?? DateTime(0),
@@ -123,16 +139,38 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     return list;
   }
 
-  /// Group messages by booking_id and build ChatBooking list (newest first).
+  String _conversationKey(ChatConversationType type, int id) =>
+      '${type.name}-$id';
+
+  /// Group messages by booking_id (booking chats) or property_inquiry_id
+  /// (inquiry chats) and build ChatBooking list (newest first).
   List<ChatBooking> _conversationsFromMessages(List<ChatMessage> messages) {
-    final byBooking = <int, List<ChatMessage>>{};
+    final byConversation = <String, List<ChatMessage>>{};
     for (final m in messages) {
-      final bid = m.bookingId ?? 0;
-      if (bid <= 0) continue;
-      byBooking.putIfAbsent(bid, () => []).add(m);
+      int? id;
+      ChatConversationType type = ChatConversationType.booking;
+
+      if (m.bookingId != null && m.bookingId! > 0) {
+        id = m.bookingId!;
+        type = ChatConversationType.booking;
+      } else if (m.propertyInquiryId != null && m.propertyInquiryId! > 0) {
+        id = m.propertyInquiryId!;
+        type = ChatConversationType.inquiry;
+      }
+
+      if (id == null) continue;
+
+      final key = _conversationKey(type, id);
+      byConversation.putIfAbsent(key, () => []).add(m);
     }
     final list = <ChatBooking>[];
-    for (final entry in byBooking.entries) {
+    for (final entry in byConversation.entries) {
+      final key = entry.key;
+      final parts = key.split('-');
+      final type = parts.first == ChatConversationType.inquiry.name
+          ? ChatConversationType.inquiry
+          : ChatConversationType.booking;
+
       final bookingMessages = entry.value
         ..sort(
           (a, b) => (b.createdAt ?? DateTime(0)).compareTo(
@@ -156,14 +194,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final unreadCount = bookingMessages
           .where((m) => m.senderType != SenderType.agent && !m.isRead)
           .length;
+      final id = (type == ChatConversationType.inquiry
+              ? bookingMessages.first.propertyInquiryId
+              : bookingMessages.first.bookingId) ??
+          0;
+      if (id <= 0) continue;
       list.add(
         ChatBooking(
-          id: entry.key,
+          id: id,
           participantName: participantName,
           lastMessage: _formatLastMessage(latest),
           unreadCount: unreadCount,
           lastActiveAt: latest.createdAt,
           avatarUrl: null,
+          type: type,
+          inquiryId:
+              type == ChatConversationType.inquiry ? id : null,
         ),
       );
     }

@@ -74,175 +74,227 @@ class _NotificationsScreenContentState
             final hasUnread =
                 state is NotificationLoaded && state.unreadCount > 0;
 
-            return CustomScrollView(
-              slivers: [
-                // App Bar
-                SliverAppBar(
-                  backgroundColor: AppColors.white,
-                  surfaceTintColor: AppColors.white,
-                  elevation: 0,
-                  scrolledUnderElevation: 0,
-                  pinned: true,
-                  titleSpacing: 0,
-                  leading: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/chevron-left.svg',
-                      width: 18,
-                      height: 18,
-                      fit: BoxFit.contain,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.baseDarkGrey,
-                        BlendMode.srcIn,
+            return RefreshIndicator(
+              color: AppColors.white,
+              backgroundColor: AppColors.primary,
+              onRefresh: () async {
+                bloc.add(const LoadNotifications());
+                await bloc.stream
+                    .skip(1)
+                    .where(
+                      (s) => s is NotificationLoaded || s is NotificationError,
+                    )
+                    .first
+                    .timeout(
+                      const Duration(seconds: 15),
+                      onTimeout: () => bloc.state,
+                    );
+              },
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  if (notification.metrics.pixels >=
+                      notification.metrics.maxScrollExtent - 200) {
+                    final currentState = bloc.state;
+                    if (currentState is NotificationLoaded &&
+                        currentState.hasMorePages &&
+                        !currentState.isLoadingMore) {
+                      bloc.add(const LoadMoreNotifications());
+                    }
+                  }
+                  return false;
+                },
+                child: CustomScrollView(
+                  slivers: [
+                    // App Bar
+                    SliverAppBar(
+                      backgroundColor: AppColors.white,
+                      surfaceTintColor: AppColors.white,
+                      elevation: 0,
+                      scrolledUnderElevation: 0,
+                      pinned: true,
+                      titleSpacing: 0,
+                      leading: IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/icons/chevron-left.svg',
+                          width: 18,
+                          height: 18,
+                          fit: BoxFit.contain,
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.baseDarkGrey,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        onPressed: () => context.pop(),
+                      ),
+                      title: Text(
+                        AppLocalizations.of(context).notifications_title,
+                        style: GoogleFonts.anuphan(
+                          fontSize: 18,
+                          color: AppColors.baseBlack,
+                        ),
+                      ),
+                      actions: [
+                        if (hasUnread)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: GestureDetector(
+                              onTap: () => _markAllAsRead(context),
+                              child: Text(
+                                AppLocalizations.of(
+                                  context,
+                                ).notifications_mark_all_read,
+                                style: GoogleFonts.anuphan(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+
+                    // Sticky Filter Header
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: _FilterHeaderDelegate(
+                        child: Container(
+                          color: AppColors.white,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                child:
+                                    BlocBuilder<
+                                      NotificationBloc,
+                                      NotificationState
+                                    >(
+                                      builder: (context, state) {
+                                        final currentFilter =
+                                            state is NotificationLoaded
+                                            ? state.currentFilter
+                                            : NotificationFilter.all;
+
+                                        return Row(
+                                          children: [
+                                            _FilterBadge(
+                                              label: AppLocalizations.of(
+                                                context,
+                                              ).notifications_filter_all,
+                                              isSelected:
+                                                  currentFilter ==
+                                                  NotificationFilter.all,
+                                              onTap: () {
+                                                bloc.add(
+                                                  const FilterNotifications(
+                                                    NotificationFilter.all,
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            const SizedBox(width: 8),
+                                            _FilterBadge(
+                                              label: AppLocalizations.of(
+                                                context,
+                                              ).notifications_filter_unread,
+                                              isSelected:
+                                                  currentFilter ==
+                                                  NotificationFilter.unread,
+                                              onTap: () {
+                                                bloc.add(
+                                                  const FilterNotifications(
+                                                    NotificationFilter.unread,
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    onPressed: () => context.pop(),
-                  ),
-                  title: Text(
-                    AppLocalizations.of(context).notifications_title,
-                    style: GoogleFonts.anuphan(
-                      fontSize: 18,
-                      color: AppColors.baseBlack,
-                    ),
-                  ),
-                  actions: [
-                    // TextButton(
-                    //   onPressed: hasUnread
-                    //       ? () => _markAllAsRead(context)
-                    //       : null,
-                    //   child: Text(
-                    //     AppLocalizations.of(
-                    //       context,
-                    //     ).notifications_mark_all_read,
-                    //     style: GoogleFonts.anuphan(
-                    //       fontSize: 14,
-                    //       color: hasUnread
-                    //           ? AppColors.primary
-                    //           : AppColors.baseGrey,
-                    //     ),
-                    //   ),
-                    // ),
-                    // const SizedBox(width: 8),
+
+                    // Content
+                    if (state is NotificationLoading)
+                      const SliverFillRemaining(
+                        child: Center(
+                          child: SpinKitFadingCircle(
+                            color: AppColors.primary,
+                            size: 32,
+                          ),
+                        ),
+                      )
+                    else if (state is NotificationError)
+                      SliverFillRemaining(
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(
+                              context,
+                            ).notifications_error(state.message),
+                            style: GoogleFonts.anuphan(
+                              color: AppColors.supportRedDeep,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      )
+                    else if (state is NotificationLoaded)
+                      state.filteredNotifications.isEmpty
+                          ? SliverFillRemaining(child: NotificationEmptyState())
+                          : SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  final isLoadingExtra =
+                                      state.isLoadingMore &&
+                                      index ==
+                                          state.filteredNotifications.length;
+
+                                  if (isLoadingExtra) {
+                                    return const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 24,
+                                      ),
+                                      child: Center(
+                                        child: SpinKitFadingCircle(
+                                          color: AppColors.primary,
+                                          size: 24,
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  final notification =
+                                      state.filteredNotifications[index];
+                                  return NotificationListItem(
+                                    notification: notification,
+                                    onTap: () {
+                                      // Mark as read if unread
+                                      if (!notification.isRead) {
+                                        bloc.add(MarkAsRead(notification.id));
+                                      }
+                                      // Navigate to detail screen
+                                      context.push(
+                                        '/notifications/${notification.id}',
+                                      );
+                                    },
+                                  );
+                                },
+                                childCount:
+                                    state.filteredNotifications.length +
+                                    (state.isLoadingMore ? 1 : 0),
+                              ),
+                            ),
                   ],
                 ),
-
-                // Sticky Filter Header
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: _FilterHeaderDelegate(
-                    child: Container(
-                      color: AppColors.white,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                            child:
-                                BlocBuilder<
-                                  NotificationBloc,
-                                  NotificationState
-                                >(
-                                  builder: (context, state) {
-                                    final currentFilter =
-                                        state is NotificationLoaded
-                                        ? state.currentFilter
-                                        : NotificationFilter.all;
-
-                                    return Row(
-                                      children: [
-                                        _FilterBadge(
-                                          label: AppLocalizations.of(
-                                            context,
-                                          ).notifications_filter_all,
-                                          isSelected:
-                                              currentFilter ==
-                                              NotificationFilter.all,
-                                          onTap: () {
-                                            bloc.add(
-                                              const FilterNotifications(
-                                                NotificationFilter.all,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        const SizedBox(width: 8),
-                                        _FilterBadge(
-                                          label: AppLocalizations.of(
-                                            context,
-                                          ).notifications_filter_unread,
-                                          isSelected:
-                                              currentFilter ==
-                                              NotificationFilter.unread,
-                                          onTap: () {
-                                            bloc.add(
-                                              const FilterNotifications(
-                                                NotificationFilter.unread,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Content
-                if (state is NotificationLoading)
-                  const SliverFillRemaining(
-                    child: Center(
-                      child: SpinKitFadingCircle(
-                        color: AppColors.primary,
-                        size: 32,
-                      ),
-                    ),
-                  )
-                else if (state is NotificationError)
-                  SliverFillRemaining(
-                    child: Center(
-                      child: Text(
-                        AppLocalizations.of(
-                          context,
-                        ).notifications_error(state.message),
-                        style: GoogleFonts.anuphan(
-                          color: AppColors.supportRedDeep,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  )
-                else if (state is NotificationLoaded)
-                  state.filteredNotifications.isEmpty
-                      ? SliverFillRemaining(child: NotificationEmptyState())
-                      : SliverList(
-                          delegate: SliverChildBuilderDelegate((
-                            context,
-                            index,
-                          ) {
-                            final notification =
-                                state.filteredNotifications[index];
-                            return NotificationListItem(
-                              notification: notification,
-                              onTap: () {
-                                // Mark as read if unread
-                                if (!notification.isRead) {
-                                  bloc.add(MarkAsRead(notification.id));
-                                }
-                                // Navigate to detail screen
-                                context.push(
-                                  '/notifications/${notification.id}',
-                                );
-                              },
-                            );
-                          }, childCount: state.filteredNotifications.length),
-                        ),
-              ],
+              ),
             );
           },
         ),
