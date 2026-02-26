@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:youragent/core/extensions/l10n_extensions.dart';
 import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 
@@ -14,6 +18,7 @@ class PermissionHelper {
     String? message,
     String? deniedForeverMessage,
   }) async {
+    final l10n = context.l10n;
     PermissionStatus status = await permission.status;
 
     if (status.isGranted || status.isLimited) {
@@ -27,11 +32,11 @@ class PermissionHelper {
       bool openSettings = false;
       await AppConfirmationBottomSheet.show(
         context: context,
-        title: title ?? 'Permission Required',
+        title: title ?? l10n.permission_generic_title,
         description:
-            deniedForeverMessage ?? 'Please enable permission in settings.',
-        confirmLabel: 'Open Settings',
-        cancelLabel: 'Cancel',
+            deniedForeverMessage ?? l10n.permission_generic_denied_settings,
+        confirmLabel: l10n.permission_button_open_settings,
+        cancelLabel: l10n.permission_button_cancel,
         onConfirm: () {
           openSettings = true;
         },
@@ -54,8 +59,8 @@ class PermissionHelper {
     if (!context.mounted) return false;
     StatusDialog.showWarning(
       context: context,
-      title: title ?? 'ไม่ได้รับอนุญาต',
-      message: message ?? 'กรุณาอนุญาตการเข้าถึงเพื่อใช้งานฟีเจอร์นี้',
+      title: title ?? l10n.permission_generic_warning_title,
+      message: message ?? l10n.permission_generic_warning_message,
     );
     return false;
   }
@@ -66,23 +71,24 @@ class PermissionHelper {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       if (!context.mounted) return false;
+      final l10n = context.l10n;
       StatusDialog.showWarning(
         context: context,
-        title: 'เปิดบริการตำแหน่ง',
-        message: 'กรุณาเปิด Location Services เพื่อใช้งานตำแหน่งปัจจุบัน',
+        title: l10n.permission_location_title,
+        message: l10n.permission_location_message,
       );
       return false;
     }
 
     // 2. Check Permissions
     if (!context.mounted) return false;
+    final l10n = context.l10n;
     return await ensurePermission(
       context,
       Permission.location,
-      title: 'เข้าถึงตำแหน่ง',
-      message: 'กรุณาอนุญาตการเข้าถึงตำแหน่งเพื่อระบุตำแหน่งของคุณ',
-      deniedForeverMessage:
-          'คุณปิดสิทธิ์ตำแหน่งถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์ตำแหน่ง',
+      title: l10n.permission_location_title,
+      message: l10n.permission_location_message,
+      deniedForeverMessage: l10n.permission_location_denied_forever,
     );
   }
 
@@ -94,10 +100,11 @@ class PermissionHelper {
       return await Geolocator.getCurrentPosition();
     } catch (e) {
       if (!context.mounted) return null;
+      final l10n = context.l10n;
       StatusDialog.showError(
         context: context,
-        title: 'เกิดข้อผิดพลาด',
-        message: 'ไม่สามารถรับตำแหน่งปัจจุบันได้: ${e.toString()}',
+        title: l10n.permission_location_error_title,
+        message: l10n.permission_location_error_message,
       );
       return null;
     }
@@ -105,58 +112,99 @@ class PermissionHelper {
 
   /// Ensures Camera permission is ready
   static Future<bool> ensureCameraReady(BuildContext context) async {
+    final l10n = context.l10n;
     return await ensurePermission(
       context,
       Permission.camera,
-      title: 'เข้าถึงกล้องถ่ายรูป',
-      message: 'กรุณาอนุญาตการเข้าถึงกล้องเพื่อถ่ายภาพ',
-      deniedForeverMessage:
-          'คุณปิดสิทธิ์การเข้าถึงกล้องถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์',
+      title: l10n.permission_camera_title,
+      message: l10n.permission_camera_message,
+      deniedForeverMessage: l10n.permission_camera_denied_forever,
     );
   }
 
   /// Ensures Photo/Gallery permission is ready
   static Future<bool> ensurePhotosReady(BuildContext context) async {
-    // On Android 13+ use Permission.photos, older use storage
-    // On iOS use Permission.photos
-    // You might need check device info, but typically checking both or specific one is good.
-    // Simple approach: Request photos, if not applicable, try storage.
-    // BUT permission_handler handles this logic usually if configured correctly in AndroidManifest.
-    // Let's check photos first.
-
-    // Ideally check platform version, but for simplicity we can check Permission.photos first.
-    // If that returns permanently denied or restricted on Android < 13 immediately, it might be wrong.
-    // Code below handles generic "photos" permission.
-
-    if (await Permission.photos.status.isGranted) return true;
-
-    // If photos not granted, try requesting it
     if (!context.mounted) return false;
-    bool photosGranted = await ensurePermission(
+    final l10n = context.l10n;
+
+    if (Platform.isAndroid) {
+      final deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
+      final sdkInt = androidInfo.version.sdkInt;
+
+      if (sdkInt >= 33) {
+        // Android 13+ : use READ_MEDIA_IMAGES via Permission.photos
+        return await ensurePermission(
+          context,
+          Permission.photos,
+          title: l10n.permission_photos_title,
+          message: l10n.permission_photos_message,
+          deniedForeverMessage: l10n.permission_photos_denied_forever,
+        );
+      } else {
+        // Android 12 and below : use legacy storage permission for gallery
+        return await ensurePermission(
+          context,
+          Permission.storage,
+          title: l10n.permission_files_title,
+          message: l10n.permission_files_message,
+          deniedForeverMessage: l10n.permission_files_denied_forever,
+        );
+      }
+    } else if (Platform.isIOS) {
+      // iOS: use photos permission
+      return await ensurePermission(
+        context,
+        Permission.photos,
+        title: l10n.permission_photos_title,
+        message: l10n.permission_photos_message,
+        deniedForeverMessage: l10n.permission_photos_denied_forever,
+      );
+    }
+
+    // Other platforms: no-op
+    return true;
+  }
+
+  /// Ensures file picker access is ready (attachments/documents).
+  /// - Android 13+ : no storage permission required (uses system picker).
+  /// - Android 12- : request storage permission.
+  /// - iOS/others : no additional permission.
+  static Future<bool> ensureFilePickerReady(BuildContext context) async {
+    if (!context.mounted) return false;
+    final l10n = context.l10n;
+
+    if (!Platform.isAndroid) {
+      return true;
+    }
+
+    final deviceInfo = DeviceInfoPlugin();
+    final androidInfo = await deviceInfo.androidInfo;
+    final sdkInt = androidInfo.version.sdkInt;
+
+    if (sdkInt >= 33) {
+      // Android 13+ uses system picker, no broad storage permission.
+      return true;
+    }
+
+    return await ensurePermission(
       context,
-      Permission.photos,
-      title: 'Access Photos',
-      message: 'Allow app to access your photos.',
+      Permission.storage,
+      title: l10n.permission_files_title,
+      message: l10n.permission_files_message,
+      deniedForeverMessage: l10n.permission_files_denied_forever,
     );
-
-    if (photosGranted) return true;
-
-    // Fallback for older Android if needed (Storage) - only if photos didn't work/not applicable
-    // This part is tricky without device info. Assuming modern flutter env.
-    // If permission.photos is permanently denied, ensurePermission above would have shown dialog.
-
-    return false;
   }
 
   /// Ensures Notification permission is ready
   static Future<bool> ensureNotificationReady(BuildContext context) async {
+    final l10n = context.l10n;
     return await ensurePermission(
       context,
       Permission.notification,
-      title: 'การแจ้งเตือน',
-      message: 'กรุณาอนุญาตการแจ้งเตือนเพื่อรับข่าวสารและข้อความใหม่',
-      deniedForeverMessage:
-          'คุณปิดสิทธิ์การแจ้งเตือนถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์การแจ้งเตือน',
+      title: l10n.permission_notification_title,
+      message: l10n.permission_notification_message,
+      deniedForeverMessage: l10n.permission_notification_denied_forever,
     );
   }
 
@@ -170,14 +218,14 @@ class PermissionHelper {
   static Future<void> openNotificationSettingsForDisable(
     BuildContext context,
   ) async {
+    final l10n = context.l10n;
     bool openSettings = false;
     await AppConfirmationBottomSheet.show(
       context: context,
-      title: 'ปิดการแจ้งเตือน?',
-      description:
-          'หากคุณต้องการปิดการแจ้งเตือน กรุณาไปที่การตั้งค่าและปิดการแจ้งเตือนของแอปนี้',
-      confirmLabel: 'ไปที่การตั้งค่า',
-      cancelLabel: 'ยกเลิก',
+      title: l10n.permission_notification_turn_off_title,
+      description: l10n.permission_notification_turn_off_message,
+      confirmLabel: l10n.permission_button_open_settings,
+      cancelLabel: l10n.permission_button_cancel,
       onConfirm: () {
         openSettings = true;
       },

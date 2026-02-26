@@ -10,7 +10,6 @@ import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/notification_bloc.dart';
 import '../bloc/notification_event.dart';
 import '../models/notification_model.dart';
-import '../utils/notification_colors.dart';
 
 class NotificationListItem extends StatelessWidget {
   final NotificationModel notification;

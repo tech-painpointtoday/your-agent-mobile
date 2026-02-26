@@ -668,7 +668,7 @@ class PropertyFormState extends Equatable {
       selectedPropertyType: selectedPropertyType ?? this.selectedPropertyType,
       name: name ?? this.name,
       price: price ?? this.price,
-      description: description ?? this.description,
+      description: description ?? this.description ?? '-',
       address: address ?? this.address,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
@@ -745,7 +745,7 @@ class PropertyFormState extends Equatable {
 
       title: name ?? 'รายละเอียดทรัพย์สิน', // Fallback title
       name: name,
-      description: description ?? '',
+      description: description ?? '-',
       price: price ?? 0,
       monthlyRentalPrice: monthlyRentalPrice ?? 0,
       // Status

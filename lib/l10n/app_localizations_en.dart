@@ -507,6 +507,108 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_picking_images => 'Error picking images';
 
   @override
+  String get permission_generic_title => 'Permission required';
+
+  @override
+  String get permission_generic_denied_settings =>
+      'Please enable permission in Settings.';
+
+  @override
+  String get permission_generic_warning_title => 'Permission not granted';
+
+  @override
+  String get permission_generic_warning_message =>
+      'Please allow access to use this feature.';
+
+  @override
+  String get permission_button_open_settings => 'Open Settings';
+
+  @override
+  String get permission_button_cancel => 'Cancel';
+
+  @override
+  String get permission_location_title => 'Access location';
+
+  @override
+  String get permission_location_message =>
+      'Please allow access to your location to detect where you are.';
+
+  @override
+  String get permission_location_denied_forever =>
+      'You have permanently disabled location permission. Please go to Settings to enable location access.';
+
+  @override
+  String get permission_camera_title => 'Access camera';
+
+  @override
+  String get permission_camera_message =>
+      'Please allow access to the camera to take photos.';
+
+  @override
+  String get permission_camera_denied_forever =>
+      'You have permanently disabled camera access. Please go to Settings to enable camera permission.';
+
+  @override
+  String get permission_photos_title => 'Access photos';
+
+  @override
+  String get permission_photos_message =>
+      'Please allow access to your photos to select from the album.';
+
+  @override
+  String get permission_photos_denied_forever =>
+      'You have permanently disabled photo access. Please go to Settings to enable photo permission.';
+
+  @override
+  String get permission_files_title => 'Access files';
+
+  @override
+  String get permission_files_message =>
+      'Please allow access to your files to pick documents.';
+
+  @override
+  String get permission_files_denied_forever =>
+      'You have permanently disabled file access. Please go to Settings to enable file permission.';
+
+  @override
+  String get permission_notification_title => 'Notifications';
+
+  @override
+  String get permission_notification_message =>
+      'Please allow notifications to receive updates and new messages.';
+
+  @override
+  String get permission_notification_denied_forever =>
+      'You have permanently disabled notifications. Please go to Settings to enable notifications.';
+
+  @override
+  String get permission_location_error_title => 'Error';
+
+  @override
+  String get permission_location_error_message =>
+      'Unable to get current location.';
+
+  @override
+  String get permission_notification_turn_off_title =>
+      'Turn off notifications?';
+
+  @override
+  String get permission_notification_turn_off_message =>
+      'If you want to turn off notifications, please go to Settings and disable notifications for this app.';
+
+  @override
+  String get chat_filter_booking => 'Bookings';
+
+  @override
+  String get chat_filter_inquiry => 'Inquiries';
+
+  @override
+  String get chat_type_booking => 'Booking';
+
+  @override
+  String get chat_type_inquiry => 'Inquiry';
+
+  @override
   String get this_field_required => 'This field is required';
 
   @override

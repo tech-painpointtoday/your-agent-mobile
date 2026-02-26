@@ -1070,6 +1070,180 @@ abstract class AppLocalizations {
   /// **'Error picking images'**
   String get error_picking_images;
 
+  /// No description provided for @permission_generic_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission required'**
+  String get permission_generic_title;
+
+  /// No description provided for @permission_generic_denied_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable permission in Settings.'**
+  String get permission_generic_denied_settings;
+
+  /// No description provided for @permission_generic_warning_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission not granted'**
+  String get permission_generic_warning_title;
+
+  /// No description provided for @permission_generic_warning_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please allow access to use this feature.'**
+  String get permission_generic_warning_message;
+
+  /// No description provided for @permission_button_open_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get permission_button_open_settings;
+
+  /// No description provided for @permission_button_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get permission_button_cancel;
+
+  /// No description provided for @permission_location_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Access location'**
+  String get permission_location_title;
+
+  /// No description provided for @permission_location_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please allow access to your location to detect where you are.'**
+  String get permission_location_message;
+
+  /// No description provided for @permission_location_denied_forever.
+  ///
+  /// In en, this message translates to:
+  /// **'You have permanently disabled location permission. Please go to Settings to enable location access.'**
+  String get permission_location_denied_forever;
+
+  /// No description provided for @permission_camera_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Access camera'**
+  String get permission_camera_title;
+
+  /// No description provided for @permission_camera_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please allow access to the camera to take photos.'**
+  String get permission_camera_message;
+
+  /// No description provided for @permission_camera_denied_forever.
+  ///
+  /// In en, this message translates to:
+  /// **'You have permanently disabled camera access. Please go to Settings to enable camera permission.'**
+  String get permission_camera_denied_forever;
+
+  /// No description provided for @permission_photos_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Access photos'**
+  String get permission_photos_title;
+
+  /// No description provided for @permission_photos_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please allow access to your photos to select from the album.'**
+  String get permission_photos_message;
+
+  /// No description provided for @permission_photos_denied_forever.
+  ///
+  /// In en, this message translates to:
+  /// **'You have permanently disabled photo access. Please go to Settings to enable photo permission.'**
+  String get permission_photos_denied_forever;
+
+  /// No description provided for @permission_files_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Access files'**
+  String get permission_files_title;
+
+  /// No description provided for @permission_files_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please allow access to your files to pick documents.'**
+  String get permission_files_message;
+
+  /// No description provided for @permission_files_denied_forever.
+  ///
+  /// In en, this message translates to:
+  /// **'You have permanently disabled file access. Please go to Settings to enable file permission.'**
+  String get permission_files_denied_forever;
+
+  /// No description provided for @permission_notification_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get permission_notification_title;
+
+  /// No description provided for @permission_notification_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Please allow notifications to receive updates and new messages.'**
+  String get permission_notification_message;
+
+  /// No description provided for @permission_notification_denied_forever.
+  ///
+  /// In en, this message translates to:
+  /// **'You have permanently disabled notifications. Please go to Settings to enable notifications.'**
+  String get permission_notification_denied_forever;
+
+  /// No description provided for @permission_location_error_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get permission_location_error_title;
+
+  /// No description provided for @permission_location_error_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to get current location.'**
+  String get permission_location_error_message;
+
+  /// No description provided for @permission_notification_turn_off_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off notifications?'**
+  String get permission_notification_turn_off_title;
+
+  /// No description provided for @permission_notification_turn_off_message.
+  ///
+  /// In en, this message translates to:
+  /// **'If you want to turn off notifications, please go to Settings and disable notifications for this app.'**
+  String get permission_notification_turn_off_message;
+
+  /// No description provided for @chat_filter_booking.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings'**
+  String get chat_filter_booking;
+
+  /// No description provided for @chat_filter_inquiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Inquiries'**
+  String get chat_filter_inquiry;
+
+  /// No description provided for @chat_type_booking.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking'**
+  String get chat_type_booking;
+
+  /// No description provided for @chat_type_inquiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Inquiry'**
+  String get chat_type_inquiry;
+
   /// No description provided for @this_field_required.
   ///
   /// In en, this message translates to:

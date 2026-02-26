@@ -122,6 +122,7 @@ class _ChatScreenContentState extends State<_ChatScreenContent> {
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (!_isSearchFocused) _FilterSection(l10n: l10n),
               Padding(
@@ -278,29 +279,73 @@ class _FilterSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (context, state) {
-        final currentFilter = state is ChatLoaded
-            ? state.currentFilter
-            : ChatFilter.all;
+        final statusFilter = state is ChatLoaded
+            ? state.statusFilter
+            : ChatStatusFilter.all;
+        final typeFilter = state is ChatLoaded
+            ? state.typeFilter
+            : ChatTypeFilter.all;
 
         return Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _FilterChip(
-                label: l10n.all,
-                isSelected: currentFilter == ChatFilter.all,
-                onTap: () => context.read<ChatBloc>().add(
-                  const FilterChatConversations(ChatFilter.all),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    _FilterChip(
+                      label: l10n.all,
+                      isSelected: statusFilter == ChatStatusFilter.all,
+                      onTap: () => context.read<ChatBloc>().add(
+                        const FilterChatStatus(ChatStatusFilter.all),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _FilterChip(
+                      label: l10n.unread,
+                      isSelected: statusFilter == ChatStatusFilter.unread,
+                      onTap: () => context.read<ChatBloc>().add(
+                        const FilterChatStatus(ChatStatusFilter.unread),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 8),
-              _FilterChip(
-                label: l10n.unread,
-                isSelected: currentFilter == ChatFilter.unread,
-                onTap: () => context.read<ChatBloc>().add(
-                  const FilterChatConversations(ChatFilter.unread),
-                ),
-              ),
+
+              // const SizedBox(height: 8),
+              // SingleChildScrollView(
+              //   scrollDirection: Axis.horizontal,
+              //   child: Row(
+              //     children: [
+              //       _FilterChip(
+              //         label: l10n.all,
+              //         isSelected: typeFilter == ChatTypeFilter.all,
+              //         onTap: () => context.read<ChatBloc>().add(
+              //           const FilterChatType(ChatTypeFilter.all),
+              //         ),
+              //       ),
+              //       const SizedBox(width: 8),
+              //       _FilterChip(
+              //         label: l10n.chat_filter_booking,
+              //         isSelected: typeFilter == ChatTypeFilter.booking,
+              //         onTap: () => context.read<ChatBloc>().add(
+              //           const FilterChatType(ChatTypeFilter.booking),
+              //         ),
+              //       ),
+              //       const SizedBox(width: 8),
+              //       _FilterChip(
+              //         label: l10n.chat_filter_inquiry,
+              //         isSelected: typeFilter == ChatTypeFilter.inquiry,
+              //         onTap: () => context.read<ChatBloc>().add(
+              //           const FilterChatType(ChatTypeFilter.inquiry),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         );
@@ -359,10 +404,7 @@ class _ConversationList extends StatelessWidget {
           return const Center(
             child: Padding(
               padding: EdgeInsets.all(32.0),
-              child: SpinKitFadingCircle(
-                color: AppColors.primary,
-                size: 32,
-              ),
+              child: SpinKitFadingCircle(color: AppColors.primary, size: 32),
             ),
           );
         }
@@ -380,7 +422,7 @@ class _ConversationList extends StatelessWidget {
         }
 
         if (state is ChatLoaded) {
-          final currentFilter = state.currentFilter;
+          final statusFilter = state.statusFilter;
           final conversations = state.filteredConversations;
           final hasMore = state.hasMore;
           final isLoadingMore = state.isLoadingMore;
@@ -401,7 +443,7 @@ class _ConversationList extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      currentFilter == ChatFilter.unread
+                      statusFilter == ChatStatusFilter.unread
                           ? l10n.empty_chat_message_unread
                           : l10n.empty_chat_message,
                       textAlign: TextAlign.center,
@@ -476,16 +518,11 @@ class _ChatSessionTile extends StatelessWidget {
             ? '/chat/inquiry/${conversation.id}'
             : '/chat/${conversation.id}';
 
-        context
-            .push(
-              routePath,
-              extra: conversation.participantName,
-            )
-            .then((_) {
-              if (context.mounted) {
-                context.read<ChatBloc>().add(const LoadChatConversations());
-              }
-            });
+        context.push(routePath, extra: conversation.participantName).then((_) {
+          if (context.mounted) {
+            context.read<ChatBloc>().add(const LoadChatConversations());
+          }
+        });
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -502,15 +539,24 @@ class _ChatSessionTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Text(
-                          conversation.participantName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.anuphan(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.baseBlack,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                conversation.participantName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.anuphan(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.baseBlack,
+                                ),
+                              ),
+                            ),
+                            // const SizedBox(width: 8),
+                            // _buildTypeBadge(),
+                          ],
                         ),
                       ),
                       if (conversation.lastActiveAt != null)
@@ -559,6 +605,27 @@ class _ChatSessionTile extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTypeBadge() {
+    final isInquiry = conversation.type == ChatConversationType.inquiry;
+    final label = isInquiry ? l10n.chat_type_inquiry : l10n.chat_type_booking;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: isInquiry ? AppColors.basePaleGrey : AppColors.baseLightGrey,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.anuphan(
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+          color: AppColors.baseDarkGrey,
         ),
       ),
     );

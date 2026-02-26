@@ -20,7 +20,8 @@ class ChatLoading extends ChatState {
 class ChatLoaded extends ChatState {
   final List<ChatBooking> allConversations;
   final List<ChatBooking> filteredConversations;
-  final ChatFilter currentFilter;
+  final ChatStatusFilter statusFilter;
+  final ChatTypeFilter typeFilter;
   final String searchQuery;
   final List<String> recentSearches;
   final int currentPage;
@@ -30,7 +31,8 @@ class ChatLoaded extends ChatState {
   const ChatLoaded({
     required this.allConversations,
     required this.filteredConversations,
-    this.currentFilter = ChatFilter.all,
+    this.statusFilter = ChatStatusFilter.all,
+    this.typeFilter = ChatTypeFilter.all,
     this.searchQuery = '',
     this.recentSearches = const [],
     this.currentPage = 1,
@@ -43,7 +45,8 @@ class ChatLoaded extends ChatState {
   ChatLoaded copyWith({
     List<ChatBooking>? allConversations,
     List<ChatBooking>? filteredConversations,
-    ChatFilter? currentFilter,
+    ChatStatusFilter? statusFilter,
+    ChatTypeFilter? typeFilter,
     String? searchQuery,
     List<String>? recentSearches,
     int? currentPage,
@@ -54,7 +57,8 @@ class ChatLoaded extends ChatState {
       allConversations: allConversations ?? this.allConversations,
       filteredConversations:
           filteredConversations ?? this.filteredConversations,
-      currentFilter: currentFilter ?? this.currentFilter,
+      statusFilter: statusFilter ?? this.statusFilter,
+      typeFilter: typeFilter ?? this.typeFilter,
       searchQuery: searchQuery ?? this.searchQuery,
       recentSearches: recentSearches ?? this.recentSearches,
       currentPage: currentPage ?? this.currentPage,
@@ -67,7 +71,8 @@ class ChatLoaded extends ChatState {
   List<Object?> get props => [
     allConversations,
     filteredConversations,
-    currentFilter,
+    statusFilter,
+    typeFilter,
     searchQuery,
     recentSearches,
     currentPage,

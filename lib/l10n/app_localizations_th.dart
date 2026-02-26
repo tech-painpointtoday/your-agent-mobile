@@ -505,6 +505,107 @@ class AppLocalizationsTh extends AppLocalizations {
   String get error_picking_images => 'เกิดข้อผิดพลาดในการเลือกรูปภาพ';
 
   @override
+  String get permission_generic_title => 'ต้องการสิทธิ์การเข้าถึง';
+
+  @override
+  String get permission_generic_denied_settings =>
+      'กรุณาเปิดสิทธิ์การเข้าถึงในหน้าการตั้งค่า';
+
+  @override
+  String get permission_generic_warning_title => 'ไม่ได้รับอนุญาต';
+
+  @override
+  String get permission_generic_warning_message =>
+      'กรุณาอนุญาตการเข้าถึงเพื่อใช้งานฟีเจอร์นี้';
+
+  @override
+  String get permission_button_open_settings => 'ไปที่การตั้งค่า';
+
+  @override
+  String get permission_button_cancel => 'ยกเลิก';
+
+  @override
+  String get permission_location_title => 'เข้าถึงตำแหน่ง';
+
+  @override
+  String get permission_location_message =>
+      'กรุณาอนุญาตการเข้าถึงตำแหน่งเพื่อระบุตำแหน่งของคุณ';
+
+  @override
+  String get permission_location_denied_forever =>
+      'คุณปิดสิทธิ์ตำแหน่งถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์ตำแหน่ง';
+
+  @override
+  String get permission_camera_title => 'เข้าถึงกล้องถ่ายรูป';
+
+  @override
+  String get permission_camera_message =>
+      'กรุณาอนุญาตการเข้าถึงกล้องเพื่อถ่ายภาพ';
+
+  @override
+  String get permission_camera_denied_forever =>
+      'คุณปิดสิทธิ์การเข้าถึงกล้องถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์';
+
+  @override
+  String get permission_photos_title => 'เข้าถึงรูปภาพ';
+
+  @override
+  String get permission_photos_message =>
+      'กรุณาอนุญาตการเข้าถึงรูปภาพเพื่อเลือกรูปจากอัลบั้ม';
+
+  @override
+  String get permission_photos_denied_forever =>
+      'คุณปิดสิทธิ์การเข้าถึงรูปภาพถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์';
+
+  @override
+  String get permission_files_title => 'เข้าถึงไฟล์';
+
+  @override
+  String get permission_files_message =>
+      'กรุณาอนุญาตการเข้าถึงไฟล์เพื่อเลือกเอกสาร';
+
+  @override
+  String get permission_files_denied_forever =>
+      'คุณปิดสิทธิ์การเข้าถึงไฟล์ถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์';
+
+  @override
+  String get permission_notification_title => 'การแจ้งเตือน';
+
+  @override
+  String get permission_notification_message =>
+      'กรุณาอนุญาตการแจ้งเตือนเพื่อรับข่าวสารและข้อความใหม่';
+
+  @override
+  String get permission_notification_denied_forever =>
+      'คุณปิดสิทธิ์การแจ้งเตือนถาวร กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์การแจ้งเตือน';
+
+  @override
+  String get permission_location_error_title => 'เกิดข้อผิดพลาด';
+
+  @override
+  String get permission_location_error_message =>
+      'ไม่สามารถรับตำแหน่งปัจจุบันได้';
+
+  @override
+  String get permission_notification_turn_off_title => 'ปิดการแจ้งเตือน?';
+
+  @override
+  String get permission_notification_turn_off_message =>
+      'หากคุณต้องการปิดการแจ้งเตือน กรุณาไปที่การตั้งค่าและปิดการแจ้งเตือนของแอปนี้';
+
+  @override
+  String get chat_filter_booking => 'การจอง';
+
+  @override
+  String get chat_filter_inquiry => 'การสอบถาม';
+
+  @override
+  String get chat_type_booking => 'การจอง';
+
+  @override
+  String get chat_type_inquiry => 'การสอบถาม';
+
+  @override
   String get this_field_required => 'ฟิลด์นี้จำเป็นต้องกรอก';
 
   @override

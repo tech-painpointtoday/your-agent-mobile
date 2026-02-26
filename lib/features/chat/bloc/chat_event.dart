@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-enum ChatFilter { all, unread }
+enum ChatStatusFilter { all, unread }
+
+enum ChatTypeFilter { all, booking, inquiry }
 
 abstract class ChatEvent extends Equatable {
   const ChatEvent();
@@ -17,12 +19,20 @@ class LoadMoreChatConversations extends ChatEvent {
   const LoadMoreChatConversations();
 }
 
-class FilterChatConversations extends ChatEvent {
-  final ChatFilter filter;
-  const FilterChatConversations(this.filter);
+class FilterChatStatus extends ChatEvent {
+  final ChatStatusFilter status;
+  const FilterChatStatus(this.status);
 
   @override
-  List<Object?> get props => [filter];
+  List<Object?> get props => [status];
+}
+
+class FilterChatType extends ChatEvent {
+  final ChatTypeFilter type;
+  const FilterChatType(this.type);
+
+  @override
+  List<Object?> get props => [type];
 }
 
 class SearchChatConversations extends ChatEvent {

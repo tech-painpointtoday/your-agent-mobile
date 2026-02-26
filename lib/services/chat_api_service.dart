@@ -30,20 +30,78 @@ class ChatApiService {
     return PaginatedChatResponse.fromJson(json);
   }
 
-  /// Get inquiry chats (messages + pagination)
+  /// Get inquiry chat summaries (one per inquiry) for the conversation list.
+  ///
   /// GET /agent/property-inquiries
-  /// Expected response shape is similar to /agent/chats:
-  /// { "success": true, "data": { "messages": [...], "pagination": {...} } }
-  Future<PaginatedChatResponse> getInquiryChats({
-    int page = 1,
-    int perPage = 10,
-  }) async {
-    final response = await _apiClient.get(
-      '/agent/property-inquiries',
-      queryParameters: <String, dynamic>{'page': page, 'per_page': perPage},
-    );
-    final json = response.data as Map<String, dynamic>;
-    return PaginatedChatResponse.fromJson(json);
+  ///
+  /// Response shape:
+  /// {
+  ///   "success": true,
+  ///   "data": {
+  ///     "inquiries": [
+  ///       {
+  ///         "id": 2,
+  ///         "property_id": 122,
+  ///         "buyer": { ... },
+  ///         "agent": { ... },
+  ///         "status": "open",
+  ///         "messages_count": 0,
+  ///         "unread_count": 0,
+  ///         "latest_message": { ... } | null,
+  ///         ...
+  ///       }
+  ///     ]
+  ///   }
+  /// }
+  ///
+  /// We map each inquiry with a non-null `latest_message` into a synthetic
+  /// `ChatMessage` so that the existing grouping logic can treat it as an
+  /// inquiry-type conversation. Inquiries with `latest_message == null`
+  /// are **not** returned (to avoid showing empty conversations).
+  Future<List<ChatMessage>> getInquiryConversations() async {
+    try {
+      final response = await _apiClient.get('/agent/property-inquiries');
+      final root = response.data as Map<String, dynamic>;
+      final data = root['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
+      final inquiries =
+          (data['inquiries'] as List<dynamic>? ?? <dynamic>[])
+              .whereType<Map<String, dynamic>>();
+
+      final result = <ChatMessage>[];
+
+      for (final inquiry in inquiries) {
+        final latest = inquiry['latest_message'];
+        if (latest == null || latest is! Map<String, dynamic>) {
+          // If latest_message is null, do not show this inquiry in the list.
+          continue;
+        }
+
+        final buyer = inquiry['buyer'] as Map<String, dynamic>?;
+
+        // Build a wrapper JSON compatible with ChatMessage.fromJson:
+        final wrapper = <String, dynamic>{
+          ...inquiry,
+          // Ensure the conversation id is treated as property_inquiry_id.
+          'property_inquiry_id': inquiry['id'],
+          'last_message': latest,
+          // Help senderName resolution for the buyer side.
+          'sender_name': inquiry['sender_name'] ??
+              buyer?['name'] as String? ??
+              '',
+          'user': buyer,
+        };
+
+        result.add(ChatMessage.fromJson(wrapper));
+      }
+
+      return result;
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to load inquiry chats',
+      );
+    } catch (e) {
+      throw Exception('Failed to load inquiry chats: $e');
+    }
   }
 
   /// Send a chat message

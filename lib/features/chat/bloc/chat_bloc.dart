@@ -11,7 +11,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc() : super(const ChatInitial()) {
     on<LoadChatConversations>(_onLoadChatConversations);
     on<LoadMoreChatConversations>(_onLoadMoreChatConversations);
-    on<FilterChatConversations>(_onFilterChatConversations);
+    on<FilterChatStatus>(_onFilterChatStatus);
+    on<FilterChatType>(_onFilterChatType);
     on<SearchChatConversations>(_onSearchChatConversations);
     on<SaveRecentSearch>(_onSaveRecentSearch);
     on<ClearRecentSearches>(_onClearRecentSearches);
@@ -39,19 +40,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final bookingResponse = await DependencyInjection.chatApiService
           .getChats(page: 1, perPage: perPage);
 
-      // Load inquiry chats (property inquiries) and merge into the same list.
-      // If this endpoint is not yet available or fails, we still show booking chats.
-      PaginatedChatResponse? inquiryResponse;
+      // Load inquiry chats (property inquiries) and convert them into synthetic
+      // ChatMessage entries, then merge with booking messages.
+      // If this endpoint fails, we still show booking chats.
+      List<ChatMessage> inquiryMessages = [];
       try {
-        inquiryResponse = await DependencyInjection.chatApiService
-            .getInquiryChats(page: 1, perPage: perPage);
+        inquiryMessages = await DependencyInjection.chatApiService
+            .getInquiryConversations();
       } catch (_) {
-        inquiryResponse = null;
+        inquiryMessages = [];
       }
 
       final allMessages = <ChatMessage>[
         ...bookingResponse.messages,
-        if (inquiryResponse != null) ...inquiryResponse.messages,
+        ...inquiryMessages,
       ];
 
       final conversations = _conversationsFromMessages(allMessages);
@@ -100,7 +102,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
       final filtered = _applyFilterAndSearch(
         merged,
-        currentState.currentFilter,
+        currentState.statusFilter,
+        currentState.typeFilter,
         currentState.searchQuery,
       );
 
@@ -150,12 +153,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       int? id;
       ChatConversationType type = ChatConversationType.booking;
 
-      if (m.bookingId != null && m.bookingId! > 0) {
-        id = m.bookingId!;
-        type = ChatConversationType.booking;
-      } else if (m.propertyInquiryId != null && m.propertyInquiryId! > 0) {
+      // Prefer inquiry id when present, so property inquiries are correctly
+      // classified even if bookingId is also populated by legacy parsing.
+      if (m.propertyInquiryId != null && m.propertyInquiryId! > 0) {
         id = m.propertyInquiryId!;
         type = ChatConversationType.inquiry;
+      } else if (m.bookingId != null && m.bookingId! > 0) {
+        id = m.bookingId!;
+        type = ChatConversationType.booking;
       }
 
       if (id == null) continue;
@@ -221,21 +226,43 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     return list;
   }
 
-  void _onFilterChatConversations(
-    FilterChatConversations event,
+  void _onFilterChatStatus(
+    FilterChatStatus event,
     Emitter<ChatState> emit,
   ) {
     if (state is ChatLoaded) {
       final currentState = state as ChatLoaded;
       final filtered = _applyFilterAndSearch(
         currentState.allConversations,
-        event.filter,
+        event.status,
+        currentState.typeFilter,
         currentState.searchQuery,
       );
       emit(
         currentState.copyWith(
           filteredConversations: filtered,
-          currentFilter: event.filter,
+          statusFilter: event.status,
+        ),
+      );
+    }
+  }
+
+  void _onFilterChatType(
+    FilterChatType event,
+    Emitter<ChatState> emit,
+  ) {
+    if (state is ChatLoaded) {
+      final currentState = state as ChatLoaded;
+      final filtered = _applyFilterAndSearch(
+        currentState.allConversations,
+        currentState.statusFilter,
+        event.type,
+        currentState.searchQuery,
+      );
+      emit(
+        currentState.copyWith(
+          filteredConversations: filtered,
+          typeFilter: event.type,
         ),
       );
     }
@@ -249,7 +276,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final currentState = state as ChatLoaded;
       final filtered = _applyFilterAndSearch(
         currentState.allConversations,
-        currentState.currentFilter,
+        currentState.statusFilter,
+        currentState.typeFilter,
         event.query,
       );
       emit(
@@ -286,14 +314,24 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   List<ChatBooking> _applyFilterAndSearch(
     List<ChatBooking> conversations,
-    ChatFilter filter,
+    ChatStatusFilter statusFilter,
+    ChatTypeFilter typeFilter,
     String query,
   ) {
     var result = conversations;
 
-    // Apply Filter
-    if (filter == ChatFilter.unread) {
+    // Apply status filter (all / unread)
+    if (statusFilter == ChatStatusFilter.unread) {
       result = result.where((c) => c.unreadCount > 0).toList();
+    }
+
+    // Apply type filter (all / booking / inquiry)
+    if (typeFilter == ChatTypeFilter.booking) {
+      result =
+          result.where((c) => c.type == ChatConversationType.booking).toList();
+    } else if (typeFilter == ChatTypeFilter.inquiry) {
+      result =
+          result.where((c) => c.type == ChatConversationType.inquiry).toList();
     }
 
     // Apply Search

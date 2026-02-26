@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:youragent/core/di/dependency_injection.dart'
     show DependencyInjection, navigatorKey;

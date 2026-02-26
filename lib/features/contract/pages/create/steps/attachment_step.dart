@@ -13,6 +13,7 @@ import 'package:youragent/widgets/inputs/app_text_field.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 import 'package:youragent/core/extensions/l10n_extensions.dart';
+import 'package:youragent/utils/permission_helper.dart';
 import 'package:youragent/widgets/painters/dashed_border_painter.dart';
 
 class AttachmentStep extends StatefulWidget {
@@ -26,6 +27,9 @@ class AttachmentStep extends StatefulWidget {
 
 class _AttachmentStepState extends State<AttachmentStep> {
   Future<void> _pickFile(String attachmentId) async {
+    final ok = await PermissionHelper.ensureFilePickerReady(context);
+    if (!ok) return;
+
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg'],
