@@ -7,6 +7,7 @@ enum SenderType { buyer, agent, seller, staff }
 class ChatMessage extends Equatable {
   final int? id;
   final int? bookingId;
+
   /// For property inquiry chats: property_inquiry_id from API
   final int? propertyInquiryId;
   final int? staffConversationId;
@@ -19,6 +20,7 @@ class ChatMessage extends Equatable {
   final DateTime? updatedAt;
   final String? senderName; // Computed attribute
   final String? imageUrl;
+  final String? status; // Add status field for inquiry/booking context
 
   const ChatMessage({
     this.id,
@@ -34,6 +36,7 @@ class ChatMessage extends Equatable {
     this.updatedAt,
     this.senderName,
     this.imageUrl,
+    this.status,
   });
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
@@ -67,6 +70,7 @@ class ChatMessage extends Equatable {
           json['sender_name'] as String? ??
           (json['user'] as Map?)?['name'] as String?,
       imageUrl: effectiveJson['image_url'] as String?,
+      status: json['status'] as String?,
     );
   }
 
@@ -103,6 +107,7 @@ class ChatMessage extends Equatable {
       'updated_at': updatedAt?.toIso8601String(),
       'sender_name': senderName,
       'image_url': imageUrl,
+      'status': status,
     };
   }
 
@@ -121,6 +126,7 @@ class ChatMessage extends Equatable {
     updatedAt,
     senderName,
     imageUrl,
+    status,
   ];
 }
 

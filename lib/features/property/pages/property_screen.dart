@@ -105,8 +105,8 @@ class _PropertyScreenState extends State<PropertyScreen> {
                 child: const Icon(Icons.add, size: 24, color: Colors.white),
               ),
             ),
-            searchBar: HomeSearchBar(controller: _searchController),
-            preferredHeight: 132.0,
+            // searchBar: HomeSearchBar(controller: _searchController),
+            preferredHeight: 84.0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -159,10 +159,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
   ) {
     if (state.status == PropertyListStatus.initial) {
       return const Center(
-        child: SpinKitFadingCircle(
-          color: AppColors.primary,
-          size: 32,
-        ),
+        child: SpinKitFadingCircle(color: AppColors.primary, size: 32),
       );
     }
 

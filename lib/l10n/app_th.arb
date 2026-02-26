@@ -1401,7 +1401,7 @@
   "contractCreatedSuccess": "สร้างสัญญาเรียบร้อยแล้ว",
   "contractPublishedSuccess": "เผยแพร่สัญญาเรียบร้อยแล้ว",
   "empty_chat_message": "ยังไม่มีข้อความตอนนี้\nหากเริ่มต้นสนทนาแล้ว แชทจะปรากฏที่นี่",
-  "empty_chat_message_unread": "ยังไม่มีข้อความที่อ่านแล้ว",
+  "empty_chat_message_unread": "ยังไม่มีข้อความที่ยังไม่ได้อ่าน",
   "recent_search": "การค้นหาล่าสุด",
   "type_message_hint": "พิมพ์ข้อความที่นี่...",
   "read_status": "อ่านแล้ว",

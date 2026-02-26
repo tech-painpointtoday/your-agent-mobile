@@ -12,6 +12,7 @@ class ChatBooking extends Equatable {
   final String? avatarUrl;
   final ChatConversationType type;
   final int? inquiryId;
+  final String? status;
 
   const ChatBooking({
     required this.id,
@@ -23,6 +24,7 @@ class ChatBooking extends Equatable {
     this.avatarUrl,
     this.type = ChatConversationType.booking,
     this.inquiryId,
+    this.status,
   });
 
   factory ChatBooking.fromJson(Map<String, dynamic> json) {
@@ -67,6 +69,7 @@ class ChatBooking extends Equatable {
           user?['profile_photo'] as String? ?? json['avatar_url'] as String?,
       type: ChatConversationType.booking,
       inquiryId: null,
+      status: json['status'] as String?,
     );
   }
 
@@ -80,5 +83,6 @@ class ChatBooking extends Equatable {
     avatarUrl,
     type,
     inquiryId,
+    status,
   ];
 }

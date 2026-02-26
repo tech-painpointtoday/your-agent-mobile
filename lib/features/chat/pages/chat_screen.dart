@@ -11,6 +11,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/chat_booking.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../widgets/app_search_bar.dart';
+import '../../../widgets/badges/app_badge.dart';
 import '../bloc/chat_bloc.dart';
 import '../bloc/chat_event.dart';
 import '../bloc/chat_state.dart';
@@ -102,6 +103,10 @@ class _ChatScreenContentState extends State<_ChatScreenContent> {
             fontWeight: FontWeight.w600,
           ),
         ),
+        actions: [
+          _ChatTypeDropdown(l10n: l10n),
+          const SizedBox(width: 16),
+        ],
       ),
       body: RefreshIndicator(
         color: Colors.white,
@@ -315,41 +320,152 @@ class _FilterSection extends StatelessWidget {
                 ),
               ),
 
-              // const SizedBox(height: 8),
-              // SingleChildScrollView(
-              //   scrollDirection: Axis.horizontal,
-              //   child: Row(
-              //     children: [
-              //       _FilterChip(
-              //         label: l10n.all,
-              //         isSelected: typeFilter == ChatTypeFilter.all,
-              //         onTap: () => context.read<ChatBloc>().add(
-              //           const FilterChatType(ChatTypeFilter.all),
-              //         ),
-              //       ),
-              //       const SizedBox(width: 8),
-              //       _FilterChip(
-              //         label: l10n.chat_filter_booking,
-              //         isSelected: typeFilter == ChatTypeFilter.booking,
-              //         onTap: () => context.read<ChatBloc>().add(
-              //           const FilterChatType(ChatTypeFilter.booking),
-              //         ),
-              //       ),
-              //       const SizedBox(width: 8),
-              //       _FilterChip(
-              //         label: l10n.chat_filter_inquiry,
-              //         isSelected: typeFilter == ChatTypeFilter.inquiry,
-              //         onTap: () => context.read<ChatBloc>().add(
-              //           const FilterChatType(ChatTypeFilter.inquiry),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
+              // removed type chips here (already in header)
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class _ChatTypeDropdown extends StatelessWidget {
+  final AppLocalizations l10n;
+  const _ChatTypeDropdown({required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChatBloc, ChatState>(
+      builder: (context, state) {
+        final currentFilter = state is ChatLoaded
+            ? state.typeFilter
+            : ChatTypeFilter.all;
+
+        String label;
+        switch (currentFilter) {
+          case ChatTypeFilter.all:
+            label = l10n.all;
+            break;
+          case ChatTypeFilter.booking:
+            label = l10n.chat_filter_booking;
+            break;
+          case ChatTypeFilter.inquiry:
+            label = l10n.chat_filter_inquiry;
+            break;
+        }
+
+        return PopupMenuButton<ChatTypeFilter>(
+          onSelected: (filter) {
+            context.read<ChatBloc>().add(FilterChatType(filter));
+          },
+          offset: const Offset(0, 48),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: AppColors.baseLightGrey, width: 1),
+          ),
+          color: Colors.white,
+          elevation: 8,
+          itemBuilder: (context) => [
+            _buildMenuItem(
+              context,
+              ChatTypeFilter.all,
+              l10n.all,
+              currentFilter == ChatTypeFilter.all,
+            ),
+            _buildMenuItem(
+              context,
+              ChatTypeFilter.booking,
+              l10n.chat_filter_booking,
+              currentFilter == ChatTypeFilter.booking,
+            ),
+            _buildMenuItem(
+              context,
+              ChatTypeFilter.inquiry,
+              l10n.chat_filter_inquiry,
+              currentFilter == ChatTypeFilter.inquiry,
+            ),
+          ],
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.baseOffWhite,
+              borderRadius: BorderRadius.circular(25),
+              border: Border.all(color: AppColors.baseLightGrey, width: 1),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.anuphan(
+                    color: AppColors.baseBlack,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                SvgPicture.asset(
+                  'assets/icons/chevron-down.svg',
+                  width: 14,
+                  height: 14,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.baseDarkGrey,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  PopupMenuItem<ChatTypeFilter> _buildMenuItem(
+    BuildContext context,
+    ChatTypeFilter value,
+    String label,
+    bool isSelected,
+  ) {
+    return PopupMenuItem<ChatTypeFilter>(
+      value: value,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: GoogleFonts.anuphan(
+                  color: isSelected ? AppColors.primary : AppColors.baseBlack,
+                  fontSize: 15,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                ),
+              ),
+            ),
+            if (isSelected)
+              Container(
+                padding: const EdgeInsets.all(2),
+                decoration: const BoxDecoration(
+                  color: AppColors.supportGreenLight,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check_rounded,
+                  color: AppColors.supportGreenDark,
+                  size: 14,
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -571,6 +687,7 @@ class _ChatSessionTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Expanded(
                         child: Text(
@@ -589,16 +706,23 @@ class _ChatSessionTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (conversation.unreadCount > 0)
-                        Container(
-                          width: 8,
-                          height: 8,
-                          margin: const EdgeInsets.only(left: 8),
-                          decoration: const BoxDecoration(
-                            color: AppColors.supportRedDeep,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          if (conversation.unreadCount > 0)
+                            Container(
+                              width: 8,
+                              height: 8,
+                              margin: const EdgeInsets.only(bottom: 6),
+                              decoration: const BoxDecoration(
+                                color: AppColors.supportRedDeep,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          if (conversation.type == ChatConversationType.inquiry)
+                            _buildInquiryStatusBadge(),
+                        ],
+                      ),
                     ],
                   ),
                 ],
@@ -628,6 +752,16 @@ class _ChatSessionTile extends StatelessWidget {
           color: AppColors.baseDarkGrey,
         ),
       ),
+    );
+  }
+
+  Widget _buildInquiryStatusBadge() {
+    return AppBadge(
+      label: l10n.chat_type_inquiry,
+      color: BadgeColor.green,
+      style: BadgeStyle.plain,
+      fontSize: 10,
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
     );
   }
 

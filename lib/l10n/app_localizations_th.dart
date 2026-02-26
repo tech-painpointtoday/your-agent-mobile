@@ -4041,7 +4041,7 @@ class AppLocalizationsTh extends AppLocalizations {
       'ยังไม่มีข้อความตอนนี้\nหากเริ่มต้นสนทนาแล้ว แชทจะปรากฏที่นี่';
 
   @override
-  String get empty_chat_message_unread => 'ยังไม่มีข้อความที่อ่านแล้ว';
+  String get empty_chat_message_unread => 'ยังไม่มีข้อความที่ยังไม่ได้อ่าน';
 
   @override
   String get recent_search => 'การค้นหาล่าสุด';

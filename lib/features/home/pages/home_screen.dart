@@ -43,9 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocProvider(
       create: (context) => NotificationBloc()..add(const LoadNotifications()),
       child: SilverAppBarScreen(
-        preferredHeight: 132.0,
+        preferredHeight: 84.0,
         titleWidget: const HomeHeader(),
-        searchBar: const HomeSearchBar(),
+        // searchBar: const HomeSearchBar(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

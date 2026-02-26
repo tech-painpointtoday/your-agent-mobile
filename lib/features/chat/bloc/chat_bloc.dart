@@ -37,28 +37,28 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       }
 
       const perPage = 10;
-      final bookingResponse = await DependencyInjection.chatApiService
-          .getChats(page: 1, perPage: perPage);
 
-      // Load inquiry chats (property inquiries) and convert them into synthetic
-      // ChatMessage entries, then merge with booking messages.
-      // If this endpoint fails, we still show booking chats.
-      List<ChatMessage> inquiryMessages = [];
-      try {
-        inquiryMessages = await DependencyInjection.chatApiService
-            .getInquiryConversations();
-      } catch (_) {
-        inquiryMessages = [];
-      }
+      // Load all services in parallel before processing and sorting
+      final results = await Future.wait([
+        DependencyInjection.chatApiService.getChats(page: 1, perPage: perPage),
+        DependencyInjection.chatApiService.getInquiryConversations().catchError(
+          (_) => <ChatMessage>[],
+        ),
+        _searchService.getRecentSearches().catchError((_) => <String>[]),
+      ]);
+
+      final bookingResponse = results[0] as PaginatedChatResponse;
+      final inquiryMessages = results[1] as List<ChatMessage>;
+      final recentSearches = results[2] as List<String>;
 
       final allMessages = <ChatMessage>[
         ...bookingResponse.messages,
         ...inquiryMessages,
       ];
 
+      // Process and sort only after all data is loaded
       final conversations = _conversationsFromMessages(allMessages);
       final pagination = bookingResponse.pagination;
-      final recentSearches = await _searchService.getRecentSearches();
 
       emit(
         ChatLoaded(
@@ -127,8 +127,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     List<ChatBooking> incoming,
   ) {
     final byKey = <String, ChatBooking>{
-      for (final c in existing)
-        _conversationKey(c.type, c.id): c,
+      for (final c in existing) _conversationKey(c.type, c.id): c,
     };
     for (final c in incoming) {
       byKey[_conversationKey(c.type, c.id)] = c;
@@ -199,7 +198,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final unreadCount = bookingMessages
           .where((m) => m.senderType != SenderType.agent && !m.isRead)
           .length;
-      final id = (type == ChatConversationType.inquiry
+      final id =
+          (type == ChatConversationType.inquiry
               ? bookingMessages.first.propertyInquiryId
               : bookingMessages.first.bookingId) ??
           0;
@@ -213,8 +213,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           lastActiveAt: latest.createdAt,
           avatarUrl: null,
           type: type,
-          inquiryId:
-              type == ChatConversationType.inquiry ? id : null,
+          inquiryId: type == ChatConversationType.inquiry ? id : null,
+          status: latest.status,
         ),
       );
     }
@@ -226,10 +226,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     return list;
   }
 
-  void _onFilterChatStatus(
-    FilterChatStatus event,
-    Emitter<ChatState> emit,
-  ) {
+  void _onFilterChatStatus(FilterChatStatus event, Emitter<ChatState> emit) {
     if (state is ChatLoaded) {
       final currentState = state as ChatLoaded;
       final filtered = _applyFilterAndSearch(
@@ -247,10 +244,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-  void _onFilterChatType(
-    FilterChatType event,
-    Emitter<ChatState> emit,
-  ) {
+  void _onFilterChatType(FilterChatType event, Emitter<ChatState> emit) {
     if (state is ChatLoaded) {
       final currentState = state as ChatLoaded;
       final filtered = _applyFilterAndSearch(
@@ -327,11 +321,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     // Apply type filter (all / booking / inquiry)
     if (typeFilter == ChatTypeFilter.booking) {
-      result =
-          result.where((c) => c.type == ChatConversationType.booking).toList();
+      result = result
+          .where((c) => c.type == ChatConversationType.booking)
+          .toList();
     } else if (typeFilter == ChatTypeFilter.inquiry) {
-      result =
-          result.where((c) => c.type == ChatConversationType.inquiry).toList();
+      result = result
+          .where((c) => c.type == ChatConversationType.inquiry)
+          .toList();
     }
 
     // Apply Search
