@@ -3272,6 +3272,12 @@ abstract class AppLocalizations {
   /// **'Availability updated successfully'**
   String get availability_update_success;
 
+  /// No description provided for @availability_success_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The availability has been saved successfully'**
+  String get availability_success_description;
+
   /// No description provided for @availability_error.
   ///
   /// In en, this message translates to:
@@ -3451,6 +3457,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add'**
   String get availability_confirm_add_label;
+
+  /// No description provided for @availability_input_slot_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Slot Time'**
+  String get availability_input_slot_mode;
+
+  /// No description provided for @availability_input_custom_mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Time'**
+  String get availability_input_custom_mode;
+
+  /// No description provided for @availability_slot_instruction_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Select one or more 1-hour slots between 08:00 and 19:00'**
+  String get availability_slot_instruction_add;
+
+  /// No description provided for @availability_slot_instruction_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Select one 1-hour slot between 08:00 and 19:00'**
+  String get availability_slot_instruction_edit;
+
+  /// No description provided for @availability_select_slot_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one time slot'**
+  String get availability_select_slot_error;
 
   /// No description provided for @availability_select_month.
   ///

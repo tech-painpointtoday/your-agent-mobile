@@ -18,6 +18,18 @@ import 'package:youragent/l10n/app_localizations.dart';
 
 enum _ViewMode { list, calendar }
 
+/// Returns end time for UI display; :59 is shown as next hour :00 (no :59 in UI).
+String _formatSlotTimeForDisplay(String startTime, String endTime) {
+  final start = startTime.length >= 5 ? startTime.substring(0, 5) : startTime;
+  String end = endTime.length >= 5 ? endTime.substring(0, 5) : endTime;
+  final parts = end.split(':');
+  if (parts.length >= 2 && parts[1] == '59') {
+    final h = int.tryParse(parts[0]) ?? 0;
+    end = '${(h + 1).toString().padLeft(2, '0')}:00';
+  }
+  return '$start - $end';
+}
+
 /// Full ช่วงเวลาว่าง section – stateful, handles view toggle + calendar.
 class CalendarAvailabilitySection extends StatefulWidget {
   const CalendarAvailabilitySection({super.key});
@@ -74,6 +86,11 @@ class _CalendarAvailabilitySectionState
       listener: (context, state) {
         if (state.status == AvailabilityStatus.success) {
           String? successTitle;
+          String? successDescription;
+          successDescription = AppLocalizations.of(
+            context,
+          ).availability_success_description;
+
           if (state.action == AvailabilityAction.delete) {
             successTitle = AppLocalizations.of(
               context,
@@ -89,7 +106,11 @@ class _CalendarAvailabilitySectionState
           }
 
           if (successTitle != null) {
-            StatusDialog.showSuccess(context: context, title: successTitle);
+            StatusDialog.showSuccess(
+              context: context,
+              title: successTitle,
+              message: successDescription,
+            );
           }
         } else if (state.status == AvailabilityStatus.failure) {
           StatusDialog.showError(
@@ -287,7 +308,9 @@ class _CalendarAvailabilitySectionState
                               children: [
                                 Text(
                                   _isAllMonths
-                                      ? AppLocalizations.of(context).calendar_all
+                                      ? AppLocalizations.of(
+                                          context,
+                                        ).calendar_all
                                       : ThaiMonth.fromDateTime(
                                           _selectedMonth,
                                         ).localizedNameWithYear(
@@ -357,16 +380,21 @@ class _CalendarAvailabilitySectionState
                         else
                           ...slotsForSelectedDay.map((slot) {
                             final now = DateTime.now();
-                            final slotDateTime = DateTime.parse(
+                            final slotDateTime = DateTime.tryParse(
                               '${slot.date} ${slot.endTime}',
                             );
-                            final canEdit = slotDateTime.isAfter(now);
+                            final canEdit =
+                                slotDateTime != null &&
+                                slotDateTime.isAfter(now);
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12),
                               child: _SlotCard(
                                 time: locale == 'th'
-                                    ? '${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)} น.'
-                                    : '${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)}',
+                                    ? '${_formatSlotTimeForDisplay(slot.startTime, slot.endTime)} น.'
+                                    : _formatSlotTimeForDisplay(
+                                        slot.startTime,
+                                        slot.endTime,
+                                      ),
                                 available: slot.isAvailable,
                                 showEdit: canEdit,
                                 onEdit: () => _editSlot(context, slot),
@@ -402,42 +430,61 @@ class _CalendarAvailabilitySectionState
                             ),
                           )
                         else
-                          ...groupedTimes.entries.map((entry) {
-                            // entries is MapEntry<String, List<AvailableTime>>
-                            // entry.key is yyyy-MM-dd
-                            final date = DateTime.parse(entry.key);
-                            // For YourAgent, we usually display Buddhist year.
-                            final thaiYear = date.year + 543;
-                            final formattedLabel = locale == 'th'
-                                ? '${DateFormat('d MMMM', 'th').format(date)} $thaiYear'
-                                : DateFormat('d MMMM yyyy', 'en').format(date);
+                          ...groupedTimes.entries
+                              .where(
+                                (entry) =>
+                                    entry.key.isNotEmpty &&
+                                    DateTime.tryParse(entry.key) != null,
+                              )
+                              .map((entry) {
+                                // entries is MapEntry<String, List<AvailableTime>>
+                                // entry.key is yyyy-MM-dd
+                                final date = DateTime.parse(entry.key);
+                                // For YourAgent, we usually display Buddhist year.
+                                final thaiYear = date.year + 543;
+                                final formattedLabel = locale == 'th'
+                                    ? '${DateFormat('d MMMM', 'th').format(date)} $thaiYear'
+                                    : DateFormat(
+                                        'd MMMM yyyy',
+                                        'en',
+                                      ).format(date);
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _DateHeader(label: formattedLabel),
-                                const SizedBox(height: 8),
-                                ...entry.value.map(
-                                  (slot) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: _SlotCard(
-                                      time: locale == 'th'
-                                          ? '${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)} น.'
-                                          : '${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)}',
-                                      available: slot.isAvailable,
-                                      showEdit: DateTime.parse(
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _DateHeader(label: formattedLabel),
+                                    const SizedBox(height: 8),
+                                    ...entry.value.map((slot) {
+                                      final slotEndDt = DateTime.tryParse(
                                         '${slot.date} ${slot.endTime}',
-                                      ).isAfter(DateTime.now()),
-                                      onEdit: () => _editSlot(context, slot),
-                                      onDelete: () =>
-                                          _deleteSlot(context, slot),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                              ],
-                            );
-                          }),
+                                      );
+                                      final showEdit =
+                                          slotEndDt != null &&
+                                          slotEndDt.isAfter(DateTime.now());
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 12,
+                                        ),
+                                        child: _SlotCard(
+                                          time: locale == 'th'
+                                              ? '${_formatSlotTimeForDisplay(slot.startTime, slot.endTime)} น.'
+                                              : _formatSlotTimeForDisplay(
+                                                  slot.startTime,
+                                                  slot.endTime,
+                                                ),
+                                          available: slot.isAvailable,
+                                          showEdit: showEdit,
+                                          onEdit: () =>
+                                              _editSlot(context, slot),
+                                          onDelete: () =>
+                                              _deleteSlot(context, slot),
+                                        ),
+                                      );
+                                    }),
+                                    const SizedBox(height: 4),
+                                  ],
+                                );
+                              }),
                         if (state.isLoadingMore)
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 16),
@@ -509,16 +556,15 @@ class _CalendarAvailabilitySectionState
                   itemBuilder: (ctx, i) {
                     if (i == 0) {
                       final isSelected = _isAllMonths;
-                      final label =
-                          AppLocalizations.of(context).calendar_all;
+                      final label = AppLocalizations.of(context).calendar_all;
                       return InkWell(
                         onTap: () {
                           setState(() {
                             _isAllMonths = true;
                           });
                           context.read<AvailabilityBloc>().add(
-                                const FetchAvailability(date: null),
-                              );
+                            const FetchAvailability(date: null),
+                          );
                           Navigator.pop(ctx);
                         },
                         child: Container(
@@ -571,8 +617,8 @@ class _CalendarAvailabilitySectionState
                           _focusedMonth = monthDate;
                         });
                         context.read<AvailabilityBloc>().add(
-                              FetchAvailability(date: monthDate),
-                            );
+                          FetchAvailability(date: monthDate),
+                        );
                         Navigator.pop(ctx);
                       },
                       child: Container(
@@ -633,10 +679,11 @@ class _CalendarAvailabilitySectionState
       endT = TimeOfDay(hour: int.parse(e[0]), minute: int.parse(e[1]));
     } catch (_) {}
 
+    final initialDate = DateTime.tryParse(slot.date) ?? DateTime.now();
     CalendarAvailabilityBottomSheet.show(
       context,
       mode: AvailabilityMode.edit,
-      initialDate: DateTime.parse(slot.date),
+      initialDate: initialDate,
       initialStartTime: startT,
       initialEndTime: endT,
       initialIsAvailable: slot.isAvailable,

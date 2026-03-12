@@ -1658,6 +1658,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get availability_update_success => 'Availability updated successfully';
 
   @override
+  String get availability_success_description =>
+      'The availability has been saved successfully';
+  @override
   String get availability_error => 'An error occurred during the transaction';
 
   @override
@@ -1751,6 +1754,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get availability_confirm_add_label => 'Add';
+
+  @override
+  String get availability_input_slot_mode => 'Slot Time';
+
+  @override
+  String get availability_input_custom_mode => 'Custom Time';
+
+  @override
+  String get availability_slot_instruction_add =>
+      'Select one or more 1-hour slots between 08:00 and 19:00';
+
+  @override
+  String get availability_slot_instruction_edit =>
+      'Select one 1-hour slot between 08:00 and 19:00';
+
+  @override
+  String get availability_select_slot_error =>
+      'Please select at least one time slot';
 
   @override
   String get availability_select_month => 'Select Month';

@@ -16,6 +16,24 @@ import 'package:youragent/l10n/app_localizations.dart';
 
 enum AvailabilityMode { add, edit }
 
+enum _AvailabilityTimeInputMode { slot, custom }
+
+class _SlotRangeOption {
+  final String startTime;
+  final String endTime;
+
+  const _SlotRangeOption({required this.startTime, required this.endTime});
+
+  String get key => '$startTime-$endTime';
+
+  /// End time for API (same hour as start, :59) to avoid overlap with next slot. Format H:i.
+  String get apiEndTime {
+    final parts = startTime.split(':');
+    if (parts.length >= 2) return '${parts[0]}:59';
+    return endTime;
+  }
+}
+
 class CalendarAvailabilityBottomSheet extends StatefulWidget {
   final AvailabilityMode mode;
   final DateTime initialDate;
@@ -73,6 +91,8 @@ class _CalendarAvailabilityBottomSheetState
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
   late bool _available;
+  late _AvailabilityTimeInputMode _timeInputMode;
+  final Set<String> _selectedSlotKeys = <String>{};
 
   late final TextEditingController _dateCtrl;
   late final TextEditingController _startCtrl;
@@ -101,12 +121,24 @@ class _CalendarAvailabilityBottomSheetState
     }
 
     _available = widget.initialIsAvailable;
+    _timeInputMode = _AvailabilityTimeInputMode.slot;
 
     _dateCtrl = TextEditingController(
       text: _dateFormatter.format(_selectedDate),
     );
     _startCtrl = TextEditingController(text: _formatTime(_startTime));
     _endCtrl = TextEditingController(text: _formatTime(_endTime));
+
+    if (widget.mode == AvailabilityMode.edit &&
+        _startTime != null &&
+        _endTime != null) {
+      final matchedSlot = _toSlotOption(_startTime!, _endTime!);
+      if (matchedSlot != null) {
+        _selectedSlotKeys.add(matchedSlot.key);
+      } else {
+        _timeInputMode = _AvailabilityTimeInputMode.custom;
+      }
+    }
   }
 
   @override
@@ -138,6 +170,14 @@ class _CalendarAvailabilityBottomSheetState
       setState(() {
         _selectedDate = picked;
         _dateCtrl.text = _dateFormatter.format(_selectedDate);
+        _selectedSlotKeys.removeWhere((slotKey) {
+          final slot = _allSlots.firstWhere(
+            (item) => item.key == slotKey,
+            orElse: () => const _SlotRangeOption(startTime: '', endTime: ''),
+          );
+          if (slot.startTime.isEmpty) return true;
+          return _isSlotPast(slot);
+        });
       });
     }
   }
@@ -189,6 +229,95 @@ class _CalendarAvailabilityBottomSheetState
     final now = DateTime.now();
     final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
     return DateFormat('HH:mm').format(dt);
+  }
+
+  List<_SlotRangeOption> get _allSlots {
+    return List.generate(11, (index) {
+      final startHour = 8 + index;
+      final endHour = startHour + 1;
+      return _SlotRangeOption(
+        startTime: '${startHour.toString().padLeft(2, '0')}:00',
+        endTime: '${endHour.toString().padLeft(2, '0')}:00',
+      );
+    });
+  }
+
+  _SlotRangeOption? _toSlotOption(TimeOfDay start, TimeOfDay end) {
+    // API may return end as same-hour :59 (e.g. 08:59) or next-hour :00 (09:00)
+    final sameHourEnd = end.hour == start.hour && end.minute == 59;
+    final nextHourEnd = end.hour == start.hour + 1 && end.minute == 0;
+    if (!sameHourEnd && !nextHourEnd) return null;
+    if (start.minute != 0) return null;
+    if (start.hour < 8 || start.hour >= 19) return null;
+    final endHour = nextHourEnd ? end.hour : start.hour + 1;
+    return _SlotRangeOption(
+      startTime: '${start.hour.toString().padLeft(2, '0')}:00',
+      endTime: '${endHour.toString().padLeft(2, '0')}:00',
+    );
+  }
+
+  bool _isSlotPast(_SlotRangeOption slot) {
+    final now = DateTime.now();
+    final isToday =
+        _selectedDate.year == now.year &&
+        _selectedDate.month == now.month &&
+        _selectedDate.day == now.day;
+    if (!isToday) return false;
+
+    final parts = slot.startTime.split(':');
+    final start = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+      int.parse(parts[0]),
+      int.parse(parts[1]),
+    );
+    return start.isBefore(now);
+  }
+
+  /// Slot keys (e.g. "08:00-09:00") already occupied by existing availability on [dateStr].
+  /// In edit mode, excludes the slot of the record being edited ([availableTimeId]) so it stays selectable.
+  Set<String> _getOccupiedSlotKeys(AvailabilityState state, String dateStr) {
+    final occupied = <String>{};
+    for (final time in state.times) {
+      if (time.date != dateStr) continue;
+      if (widget.mode == AvailabilityMode.edit &&
+          widget.availableTimeId != null &&
+          time.id == widget.availableTimeId) {
+        continue; // exclude current record so user can keep same slot
+      }
+      final parts = time.startTime.split(':');
+      if (parts.isEmpty) continue;
+      final hour = int.tryParse(parts[0]) ?? 0;
+      if (hour < 8 || hour >= 19) continue;
+      final key =
+          '${hour.toString().padLeft(2, '0')}:00-${(hour + 1).toString().padLeft(2, '0')}:00';
+      occupied.add(key);
+    }
+    return occupied;
+  }
+
+  List<_SlotRangeOption> get _selectedSlots {
+    return _allSlots
+        .where((slot) => _selectedSlotKeys.contains(slot.key))
+        .toList(growable: false);
+  }
+
+  void _toggleSlot(_SlotRangeOption slot, Set<String> occupiedSlotKeys) {
+    if (_isSlotPast(slot) || occupiedSlotKeys.contains(slot.key)) return;
+
+    final isEdit = widget.mode == AvailabilityMode.edit;
+    setState(() {
+      if (isEdit) {
+        _selectedSlotKeys
+          ..clear()
+          ..add(slot.key);
+      } else if (_selectedSlotKeys.contains(slot.key)) {
+        _selectedSlotKeys.remove(slot.key);
+      } else {
+        _selectedSlotKeys.add(slot.key);
+      }
+    });
   }
 
   @override
@@ -260,6 +389,45 @@ class _CalendarAvailabilityBottomSheetState
             ),
             const SizedBox(height: 32),
 
+            Row(
+              children: [
+                Expanded(
+                  child: AppButton(
+                    text: AppLocalizations.of(
+                      context,
+                    ).availability_input_slot_mode,
+                    style: _timeInputMode == _AvailabilityTimeInputMode.slot
+                        ? AppButtonStyle.primary
+                        : AppButtonStyle.outline,
+                    height: 42,
+                    onPressed: () {
+                      setState(() {
+                        _timeInputMode = _AvailabilityTimeInputMode.slot;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: AppButton(
+                    text: AppLocalizations.of(
+                      context,
+                    ).availability_input_custom_mode,
+                    style: _timeInputMode == _AvailabilityTimeInputMode.custom
+                        ? AppButtonStyle.primary
+                        : AppButtonStyle.outline,
+                    height: 42,
+                    onPressed: () {
+                      setState(() {
+                        _timeInputMode = _AvailabilityTimeInputMode.custom;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
             // Date field
             AppTextField(
               label: AppLocalizations.of(context).availability_date_label,
@@ -282,107 +450,197 @@ class _CalendarAvailabilityBottomSheetState
             ),
             const SizedBox(height: 20),
 
-            // Time fields
-            Row(
-              children: [
-                Expanded(
-                  child: AppTextField(
-                    label: AppLocalizations.of(
-                      context,
-                    ).availability_start_time_label,
-                    controller: _startCtrl,
-                    isRequired: true,
-                    showCursor: false,
-                    onTap: _selectStartTime,
-                    suffix: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: SvgPicture.asset(
-                        'assets/icons/clock.svg',
-                        colorFilter: const ColorFilter.mode(
-                          AppColors.baseGrey,
-                          BlendMode.srcIn,
+            if (_timeInputMode == _AvailabilityTimeInputMode.custom) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: AppTextField(
+                      label: AppLocalizations.of(
+                        context,
+                      ).availability_start_time_label,
+                      controller: _startCtrl,
+                      isRequired: true,
+                      showCursor: false,
+                      onTap: _selectStartTime,
+                      suffix: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: SvgPicture.asset(
+                          'assets/icons/clock.svg',
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.baseGrey,
+                            BlendMode.srcIn,
+                          ),
+                          width: 20,
+                          height: 20,
                         ),
-                        width: 20,
-                        height: 20,
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: AppTextField(
-                    label: AppLocalizations.of(
-                      context,
-                    ).availability_end_time_label,
-                    controller: _endCtrl,
-                    showCursor: false,
-                    isRequired: true,
-                    onTap: _selectEndTime,
-                    suffix: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: SvgPicture.asset(
-                        'assets/icons/clock.svg',
-                        colorFilter: const ColorFilter.mode(
-                          AppColors.baseGrey,
-                          BlendMode.srcIn,
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: AppTextField(
+                      label: AppLocalizations.of(
+                        context,
+                      ).availability_end_time_label,
+                      controller: _endCtrl,
+                      showCursor: false,
+                      isRequired: true,
+                      onTap: _selectEndTime,
+                      suffix: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: SvgPicture.asset(
+                          'assets/icons/clock.svg',
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.baseGrey,
+                            BlendMode.srcIn,
+                          ),
+                          width: 20,
+                          height: 20,
                         ),
-                        width: 20,
-                        height: 20,
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ] else ...[
+              BlocBuilder<AvailabilityBloc, AvailabilityState>(
+                buildWhen: (prev, curr) => prev.times != curr.times,
+                builder: (context, state) {
+                  final dateStr = DateFormat(
+                    'yyyy-MM-dd',
+                  ).format(_selectedDate);
+                  final occupiedSlotKeys = _getOccupiedSlotKeys(state, dateStr);
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _allSlots.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 2.4,
+                        ),
+                    itemBuilder: (context, index) {
+                      final slot = _allSlots[index];
+                      final selected = _selectedSlotKeys.contains(slot.key);
+                      final isPast = _isSlotPast(slot);
+                      final isOccupied = occupiedSlotKeys.contains(slot.key);
+                      final disabled = isPast || isOccupied;
+
+                      final Color backgroundColor = isPast
+                          ? AppColors.basePaleGrey
+                          : isOccupied
+                          ? AppColors.supportOrangeLight
+                          : selected
+                          ? AppColors.primary
+                          : AppColors.baseWhite;
+
+                      final Color borderColor = isPast
+                          ? AppColors.baseLightGrey
+                          : isOccupied
+                          ? const Color(0xFFDAD3D0)
+                          : selected
+                          ? AppColors.primary
+                          : AppColors.baseLightGrey;
+
+                      final Color textColor = isPast
+                          ? AppColors.baseGrey
+                          : isOccupied
+                          ? const Color(0xFF9D8779)
+                          : selected
+                          ? AppColors.baseWhite
+                          : AppColors.baseDarkGrey;
+
+                      return GestureDetector(
+                        onTap: disabled
+                            ? null
+                            : () => _toggleSlot(slot, occupiedSlotKeys),
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                          decoration: BoxDecoration(
+                            color: backgroundColor,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: borderColor),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x08000000),
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            '${slot.startTime} - ${slot.endTime}',
+                            style: GoogleFonts.anuphan(
+                              fontSize: 12,
+                              fontWeight: selected
+                                  ? FontWeight.w500
+                                  : FontWeight.w400,
+                              color: textColor,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+            ],
 
             // Status field (only in Edit mode according to image, or always if useful)
             // The image shows "สถานะ" for edit.
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text.rich(
-                  TextSpan(
-                    text: AppLocalizations.of(
-                      context,
-                    ).availability_status_label,
-                    style: GoogleFonts.anuphan(
-                      color: AppColors.baseBlack,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: ' *',
-                        style: GoogleFonts.anuphan(
-                          color: AppColors.supportRedDeep,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+            if (isEdit) ...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      text: AppLocalizations.of(
+                        context,
+                      ).availability_status_label,
+                      style: GoogleFonts.anuphan(
+                        color: AppColors.baseBlack,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ],
+                      children: [
+                        TextSpan(
+                          text: ' *',
+                          style: GoogleFonts.anuphan(
+                            color: AppColors.supportRedDeep,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                AppDropdown<bool>(
-                  value: _available,
-                  items: const [true, false],
-                  itemLabel: (val) => val
-                      ? AppLocalizations.of(
-                          context,
-                        ).availability_status_available
-                      : AppLocalizations.of(
-                          context,
-                        ).availability_status_unavailable,
-                  onChanged: (val) {
-                    if (val != null) {
-                      setState(() => _available = val);
-                    }
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 40),
+                  const SizedBox(height: 8),
+                  AppDropdown<bool>(
+                    value: _available,
+                    items: const [true, false],
+                    itemLabel: (val) => val
+                        ? AppLocalizations.of(
+                            context,
+                          ).availability_status_available
+                        : AppLocalizations.of(
+                            context,
+                          ).availability_status_unavailable,
+                    onChanged: (val) {
+                      if (val != null) {
+                        setState(() => _available = val);
+                      }
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 40),
+            ] else
+              const SizedBox(height: 12),
 
             // Actions
             Row(
@@ -404,6 +662,93 @@ class _CalendarAvailabilityBottomSheetState
                         : AppLocalizations.of(context).availability_add_button,
                     style: AppButtonStyle.primary,
                     onPressed: () {
+                      if (_timeInputMode == _AvailabilityTimeInputMode.slot) {
+                        final selectedSlots = _selectedSlots;
+                        if (selectedSlots.isEmpty) {
+                          StatusDialog.showError(
+                            context: context,
+                            title: AppLocalizations.of(
+                              context,
+                            ).availability_invalid_time_title,
+                            message: AppLocalizations.of(
+                              context,
+                            ).availability_select_slot_error,
+                          );
+                          return;
+                        }
+
+                        final hasPastSlot = selectedSlots.any(_isSlotPast);
+                        if (hasPastSlot) {
+                          StatusDialog.showError(
+                            context: context,
+                            title: AppLocalizations.of(
+                              context,
+                            ).availability_invalid_time_title,
+                            message: AppLocalizations.of(
+                              context,
+                            ).availability_past_time_error,
+                          );
+                          return;
+                        }
+
+                        if (isEdit) {
+                          final selectedSlot = selectedSlots.first;
+                          AppConfirmationBottomSheet.show(
+                            context: context,
+                            title: AppLocalizations.of(
+                              context,
+                            ).availability_confirm_edit_title,
+                            description: AppLocalizations.of(
+                              context,
+                            ).availability_confirm_edit_desc,
+                            confirmLabel: AppLocalizations.of(
+                              context,
+                            ).availability_save_button,
+                            onConfirm: () {
+                              context.read<AvailabilityBloc>().add(
+                                UpdateAvailability(
+                                  id: widget.availableTimeId!,
+                                  startTime: selectedSlot.startTime,
+                                  endTime: selectedSlot.apiEndTime,
+                                  isAvailable: _available,
+                                ),
+                              );
+                              Navigator.pop(context);
+                            },
+                          );
+                        } else {
+                          AppConfirmationBottomSheet.show(
+                            context: context,
+                            title: AppLocalizations.of(
+                              context,
+                            ).availability_confirm_add_title,
+                            description: AppLocalizations.of(
+                              context,
+                            ).availability_confirm_add_desc,
+                            confirmLabel: AppLocalizations.of(
+                              context,
+                            ).availability_confirm_add_label,
+                            onConfirm: () {
+                              context.read<AvailabilityBloc>().add(
+                                CreateAvailabilitySlots(
+                                  date: _selectedDate,
+                                  slots: selectedSlots
+                                      .map(
+                                        (slot) => AvailabilitySlotRange(
+                                          startTime: slot.startTime,
+                                          endTime: slot.apiEndTime,
+                                        ),
+                                      )
+                                      .toList(growable: false),
+                                ),
+                              );
+                              Navigator.pop(context);
+                            },
+                          );
+                        }
+                        return;
+                      }
+
                       if (_startTime == null || _endTime == null) return;
 
                       final now = DateTime.now();

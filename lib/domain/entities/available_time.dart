@@ -24,17 +24,35 @@ class AvailableTime extends Equatable {
     required this.updatedAt,
   });
 
+  static int _parseId(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    return 0;
+  }
+
+  static int? _parseOptionalId(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    return null;
+  }
+
   factory AvailableTime.fromJson(Map<String, dynamic> json) {
     return AvailableTime(
-      id: json['id'] as int,
-      agentId: json['agent_id'] as int,
-      sellerId: json['seller_id'] as int?,
-      date: json['date'] as String,
-      startTime: json['start_time'] as String,
-      endTime: json['end_time'] as String,
+      id: _parseId(json['id']),
+      agentId: _parseId(json['agent_id']),
+      sellerId: _parseOptionalId(json['seller_id']),
+      date: json['date'] as String? ?? '',
+      startTime: json['start_time'] as String? ?? '',
+      endTime: json['end_time'] as String? ?? '',
       isAvailable: json['is_available'] as bool? ?? true,
-      createdAt: DateTime.parse(json['created_at'] as String).toLocal(),
-      updatedAt: DateTime.parse(json['updated_at'] as String).toLocal(),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String).toLocal()
+          : DateTime.now(),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String).toLocal()
+          : DateTime.now(),
     );
   }
 

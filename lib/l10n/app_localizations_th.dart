@@ -1654,6 +1654,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get availability_update_success => 'อัปเดตช่วงเวลาว่างสำเร็จ';
 
   @override
+  String get availability_success_description =>
+      'ช่วงเวลาว่างของคุณถูกบันทึกสำเร็จแล้ว';
+
+  @override
   String get availability_error => 'เกิดข้อผิดพลาดในการทำรายการ';
 
   @override
@@ -1747,6 +1751,24 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get availability_confirm_add_label => 'เพิ่ม';
+
+  @override
+  String get availability_input_slot_mode => 'เลือกแบบช่องเวลา';
+
+  @override
+  String get availability_input_custom_mode => 'เลือกเวลาเอง';
+
+  @override
+  String get availability_slot_instruction_add =>
+      'เลือกได้หลายช่วงเวลา (1 ชั่วโมง) ตั้งแต่ 08:00 ถึง 19:00';
+
+  @override
+  String get availability_slot_instruction_edit =>
+      'โหมดแก้ไขเลือกได้ 1 ช่วงเวลาเท่านั้น (1 ชั่วโมง)';
+
+  @override
+  String get availability_select_slot_error =>
+      'กรุณาเลือกช่วงเวลาอย่างน้อย 1 ช่อง';
 
   @override
   String get availability_select_month => 'เลือกเดือน';

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youragent/services/available_time_api_service.dart';
+import 'package:youragent/domain/entities/available_time.dart';
 import 'availability_event.dart';
 import 'availability_state.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +14,7 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
     on<FetchAvailability>(_onFetch);
     on<LoadMoreAvailability>(_onLoadMore);
     on<CreateAvailability>(_onCreate);
+    on<CreateAvailabilitySlots>(_onCreateSlots);
     on<UpdateAvailability>(_onUpdate);
     on<DeleteAvailability>(_onDelete);
   }
@@ -161,6 +163,51 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
     }
   }
 
+  Future<void> _onCreateSlots(
+    CreateAvailabilitySlots event,
+    Emitter<AvailabilityState> emit,
+  ) async {
+    final currentTimes = List.of(state.times);
+    emit(
+      state.copyWith(
+        status: AvailabilityStatus.loading,
+        errorMessage: null,
+        action: AvailabilityAction.create,
+      ),
+    );
+
+    try {
+      final dateStr = DateFormat('yyyy-MM-dd').format(event.date);
+      final createdTimes = <AvailableTime>[];
+
+      for (final slot in event.slots) {
+        final newTime = await _apiService.createAvailableTime(
+          date: dateStr,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+        );
+        createdTimes.add(newTime);
+      }
+
+      emit(
+        state.copyWith(
+          status: AvailabilityStatus.success,
+          times: [...currentTimes, ...createdTimes],
+          action: AvailabilityAction.create,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: AvailabilityStatus.failure,
+          errorMessage: e.toString(),
+          times: currentTimes,
+          action: AvailabilityAction.create,
+        ),
+      );
+    }
+  }
+
   Future<void> _onUpdate(
     UpdateAvailability event,
     Emitter<AvailabilityState> emit,
@@ -175,12 +222,15 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
     );
 
     try {
-      final updatedTime = await _apiService.updateAvailableTime(
+      var updatedTime = await _apiService.updateAvailableTime(
         id: event.id,
         startTime: event.startTime,
         endTime: event.endTime,
         isAvailable: event.isAvailable,
       );
+      if (updatedTime.id == 0) {
+        updatedTime = updatedTime.copyWith(id: event.id);
+      }
 
       final index = currentTimes.indexWhere((t) => t.id == event.id);
       if (index >= 0) {

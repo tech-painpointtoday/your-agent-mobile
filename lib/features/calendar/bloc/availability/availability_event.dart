@@ -36,6 +36,26 @@ class CreateAvailability extends AvailabilityEvent {
   List<Object?> get props => [date, startTime, endTime];
 }
 
+class AvailabilitySlotRange extends Equatable {
+  final String startTime;
+  final String endTime;
+
+  const AvailabilitySlotRange({required this.startTime, required this.endTime});
+
+  @override
+  List<Object?> get props => [startTime, endTime];
+}
+
+class CreateAvailabilitySlots extends AvailabilityEvent {
+  final DateTime date;
+  final List<AvailabilitySlotRange> slots;
+
+  const CreateAvailabilitySlots({required this.date, required this.slots});
+
+  @override
+  List<Object?> get props => [date, slots];
+}
+
 class UpdateAvailability extends AvailabilityEvent {
   final int id;
   final String startTime;
