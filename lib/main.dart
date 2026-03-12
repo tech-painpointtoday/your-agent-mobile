@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -16,25 +17,35 @@ import 'flavors.dart';
 ///
 /// Use `--dart-define=FLAVOR=dev|staging|prod` to select environment.
 Future<void> main() async {
-  runZonedGuarded<Future<void>>(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    usePathUrlStrategy();
-    const flavorString = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
-    F.appFlavor = Flavor.values.firstWhere(
-      (f) => f.name == flavorString,
-      orElse: () => Flavor.dev,
-    );
+  runZonedGuarded<Future<void>>(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+      usePathUrlStrategy();
+      const flavorString = String.fromEnvironment(
+        'FLAVOR',
+        defaultValue: 'dev',
+      );
+      F.appFlavor = Flavor.values.firstWhere(
+        (f) => f.name == flavorString,
+        orElse: () => Flavor.dev,
+      );
 
-    // Initialize Talker logging observers ONLY in DEV environment
-    if (AppConfig.isDev && DependencyInjection.talker != null) {
-      // Attach TalkerBlocObserver to monitor BLoC events
-      Bloc.observer = TalkerBlocObserver(talker: DependencyInjection.talker!);
-    }
+      // Initialize Talker logging observers ONLY in DEV environment
+      if (AppConfig.isDev && DependencyInjection.talker != null) {
+        // Attach TalkerBlocObserver to monitor BLoC events
+        Bloc.observer = TalkerBlocObserver(talker: DependencyInjection.talker!);
+      }
 
-    await AppInitializer.initialize();
-    AppErrorHandler.initialize();
-    runApp(const App());
-  }, (error, stackTrace) {
-    FirebaseCrashlytics.instance.recordError(error, stackTrace, fatal: true);
-  });
+      await AppInitializer.initialize();
+      AppErrorHandler.initialize();
+      runApp(const App());
+    },
+    (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(error, stackTrace, fatal: true);
+    },
+  );
 }
