@@ -1659,7 +1659,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get availability_success_description =>
-      'The availability has been saved successfully';
+      'Availability saved successfully';
+
   @override
   String get availability_error => 'An error occurred during the transaction';
 

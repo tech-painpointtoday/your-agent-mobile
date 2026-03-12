@@ -8,11 +8,11 @@ This guide details the native configuration steps required to enable Google and 
 1.  Go to the [Firebase Console](https://console.firebase.google.com/).
 2.  Create a new project or select an existing one.
 3.  **Android App**:
-    *   Add an Android app with the package name: `com.youragent.mobile` (Check `android/app/build.gradle` for the exact `applicationId`).
+    *   Add an Android app with the package name: `com.youragent.painpointtoday.mobile` (Check `android/app/build.gradle` for the exact `applicationId`).
     *   Download `google-services.json`.
     *   Move this file to: `android/app/google-services.json`.
 4.  **iOS App**:
-    *   Add an iOS app with the Bundle ID: `com.youragent.mobile` (Check `ios/Runner.xcodeproj` for the exact Bundle Identifier).
+    *   Add an iOS app with the Bundle ID: `com.youragent.painpointtoday.mobile` (Check `ios/Runner.xcodeproj` for the exact Bundle Identifier).
     *   Download `GoogleService-Info.plist`.
     *   Move this file to: `ios/Runner/GoogleService-Info.plist`.
     *   **Crucial**: Open the project in Xcode (`ios/Runner.xcworkspace`) and drag the file into the project navigator to ensure it's linked correctly.
@@ -45,14 +45,14 @@ Open `ios/Runner/Info.plist` and add the `CFBundleURLTypes` for Google:
 2.  Create an App (Type: "Consumer" or "Business").
 3.  **Android Platform**:
     *   Add Platform > Android.
-    *   Google Play Package Name: `com.youragent.mobile`.
-    *   Class Name: `com.youragent.mobile.MainActivity` (or your main activity).
+    *   Google Play Package Name: `com.youragent.painpointtoday.mobile`.
+    *   Class Name: `com.youragent.painpointtoday.mobile.MainActivity` (or your main activity).
     *   Key Hashes: Generate development key hashes using:
         `keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64`
         (Password is typically `android`).
 4.  **iOS Platform**:
     *   Add Platform > iOS.
-    *   Bundle ID: `com.youragent.mobile`.
+    *   Bundle ID: `com.youragent.painpointtoday.mobile`.
 
 ### Android Configuration
 

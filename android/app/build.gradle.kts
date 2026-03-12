@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.youragent"
+    namespace = "com.youragent.painpointtoday"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -34,7 +34,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.youragent"
+        applicationId = "com.youragent.painpointtoday"
         minSdk = 24
         targetSdk = 36
         versionCode = flutter.versionCode

@@ -21710,7 +21710,7 @@ flutter: PropertyApiService: Successfully parsed 10 properties
 flutter: PropertyApiService: Summary - ID: 248, name: test1958, location: 85/55 เสรีไทย แขวงคลองกุ่ม เขตบึงกุ่ม กรุงเทพมหานคร 10230 ประเทศไทย, images: 4
 -[WFIsolatedShortcutRunner init] Taking sandbox extensions for execution
 -[WFIsolatedShortcutRunner init]_block_invoke Sandbox extensions acquired
-Indexing for request: <WFToolKitIndexingRequest: 0x60000170f500>, changeset: .partial(updatedCount: 1 removedCount: 0 updated: ["com.youragent.dev"], removed: []), priority: 31
+Indexing for request: <WFToolKitIndexingRequest: 0x60000170f500>, changeset: .partial(updatedCount: 1 removedCount: 0 updated: ["com.youragent.painpointtoday.dev"], removed: []), priority: 31
 Resolved Preferred localizations: [BackgroundShortcutRunner.ToolKitIndexer.(unknown context at $100fb2284).(unknown context at $100fb228c).LocaleWithUsage(locale: en (fixed en), usage: __C.WFLocalizationUsage(_rawValue: display), preferenceOrder: 0), BackgroundShortcutRunner.ToolKitIndexer.(unknown context at $100fb2284).(unknown context at $100fb228c).LocaleWithUsage(locale: en (fixed en), usage: __C.WFLocalizationUsage(_rawValue: languageModel), preferenceOrder: 1)]
 Indexed: 0
 Errored: 0

@@ -1,4 +1,4 @@
-package com.youragent
+package com.youragent.painpointtoday
 
 import io.flutter.embedding.android.FlutterActivity
 

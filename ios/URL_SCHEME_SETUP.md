@@ -6,8 +6,8 @@
 
 | Flavor | Scheme สั้น (APP_URL_SCHEME) | Scheme ตาม Bundle ID |
 |--------|-----------------------------|------------------------|
-| **Dev**  | `youragentdev://`           | `com.youragent.dev://` |
-| **Prod** | `youragent://`              | `com.youragent://`     |
+| **Dev**  | `youragentdev://`           | `com.youragent.painpointtoday.dev://` |
+| **Prod** | `youragent://`              | `com.youragent.painpointtoday://`     |
 
 ## สิ่งที่ทำไปแล้ว
 
@@ -19,7 +19,7 @@
 ### 2. อัปเดต `Info.plist`
 
 - **Scheme สั้น** (youragentdev / youragent): ใช้ `$(APP_URL_SCHEME)` ใน `CFBundleURLSchemes` และ `CFBundleURLName`
-- **Scheme ตาม Bundle ID**: ยังมี entry ที่ใช้ `$(PRODUCT_BUNDLE_IDENTIFIER)` อยู่ (com.youragent.dev / com.youragent)
+- **Scheme ตาม Bundle ID**: ยังมี entry ที่ใช้ `$(PRODUCT_BUNDLE_IDENTIFIER)` อยู่ (com.youragent.painpointtoday.dev / com.youragent.painpointtoday)
 
 ### 3. อัปเดต `LSApplicationQueriesSchemes`
 
@@ -28,8 +28,8 @@
 ```xml
 <string>youragent</string>
 <string>youragentdev</string>
-<string>com.youragent</string>
-<string>com.youragent.dev</string>
+<string>com.youragent.painpointtoday</string>
+<string>com.youragent.painpointtoday.dev</string>
 ```
 
 **หมายเหตุ**: `LSApplicationQueriesSchemes` ไม่สามารถใช้ตัวแปรได้ ต้องระบุเป็น static strings ทั้งหมด ดังนั้นต้องเพิ่มทุก scheme ที่เป็นไปได้
@@ -54,7 +54,7 @@ final appLinks = AppLinks();
 appLinks.uriLinkStream.listen((uri) {
   final scheme = uri.scheme;
   if (scheme == 'youragentdev' || scheme == 'youragent' ||
-      scheme == 'com.youragent.dev' || scheme == 'com.youragent') {
+      scheme == 'com.youragent.painpointtoday.dev' || scheme == 'com.youragent.painpointtoday') {
     print('Received deep link: ${uri.toString()}');
   }
 });
@@ -69,7 +69,7 @@ youragentdev://path/to/screen?param=value
 
 **Dev (แบบ Bundle ID):**
 ```
-com.youragent.dev://path/to/screen?param=value
+com.youragent.painpointtoday.dev://path/to/screen?param=value
 ```
 
 **Prod (แบบสั้น):**
@@ -79,7 +79,7 @@ youragent://path/to/screen?param=value
 
 **Prod (แบบ Bundle ID):**
 ```
-com.youragent://path/to/screen?param=value
+com.youragent.painpointtoday://path/to/screen?param=value
 ```
 
 ### ทดสอบจาก Terminal (macOS)
@@ -92,21 +92,21 @@ xcrun simctl openurl booted "youragentdev://test"
 xcrun simctl openurl booted "youragent://test"
 
 # Dev (Bundle ID)
-xcrun simctl openurl booted "com.youragent.dev://test"
+xcrun simctl openurl booted "com.youragent.painpointtoday.dev://test"
 
 # Prod (Bundle ID)
-xcrun simctl openurl booted "com.youragent://test"
+xcrun simctl openurl booted "com.youragent.painpointtoday://test"
 ```
 
 ## สรุป
 
 - ✅ **Scheme สั้น**: ใช้ `$(APP_URL_SCHEME)` → Dev: `youragentdev`, Prod: `youragent`
-- ✅ **Scheme ตาม Bundle ID**: ใช้ `$(PRODUCT_BUNDLE_IDENTIFIER)` → `com.youragent.dev` / `com.youragent`
+- ✅ **Scheme ตาม Bundle ID**: ใช้ `$(PRODUCT_BUNDLE_IDENTIFIER)` → `com.youragent.painpointtoday.dev` / `com.youragent.painpointtoday`
 - ✅ เพิ่มทุก scheme ใน `LSApplicationQueriesSchemes` → แอปอื่นเปิดแอปนี้ได้
 - ✅ ตั้งค่า `APP_URL_SCHEME` ใน Flutter xcconfig ตาม flavor
 
 ## หมายเหตุ
 
 - URL Scheme ไม่ควรมีอักขระพิเศษ (เช่น `-`, `.` ควรใช้ได้)
-- Bundle ID ที่ใช้: `com.youragent.dev` (dev), `com.youragent` (prod)
-- ถ้ามี staging bundle ID แยก (เช่น `com.youragent.staging`) ให้เพิ่มใน `LSApplicationQueriesSchemes` ด้วย
+- Bundle ID ที่ใช้: `com.youragent.painpointtoday.dev` (dev), `com.youragent.painpointtoday` (prod)
+- ถ้ามี staging bundle ID แยก (เช่น `com.youragent.painpointtoday.staging`) ให้เพิ่มใน `LSApplicationQueriesSchemes` ด้วย

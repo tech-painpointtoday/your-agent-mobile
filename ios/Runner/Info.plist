@@ -28,7 +28,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.youragent</string>
+			<string>com.youragent.painpointtoday</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>$(G_REVERSED_CLIENT_ID)</string>
@@ -38,7 +38,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.youragent.oauth</string>
+			<string>com.youragent.painpointtoday.oauth</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>youragent</string>
@@ -89,8 +89,8 @@
 		<string>http</string>
 		<string>https</string>
 		<string>youragent</string>
-		<string>com.youragent</string>
-		<string>com.youragent.dev</string>
+		<string>com.youragent.painpointtoday</string>
+		<string>com.youragent.painpointtoday.dev</string>
 		<string>youragent</string>
 		<string>youragentdev</string>
 	</array>

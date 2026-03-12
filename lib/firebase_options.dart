@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCFOE_bXDsM5xdG4_WhftYGeCeY9cZYFuY',
-    appId: '1:1043784667090:android:aa33047b4a4016999d020b',
+    appId: '1:1043784667090:android:44a1e54cf1df45479d020b',
     messagingSenderId: '1043784667090',
     projectId: 'yourhome-21c94',
     storageBucket: 'yourhome-21c94.firebasestorage.app',
@@ -59,12 +59,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDsQg_-z8VGcD90WPKD7EhEhhRbdNxUiAY',
-    appId: '1:1043784667090:ios:3fb02762d03e78a09d020b',
+    appId: '1:1043784667090:ios:083f3d9acbb0569f9d020b',
     messagingSenderId: '1043784667090',
     projectId: 'yourhome-21c94',
     storageBucket: 'yourhome-21c94.firebasestorage.app',
-    iosClientId: '1043784667090-83fnmc464bt4ibj3pvoolpsq0nug8uhk.apps.googleusercontent.com',
-    iosBundleId: 'com.youragent',
+    iosClientId: '1043784667090-nfscif8d2h5iu03rid52mrcbvifhve6k.apps.googleusercontent.com',
+    iosBundleId: 'com.youragent.painpointtoday',
   );
 
 }

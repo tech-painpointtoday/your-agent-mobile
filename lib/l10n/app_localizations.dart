@@ -3275,7 +3275,7 @@ abstract class AppLocalizations {
   /// No description provided for @availability_success_description.
   ///
   /// In en, this message translates to:
-  /// **'The availability has been saved successfully'**
+  /// **'Availability saved successfully'**
   String get availability_success_description;
 
   /// No description provided for @availability_error.

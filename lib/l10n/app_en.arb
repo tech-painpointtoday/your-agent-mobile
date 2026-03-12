@@ -571,6 +571,7 @@
   "availability_delete_success": "Availability deleted successfully",
   "availability_create_success": "Availability added successfully",
   "availability_update_success": "Availability updated successfully",
+  "availability_success_description": "Availability saved successfully",
   "availability_error": "An error occurred during the transaction",
   "availability_title": "Calendar",
   "availability_subtitle": "Your available time slots",
