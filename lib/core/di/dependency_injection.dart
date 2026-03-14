@@ -25,6 +25,7 @@ import 'package:youragent/core/services/deep_link_service.dart';
 import 'package:youragent/core/config/app_config.dart';
 import 'package:youragent/core/services/device_service.dart';
 import 'package:youragent/features/chat/services/chat_search_service.dart';
+import 'package:youragent/features/property/services/property_search_recent_service.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:youragent/core/services/push_notification_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -95,6 +96,9 @@ class DependencyInjection {
   static final PusherService _pusherService = PusherService();
 
   static final ChatSearchService _chatSearchService = ChatSearchService();
+
+  static final PropertySearchRecentService _propertySearchRecentService =
+      PropertySearchRecentService();
 
   static final AvailableTimeApiService _availableTimeApiService =
       AvailableTimeApiService(apiClient: _apiClient);
@@ -175,6 +179,9 @@ class DependencyInjection {
   static DeviceService get deviceService => DeviceService();
 
   static ChatSearchService get chatSearchService => _chatSearchService;
+
+  static PropertySearchRecentService get propertySearchRecentService =>
+      _propertySearchRecentService;
 
   static AvailableTimeApiService get availableTimeApiService =>
       _availableTimeApiService;

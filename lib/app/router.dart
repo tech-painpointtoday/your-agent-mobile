@@ -32,6 +32,7 @@ import '../features/notifications/bloc/notification_event.dart';
 import '../features/notifications/pages/notification_detail_screen.dart';
 import '../features/notifications/pages/notifications_screen.dart';
 import '../features/property/pages/property_detail_screen.dart';
+import '../features/property/pages/property_search_screen.dart';
 import '../features/property/pages/mock_property_test_screen.dart';
 import '../features/public/pages/policy_screen.dart';
 import '../features/splash/splash_screen.dart';
@@ -163,6 +164,10 @@ class AppRouter {
             title: extra['title'] as String,
           );
         },
+      ),
+      GoRoute(
+        path: '/property/search',
+        builder: (context, state) => const PropertySearchScreen(),
       ),
       GoRoute(
         path: '/property/:id',

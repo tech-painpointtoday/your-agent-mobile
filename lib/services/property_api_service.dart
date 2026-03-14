@@ -52,9 +52,12 @@ class PropertyApiService {
 
   /// Get all properties (approved only)
   /// GET /$role/properties (e.g., /agent/properties)
+  /// [q] search query, [listingType] e.g. '1' sale, '2' rent, '3' saleOrRent
   Future<PropertyResults> getProperties({
     String? role, // Optional: defaults to current user role
     int? id,
+    String? q,
+    String? listingType,
     int? page,
     int? perPage,
   }) async {
@@ -62,6 +65,8 @@ class PropertyApiService {
       final actualRole = role ?? _currentRole;
       final queryParams = <String, dynamic>{};
       if (id != null) queryParams['id'] = id;
+      if (q != null && q.trim().isNotEmpty) queryParams['q'] = q.trim();
+      if (listingType != null && listingType.isNotEmpty) queryParams['listing_type'] = listingType;
       if (page != null) queryParams['page'] = page;
       if (perPage != null) queryParams['per_page'] = perPage;
 

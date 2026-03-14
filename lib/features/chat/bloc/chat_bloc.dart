@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/di/dependency_injection.dart';
 import '../../../domain/entities/chat_booking.dart';
 import '../../../domain/entities/chat_message.dart';
+import '../../../domain/entities/pagination.dart';
+import '../../../services/chat_api_service.dart';
 import 'chat_event.dart';
 import 'chat_state.dart';
 
@@ -37,36 +39,86 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       }
 
       const perPage = 10;
+      final query = (event.query ?? '').trim();
+      final statusFilter = event.statusFilter ??
+          (state is ChatLoaded ? (state as ChatLoaded).statusFilter : ChatStatusFilter.all);
+      final typeFilter = event.typeFilter ??
+          (state is ChatLoaded ? (state as ChatLoaded).typeFilter : ChatTypeFilter.all);
+      final unreadOnly = statusFilter == ChatStatusFilter.unread;
+      final q = query.isEmpty ? null : query;
 
-      // Load all services in parallel before processing and sorting
-      final results = await Future.wait([
-        DependencyInjection.chatApiService.getChats(page: 1, perPage: perPage),
-        DependencyInjection.chatApiService.getInquiryConversations().catchError(
-          (_) => <ChatMessage>[],
-        ),
+      final futures = <Future<dynamic>>[
         _searchService.getRecentSearches().catchError((_) => <String>[]),
-      ]);
-
-      final bookingResponse = results[0] as PaginatedChatResponse;
-      final inquiryMessages = results[1] as List<ChatMessage>;
-      final recentSearches = results[2] as List<String>;
-
-      final allMessages = <ChatMessage>[
-        ...bookingResponse.messages,
-        ...inquiryMessages,
       ];
 
-      // Process and sort only after all data is loaded
+      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.booking) {
+        futures.add(
+          DependencyInjection.chatApiService.getChats(
+            page: 1,
+            perPage: perPage,
+            q: q,
+            unreadOnly: unreadOnly,
+          ),
+        );
+      }
+      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.inquiry) {
+        futures.add(
+          DependencyInjection.chatApiService
+              .getInquiryConversations(
+                page: 1,
+                perPage: perPage,
+                q: q,
+                unreadOnly: unreadOnly,
+              )
+              .catchError((_) => const InquiryConversationsResponse(
+                    messages: [],
+                    pagination: Pagination(
+                      currentPage: 1,
+                      lastPage: 1,
+                      perPage: 10,
+                      total: 0,
+                      from: 0,
+                      to: 0,
+                    ),
+                  )),
+        );
+      }
+
+      final results = await Future.wait(futures);
+      final recentSearches = results[0] as List<String>;
+
+      final allMessages = <ChatMessage>[];
+      int lastPage = 1;
+
+      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.booking) {
+        final idx = typeFilter == ChatTypeFilter.all ? 1 : 1;
+        final bookingResponse = results[idx] as PaginatedChatResponse;
+        allMessages.addAll(bookingResponse.messages);
+        if (bookingResponse.pagination.lastPage > lastPage) {
+          lastPage = bookingResponse.pagination.lastPage;
+        }
+      }
+      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.inquiry) {
+        final idx = typeFilter == ChatTypeFilter.all ? 2 : 1;
+        final inquiryResponse = results[idx] as InquiryConversationsResponse;
+        allMessages.addAll(inquiryResponse.messages);
+        if (inquiryResponse.pagination.lastPage > lastPage) {
+          lastPage = inquiryResponse.pagination.lastPage;
+        }
+      }
+
       final conversations = _conversationsFromMessages(allMessages);
-      final pagination = bookingResponse.pagination;
 
       emit(
         ChatLoaded(
           allConversations: conversations,
           filteredConversations: conversations,
           recentSearches: recentSearches,
-          currentPage: pagination.currentPage,
-          lastPage: pagination.lastPage,
+          searchQuery: query,
+          statusFilter: statusFilter,
+          typeFilter: typeFilter,
+          currentPage: 1,
+          lastPage: lastPage,
         ),
       );
     } catch (e) {
@@ -90,12 +142,60 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       const perPage = 10;
       final nextPage = currentState.currentPage + 1;
-      final response = await DependencyInjection.chatApiService.getChats(
-        page: nextPage,
-        perPage: perPage,
-      );
+      final query = currentState.searchQuery;
+      final q = query.isEmpty ? null : query;
+      final unreadOnly = currentState.statusFilter == ChatStatusFilter.unread;
+      final typeFilter = currentState.typeFilter;
 
-      final newConversations = _conversationsFromMessages(response.messages);
+      final futures = <Future<dynamic>>[];
+      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.booking) {
+        futures.add(
+          DependencyInjection.chatApiService.getChats(
+            page: nextPage,
+            perPage: perPage,
+            q: q,
+            unreadOnly: unreadOnly,
+          ),
+        );
+      }
+      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.inquiry) {
+        futures.add(
+          DependencyInjection.chatApiService.getInquiryConversations(
+            page: nextPage,
+            perPage: perPage,
+            q: q,
+            unreadOnly: unreadOnly,
+          ),
+        );
+      }
+
+      if (futures.isEmpty) {
+        emit(currentState.copyWith(isLoadingMore: false));
+        return;
+      }
+
+      final results = await Future.wait(futures);
+
+      final newMessages = <ChatMessage>[];
+      int lastPage = currentState.lastPage;
+
+      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.booking) {
+        final chatResponse = results[0] as PaginatedChatResponse;
+        newMessages.addAll(chatResponse.messages);
+        if (chatResponse.pagination.lastPage > lastPage) {
+          lastPage = chatResponse.pagination.lastPage;
+        }
+      }
+      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.inquiry) {
+        final idx = typeFilter == ChatTypeFilter.all ? 1 : 0;
+        final inquiryResponse = results[idx] as InquiryConversationsResponse;
+        newMessages.addAll(inquiryResponse.messages);
+        if (inquiryResponse.pagination.lastPage > lastPage) {
+          lastPage = inquiryResponse.pagination.lastPage;
+        }
+      }
+
+      final newConversations = _conversationsFromMessages(newMessages);
       final merged = _mergeConversations(
         currentState.allConversations,
         newConversations,
@@ -111,8 +211,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         currentState.copyWith(
           allConversations: merged,
           filteredConversations: filtered,
-          currentPage: response.pagination.currentPage,
-          lastPage: response.pagination.lastPage,
+          currentPage: nextPage,
+          lastPage: lastPage,
           isLoadingMore: false,
         ),
       );
@@ -229,36 +329,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   void _onFilterChatStatus(FilterChatStatus event, Emitter<ChatState> emit) {
     if (state is ChatLoaded) {
       final currentState = state as ChatLoaded;
-      final filtered = _applyFilterAndSearch(
-        currentState.allConversations,
-        event.status,
-        currentState.typeFilter,
-        currentState.searchQuery,
-      );
-      emit(
-        currentState.copyWith(
-          filteredConversations: filtered,
-          statusFilter: event.status,
-        ),
-      );
+      add(LoadChatConversations(
+        query: currentState.searchQuery.isEmpty ? null : currentState.searchQuery,
+        statusFilter: event.status,
+        typeFilter: currentState.typeFilter,
+      ));
     }
   }
 
   void _onFilterChatType(FilterChatType event, Emitter<ChatState> emit) {
     if (state is ChatLoaded) {
       final currentState = state as ChatLoaded;
-      final filtered = _applyFilterAndSearch(
-        currentState.allConversations,
-        currentState.statusFilter,
-        event.type,
-        currentState.searchQuery,
-      );
-      emit(
-        currentState.copyWith(
-          filteredConversations: filtered,
-          typeFilter: event.type,
-        ),
-      );
+      add(LoadChatConversations(
+        query: currentState.searchQuery.isEmpty ? null : currentState.searchQuery,
+        statusFilter: currentState.statusFilter,
+        typeFilter: event.type,
+      ));
     }
   }
 

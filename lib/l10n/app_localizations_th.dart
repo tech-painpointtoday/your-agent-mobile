@@ -3352,6 +3352,26 @@ class AppLocalizationsTh extends AppLocalizations {
   String get searchProperty => 'ค้นหาทรัพย์ของคุณ...';
 
   @override
+  String get propertySearchRecentSearches => 'การค้นหาล่าสุด';
+
+  @override
+  String get propertySearchClear => 'ล้าง';
+
+  @override
+  String get propertySearchClearRecentTitle => 'ล้างประวัติการค้นหาล่าสุด?';
+
+  @override
+  String get propertySearchClearRecentDesc =>
+      'การกระทำนี้จะลบประวัติการค้นหาทั้งหมด';
+
+  @override
+  String get propertySearchNoRecent => 'ยังไม่มีการค้นหาล่าสุด';
+
+  @override
+  String get propertySearchEmptyHint =>
+      'ลองค้นหาทรัพย์ของคุณ\nด้วยชื่อ สถานที่ หรือคีย์เวิร์ดที่คุณตามหา';
+
+  @override
   String get finance => 'การเงิน';
 
   @override

@@ -8,6 +8,9 @@ class AppSearchBar extends StatefulWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onSubmitted;
+  final bool autofocus;
+  final TextInputAction? textInputAction;
 
   const AppSearchBar({
     super.key,
@@ -15,6 +18,9 @@ class AppSearchBar extends StatefulWidget {
     this.controller,
     this.focusNode,
     this.onChanged,
+    this.onSubmitted,
+    this.autofocus = false,
+    this.textInputAction,
   });
 
   @override
@@ -105,6 +111,9 @@ class _AppSearchBarState extends State<AppSearchBar> {
             child: TextField(
               controller: _searchController,
               focusNode: _focusNode,
+              autofocus: widget.autofocus,
+              textInputAction: widget.textInputAction,
+              onSubmitted: widget.onSubmitted != null ? (_) => widget.onSubmitted!() : null,
               style: const TextStyle(
                 color: AppColors.baseBlack,
                 fontSize: 16,

@@ -18,7 +18,7 @@ class BookingApiService {
       'per_page': perPage,
       if (from != null) 'from': from,
       if (to != null) 'to': to,
-      if (search != null && search.isNotEmpty) 'search': search,
+      if (search != null && search.isNotEmpty) 'q': search,
     };
 
     final response = await _apiClient.dio.get(

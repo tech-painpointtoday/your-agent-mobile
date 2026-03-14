@@ -3358,6 +3358,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchProperty => 'Search property';
 
   @override
+  String get propertySearchRecentSearches => 'Recent searches';
+
+  @override
+  String get propertySearchClear => 'Clear';
+
+  @override
+  String get propertySearchClearRecentTitle => 'Clear recent searches?';
+
+  @override
+  String get propertySearchClearRecentDesc =>
+      'This will remove all recent search history.';
+
+  @override
+  String get propertySearchNoRecent => 'No recent searches';
+
+  @override
+  String get propertySearchEmptyHint =>
+      'Try searching your property\nby name, location, or keywords.';
+
+  @override
   String get finance => 'Money';
 
   @override

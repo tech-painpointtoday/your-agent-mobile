@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +42,20 @@ class _ChatScreenContentState extends State<_ChatScreenContent> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isSearchFocused = false;
+  Timer? _searchDebounce;
+  static const _searchDebounceDuration = Duration(milliseconds: 800);
+
+  void _debouncedSearch(BuildContext context, String query) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(_searchDebounceDuration, () {
+      if (!context.mounted) return;
+      final state = context.read<ChatBloc>().state;
+      if (state is ChatLoaded && state.searchQuery == query) return;
+      context.read<ChatBloc>().add(
+        LoadChatConversations(query: query.isEmpty ? null : query),
+      );
+    });
+  }
 
   @override
   void initState() {
@@ -63,6 +79,7 @@ class _ChatScreenContentState extends State<_ChatScreenContent> {
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _searchFocusNode.dispose();
@@ -108,173 +125,161 @@ class _ChatScreenContentState extends State<_ChatScreenContent> {
           const SizedBox(width: 16),
         ],
       ),
-      body: RefreshIndicator(
-        color: Colors.white,
-        backgroundColor: AppColors.primary,
-        onRefresh: () async {
-          final bloc = context.read<ChatBloc>();
-          bloc.add(const LoadChatConversations());
-          await bloc.stream
-              .skip(1)
-              .where((s) => s is ChatLoaded || s is ChatError)
-              .first
-              .timeout(
-                const Duration(seconds: 15),
-                onTimeout: () => bloc.state,
-              );
+      body: GestureDetector(
+        onTap: () {
+          _searchFocusNode.unfocus();
+          FocusScope.of(context).unfocus();
         },
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!_isSearchFocused) _FilterSection(l10n: l10n),
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  16,
-                  _isSearchFocused ? 12 : 0,
-                  16,
-                  16,
-                ),
-                child: AppSearchBar(
-                  controller: _searchController,
-                  focusNode: _searchFocusNode,
-                  hintText: l10n.search_messages_hint,
-                  onChanged: (query) {
-                    context.read<ChatBloc>().add(
-                      SearchChatConversations(query),
-                    );
-                  },
-                ),
-              ),
-              BlocBuilder<ChatBloc, ChatState>(
-                builder: (context, state) {
-                  final query = state is ChatLoaded ? state.searchQuery : '';
-                  final recentSearches = state is ChatLoaded
-                      ? state.recentSearches
-                      : <String>[];
-
-                  if (_isSearchFocused && query.isEmpty) {
-                    return _RecentSearchSection(
-                      l10n: l10n,
-                      recentSearches: recentSearches,
-                      onItemTap: (text) {
-                        _searchController.text = text;
-                        // Trigger search manually when tapping a recent item
-                        context.read<ChatBloc>().add(
-                          SearchChatConversations(text),
-                        );
-                        // Close keyboard
-                        _searchFocusNode.unfocus();
-                      },
-                      onClear: () {
-                        context.read<ChatBloc>().add(
-                          const ClearRecentSearches(),
-                        );
-                      },
-                    );
-                  }
-                  return _ConversationList(l10n: l10n);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _RecentSearchSection extends StatelessWidget {
-  final AppLocalizations l10n;
-  final List<String> recentSearches;
-  final Function(String) onItemTap;
-  final VoidCallback onClear;
-
-  const _RecentSearchSection({
-    required this.l10n,
-    required this.recentSearches,
-    required this.onItemTap,
-    required this.onClear,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (recentSearches.isEmpty) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.basePaleGrey,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  l10n.recent_search,
-                  style: GoogleFonts.anuphan(
-                    color: AppColors.baseDarkGrey,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+        behavior: HitTestBehavior.translucent,
+        child: RefreshIndicator(
+          color: Colors.white,
+          backgroundColor: AppColors.primary,
+          onRefresh: () async {
+            final bloc = context.read<ChatBloc>();
+            final currentQuery = bloc.state is ChatLoaded
+                ? (bloc.state as ChatLoaded).searchQuery
+                : null;
+            bloc.add(LoadChatConversations(query: currentQuery));
+            await bloc.stream
+                .skip(1)
+                .where((s) => s is ChatLoaded || s is ChatError)
+                .first
+                .timeout(
+                  const Duration(seconds: 15),
+                  onTimeout: () => bloc.state,
+                );
+          },
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _FilterSection(l10n: l10n),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    16,
+                    _isSearchFocused ? 12 : 0,
+                    16,
+                    16,
+                  ),
+                  child: AppSearchBar(
+                    controller: _searchController,
+                    focusNode: _searchFocusNode,
+                    hintText: l10n.search_messages_hint,
+                    onChanged: (query) {
+                      _debouncedSearch(context, query.trim());
+                    },
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: onClear,
-                child: const Icon(
-                  Icons.cancel,
-                  color: AppColors.baseGrey,
-                  size: 24,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          ...recentSearches.map((text) => _buildRecentItem(text)),
-        ],
-      ),
-    );
-  }
+                BlocBuilder<ChatBloc, ChatState>(
+                  builder: (context, state) {
+                    final query = state is ChatLoaded ? state.searchQuery : '';
+                    final recentSearches = state is ChatLoaded
+                        ? state.recentSearches
+                        : <String>[];
 
-  Widget _buildRecentItem(String text) {
-    return InkWell(
-      onTap: () => onItemTap(text),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.history_rounded,
-              color: AppColors.baseGrey,
-              size: 20,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                text,
-                style: GoogleFonts.anuphan(
-                  color: AppColors.baseBlack,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
+                    return _ConversationList(l10n: l10n);
+                  },
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
+
+// class _RecentSearchSection extends StatelessWidget {
+//   final AppLocalizations l10n;
+//   final List<String> recentSearches;
+//   final Function(String) onItemTap;
+//   final VoidCallback onClear;
+
+//   const _RecentSearchSection({
+//     required this.l10n,
+//     required this.recentSearches,
+//     required this.onItemTap,
+//     required this.onClear,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     if (recentSearches.isEmpty) return const SizedBox.shrink();
+
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 16),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               Container(
+//                 padding: const EdgeInsets.symmetric(
+//                   horizontal: 12,
+//                   vertical: 8,
+//                 ),
+//                 decoration: BoxDecoration(
+//                   color: AppColors.basePaleGrey,
+//                   borderRadius: BorderRadius.circular(20),
+//                 ),
+//                 child: Text(
+//                   l10n.recent_search,
+//                   style: GoogleFonts.anuphan(
+//                     color: AppColors.baseDarkGrey,
+//                     fontSize: 14,
+//                     fontWeight: FontWeight.w500,
+//                   ),
+//                 ),
+//               ),
+//               GestureDetector(
+//                 onTap: onClear,
+//                 child: const Icon(
+//                   Icons.cancel,
+//                   color: AppColors.baseGrey,
+//                   size: 24,
+//                 ),
+//               ),
+//             ],
+//           ),
+//           const SizedBox(height: 16),
+//           ...recentSearches.map((text) => _buildRecentItem(text)),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Widget _buildRecentItem(String text) {
+//     return InkWell(
+//       onTap: () => onItemTap(text),
+//       child: Padding(
+//         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+//         child: Row(
+//           children: [
+//             const Icon(
+//               Icons.history_rounded,
+//               color: AppColors.baseGrey,
+//               size: 20,
+//             ),
+//             const SizedBox(width: 12),
+//             Expanded(
+//               child: Text(
+//                 text,
+//                 style: GoogleFonts.anuphan(
+//                   color: AppColors.baseBlack,
+//                   fontSize: 16,
+//                   fontWeight: FontWeight.w400,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _FilterSection extends StatelessWidget {
   final AppLocalizations l10n;
@@ -354,73 +359,79 @@ class _ChatTypeDropdown extends StatelessWidget {
             break;
         }
 
-        return PopupMenuButton<ChatTypeFilter>(
-          onSelected: (filter) {
-            context.read<ChatBloc>().add(FilterChatType(filter));
-          },
-          offset: const Offset(0, 48),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: AppColors.baseLightGrey, width: 1),
+        return Theme(
+          data: Theme.of(context).copyWith(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
           ),
-          color: Colors.white,
-          elevation: 8,
-          itemBuilder: (context) => [
-            _buildMenuItem(
-              context,
-              ChatTypeFilter.all,
-              l10n.all,
-              currentFilter == ChatTypeFilter.all,
+          child: PopupMenuButton<ChatTypeFilter>(
+            onSelected: (filter) {
+              context.read<ChatBloc>().add(FilterChatType(filter));
+            },
+            offset: const Offset(0, 48),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: AppColors.baseLightGrey, width: 1),
             ),
-            _buildMenuItem(
-              context,
-              ChatTypeFilter.booking,
-              l10n.chat_filter_booking,
-              currentFilter == ChatTypeFilter.booking,
-            ),
-            _buildMenuItem(
-              context,
-              ChatTypeFilter.inquiry,
-              l10n.chat_filter_inquiry,
-              currentFilter == ChatTypeFilter.inquiry,
-            ),
-          ],
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColors.baseOffWhite,
-              borderRadius: BorderRadius.circular(25),
-              border: Border.all(color: AppColors.baseLightGrey, width: 1),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  style: GoogleFonts.anuphan(
-                    color: AppColors.baseBlack,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+            color: Colors.white,
+            elevation: 8,
+            itemBuilder: (context) => [
+              _buildMenuItem(
+                context,
+                ChatTypeFilter.all,
+                l10n.all,
+                currentFilter == ChatTypeFilter.all,
+              ),
+              _buildMenuItem(
+                context,
+                ChatTypeFilter.booking,
+                l10n.chat_filter_booking,
+                currentFilter == ChatTypeFilter.booking,
+              ),
+              _buildMenuItem(
+                context,
+                ChatTypeFilter.inquiry,
+                l10n.chat_filter_inquiry,
+                currentFilter == ChatTypeFilter.inquiry,
+              ),
+            ],
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.baseOffWhite,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppColors.baseLightGrey, width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
-                ),
-                const SizedBox(width: 8),
-                SvgPicture.asset(
-                  'assets/icons/chevron-down.svg',
-                  width: 14,
-                  height: 14,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.baseDarkGrey,
-                    BlendMode.srcIn,
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: GoogleFonts.anuphan(
+                      color: AppColors.baseBlack,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  SvgPicture.asset(
+                    'assets/icons/chevron-down.svg',
+                    width: 14,
+                    height: 14,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.baseDarkGrey,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -636,7 +647,11 @@ class _ChatSessionTile extends StatelessWidget {
 
         context.push(routePath, extra: conversation.participantName).then((_) {
           if (context.mounted) {
-            context.read<ChatBloc>().add(const LoadChatConversations());
+            final bloc = context.read<ChatBloc>();
+            final currentQuery = bloc.state is ChatLoaded
+                ? (bloc.state as ChatLoaded).searchQuery
+                : null;
+            bloc.add(LoadChatConversations(query: currentQuery));
           }
         });
       },

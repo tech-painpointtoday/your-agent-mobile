@@ -6536,6 +6536,42 @@ abstract class AppLocalizations {
   /// **'Search property'**
   String get searchProperty;
 
+  /// No description provided for @propertySearchRecentSearches.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent searches'**
+  String get propertySearchRecentSearches;
+
+  /// No description provided for @propertySearchClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get propertySearchClear;
+
+  /// No description provided for @propertySearchClearRecentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear recent searches?'**
+  String get propertySearchClearRecentTitle;
+
+  /// No description provided for @propertySearchClearRecentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove all recent search history.'**
+  String get propertySearchClearRecentDesc;
+
+  /// No description provided for @propertySearchNoRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent searches'**
+  String get propertySearchNoRecent;
+
+  /// No description provided for @propertySearchEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try searching your property\nby name, location, or keywords.'**
+  String get propertySearchEmptyHint;
+
   /// No description provided for @finance.
   ///
   /// In en, this message translates to:

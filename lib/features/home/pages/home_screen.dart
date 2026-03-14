@@ -43,9 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocProvider(
       create: (context) => NotificationBloc()..add(const LoadNotifications()),
       child: SilverAppBarScreen(
-        preferredHeight: 84.0,
+        preferredHeight: 128.0,
         titleWidget: const HomeHeader(),
-        // searchBar: const HomeSearchBar(),
+        searchBar: const HomeSearchBar(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -355,18 +355,41 @@ class _HeaderActionIcon extends StatelessWidget {
   }
 }
 
-/// Search bar for home screen with custom hint text
+/// Search bar for home/property: tap opens full-screen property search (recent, API, empty state).
+/// On [PropertySearchScreen], use [navigateOnTap: false] and [onSubmitted] so the bar is used to type and search.
 class HomeSearchBar extends StatelessWidget {
   final TextEditingController? controller;
+  /// When true (default), tapping the bar pushes to /property/search. When false, the bar is focusable and types (e.g. on search screen).
+  final bool navigateOnTap;
+  /// Called when user submits search (e.g. keyboard search). Only used when [navigateOnTap] is false.
+  final VoidCallback? onSubmitted;
 
-  const HomeSearchBar({super.key, this.controller});
+  const HomeSearchBar({
+    super.key,
+    this.controller,
+    this.navigateOnTap = true,
+    this.onSubmitted,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return AppSearchBar(
+    final bar = AppSearchBar(
       hintText: AppLocalizations.of(context).searchProperty,
       controller: controller,
+      autofocus: !navigateOnTap,
+      textInputAction: TextInputAction.search,
+      onSubmitted: navigateOnTap ? null : onSubmitted,
     );
+    if (navigateOnTap) {
+      return GestureDetector(
+        onTap: () => context.push('/property/search'),
+        behavior: HitTestBehavior.opaque,
+        child: IgnorePointer(
+          child: bar,
+        ),
+      );
+    }
+    return bar;
   }
 }
 

@@ -1,7 +1,19 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import '../domain/entities/chat_message.dart';
+import '../domain/entities/pagination.dart';
 import 'api_client.dart';
+
+/// Response from GET /agent/property-inquiries with list and pagination.
+class InquiryConversationsResponse {
+  final List<ChatMessage> messages;
+  final Pagination pagination;
+
+  const InquiryConversationsResponse({
+    required this.messages,
+    required this.pagination,
+  });
+}
 
 /// Chat API Service - handles all chat-related API endpoints
 class ChatApiService {
@@ -17,14 +29,22 @@ class ChatApiService {
 
   /// Get chats (messages + pagination)
   /// GET /agent/chats
-  /// Response: { "success": true, "data": { "messages": [...], "pagination": {...} } }
+  /// [q] optional search query. [unreadOnly] when true sends unread_only=true (for ChatStatusFilter.unread).
   Future<PaginatedChatResponse> getChats({
     int page = 1,
     int perPage = 10,
+    String? q,
+    bool unreadOnly = false,
   }) async {
+    final queryParams = <String, dynamic>{
+      'page': page,
+      'per_page': perPage,
+      'unread_only': unreadOnly,
+    };
+    if (q != null && q.trim().isNotEmpty) queryParams['q'] = q.trim();
     final response = await _apiClient.get(
       '/agent/chats',
-      queryParameters: <String, dynamic>{'page': page, 'per_page': perPage},
+      queryParameters: queryParams,
     );
     final json = response.data as Map<String, dynamic>;
     return PaginatedChatResponse.fromJson(json);
@@ -58,9 +78,24 @@ class ChatApiService {
   /// `ChatMessage` so that the existing grouping logic can treat it as an
   /// inquiry-type conversation. Inquiries with `latest_message == null`
   /// are **not** returned (to avoid showing empty conversations).
-  Future<List<ChatMessage>> getInquiryConversations() async {
+  /// [q] optional search query. [unreadOnly] when true sends unread_only=true. [page], [perPage] for pagination.
+  Future<InquiryConversationsResponse> getInquiryConversations({
+    int page = 1,
+    int perPage = 10,
+    String? q,
+    bool unreadOnly = false,
+  }) async {
     try {
-      final response = await _apiClient.get('/agent/property-inquiries');
+      final queryParams = <String, dynamic>{
+        'page': page,
+        'per_page': perPage,
+        'unread_only': unreadOnly,
+      };
+      if (q != null && q.trim().isNotEmpty) queryParams['q'] = q.trim();
+      final response = await _apiClient.get(
+        '/agent/property-inquiries',
+        queryParameters: queryParams,
+      );
       final root = response.data as Map<String, dynamic>;
       final data = root['data'] as Map<String, dynamic>? ?? <String, dynamic>{};
       final inquiries =
@@ -72,19 +107,15 @@ class ChatApiService {
       for (final inquiry in inquiries) {
         final latest = inquiry['latest_message'];
         if (latest == null || latest is! Map<String, dynamic>) {
-          // If latest_message is null, do not show this inquiry in the list.
           continue;
         }
 
         final buyer = inquiry['buyer'] as Map<String, dynamic>?;
 
-        // Build a wrapper JSON compatible with ChatMessage.fromJson:
         final wrapper = <String, dynamic>{
           ...inquiry,
-          // Ensure the conversation id is treated as property_inquiry_id.
           'property_inquiry_id': inquiry['id'],
           'last_message': latest,
-          // Help senderName resolution for the buyer side.
           'sender_name': inquiry['sender_name'] ??
               buyer?['name'] as String? ??
               '',
@@ -94,7 +125,15 @@ class ChatApiService {
         result.add(ChatMessage.fromJson(wrapper));
       }
 
-      return result;
+      final paginationJson = data['pagination'] is Map<String, dynamic>
+          ? data['pagination'] as Map<String, dynamic>
+          : <String, dynamic>{};
+      final pagination = Pagination.fromJson(paginationJson);
+
+      return InquiryConversationsResponse(
+        messages: result,
+        pagination: pagination,
+      );
     } on DioException catch (e) {
       throw Exception(
         e.response?.data['message'] ?? 'Failed to load inquiry chats',

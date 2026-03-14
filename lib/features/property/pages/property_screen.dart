@@ -105,8 +105,8 @@ class _PropertyScreenState extends State<PropertyScreen> {
                 child: const Icon(Icons.add, size: 24, color: Colors.white),
               ),
             ),
-            // searchBar: HomeSearchBar(controller: _searchController),
-            preferredHeight: 84.0,
+            searchBar: HomeSearchBar(controller: _searchController),
+            preferredHeight: 128.0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

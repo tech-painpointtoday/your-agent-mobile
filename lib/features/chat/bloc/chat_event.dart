@@ -12,7 +12,19 @@ abstract class ChatEvent extends Equatable {
 }
 
 class LoadChatConversations extends ChatEvent {
-  const LoadChatConversations();
+  /// Optional search query; when set, APIs are called with q.
+  final String? query;
+  /// When provided, unread_only is sent to API (true when unread, false when all).
+  final ChatStatusFilter? statusFilter;
+  /// When provided, only the selected type is fetched: all=both APIs, booking=getChats only, inquiry=getInquiryConversations only.
+  final ChatTypeFilter? typeFilter;
+  const LoadChatConversations({
+    this.query,
+    this.statusFilter,
+    this.typeFilter,
+  });
+  @override
+  List<Object?> get props => [query, statusFilter, typeFilter];
 }
 
 class LoadMoreChatConversations extends ChatEvent {
