@@ -4,6 +4,63 @@ import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/domain/entities/pagination.dart';
 import 'package:youragent/core/enums/booking_status.dart';
 
+class BookingAttendanceParty extends Equatable {
+  final String? status;
+  final DateTime? confirmedOnDateAt;
+  final DateTime? travelingAt;
+  final DateTime? arrivedAt;
+
+  const BookingAttendanceParty({
+    this.status,
+    this.confirmedOnDateAt,
+    this.travelingAt,
+    this.arrivedAt,
+  });
+
+  factory BookingAttendanceParty.fromJson(Map<String, dynamic> json) {
+    return BookingAttendanceParty(
+      status: json['status']?.toString(),
+      confirmedOnDateAt: json['confirmed_on_date_at'] != null
+          ? DateTime.tryParse(json['confirmed_on_date_at'].toString())
+          : null,
+      travelingAt: json['traveling_at'] != null
+          ? DateTime.tryParse(json['traveling_at'].toString())
+          : null,
+      arrivedAt: json['arrived_at'] != null
+          ? DateTime.tryParse(json['arrived_at'].toString())
+          : null,
+    );
+  }
+
+  @override
+  List<Object?> get props => [status, confirmedOnDateAt, travelingAt, arrivedAt];
+}
+
+class BookingAttendance extends Equatable {
+  final BookingAttendanceParty? buyer;
+  final BookingAttendanceParty? seller;
+
+  const BookingAttendance({this.buyer, this.seller});
+
+  factory BookingAttendance.fromJson(Map<String, dynamic> json) {
+    return BookingAttendance(
+      buyer: json['buyer'] is Map<String, dynamic>
+          ? BookingAttendanceParty.fromJson(
+              json['buyer'] as Map<String, dynamic>,
+            )
+          : null,
+      seller: json['seller'] is Map<String, dynamic>
+          ? BookingAttendanceParty.fromJson(
+              json['seller'] as Map<String, dynamic>,
+            )
+          : null,
+    );
+  }
+
+  @override
+  List<Object?> get props => [buyer, seller];
+}
+
 class Booking extends Equatable {
   final int id;
   final int propertyId;
@@ -22,6 +79,16 @@ class Booking extends Equatable {
   final Property? property;
   final Buyer? buyer;
 
+  /// Individual attendance status/timestamps for buyer and seller/agent.
+  final BookingAttendance? attendance;
+
+  /// Cached travel-time information, when provided by the API.
+  final int? travelTimeSeconds;
+  final String? travelTimeFormatted;
+  final int? timeUntilAppointmentSeconds;
+  final String? timeUntilAppointmentFormatted;
+  final int? requiredTimeSeconds;
+
   const Booking({
     required this.id,
     required this.propertyId,
@@ -39,6 +106,12 @@ class Booking extends Equatable {
     this.timeUntilBookingSeconds,
     this.property,
     this.buyer,
+    this.attendance,
+    this.travelTimeSeconds,
+    this.travelTimeFormatted,
+    this.timeUntilAppointmentSeconds,
+    this.timeUntilAppointmentFormatted,
+    this.requiredTimeSeconds,
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
@@ -71,28 +144,46 @@ class Booking extends Equatable {
       buyer: json['buyer'] != null
           ? Buyer.fromJson(json['buyer'] as Map<String, dynamic>)
           : null,
+      attendance: json['attendance'] is Map<String, dynamic>
+          ? BookingAttendance.fromJson(
+              json['attendance'] as Map<String, dynamic>,
+            )
+          : null,
+      travelTimeSeconds: json['travel_time_seconds'] as int?,
+      travelTimeFormatted: json['travel_time_formatted']?.toString(),
+      timeUntilAppointmentSeconds:
+          json['time_until_appointment_seconds'] as int?,
+      timeUntilAppointmentFormatted:
+          json['time_until_appointment_formatted']?.toString(),
+      requiredTimeSeconds: json['required_time_seconds'] as int?,
     );
   }
 
   @override
   List<Object?> get props => [
-    id,
-    propertyId,
-    buyerId,
-    agentId,
-    ymd,
-    time,
-    status,
-    statusLabel,
-    autoMatched,
-    cancelledAt,
-    confirmedAt,
-    createdAt,
-    updatedAt,
-    timeUntilBookingSeconds,
-    property,
-    buyer,
-  ];
+        id,
+        propertyId,
+        buyerId,
+        agentId,
+        ymd,
+        time,
+        status,
+        statusLabel,
+        autoMatched,
+        cancelledAt,
+        confirmedAt,
+        createdAt,
+        updatedAt,
+        timeUntilBookingSeconds,
+        property,
+        buyer,
+        attendance,
+        travelTimeSeconds,
+        travelTimeFormatted,
+        timeUntilAppointmentSeconds,
+        timeUntilAppointmentFormatted,
+        requiredTimeSeconds,
+      ];
 }
 
 class PaginatedBookings extends Equatable {
