@@ -11,16 +11,16 @@ import '../../../widgets/inputs/app_text_field.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
 import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/profile_bloc.dart';
-import '../models/agent_profile.dart';
+import '../models/seller_profile.dart';
 import 'profile_screen.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 import '../../../utils/thai_phone_input_formatter.dart';
 import '../../../utils/thai_id_input_formatter.dart';
 
 class PersonalInfoFormScreen extends StatefulWidget {
-  final AgentDetails? agent;
+  final SellerDetails? seller;
 
-  const PersonalInfoFormScreen({super.key, this.agent});
+  const PersonalInfoFormScreen({super.key, this.seller});
 
   @override
   State<PersonalInfoFormScreen> createState() => _PersonalInfoFormScreenState();
@@ -38,14 +38,14 @@ class _PersonalInfoFormScreenState extends State<PersonalInfoFormScreen> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.agent?.name);
-    _emailController = TextEditingController(text: widget.agent?.email);
-    _phoneController = TextEditingController(text: widget.agent?.mobileNumber);
-    _bioController = TextEditingController(text: widget.agent?.bio);
-    _nationalIdController = TextEditingController(
-      text: widget.agent?.nationalId,
+    _nameController = TextEditingController(text: widget.seller?.name);
+    _emailController = TextEditingController(text: widget.seller?.email);
+    _phoneController = TextEditingController(text: widget.seller?.mobileNumber);
+    _bioController = TextEditingController(text: widget.seller?.bio);
+    _nationalIdController = TextEditingController();
+    _addressController = TextEditingController(
+      text: widget.seller?.businessAddress,
     );
-    _addressController = TextEditingController(text: widget.agent?.address);
   }
 
   @override

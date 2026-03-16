@@ -386,11 +386,11 @@ abstract class AppLocalizations {
   /// **'sqm'**
   String get unit_sqm;
 
-  /// No description provided for @yourHomeAgent.
+  /// No description provided for @yourHomeSeller.
   ///
   /// In en, this message translates to:
-  /// **'YourHome Agent'**
-  String get yourHomeAgent;
+  /// **'YourHome Seller'**
+  String get yourHomeSeller;
 
   /// No description provided for @viewHouse.
   ///
@@ -739,6 +739,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Agency'**
   String get role_agency;
+
+  /// No description provided for @role_seller.
+  ///
+  /// In en, this message translates to:
+  /// **'Seller'**
+  String get role_seller;
 
   /// No description provided for @role_admin.
   ///
@@ -1901,7 +1907,7 @@ abstract class AppLocalizations {
   /// No description provided for @copyright.
   ///
   /// In en, this message translates to:
-  /// **'Copyright © 2025 youragent.site'**
+  /// **'Copyright © 2025 yourhome.co.th'**
   String get copyright;
 
   /// No description provided for @terms_and_conditions.
@@ -7010,11 +7016,11 @@ abstract class AppLocalizations {
   /// **'Submit email'**
   String get submitEmail;
 
-  /// No description provided for @welcomeAgentManual.
+  /// No description provided for @welcomeSellerManual.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to the new agent manual'**
-  String get welcomeAgentManual;
+  /// **'Welcome to the new seller manual'**
+  String get welcomeSellerManual;
 
   /// No description provided for @submitPassword.
   ///

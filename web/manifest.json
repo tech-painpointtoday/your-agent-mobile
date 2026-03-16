@@ -1,11 +1,11 @@
 {
-    "name": "youragent",
-    "short_name": "youragent",
+    "name": "yourhome",
+    "short_name": "yourhome",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#hexcode",
     "theme_color": "#hexcode",
-    "description": "A new Flutter project.",
+    "description": "YourHome",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

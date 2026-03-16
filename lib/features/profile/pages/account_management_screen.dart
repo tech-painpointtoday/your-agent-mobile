@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/features/profile/widgets/account_action_sheets.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/features/profile/widgets/account_action_sheets.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/profile_bloc.dart';

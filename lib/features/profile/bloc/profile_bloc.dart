@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../models/agent_profile.dart';
+import '../models/seller_profile.dart';
 import '../../../services/auth_api_service.dart';
 
 // Events
@@ -66,7 +66,7 @@ class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
-  final AgentProfile profile;
+  final SellerProfile profile;
   const ProfileLoaded(this.profile);
 
   @override
@@ -102,9 +102,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     emit(ProfileLoading());
     try {
-      final json = await _authApiService.getAgentProfile();
+      final json = await _authApiService.getSellerProfile();
       if (json['success'] == true && json['data'] != null) {
-        final profile = AgentProfile.fromJson(json['data']);
+        final profile = SellerProfile.fromJson(json['data']);
         emit(ProfileLoaded(profile));
       } else {
         emit(const ProfileError('Failed to load profile'));
@@ -120,7 +120,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     emit(ProfileUpdateLoading());
     try {
-      final json = await _authApiService.updateAgentProfile(event.data);
+      final json = await _authApiService.updateSellerProfile(event.data);
       if (json['success'] == true) {
         emit(ProfileUpdateSuccess());
         // Profile screen will refetch when user navigates back (didPopNext).
@@ -138,7 +138,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     emit(ProfileUpdateLoading());
     try {
-      final json = await _authApiService.updateAgentProfile(event.data);
+      final json = await _authApiService.updateSellerProfile(event.data);
       if (json['success'] == true) {
         emit(ProfileUpdateSuccess());
         // Profile screen will refetch when user navigates back (didPopNext).

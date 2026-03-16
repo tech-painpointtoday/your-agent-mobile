@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:youragent/domain/entities/pagination.dart';
+import 'package:yourhome/domain/entities/pagination.dart';
 
 class AvailableTime extends Equatable {
   final int id;

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:youragent/domain/entities/property.dart';
+import 'package:yourhome/domain/entities/property.dart';
 import 'property_form_state.dart';
 
 abstract class PropertyFormEvent extends Equatable {

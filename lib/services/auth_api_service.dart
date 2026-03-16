@@ -203,7 +203,8 @@ class AuthApiService {
     }
   }
 
-  Future<Map<String, dynamic>> agentRegister({
+  /// Seller register (no address). Used by auth repo for email signup.
+  Future<Map<String, dynamic>> sellerRegisterAccount({
     required String name,
     required String email,
     required String password,
@@ -211,7 +212,7 @@ class AuthApiService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/agent/register',
+        '/seller/register',
         data: {
           'name': name,
           'email': email,
@@ -246,18 +247,12 @@ class AuthApiService {
     }
   }
 
-  Future<Map<String, dynamic>> agentLogin({
+  /// Sign in with email/password for seller. Single role for this app.
+  Future<Map<String, dynamic>> sellerLogin({
     required String email,
     required String password,
   }) async {
-    return _login(path: '/agent/login', email: email, password: password);
-  }
-
-  Future<Map<String, dynamic>> agencyLogin({
-    required String email,
-    required String password,
-  }) async {
-    return _login(path: '/agency/login', email: email, password: password);
+    return _login(path: '/seller/login', email: email, password: password);
   }
 
   Future<Map<String, dynamic>> socialLogin({
@@ -320,7 +315,7 @@ class AuthApiService {
   /// NOTE: This path matches `old_lib/` exactly.
   Future<void> forgotPassword({required String email}) async {
     try {
-      await _apiClient.post('/agent/forgot-password', data: {'email': email});
+      await _apiClient.post('/seller/forgot-password', data: {'email': email});
     } catch (e) {
       if (e is DioException) {
         throw Exception(_extractErrorMessage(e));
@@ -338,7 +333,7 @@ class AuthApiService {
   }) async {
     try {
       await _apiClient.post(
-        '/api/agent/reset-password',
+        '/api/seller/reset-password',
         data: {
           'token': token,
           'email': email,
@@ -358,7 +353,7 @@ class AuthApiService {
   Future<void> resendVerificationEmailPublic(String email) async {
     try {
       await _apiClient.post(
-        '/agent/resend-verification-email',
+        '/seller/resend-verification-email',
         data: {'email': email},
       );
     } catch (e) {
@@ -372,7 +367,7 @@ class AuthApiService {
   /// Resend Verification Email (Authenticated)
   Future<void> resendVerificationAuthenticated() async {
     try {
-      await _apiClient.post('/api/agent/email/verification-notification');
+      await _apiClient.post('/api/seller/email/verification-notification');
     } catch (e) {
       if (e is DioException) {
         throw Exception(_extractErrorMessage(e));
@@ -381,15 +376,15 @@ class AuthApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getAgentProfile() async {
-    final response = await _apiClient.get('/agent/profile');
+  Future<Map<String, dynamic>> getSellerProfile() async {
+    final response = await _apiClient.get('/seller/profile');
     return response.data as Map<String, dynamic>;
   }
 
-  Future<Map<String, dynamic>> updateAgentProfile(
+  Future<Map<String, dynamic>> updateSellerProfile(
     Map<String, dynamic> data,
   ) async {
-    final response = await _apiClient.put('/agent/profile', data: data);
+    final response = await _apiClient.put('/seller/profile', data: data);
     return response.data as Map<String, dynamic>;
   }
 
@@ -400,7 +395,7 @@ class AuthApiService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/agent/password',
+        '/seller/password',
         data: {
           'current_password': currentPassword,
           'password': newPassword,
@@ -427,7 +422,7 @@ class AuthApiService {
       'profile_photo': await MultipartFile.fromFile(filePath),
     });
 
-    final response = await _apiClient.post('/agent/profile', data: formData);
+    final response = await _apiClient.post('/seller/profile', data: formData);
     return response.data as Map<String, dynamic>;
   }
 
@@ -476,7 +471,7 @@ class AuthApiService {
   }) async {
     try {
       await _apiClient.delete(
-        '/agent/account',
+        '/seller/account',
         data: {'password': password, 'reason': reason},
       );
       // Clear auth token after successful deletion

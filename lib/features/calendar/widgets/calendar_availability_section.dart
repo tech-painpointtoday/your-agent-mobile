@@ -4,17 +4,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/features/calendar/widgets/calendar_availability_bottom_sheet.dart';
-import 'package:youragent/features/calendar/bloc/availability/availability_bloc.dart';
-import 'package:youragent/features/calendar/bloc/availability/availability_state.dart';
-import 'package:youragent/features/calendar/bloc/availability/availability_event.dart';
-import 'package:youragent/domain/entities/available_time.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
-import 'package:youragent/core/enums/thai_month.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
+import 'package:yourhome/features/calendar/widgets/calendar_availability_bottom_sheet.dart';
+import 'package:yourhome/features/calendar/bloc/availability/availability_bloc.dart';
+import 'package:yourhome/features/calendar/bloc/availability/availability_state.dart';
+import 'package:yourhome/features/calendar/bloc/availability/availability_event.dart';
+import 'package:yourhome/domain/entities/available_time.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/core/enums/thai_month.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 enum _ViewMode { list, calendar }
 
@@ -440,7 +440,7 @@ class _CalendarAvailabilitySectionState
                                 // entries is MapEntry<String, List<AvailableTime>>
                                 // entry.key is yyyy-MM-dd
                                 final date = DateTime.parse(entry.key);
-                                // For YourAgent, we usually display Buddhist year.
+                                // For YourHome, we usually display Buddhist year.
                                 final thaiYear = date.year + 543;
                                 final formattedLabel = locale == 'th'
                                     ? '${DateFormat('d MMMM', 'th').format(date)} $thaiYear'

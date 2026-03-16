@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:youragent/core/extensions/l10n_extensions.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 class PermissionHelper {
   /// Ensures the specified permission is granted.

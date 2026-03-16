@@ -5,11 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:youragent/core/di/dependency_injection.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/services/google_places_service.dart';
-import 'package:youragent/utils/permission_helper.dart';
-import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/services/google_places_service.dart';
+import 'package:yourhome/utils/permission_helper.dart';
+import 'package:yourhome/widgets/form_fields/app_text_form_field.dart';
 
 class LocationResult {
   final LatLng latLng;

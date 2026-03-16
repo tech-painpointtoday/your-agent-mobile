@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/domain/entities/property_details.dart';
-import 'package:youragent/domain/entities/property_image.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/domain/entities/property_details.dart';
+import 'package:yourhome/domain/entities/property_image.dart';
 import '../../../../data/models/developer_model.dart';
 import '../../../../data/models/condo_project_model.dart';
 import '../../../../data/models/house_project_model.dart';
@@ -536,9 +536,7 @@ class PropertyFormState extends Equatable {
     if (step == 2) {
       final isCondoOrApt = this.isCondoOrApt;
       final baseValid =
-          (number?.isNotEmpty == true) &&
-          (name?.isNotEmpty == true) &&
-          (latitude != null && longitude != null);
+          (name?.isNotEmpty == true) && (latitude != null && longitude != null);
 
       if (isCondoOrApt) {
         return baseValid &&

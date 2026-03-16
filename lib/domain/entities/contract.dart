@@ -132,8 +132,8 @@ class Contract extends Equatable {
     String? lessorName;
     if (ownerJson != null && ownerJson['name'] != null) {
       lessorName = ownerJson['name'].toString();
-    } else if (json['agent_id'] != null) {
-      lessorName = 'Agent #${json['agent_id']}';
+    } else if (json['seller_id'] != null) {
+      lessorName = 'Seller #${json['seller_id']}';
     }
 
     return Contract(

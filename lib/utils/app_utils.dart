@@ -1,7 +1,7 @@
-import 'package:youragent/core/di/dependency_injection.dart';
-import 'package:youragent/l10n/app_localizations.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/domain/entities/contract.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/domain/entities/contract.dart';
 
 class AppUtils {
   /// Generate a human‑readable unique code for a property.

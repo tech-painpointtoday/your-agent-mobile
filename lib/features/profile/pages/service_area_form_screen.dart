@@ -5,10 +5,10 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:youragent/features/property/pages/create/property_location_picker_screen.dart';
-import 'package:youragent/utils/permission_helper.dart';
-import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
-import 'package:youragent/widgets/map/map_view.dart';
+import 'package:yourhome/features/property/pages/create/property_location_picker_screen.dart';
+import 'package:yourhome/utils/permission_helper.dart';
+import 'package:yourhome/widgets/form_fields/app_text_form_field.dart';
+import 'package:yourhome/widgets/map/map_view.dart';
 
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/theme/app_colors.dart';
@@ -18,14 +18,14 @@ import '../../../widgets/dialogs/status_dialog.dart';
 import '../../../widgets/inputs/app_text_field.dart';
 import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/profile_bloc.dart';
-import '../models/agent_profile.dart';
+import '../models/seller_profile.dart';
 import 'profile_screen.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class ServiceAreaFormScreen extends StatefulWidget {
-  final AgentDetails? agent;
+  final SellerDetails? seller;
 
-  const ServiceAreaFormScreen({super.key, this.agent});
+  const ServiceAreaFormScreen({super.key, this.seller});
 
   @override
   State<ServiceAreaFormScreen> createState() => _ServiceAreaFormScreenState();
@@ -39,19 +39,11 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
   @override
   void initState() {
     super.initState();
-    _radiusController = TextEditingController(
-      text: widget.agent?.reachableRadius ?? '0',
+    // Radius is purely UI for now; backend only stores business_address.
+    _radiusController = TextEditingController(text: '');
+    _addressController = TextEditingController(
+      text: widget.seller?.businessAddress ?? '',
     );
-    _addressController = TextEditingController();
-    if (widget.agent?.serviceAreaCenterLat != null &&
-        widget.agent?.serviceAreaCenterLng != null) {
-      final lat = double.tryParse(widget.agent!.serviceAreaCenterLat!);
-      final lng = double.tryParse(widget.agent!.serviceAreaCenterLng!);
-      if (lat != null && lng != null) {
-        _selectedLocation = LatLng(lat, lng);
-        _initAddressFromLocation(lat, lng);
-      }
-    }
   }
 
   Future<void> _initAddressFromLocation(double lat, double lng) async {
@@ -77,19 +69,9 @@ class _ServiceAreaFormScreenState extends State<ServiceAreaFormScreen> {
   }
 
   void _onSave() {
-    if (_selectedLocation == null) {
-      StatusDialog.showWarning(
-        context: context,
-        title: AppLocalizations.of(context).specifyLocationTitle,
-        message: AppLocalizations.of(context).specifyLocationMessage,
-      );
-      return;
-    }
-
     final data = {
-      'service_area_center_lat': _selectedLocation!.latitude,
-      'service_area_center_lng': _selectedLocation!.longitude,
-      'reachable_radius': double.tryParse(_radiusController.text.trim()) ?? 0,
+      // For seller, persist business address only.
+      'business_address': _addressController.text.trim(),
     };
 
     AppConfirmationBottomSheet.show(

@@ -5,11 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/l10n/app_localizations.dart';
-import 'package:youragent/utils/app_utils.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
+import 'package:yourhome/utils/app_utils.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
 import 'property_status_badge.dart';
 
 /// Property list item card widget

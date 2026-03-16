@@ -19,8 +19,8 @@ abstract class AuthRepository {
     required UserRole role,
   });
 
-  /// Register agent
-  Future<Either<Failure, User>> registerAgent({
+  /// Register seller
+  Future<Either<Failure, User>> registerSeller({
     required String name,
     required String email,
     required String password,

@@ -154,7 +154,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get unit_sqm => 'ตร.ม.';
 
   @override
-  String get yourHomeAgent => 'YourHome Agent';
+  String get yourHomeSeller => 'YourHome Seller';
 
   @override
   String get viewHouse => 'ขอดูบ้าน';
@@ -331,6 +331,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get role_agency => 'บริษัท';
+
+  @override
+  String get role_seller => 'ผู้ขาย';
 
   @override
   String get role_admin => 'สำหรับผู้ดูแลระบบ';
@@ -946,7 +949,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get voice_waiting_response => 'รอคำตอบ...';
 
   @override
-  String get copyright => 'Copyright © 2025 youragent.site';
+  String get copyright => 'Copyright © 2025 yourhome.co.th';
 
   @override
   String get terms_and_conditions => 'ข้อตกลงและเงื่อนไขการใช้งาน';
@@ -3595,7 +3598,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get submitEmail => 'ไม่สามารถส่งอีเมลได้';
 
   @override
-  String get welcomeAgentManual => 'ยินดีต้อนรับเข้าสู่คู่มือใหม่ของเอเจนต์';
+  String get welcomeSellerManual => 'ยินดีต้อนรับเข้าสู่คู่มือใหม่ของผู้ขาย';
 
   @override
   String get submitPassword => 'ส่งลิงก์รีเซ็ตรหัสผ่านเรียบร้อยแล้ว';

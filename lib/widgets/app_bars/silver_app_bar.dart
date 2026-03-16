@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
 import '../backgrounds/blue_wave_background.dart';
 
 /// A reusable silver app bar widget that can be used in CustomScrollView

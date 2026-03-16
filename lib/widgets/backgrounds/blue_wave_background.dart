@@ -139,7 +139,7 @@ class _BlueWavePainter extends CustomPainter {
 
 /// Backwards-compatible alias used by some screens.
 ///
-/// `test_youragent` used `BlueWaveBackground`, while the current implementation
+/// `test_yourhome` used `BlueWaveBackground`, while the current implementation
 /// is `ColorsWaveBackground`. Keeping this wrapper avoids having to update all
 /// call sites.
 class BlueWaveBackground extends ColorsWaveBackground {

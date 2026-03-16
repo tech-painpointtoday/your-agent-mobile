@@ -29,7 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  UserRole _role = UserRole.agent;
+  final UserRole _role = UserRole.seller;
   bool _termsAccepted = false;
   bool _privacyAccepted = false;
 
@@ -50,12 +50,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void _handleRoleChange(UserRole newRole) {
-    if (newRole == _role) return;
-    setState(() => _role = newRole);
-    context.read<AuthBloc>().add(SetRoleEvent(role: _role));
-  }
-
   void _register(String? businessType) {
     if (!_formKey.currentState!.validate()) return;
     if (!_termsAccepted || !_privacyAccepted) return;
@@ -63,7 +57,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Phone, business type, and company name are collected but not sent yet
 
     context.read<AuthBloc>().add(
-      RegisterAgentEvent(
+      RegisterSellerEvent(
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text,

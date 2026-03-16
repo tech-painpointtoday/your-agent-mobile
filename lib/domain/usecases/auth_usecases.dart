@@ -68,14 +68,14 @@ class RegisterParams extends Equatable {
   List<Object?> get props => [name, email, password, role];
 }
 
-/// Register agent use case
-class RegisterAgent {
+/// Register seller use case
+class RegisterSeller {
   final AuthRepository repository;
 
-  RegisterAgent(this.repository);
+  RegisterSeller(this.repository);
 
-  Future<Either<Failure, User>> call(RegisterAgentParams params) async {
-    return await repository.registerAgent(
+  Future<Either<Failure, User>> call(RegisterSellerParams params) async {
+    return await repository.registerSeller(
       name: params.name,
       email: params.email,
       password: params.password,
@@ -84,13 +84,13 @@ class RegisterAgent {
   }
 }
 
-class RegisterAgentParams extends Equatable {
+class RegisterSellerParams extends Equatable {
   final String name;
   final String email;
   final String password;
   final String passwordConfirmation;
 
-  const RegisterAgentParams({
+  const RegisterSellerParams({
     required this.name,
     required this.email,
     required this.password,

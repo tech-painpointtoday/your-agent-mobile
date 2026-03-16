@@ -251,7 +251,7 @@ class _MessageScreenContentState extends State<_MessageScreenContent> {
                             itemBuilder: (context, index) {
                               final message = messages[index];
                               final isMe =
-                                  message.senderType == SenderType.agent ||
+                                  message.senderType == SenderType.seller ||
                                   message.senderType == SenderType.staff;
 
                               final localCreatedAt = message.createdAt
@@ -982,10 +982,7 @@ class _ChatBubble extends StatelessWidget {
             height: 200,
             color: AppColors.basePaleGrey,
             child: const Center(
-              child: SpinKitFadingCircle(
-                color: AppColors.primary,
-                size: 32,
-              ),
+              child: SpinKitFadingCircle(color: AppColors.primary, size: 32),
             ),
           ),
           errorWidget: (context, url, error) => const Icon(Icons.error),

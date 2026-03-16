@@ -4,10 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/utils/map_marker_utils.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/utils/map_marker_utils.dart';
 
 /// Fullscreen map view for properties with all controls
 class FullscreenMapScreen extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
 
 /// Custom dropdown widget that uses Overlay instead of Navigator routes
 /// to avoid conflicts with go_router.

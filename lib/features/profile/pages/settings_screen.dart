@@ -3,15 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/features/auth/bloc/auth_bloc.dart';
-import 'package:youragent/features/auth/bloc/auth_event.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/features/auth/bloc/auth_bloc.dart';
+import 'package:yourhome/features/auth/bloc/auth_event.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:youragent/features/profile/widgets/language_selection_bottom_sheet.dart';
-import 'package:youragent/l10n/app_localizations.dart';
-import 'package:youragent/features/profile/bloc/profile_bloc.dart';
-import 'package:youragent/features/profile/widgets/matching_settings_bottom_sheet.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/features/profile/widgets/language_selection_bottom_sheet.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
+import 'package:yourhome/features/profile/bloc/profile_bloc.dart';
+import 'package:yourhome/features/profile/widgets/matching_settings_bottom_sheet.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 class SettingsScreen extends StatelessWidget {
   final Function(Locale) changeLocale;
@@ -61,7 +61,7 @@ class SettingsScreen extends StatelessWidget {
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {
               final profile = (state is ProfileLoaded) ? state.profile : null;
-              final level = profile?.agent.profileLevel ?? 0;
+              final level = profile?.seller.profileLevel ?? 0;
 
               return ListView(
                 physics: const ClampingScrollPhysics(),

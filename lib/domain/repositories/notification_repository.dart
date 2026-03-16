@@ -1,4 +1,4 @@
-import 'package:youragent/features/notifications/models/notification_model.dart';
+import 'package:yourhome/features/notifications/models/notification_model.dart';
 
 /// Repository interface for notification operations
 /// This defines the contract that any notification data source must implement

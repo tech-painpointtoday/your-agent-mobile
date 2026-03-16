@@ -11,7 +11,7 @@ import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String token;

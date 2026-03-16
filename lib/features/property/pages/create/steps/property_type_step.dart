@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/features/property/bloc/property_form/property_form_bloc.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class PropertyTypeStep extends StatelessWidget {
   final int? step;

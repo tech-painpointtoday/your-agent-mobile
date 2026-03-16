@@ -17,8 +17,8 @@ import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/contract_detail_bloc.dart';
 import '../widgets/contract_status_badge.dart';
 import '../widgets/contract_share_bottom_sheet.dart';
-import 'package:youragent/core/extensions/l10n_extensions.dart';
-import 'package:youragent/utils/app_utils.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/utils/app_utils.dart';
 
 class ContractDetailScreen extends StatefulWidget {
   final int contractId;

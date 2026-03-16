@@ -155,7 +155,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unit_sqm => 'sqm';
 
   @override
-  String get yourHomeAgent => 'YourHome Agent';
+  String get yourHomeSeller => 'YourHome Seller';
 
   @override
   String get viewHouse => 'View House';
@@ -332,6 +332,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get role_agency => 'Agency';
+
+  @override
+  String get role_seller => 'Seller';
 
   @override
   String get role_admin => 'For Admin';
@@ -950,7 +953,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voice_waiting_response => 'Waiting for response...';
 
   @override
-  String get copyright => 'Copyright © 2025 youragent.site';
+  String get copyright => 'Copyright © 2025 yourhome.co.th';
 
   @override
   String get terms_and_conditions => 'Terms and Conditions';
@@ -3599,7 +3602,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get submitEmail => 'Submit email';
 
   @override
-  String get welcomeAgentManual => 'Welcome to the new agent manual';
+  String get welcomeSellerManual => 'Welcome to the new seller manual';
 
   @override
   String get submitPassword => 'Submit password';

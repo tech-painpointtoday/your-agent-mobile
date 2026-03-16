@@ -6,7 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:youragent/core/theme/app_colors.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
 
 /// Property image carousel widget with image counter
 class PropertyImageCarousel extends StatefulWidget {

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:youragent/widgets/app_coming_soon_placeholder.dart';
+import 'package:yourhome/widgets/app_coming_soon_placeholder.dart';
 
 import '../../../app/router.dart';
 import '../../../core/di/dependency_injection.dart';

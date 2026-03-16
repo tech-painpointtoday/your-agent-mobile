@@ -1,5 +1,5 @@
-import 'package:youragent/domain/entities/booking.dart';
-import 'package:youragent/services/api_client.dart';
+import 'package:yourhome/domain/entities/booking.dart';
+import 'package:yourhome/services/api_client.dart';
 
 class BookingApiService {
   final ApiClient _apiClient;
@@ -22,7 +22,7 @@ class BookingApiService {
     };
 
     final response = await _apiClient.dio.get(
-      '/agent/bookings',
+      '/seller/bookings',
       queryParameters: queryParams,
     );
 
@@ -30,19 +30,20 @@ class BookingApiService {
   }
 
   Future<Booking> getBookingById(int id) async {
-    final response = await _apiClient.dio.get('/agent/bookings/$id');
+    final response = await _apiClient.dio.get('/seller/bookings/$id');
     final data = response.data['data'] as Map<String, dynamic>;
     return Booking.fromJson(data);
   }
 
   Future<void> updateBookingStatus(int id, int status) async {
     await _apiClient.dio.patch(
-      '/agent/bookings/$id/status',
+      '/seller/bookings/$id/status',
       data: {'status': status},
     );
   }
 
   Future<void> cancelBooking(int id) async {
-    await _apiClient.dio.post('/agent/bookings/cancel', data: {'id': '$id'});
+    await _apiClient.dio.post('/seller/bookings/cancel', data: {'id': '$id'});
   }
 }
+

@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:youragent/core/di/dependency_injection.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
 import '../models/notification_model.dart';
 import 'notification_event.dart';
 import 'notification_state.dart';

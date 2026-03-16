@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class CallOption {
   final String label;

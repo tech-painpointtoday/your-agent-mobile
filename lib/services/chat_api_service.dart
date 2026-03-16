@@ -4,7 +4,7 @@ import '../domain/entities/chat_message.dart';
 import '../domain/entities/pagination.dart';
 import 'api_client.dart';
 
-/// Response from GET /agent/property-inquiries with list and pagination.
+/// Response from GET /seller/property-inquiries with list and pagination.
 class InquiryConversationsResponse {
   final List<ChatMessage> messages;
   final Pagination pagination;
@@ -28,7 +28,7 @@ class ChatApiService {
   }
 
   /// Get chats (messages + pagination)
-  /// GET /agent/chats
+  /// GET /seller/chats
   /// [q] optional search query. [unreadOnly] when true sends unread_only=true (for ChatStatusFilter.unread).
   Future<PaginatedChatResponse> getChats({
     int page = 1,
@@ -43,7 +43,7 @@ class ChatApiService {
     };
     if (q != null && q.trim().isNotEmpty) queryParams['q'] = q.trim();
     final response = await _apiClient.get(
-      '/agent/chats',
+      '/seller/chats',
       queryParameters: queryParams,
     );
     final json = response.data as Map<String, dynamic>;
@@ -52,7 +52,7 @@ class ChatApiService {
 
   /// Get inquiry chat summaries (one per inquiry) for the conversation list.
   ///
-  /// GET /agent/property-inquiries
+  /// GET /seller/property-inquiries
   ///
   /// Response shape:
   /// {
@@ -93,7 +93,7 @@ class ChatApiService {
       };
       if (q != null && q.trim().isNotEmpty) queryParams['q'] = q.trim();
       final response = await _apiClient.get(
-        '/agent/property-inquiries',
+        '/seller/property-inquiries',
         queryParameters: queryParams,
       );
       final root = response.data as Map<String, dynamic>;
@@ -144,7 +144,7 @@ class ChatApiService {
   }
 
   /// Send a chat message
-  /// POST /agent/chat/send
+  /// POST /seller/chat/send
   Future<ChatMessage> sendMessage({
     required String role,
     required int bookingId,
@@ -196,7 +196,7 @@ class ChatApiService {
   }
 
   /// Get messages for a booking/chat
-  /// GET /agent/chat/{chatId}/messages
+  /// GET /seller/chat/{chatId}/messages
   Future<List<ChatMessage>> getMessages({
     required String role,
     required int chatId,
@@ -224,13 +224,13 @@ class ChatApiService {
   }
 
   /// Get messages for a property inquiry chat
-  /// GET /agent/property-inquiries/{inquiryId}/messages
+  /// GET /seller/property-inquiries/{inquiryId}/messages
   Future<List<ChatMessage>> getInquiryMessages({
     required int inquiryId,
   }) async {
     try {
       final response = await _apiClient.get(
-        '/agent/property-inquiries/$inquiryId/messages',
+        '/seller/property-inquiries/$inquiryId/messages',
       );
       final data = response.data as Map<String, dynamic>;
 
@@ -253,7 +253,7 @@ class ChatApiService {
   }
 
   /// Get unread bookings
-  /// GET /agent/chat/unread-bookings
+  /// GET /seller/chat/unread-bookings
   Future<List<Map<String, dynamic>>> getUnreadBookings({
     required String role,
   }) async {
@@ -275,7 +275,7 @@ class ChatApiService {
   }
 
   /// Mark as Read
-  /// POST /agent/chat/{chatId}/mark-read
+  /// POST /seller/chat/{chatId}/mark-read
   Future<void> markAsRead({required String role, required int chatId}) async {
     try {
       await _apiClient.post('/$role/chat/$chatId/mark-read');
@@ -290,7 +290,7 @@ class ChatApiService {
   }
 
   /// Send a chat message for a property inquiry
-  /// POST /agent/property-inquiries/{inquiryId}/send
+  /// POST /seller/property-inquiries/{inquiryId}/send
   Future<ChatMessage> sendInquiryMessage({
     required int inquiryId,
     required String message,
@@ -313,7 +313,7 @@ class ChatApiService {
       }
 
       final response = await _apiClient.post(
-        '/agent/property-inquiries/$inquiryId/send',
+        '/seller/property-inquiries/$inquiryId/send',
         data: data,
       );
       final responseData = response.data as Map<String, dynamic>;
@@ -335,10 +335,10 @@ class ChatApiService {
   }
 
   /// Mark inquiry as read
-  /// POST /agent/property-inquiries/{inquiryId}/mark-read
+  /// POST /seller/property-inquiries/{inquiryId}/mark-read
   Future<void> markInquiryAsRead({required int inquiryId}) async {
     try {
-      await _apiClient.post('/agent/property-inquiries/$inquiryId/mark-read');
+      await _apiClient.post('/seller/property-inquiries/$inquiryId/mark-read');
     } catch (e) {
       if (e is DioException && e.response != null) {
         throw Exception(

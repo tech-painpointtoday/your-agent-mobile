@@ -2,18 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:youragent/domain/entities/contract.dart';
-import 'package:youragent/features/chat/pages/chat_screen.dart';
-import 'package:youragent/features/chat/pages/message_screen.dart';
-import 'package:youragent/features/contract/pages/edit/edit_contract_form_screen.dart';
-import 'package:youragent/features/contract/pages/edit/edit_contract_menu_screen.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
-import 'package:youragent/features/contract/pages/create/add_contract_screen.dart';
-import 'package:youragent/features/calendar/pages/booking_detail_screen.dart';
-import 'package:youragent/features/home/pages/home_screen.dart';
-import 'package:youragent/features/property/pages/create/create_property_screen.dart';
-import 'package:youragent/features/property/pages/edit/edit_property_form_screen.dart';
-import 'package:youragent/features/property/pages/edit/edit_property_menu_screen.dart';
+import 'package:yourhome/domain/entities/contract.dart';
+import 'package:yourhome/features/chat/pages/chat_screen.dart';
+import 'package:yourhome/features/chat/pages/message_screen.dart';
+import 'package:yourhome/features/contract/pages/edit/edit_contract_form_screen.dart';
+import 'package:yourhome/features/contract/pages/edit/edit_contract_menu_screen.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_bloc.dart';
+import 'package:yourhome/features/contract/pages/create/add_contract_screen.dart';
+import 'package:yourhome/features/calendar/pages/booking_detail_screen.dart';
+import 'package:yourhome/features/home/pages/home_screen.dart';
+import 'package:yourhome/features/property/pages/create/create_property_screen.dart';
+import 'package:yourhome/features/property/pages/edit/edit_property_form_screen.dart';
+import 'package:yourhome/features/property/pages/edit/edit_property_menu_screen.dart';
 
 import '../core/di/dependency_injection.dart';
 import '../domain/entities/property.dart';
@@ -37,7 +37,7 @@ import '../features/property/pages/mock_property_test_screen.dart';
 import '../features/public/pages/policy_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/profile/bloc/profile_bloc.dart';
-import '../features/profile/models/agent_profile.dart';
+import '../features/profile/models/seller_profile.dart';
 import '../features/profile/pages/profile_screen.dart';
 import '../features/profile/pages/personal_info_form_screen.dart';
 import '../features/profile/pages/service_area_form_screen.dart';
@@ -95,7 +95,7 @@ class AppRouter {
         '/activities',
         '/notifications',
         '/profile',
-        '/agent',
+        '/seller',
       ];
 
       final isProtectedRoute = protectedRoutes.any(
@@ -241,37 +241,37 @@ class AppRouter {
       GoRoute(
         path: '/profile/edit',
         builder: (context, state) {
-          final agent = state.extra as AgentDetails?;
+          final seller = state.extra as SellerDetails?;
           return BlocProvider(
             create: (context) =>
                 ProfileBloc(DependencyInjection.authApiService),
-            child: PersonalInfoFormScreen(agent: agent),
+            child: PersonalInfoFormScreen(seller: seller),
           );
         },
       ),
       GoRoute(
-        path: '/agent/profile',
+        path: '/seller/profile',
         builder: (context, state) => const ProfileScreen(),
       ),
       GoRoute(
         path: '/profile/work-info',
         builder: (context, state) {
-          final agent = state.extra as AgentDetails?;
+          final seller = state.extra as SellerDetails?;
           return BlocProvider(
             create: (context) =>
                 ProfileBloc(DependencyInjection.authApiService),
-            child: WorkInfoFormScreen(agent: agent),
+            child: WorkInfoFormScreen(seller: seller),
           );
         },
       ),
       GoRoute(
         path: '/profile/service-area',
         builder: (context, state) {
-          final agent = state.extra as AgentDetails?;
+          final seller = state.extra as SellerDetails?;
           return BlocProvider(
             create: (context) =>
                 ProfileBloc(DependencyInjection.authApiService),
-            child: ServiceAreaFormScreen(agent: agent),
+            child: ServiceAreaFormScreen(seller: seller),
           );
         },
       ),
@@ -421,7 +421,7 @@ class AppRouter {
         builder: (context, state) => const AllActivitiesScreen(),
       ),
       GoRoute(
-        path: '/dashboard/agent',
+        path: '/dashboard/seller',
         builder: (context, state) => const DashboardScreen(),
       ),
       // GoRoute(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
 
 enum ConfirmationStyle {
   normal, // Blue

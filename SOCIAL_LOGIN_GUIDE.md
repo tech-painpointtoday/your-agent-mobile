@@ -1,6 +1,6 @@
 # Social Login Configuration Guide
 
-This guide details the native configuration steps required to enable Google and Facebook login for the YourAgent application.
+This guide details the native configuration steps required to enable Google and Facebook login for the YourHome application.
 
 ## 1. Google Sign-In
 
@@ -109,7 +109,7 @@ Add the following keys:
 <key>FacebookClientToken</key>
 <string>YOUR_CLIENT_TOKEN</string>
 <key>FacebookDisplayName</key>
-<string>YourAgent</string>
+<string>YourHome</string>
 
 <key>LSApplicationQueriesSchemes</key>
 <array>

@@ -13,8 +13,8 @@ flutter build appbundle --flavor prod -t lib/main_prod.dart
 
 # Rename the output AAB
 if [ -f "build/app/outputs/bundle/prodRelease/app-prod-release.aab" ]; then
-  mv "build/app/outputs/bundle/prodRelease/app-prod-release.aab" "build/app/outputs/bundle/prodRelease/youragent_prod_v${VERSION_SAFE}.aab"
-  echo "Renamed to build/app/outputs/bundle/prodRelease/youragent_prod_v${VERSION_SAFE}.aab"
+  mv "build/app/outputs/bundle/prodRelease/app-prod-release.aab" "build/app/outputs/bundle/prodRelease/yourhome_prod_v${VERSION_SAFE}.aab"
+  echo "Renamed to build/app/outputs/bundle/prodRelease/yourhome_prod_v${VERSION_SAFE}.aab"
 else
   echo "AAB file not found at build/app/outputs/bundle/prodRelease/"
 fi

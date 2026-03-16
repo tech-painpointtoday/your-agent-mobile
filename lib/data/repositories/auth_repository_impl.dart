@@ -10,7 +10,7 @@ import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../services/auth_api_service.dart';
 import '../../services/session_service.dart';
-import '../models/agent_login_response.dart';
+import '../models/seller_login_response.dart';
 import '../models/user_profile_model.dart';
 import '../../services/user_profile_storage_service.dart';
 import '../../utils/crypto_utils.dart';
@@ -21,7 +21,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   User? _currentUser;
-  UserRole _role = UserRole.agent;
+  UserRole _role = UserRole.seller;
 
   AuthRepositoryImpl({required AuthApiService authApiService})
     : _authApiService = authApiService;
@@ -47,10 +47,8 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
       final userData = await _authApiService.getCurrentUser();
       final profile = UserProfileModel.fromJson(userData);
 
-      // Role inference (default agent)
-      var role = UserRole.agent;
-      final rawRole = userData['role']?.toString().toLowerCase();
-      if (rawRole == 'agency') role = UserRole.agency;
+      // Single role: seller
+      const role = UserRole.seller;
 
       _currentUser = User(
         id: profile.id.toString(),
@@ -89,16 +87,10 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
     required UserRole role,
   }) async {
     try {
-      final raw = switch (role) {
-        UserRole.agent => await _authApiService.agentLogin(
-          email: email,
-          password: password,
-        ),
-        UserRole.agency => await _authApiService.agencyLogin(
-          email: email,
-          password: password,
-        ),
-      };
+      final raw = await _authApiService.sellerLogin(
+        email: email,
+        password: password,
+      );
 
       // EMAIL_NOT_VERIFIED sometimes comes back as success:false + error payload
       if (raw['success'] == false && raw['error'] is Map<String, dynamic>) {
@@ -114,7 +106,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
         }
       }
 
-      final login = AgentLoginResponse.fromJson(raw);
+      final login = SellerLoginResponse.fromJson(raw);
       final profile = login.user;
 
       _currentUser = User(
@@ -163,7 +155,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
     required UserRole role,
   }) async {
     try {
-      final response = await _authApiService.agentRegister(
+      final response = await _authApiService.sellerRegisterAccount(
         name: name,
         email: email,
         password: password,
@@ -193,14 +185,14 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, User>> registerAgent({
+  Future<Either<Failure, User>> registerSeller({
     required String name,
     required String email,
     required String password,
     required String passwordConfirmation,
   }) async {
     try {
-      final response = await _authApiService.agentRegister(
+      final response = await _authApiService.sellerRegisterAccount(
         name: name,
         email: email,
         password: password,
@@ -219,7 +211,7 @@ class AuthRepositoryImpl extends ChangeNotifier implements AuthRepository {
         email: userData['email']?.toString() ?? email,
         displayName: userData['name']?.toString() ?? name,
         photoUrl: userData['profile_photo']?.toString(),
-        role: UserRole.agent,
+        role: UserRole.seller,
         provider: 'email',
       );
 

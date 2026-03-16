@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/contract_attachment.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/widgets/inputs/app_text_field.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/domain/entities/contract_attachment.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_bloc.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_event.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_state.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
+import 'package:yourhome/widgets/inputs/app_text_field.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
 
-import 'package:youragent/core/extensions/l10n_extensions.dart';
-import 'package:youragent/utils/permission_helper.dart';
-import 'package:youragent/widgets/painters/dashed_border_painter.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/utils/permission_helper.dart';
+import 'package:yourhome/widgets/painters/dashed_border_painter.dart';
 
 class AttachmentStep extends StatefulWidget {
   final bool hideHeader;

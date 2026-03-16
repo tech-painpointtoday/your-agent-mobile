@@ -8,9 +8,9 @@ import '../../../l10n/app_localizations.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/widgets/inputs/app_text_field.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
+import 'package:yourhome/widgets/inputs/app_text_field.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});

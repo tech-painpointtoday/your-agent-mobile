@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/widgets/inputs/app_text_field.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
-import 'package:youragent/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
+import 'package:yourhome/widgets/inputs/app_text_field.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_bloc.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_event.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_state.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
 
 class AdditionalConditionsStep extends StatefulWidget {
   final bool hideHeader;

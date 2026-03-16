@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:youragent/core/di/dependency_injection.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/features/property/widgets/property_detail.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/features/property/widgets/property_detail.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class PropertyDetailScreen extends StatefulWidget {
   final int? propertyId;

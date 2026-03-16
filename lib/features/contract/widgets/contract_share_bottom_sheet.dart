@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/contract.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
-import 'package:youragent/core/extensions/l10n_extensions.dart';
-import 'package:youragent/core/di/dependency_injection.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/domain/entities/contract.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
 
 class ContractShareBottomSheet extends StatelessWidget {
   /// Context of the parent screen that opened this bottom sheet.

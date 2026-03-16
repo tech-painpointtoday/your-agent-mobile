@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/data/mock/mock_property_data.dart';
-import 'package:youragent/features/property/pages/property_detail_screen.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/data/mock/mock_property_data.dart';
+import 'package:yourhome/features/property/pages/property_detail_screen.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
 
 class MockPropertyTestScreen extends StatelessWidget {
   const MockPropertyTestScreen({super.key});

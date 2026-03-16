@@ -13,14 +13,14 @@ import '../../../widgets/inputs/app_text_field.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
 import '../../../widgets/modals/app_confirmation_bottom_sheet.dart';
 import '../bloc/profile_bloc.dart';
-import '../models/agent_profile.dart';
+import '../models/seller_profile.dart';
 import 'profile_screen.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class WorkInfoFormScreen extends StatefulWidget {
-  final AgentDetails? agent;
+  final SellerDetails? seller;
 
-  const WorkInfoFormScreen({super.key, this.agent});
+  const WorkInfoFormScreen({super.key, this.seller});
 
   @override
   State<WorkInfoFormScreen> createState() => _WorkInfoFormScreenState();
@@ -38,18 +38,19 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
   @override
   void initState() {
     super.initState();
-    _companyController = TextEditingController(text: widget.agent?.companyName);
+    _companyController =
+        TextEditingController(text: widget.seller?.companyName);
     _licenseController = TextEditingController(
-      text: widget.agent?.licenseNumber,
+      text: widget.seller?.licenseNumber,
     );
     _experienceController = TextEditingController(
-      text: widget.agent?.yearsOfExperience?.toString() ?? '0',
+      text: widget.seller?.yearsOfExperience?.toString() ?? '0',
     );
 
     // Initialize languages
-    if (widget.agent?.languages != null &&
-        widget.agent!.languages!.isNotEmpty) {
-      widget.agent!.languages!.forEach((key, value) {
+    if (widget.seller?.languages != null &&
+        widget.seller!.languages!.isNotEmpty) {
+      widget.seller!.languages!.forEach((key, value) {
         // Try to map existing value to enum label if it's the English value
         final level = ProficiencyLevel.fromValue(value.toString());
         _languages.add(
@@ -83,9 +84,9 @@ class _WorkInfoFormScreenState extends State<WorkInfoFormScreen> {
     }
 
     // Initialize social links
-    if (widget.agent?.socialLinks != null &&
-        widget.agent!.socialLinks!.isNotEmpty) {
-      widget.agent!.socialLinks!.forEach((key, value) {
+    if (widget.seller?.socialLinks != null &&
+        widget.seller!.socialLinks!.isNotEmpty) {
+      widget.seller!.socialLinks!.forEach((key, value) {
         _socialLinks.add(
           SocialLinkPair(
             id: UniqueKey().toString(),

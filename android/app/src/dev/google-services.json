@@ -7,6 +7,78 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:1043784667090:android:99ff63d6c0d8be789d020b",
+        "android_client_info": {
+          "package_name": "com.painpointtoday.yourhome"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1043784667090-qqshugh34telrs1857q33lhni59qbkqf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFOE_bXDsM5xdG4_WhftYGeCeY9cZYFuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1043784667090-qqshugh34telrs1857q33lhni59qbkqf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1043784667090-3veul20s6iihsp5ps7t0hg6j5395518k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "FengShuiAI.Production"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043784667090:android:6d549eb2f2ef9fd79d020b",
+        "android_client_info": {
+          "package_name": "com.painpointtoday.yourhome.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1043784667090-qqshugh34telrs1857q33lhni59qbkqf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFOE_bXDsM5xdG4_WhftYGeCeY9cZYFuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1043784667090-qqshugh34telrs1857q33lhni59qbkqf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1043784667090-3veul20s6iihsp5ps7t0hg6j5395518k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "FengShuiAI.Production"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:1043784667090:android:aa33047b4a4016999d020b",
         "android_client_info": {
           "package_name": "com.youragent"

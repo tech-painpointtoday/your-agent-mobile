@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  UserRole _role = UserRole.agent;
+  final UserRole _role = UserRole.seller;
   bool _rememberMe = false;
   bool _obscurePassword = true;
 
@@ -58,12 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  void _handleRoleChange(UserRole newRole) {
-    if (newRole == _role) return;
-    setState(() => _role = newRole);
-    context.read<AuthBloc>().add(SetRoleEvent(role: _role));
   }
 
   void _submit() {
@@ -144,70 +138,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String get _subtitle {
     // From screenshot
-    return AppLocalizations.of(context).welcomeAgentManual;
+    return AppLocalizations.of(context).welcomeSellerManual;
   }
 
   Widget _roleSegment(AppLocalizations l10n) {
-    Widget buildChip({required UserRole role, required bool selected}) {
-      return Expanded(
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () => _handleRoleChange(role),
-          child: Container(
-            height: 44,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: selected ? AppColors.buttonLightGreen : AppColors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: selected
-                  ? Border.all(color: const Color(0xFF32A792))
-                  : null,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  role == UserRole.agent
-                      ? 'assets/icons/user.svg'
-                      : 'assets/icons/building.svg',
-                  width: 16,
-                  height: 16,
-                  colorFilter: ColorFilter.mode(
-                    selected ? AppColors.jungleGreen : AppColors.baseDarkGrey,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    role == UserRole.agent
-                        ? AppLocalizations.of(context).forAgent
-                        : AppLocalizations.of(context).forAgency,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: selected
-                          ? AppColors.jungleGreen
-                          : AppColors.baseDarkGrey,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Row(
-      children: [
-        // tmp close
-        //buildChip(role: UserRole.agent, selected: _role == UserRole.agent),
-        // SizedBox(width: 12),
-        // buildChip(role: UserRole.agency, selected: _role == UserRole.agency),
-      ],
-    );
+    // Single role: seller; no role chips shown
+    return const SizedBox.shrink();
   }
 
   InputDecoration _inputDecoration({

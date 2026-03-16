@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../widgets/buttons/app_button.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class LocationPickerScreen extends StatefulWidget {
   final LatLng? initialLocation;

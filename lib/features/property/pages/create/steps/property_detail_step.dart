@@ -4,15 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/utils/currency_input_formatter.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/utils/currency_input_formatter.dart';
 import '../../../../../core/theme/app_colors.dart';
-import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
+import 'package:yourhome/features/property/bloc/property_form/property_form_bloc.dart';
 import '../../../../../widgets/form_fields/app_text_form_field.dart';
 import '../../../../../widgets/inputs/app_selection_pills.dart';
 import '../../../../../widgets/form_fields/app_dropdown_form_field.dart';
 import '../../../../../widgets/badges/app_badge.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class PropertyDetailStep extends StatefulWidget {
   final int? step;

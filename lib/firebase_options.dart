@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     projectId: 'yourhome-21c94',
     storageBucket: 'yourhome-21c94.firebasestorage.app',
     iosClientId: '1043784667090-nfscif8d2h5iu03rid52mrcbvifhve6k.apps.googleusercontent.com',
-    iosBundleId: 'com.youragent.painpointtoday',
+    iosBundleId: 'com.painpointtoday.yourhome',
   );
 
 }

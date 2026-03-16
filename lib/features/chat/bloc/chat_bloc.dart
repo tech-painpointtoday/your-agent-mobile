@@ -40,10 +40,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       const perPage = 10;
       final query = (event.query ?? '').trim();
-      final statusFilter = event.statusFilter ??
-          (state is ChatLoaded ? (state as ChatLoaded).statusFilter : ChatStatusFilter.all);
-      final typeFilter = event.typeFilter ??
-          (state is ChatLoaded ? (state as ChatLoaded).typeFilter : ChatTypeFilter.all);
+      final statusFilter =
+          event.statusFilter ??
+          (state is ChatLoaded
+              ? (state as ChatLoaded).statusFilter
+              : ChatStatusFilter.all);
+      final typeFilter =
+          event.typeFilter ??
+          (state is ChatLoaded
+              ? (state as ChatLoaded).typeFilter
+              : ChatTypeFilter.all);
       final unreadOnly = statusFilter == ChatStatusFilter.unread;
       final q = query.isEmpty ? null : query;
 
@@ -51,7 +57,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         _searchService.getRecentSearches().catchError((_) => <String>[]),
       ];
 
-      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.booking) {
+      if (typeFilter == ChatTypeFilter.all ||
+          typeFilter == ChatTypeFilter.booking) {
         futures.add(
           DependencyInjection.chatApiService.getChats(
             page: 1,
@@ -61,7 +68,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           ),
         );
       }
-      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.inquiry) {
+      if (typeFilter == ChatTypeFilter.all ||
+          typeFilter == ChatTypeFilter.inquiry) {
         futures.add(
           DependencyInjection.chatApiService
               .getInquiryConversations(
@@ -70,17 +78,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
                 q: q,
                 unreadOnly: unreadOnly,
               )
-              .catchError((_) => const InquiryConversationsResponse(
-                    messages: [],
-                    pagination: Pagination(
-                      currentPage: 1,
-                      lastPage: 1,
-                      perPage: 10,
-                      total: 0,
-                      from: 0,
-                      to: 0,
-                    ),
-                  )),
+              .catchError(
+                (_) => const InquiryConversationsResponse(
+                  messages: [],
+                  pagination: Pagination(
+                    currentPage: 1,
+                    lastPage: 1,
+                    perPage: 10,
+                    total: 0,
+                    from: 0,
+                    to: 0,
+                  ),
+                ),
+              ),
         );
       }
 
@@ -90,7 +100,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final allMessages = <ChatMessage>[];
       int lastPage = 1;
 
-      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.booking) {
+      if (typeFilter == ChatTypeFilter.all ||
+          typeFilter == ChatTypeFilter.booking) {
         final idx = typeFilter == ChatTypeFilter.all ? 1 : 1;
         final bookingResponse = results[idx] as PaginatedChatResponse;
         allMessages.addAll(bookingResponse.messages);
@@ -98,7 +109,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           lastPage = bookingResponse.pagination.lastPage;
         }
       }
-      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.inquiry) {
+      if (typeFilter == ChatTypeFilter.all ||
+          typeFilter == ChatTypeFilter.inquiry) {
         final idx = typeFilter == ChatTypeFilter.all ? 2 : 1;
         final inquiryResponse = results[idx] as InquiryConversationsResponse;
         allMessages.addAll(inquiryResponse.messages);
@@ -148,7 +160,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final typeFilter = currentState.typeFilter;
 
       final futures = <Future<dynamic>>[];
-      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.booking) {
+      if (typeFilter == ChatTypeFilter.all ||
+          typeFilter == ChatTypeFilter.booking) {
         futures.add(
           DependencyInjection.chatApiService.getChats(
             page: nextPage,
@@ -158,7 +171,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           ),
         );
       }
-      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.inquiry) {
+      if (typeFilter == ChatTypeFilter.all ||
+          typeFilter == ChatTypeFilter.inquiry) {
         futures.add(
           DependencyInjection.chatApiService.getInquiryConversations(
             page: nextPage,
@@ -179,14 +193,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final newMessages = <ChatMessage>[];
       int lastPage = currentState.lastPage;
 
-      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.booking) {
+      if (typeFilter == ChatTypeFilter.all ||
+          typeFilter == ChatTypeFilter.booking) {
         final chatResponse = results[0] as PaginatedChatResponse;
         newMessages.addAll(chatResponse.messages);
         if (chatResponse.pagination.lastPage > lastPage) {
           lastPage = chatResponse.pagination.lastPage;
         }
       }
-      if (typeFilter == ChatTypeFilter.all || typeFilter == ChatTypeFilter.inquiry) {
+      if (typeFilter == ChatTypeFilter.all ||
+          typeFilter == ChatTypeFilter.inquiry) {
         final idx = typeFilter == ChatTypeFilter.all ? 1 : 0;
         final inquiryResponse = results[idx] as InquiryConversationsResponse;
         newMessages.addAll(inquiryResponse.messages);
@@ -283,11 +299,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         );
       final latest = bookingMessages.first;
       String participantName = latest.senderName ?? 'Unknown';
-      if (latest.senderType == SenderType.agent) {
+      if (latest.senderType == SenderType.seller) {
         final fromOther = bookingMessages
             .where(
               (m) =>
-                  m.senderType != SenderType.agent &&
+                  m.senderType != SenderType.seller &&
                   (m.senderName ?? '').isNotEmpty,
             )
             .map((m) => m.senderName!);
@@ -296,7 +312,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         }
       }
       final unreadCount = bookingMessages
-          .where((m) => m.senderType != SenderType.agent && !m.isRead)
+          .where((m) => m.senderType != SenderType.seller && !m.isRead)
           .length;
       final id =
           (type == ChatConversationType.inquiry
@@ -329,22 +345,30 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   void _onFilterChatStatus(FilterChatStatus event, Emitter<ChatState> emit) {
     if (state is ChatLoaded) {
       final currentState = state as ChatLoaded;
-      add(LoadChatConversations(
-        query: currentState.searchQuery.isEmpty ? null : currentState.searchQuery,
-        statusFilter: event.status,
-        typeFilter: currentState.typeFilter,
-      ));
+      add(
+        LoadChatConversations(
+          query: currentState.searchQuery.isEmpty
+              ? null
+              : currentState.searchQuery,
+          statusFilter: event.status,
+          typeFilter: currentState.typeFilter,
+        ),
+      );
     }
   }
 
   void _onFilterChatType(FilterChatType event, Emitter<ChatState> emit) {
     if (state is ChatLoaded) {
       final currentState = state as ChatLoaded;
-      add(LoadChatConversations(
-        query: currentState.searchQuery.isEmpty ? null : currentState.searchQuery,
-        statusFilter: currentState.statusFilter,
-        typeFilter: event.type,
-      ));
+      add(
+        LoadChatConversations(
+          query: currentState.searchQuery.isEmpty
+              ? null
+              : currentState.searchQuery,
+          statusFilter: currentState.statusFilter,
+          typeFilter: event.type,
+        ),
+      );
     }
   }
 
@@ -433,7 +457,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   String _formatLastMessage(ChatMessage message) {
     if (message.imageUrl != null && message.imageUrl!.isNotEmpty) {
-      if (message.senderType == SenderType.agent ||
+      if (message.senderType == SenderType.seller ||
           message.senderType == SenderType.staff) {
         return "You: sent an image";
       } else {

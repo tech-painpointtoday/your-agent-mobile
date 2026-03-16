@@ -5,7 +5,7 @@ import '../../../widgets/buttons/app_button.dart';
 import '../../../domain/entities/contract_status.dart';
 import '../../../domain/entities/contract_type.dart';
 import '../../../domain/entities/contract.dart';
-import 'package:youragent/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
 
 class ContractFilter {
   final ContractStatus? status;

@@ -6,23 +6,23 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:youragent/data/models/developer_model.dart';
-import 'package:youragent/data/models/condo_project_model.dart';
-import 'package:youragent/data/models/house_project_model.dart';
-import 'package:youragent/core/di/dependency_injection.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
-import 'package:youragent/features/property/pages/create/property_location_picker_screen.dart';
-import 'package:youragent/utils/permission_helper.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/widgets/form_fields/app_text_form_field.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/widgets/map/map_view.dart';
-import 'package:youragent/features/property/widgets/add_property_info_bottom_sheets.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
-import 'package:youragent/l10n/app_localizations.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/data/models/developer_model.dart';
+import 'package:yourhome/data/models/condo_project_model.dart';
+import 'package:yourhome/data/models/house_project_model.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/features/property/bloc/property_form/property_form_bloc.dart';
+import 'package:yourhome/features/property/pages/create/property_location_picker_screen.dart';
+import 'package:yourhome/utils/permission_helper.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
+import 'package:yourhome/widgets/form_fields/app_text_form_field.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
+import 'package:yourhome/widgets/map/map_view.dart';
+import 'package:yourhome/features/property/widgets/add_property_info_bottom_sheets.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 class GeneralInfoStep extends StatefulWidget {
   final int? step;
@@ -1055,7 +1055,6 @@ class _GeneralInfoStepState extends State<GeneralInfoStep> {
                   AppTextFormField(
                     label: AppLocalizations.of(context).houseNoHint,
                     controller: _houseNoController,
-                    isRequired: true,
                     hintText: AppLocalizations.of(context).houseNoHint,
                     validator: (val) {
                       if (val == null || val.isEmpty) {

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:youragent/services/available_time_api_service.dart';
-import 'package:youragent/domain/entities/available_time.dart';
+import 'package:yourhome/services/available_time_api_service.dart';
+import 'package:yourhome/domain/entities/available_time.dart';
 import 'availability_event.dart';
 import 'availability_state.dart';
 import 'package:intl/intl.dart';

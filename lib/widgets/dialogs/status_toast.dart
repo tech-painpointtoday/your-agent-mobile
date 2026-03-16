@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
 
 class StatusToast extends StatefulWidget {
   final String title;

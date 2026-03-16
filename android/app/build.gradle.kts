@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.youragent.painpointtoday"
+    namespace = "com.painpointtoday.yourhome"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -34,7 +34,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.youragent.painpointtoday"
+        applicationId = "com.painpointtoday.yourhome"
         minSdk = 24
         targetSdk = 36
         versionCode = flutter.versionCode
@@ -63,17 +63,17 @@ android {
         create("dev") {
             dimension = "env"
             applicationIdSuffix = ".dev"
-            resValue("string", "app_name", "YourAgent Dev")
+            resValue("string", "app_name", "YourHome Dev")
             signingConfig = signingConfigs.getByName("debug")
         }
         create("staging") {
             dimension = "env"
-            resValue("string", "app_name", "YourAgent Staging")
+            resValue("string", "app_name", "YourHome Staging")
             signingConfig = signingConfigs.getByName("debug")
         }
         create("prod") {
             dimension = "env"
-            resValue("string", "app_name", "YourAgent")
+            resValue("string", "app_name", "YourHome")
             signingConfig = signingConfigs.getByName("debug")
         }
     }

@@ -9,7 +9,6 @@ import '../../../../services/api_response_service.dart';
 import '../../../../domain/entities/property.dart';
 import '../../../../data/models/developer_model.dart';
 import '../../../../data/models/condo_project_model.dart';
-import '../../../../domain/entities/user.dart';
 import 'property_form_event.dart';
 import 'property_form_state.dart';
 import '../../../../data/models/house_project_model.dart';
@@ -419,10 +418,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
     try {
       // Check if publishing a draft - Update it first
       if (state.isDraft && state.propertyId != null) {
-        final roleName =
-            DependencyInjection.authRepository.currentRole == UserRole.agency
-            ? 'agency'
-            : 'agent';
+        const roleName = 'seller';
 
         // 1. Update with latest fields
         await _propertyApiService.updateProperty(
@@ -462,10 +458,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
       }
 
       // Creating a new property (original logic)
-      final roleName =
-          DependencyInjection.authRepository.currentRole == UserRole.agency
-          ? 'agency'
-          : 'agent';
+      const roleName = 'seller';
 
       // 2. Auto-fill Address Lookup
       PropertyFormState currentState = state;
@@ -599,10 +592,7 @@ class PropertyFormBloc extends Bloc<PropertyFormEvent, PropertyFormState> {
           .map((img) => img.file!)
           .toList();
       if (localImages.isNotEmpty && propertyId != null) {
-        final roleName =
-            DependencyInjection.authRepository.currentRole == UserRole.agency
-            ? 'agency'
-            : 'agent';
+        const roleName = 'seller';
         await _propertyApiService.uploadPhotosProperty(
           role: roleName,
           propertyId: propertyId,

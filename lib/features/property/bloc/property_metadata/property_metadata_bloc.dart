@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:youragent/services/property_api_service.dart';
-import 'package:youragent/data/models/developer_model.dart';
-import 'package:youragent/data/models/condo_project_model.dart';
-import 'package:youragent/data/models/house_project_model.dart';
-import 'package:youragent/data/models/property_specification_filters.dart';
+import 'package:yourhome/services/property_api_service.dart';
+import 'package:yourhome/data/models/developer_model.dart';
+import 'package:yourhome/data/models/condo_project_model.dart';
+import 'package:yourhome/data/models/house_project_model.dart';
+import 'package:yourhome/data/models/property_specification_filters.dart';
 import 'property_metadata_event.dart';
 import 'property_metadata_state.dart';
 

@@ -38,10 +38,8 @@ class _AuthHeaderState extends State<AuthHeader> {
 
   String _roleName(UserRole role, AppLocalizations l10n) {
     switch (role) {
-      case UserRole.agent:
-        return l10n.role_agent;
-      case UserRole.agency:
-        return l10n.role_agency;
+      case UserRole.seller:
+        return l10n.role_seller;
     }
   }
 
@@ -64,7 +62,7 @@ class _AuthHeaderState extends State<AuthHeader> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             InkWell(
-              onTap: () => context.go('/login/agent'),
+              onTap: () => context.go('/login/seller'),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -74,7 +72,7 @@ class _AuthHeaderState extends State<AuthHeader> {
                     height: 24,
                   ),
                   const SizedBox(width: 8),
-                  SvgPicture.asset('assets/icons/youragent.svg', height: 16),
+                  SvgPicture.asset('assets/icons/yourhome.svg', height: 16),
                 ],
               ),
             ),
@@ -120,27 +118,12 @@ class _AuthHeaderState extends State<AuthHeader> {
                     }
 
                     if (isInLoginFlow) {
-                      return DropdownButtonHideUnderline(
-                        child: DropdownButton<UserRole>(
-                          value: widget.currentRole ?? UserRole.agent,
-                          onChanged: (newRole) {
-                            if (newRole == null) return;
-                            widget.onRoleChanged?.call(newRole);
-                          },
-                          items: UserRole.values
-                              .map(
-                                (r) => DropdownMenuItem(
-                                  value: r,
-                                  child: Text(_roleName(r, l10n)),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      );
+                      // Single role: seller; no dropdown needed
+                      return Text(_roleName(widget.currentRole ?? UserRole.seller, l10n));
                     }
 
                     return TextButton(
-                      onPressed: () => context.go('/login/agent'),
+                      onPressed: () => context.go('/login/seller'),
                       child: Text(l10n.login),
                     );
                   },

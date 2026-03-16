@@ -24,11 +24,11 @@ flutter build apk --flavor prod -t lib/main_prod.dart $BUILD_ARGS
 
 # Rename the output APK
 if [ -f "build/app/outputs/flutter-apk/app-prod-release.apk" ]; then
-  mv "build/app/outputs/flutter-apk/app-prod-release.apk" "build/app/outputs/flutter-apk/youragent_prod_v${VERSION_SAFE}.apk"
-  echo "Renamed to build/app/outputs/flutter-apk/youragent_prod_v${VERSION_SAFE}.apk"
+  mv "build/app/outputs/flutter-apk/app-prod-release.apk" "build/app/outputs/flutter-apk/yourhome_prod_v${VERSION_SAFE}.apk"
+  echo "Renamed to build/app/outputs/flutter-apk/yourhome_prod_v${VERSION_SAFE}.apk"
 elif [ -f "build/app/outputs/flutter-apk/app-prod-debug.apk" ]; then
-  mv "build/app/outputs/flutter-apk/app-prod-debug.apk" "build/app/outputs/flutter-apk/youragent_prod_debug_v${VERSION_SAFE}.apk"
-  echo "Renamed to build/app/outputs/flutter-apk/youragent_prod_debug_v${VERSION_SAFE}.apk"
+  mv "build/app/outputs/flutter-apk/app-prod-debug.apk" "build/app/outputs/flutter-apk/yourhome_prod_debug_v${VERSION_SAFE}.apk"
+  echo "Renamed to build/app/outputs/flutter-apk/yourhome_prod_debug_v${VERSION_SAFE}.apk"
 else
   echo "APK file not found at build/app/outputs/flutter-apk/"
 fi

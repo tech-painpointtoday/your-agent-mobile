@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:youragent/widgets/backgrounds/blue_wave_background.dart';
-import 'package:youragent/widgets/app_coming_soon_placeholder.dart';
+import 'package:yourhome/widgets/backgrounds/blue_wave_background.dart';
+import 'package:yourhome/widgets/app_coming_soon_placeholder.dart';
 
 import '../../../core/theme/app_colors.dart';
 

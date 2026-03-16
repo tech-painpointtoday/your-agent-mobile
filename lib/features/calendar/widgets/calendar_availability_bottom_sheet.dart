@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/widgets/inputs/app_text_field.dart';
-import 'package:youragent/widgets/inputs/app_dropdown.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
+import 'package:yourhome/widgets/inputs/app_text_field.dart';
+import 'package:yourhome/widgets/inputs/app_dropdown.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:youragent/features/calendar/bloc/availability/availability_bloc.dart';
-import 'package:youragent/features/calendar/bloc/availability/availability_event.dart';
-import 'package:youragent/features/calendar/bloc/availability/availability_state.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/features/calendar/bloc/availability/availability_bloc.dart';
+import 'package:yourhome/features/calendar/bloc/availability/availability_event.dart';
+import 'package:yourhome/features/calendar/bloc/availability/availability_state.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 enum AvailabilityMode { add, edit }
 

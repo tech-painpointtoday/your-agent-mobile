@@ -1,36 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:youragent/data/repositories/auth_repository_impl.dart';
-import 'package:youragent/domain/repositories/auth_repository.dart';
-import 'package:youragent/domain/usecases/auth_usecases.dart';
+import 'package:yourhome/data/repositories/auth_repository_impl.dart';
+import 'package:yourhome/domain/repositories/auth_repository.dart';
+import 'package:yourhome/domain/usecases/auth_usecases.dart';
 
-import 'package:youragent/features/auth/bloc/auth_bloc.dart';
-import 'package:youragent/services/api_client.dart';
-import 'package:youragent/services/property_api_service.dart';
-// import 'package:youragent/services/fengshui_api_service.dart';
-import 'package:youragent/services/booking_api_service.dart';
-import 'package:youragent/services/chat_api_service.dart';
-import 'package:youragent/services/pusher_service.dart';
-// import 'package:youragent/services/agent_api_service.dart';
-// import 'package:youragent/services/places_service.dart';
-// import 'package:youragent/services/contract_api_service.dart';
-// import 'package:youragent/services/availability_api_service.dart';
-import 'package:youragent/services/auth_api_service.dart';
-import 'package:youragent/services/contract_api_service.dart';
-import 'package:youragent/services/address_lookup_service.dart';
-import 'package:youragent/services/google_places_service.dart';
-import 'package:youragent/services/settings_api_service.dart';
-import 'package:youragent/services/notification_api_service.dart';
-import 'package:youragent/services/available_time_api_service.dart';
-import 'package:youragent/core/services/deep_link_service.dart';
-import 'package:youragent/core/config/app_config.dart';
-import 'package:youragent/core/services/device_service.dart';
-import 'package:youragent/features/chat/services/chat_search_service.dart';
-import 'package:youragent/features/property/services/property_search_recent_service.dart';
+import 'package:yourhome/features/auth/bloc/auth_bloc.dart';
+import 'package:yourhome/services/api_client.dart';
+import 'package:yourhome/services/property_api_service.dart';
+import 'package:yourhome/services/booking_api_service.dart';
+import 'package:yourhome/services/chat_api_service.dart';
+import 'package:yourhome/services/pusher_service.dart';
+import 'package:yourhome/services/auth_api_service.dart';
+import 'package:yourhome/services/contract_api_service.dart';
+import 'package:yourhome/services/address_lookup_service.dart';
+import 'package:yourhome/services/google_places_service.dart';
+import 'package:yourhome/services/settings_api_service.dart';
+import 'package:yourhome/services/notification_api_service.dart';
+import 'package:yourhome/services/available_time_api_service.dart';
+import 'package:yourhome/core/services/deep_link_service.dart';
+import 'package:yourhome/core/config/app_config.dart';
+import 'package:yourhome/core/services/device_service.dart';
+import 'package:yourhome/features/chat/services/chat_search_service.dart';
+import 'package:yourhome/features/property/services/property_search_recent_service.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:youragent/core/services/push_notification_service.dart';
+import 'package:yourhome/core/services/push_notification_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:youragent/features/notifications/bloc/notification_bloc.dart';
-import 'package:youragent/features/notifications/bloc/notification_event.dart';
+import 'package:yourhome/features/notifications/bloc/notification_bloc.dart';
+import 'package:yourhome/features/notifications/bloc/notification_event.dart';
 import 'package:go_router/go_router.dart';
 
 /// Global navigator key for accessing overlay from anywhere
@@ -116,7 +111,7 @@ class DependencyInjection {
   static final AuthBloc _authBloc = AuthBloc(
     signInWithEmailUseCase: signInWithEmailUseCase,
     registerWithEmailUseCase: registerWithEmailUseCase,
-    registerAgentUseCase: registerAgentUseCase,
+    registerSellerUseCase: registerSellerUseCase,
     signInWithGoogleUseCase: signInWithGoogleUseCase,
     signInWithFacebookUseCase: signInWithFacebookUseCase,
     signOutUseCase: signOutUseCase,
@@ -203,8 +198,8 @@ class DependencyInjection {
   static RegisterWithEmail get registerWithEmailUseCase =>
       RegisterWithEmail(authRepository);
 
-  static RegisterAgent get registerAgentUseCase =>
-      RegisterAgent(authRepository);
+  static RegisterSeller get registerSellerUseCase =>
+      RegisterSeller(authRepository);
 
   static SignInWithGoogle get signInWithGoogleUseCase =>
       SignInWithGoogle(authRepository);

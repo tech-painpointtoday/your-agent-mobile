@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:youragent/core/di/dependency_injection.dart';
-import 'package:youragent/services/api_client.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
+import 'package:yourhome/services/api_client.dart';
 
 class SettingsApiService {
   final ApiClient _apiClient;
@@ -11,7 +11,7 @@ class SettingsApiService {
   Future<String> getLineAuthorizationUrl() async {
     try {
       final response = await _apiClient.get(
-        '/agent/settings/line/authorization-url',
+        '/seller/settings/line/authorization-url',
       );
       final data = response.data as Map<String, dynamic>;
 
@@ -38,7 +38,7 @@ class SettingsApiService {
   /// Check the status of LINE subscription
   Future<bool> getLineStatus() async {
     try {
-      final response = await _apiClient.get('/agent/settings/line/status');
+      final response = await _apiClient.get('/seller/settings/line/status');
       final data = response.data as Map<String, dynamic>;
 
       if (data['data'] != null && data['data']['is_subscribed'] != null) {
@@ -54,7 +54,7 @@ class SettingsApiService {
   /// Unsubscribe from LINE
   Future<bool> unsubscribeLine() async {
     try {
-      final response = await _apiClient.get('/agent/settings/line/unsubscribe');
+      final response = await _apiClient.get('/seller/settings/line/unsubscribe');
       final data = response.data as Map<String, dynamic>;
       return data['success'] == true;
     } catch (e) {
@@ -72,7 +72,7 @@ class SettingsApiService {
   Future<bool> linkLineAccount(String accessToken) async {
     try {
       final response = await _apiClient.post(
-        '/agent/settings/line/link',
+        '/seller/settings/line/link',
         data: {'access_token': accessToken},
       );
       final data = response.data as Map<String, dynamic>;

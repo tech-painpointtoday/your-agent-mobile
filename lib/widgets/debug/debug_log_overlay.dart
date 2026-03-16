@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:youragent/core/di/dependency_injection.dart'
+import 'package:yourhome/core/di/dependency_injection.dart'
     show DependencyInjection, navigatorKey;
-import 'package:youragent/core/config/app_config.dart';
-import 'package:youragent/core/services/device_service.dart';
+import 'package:yourhome/core/config/app_config.dart';
+import 'package:yourhome/core/services/device_service.dart';
 
 // 🎨 Cyberpunk Colors
 const _hackerGreen = Color(0xFF00FF41);

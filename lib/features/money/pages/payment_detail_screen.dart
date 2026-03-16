@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/features/money/pages/payment_installments_screen.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/features/money/pages/payment_installments_screen.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
+import 'package:yourhome/widgets/modals/app_call_bottom_sheet.dart';
 
 class PaymentDetailScreen extends StatelessWidget {
   const PaymentDetailScreen({super.key});

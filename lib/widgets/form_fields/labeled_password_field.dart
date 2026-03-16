@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/l10n/app_localizations.dart';
-import 'package:youragent/core/theme/app_colors.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
 
 /// Reusable labeled password field with visibility toggle
 class LabeledPasswordField extends StatefulWidget {

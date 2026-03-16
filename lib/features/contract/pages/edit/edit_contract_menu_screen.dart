@@ -3,15 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/di/dependency_injection.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/contract.dart';
-import 'package:youragent/domain/entities/contract_type.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/domain/entities/contract.dart';
+import 'package:yourhome/domain/entities/contract_type.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_bloc.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_event.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_state.dart';
 import 'edit_contract_form_screen.dart';
-import 'package:youragent/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
 
 class EditContractMenuScreen extends StatelessWidget {
   final Contract contract;

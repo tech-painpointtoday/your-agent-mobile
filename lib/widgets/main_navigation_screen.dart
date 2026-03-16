@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:youragent/features/calendar/pages/calendar_screen.dart';
-import 'package:youragent/features/contact/pages/contact_screen.dart';
-import 'package:youragent/features/home/pages/home_screen.dart';
-import 'package:youragent/features/money/pages/money_screen.dart';
-import 'package:youragent/features/property/pages/property_screen.dart';
-import 'package:youragent/widgets/app_bottom_navigation_bar.dart';
+import 'package:yourhome/features/calendar/pages/calendar_screen.dart';
+import 'package:yourhome/features/contact/pages/contact_screen.dart';
+import 'package:yourhome/features/home/pages/home_screen.dart';
+import 'package:yourhome/features/money/pages/money_screen.dart';
+import 'package:yourhome/features/property/pages/property_screen.dart';
+import 'package:yourhome/widgets/app_bottom_navigation_bar.dart';
 
 /// Main navigation screen that contains PageView for all tabs
 /// This ensures the bottom navigation bar is singleton and tabs have smooth transitions

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:youragent/domain/entities/booking.dart';
-import 'package:youragent/domain/entities/pagination.dart';
+import 'package:yourhome/domain/entities/booking.dart';
+import 'package:yourhome/domain/entities/pagination.dart';
 import 'booking_date_filter.dart';
 
 enum BookingListStatus { initial, loading, success, failure }

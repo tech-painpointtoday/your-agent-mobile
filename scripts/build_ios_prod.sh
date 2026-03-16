@@ -25,9 +25,9 @@ cd ios && pod install && cd ..
 flutter build ipa --flavor prod -t lib/main_prod.dart --export-method ad-hoc $BUILD_ARGS
 
 # Rename the output IPA
-if [ -f "build/ios/ipa/youragent.ipa" ]; then
-  mv "build/ios/ipa/youragent.ipa" "build/ios/ipa/youragent_prod_v${VERSION_SAFE}.ipa"
-  echo "Renamed to build/ios/ipa/youragent_prod_v${VERSION_SAFE}.ipa"
+if [ -f "build/ios/ipa/yourhome.ipa" ]; then
+  mv "build/ios/ipa/yourhome.ipa" "build/ios/ipa/yourhome_prod_v${VERSION_SAFE}.ipa"
+  echo "Renamed to build/ios/ipa/yourhome_prod_v${VERSION_SAFE}.ipa"
 else
-  echo "IPA file not found at build/ios/ipa/youragent.ipa"
+  echo "IPA file not found at build/ios/ipa/yourhome.ipa"
 fi

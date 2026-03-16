@@ -1,35 +1,34 @@
 import 'dart:convert';
 
-class AgentProfile {
-  final AgentDetails agent;
-  final ProfileVerificationStatus verificationStatus;
-  final bool canUseSystem;
-  final bool lineConnected;
+class SellerProfile {
+  final SellerDetails seller;
 
-  AgentProfile({
-    required this.agent,
-    required this.verificationStatus,
-    required this.canUseSystem,
-    required this.lineConnected,
+  SellerProfile({
+    required this.seller,
   });
 
-  factory AgentProfile.fromJson(Map<String, dynamic> json) {
-    return AgentProfile(
-      agent: AgentDetails.fromJson(json['agent']),
-      verificationStatus: ProfileVerificationStatus.fromJson(
-        json['verification_status'],
-      ),
-      canUseSystem: json['can_use_system'] ?? false,
-      lineConnected: json['line_connected'] ?? false,
+  factory SellerProfile.fromJson(Map<String, dynamic> json) {
+    // API response shape:
+    // {
+    //   "success": true,
+    //   "data": {
+    //     "id": ...,
+    //     "name": ...,
+    //     ...
+    //   }
+    // }
+    final data = json['data'] is Map<String, dynamic>
+        ? json['data'] as Map<String, dynamic>
+        : json;
+
+    return SellerProfile(
+      seller: SellerDetails.fromJson(data),
     );
   }
 }
 
-class AgentDetails {
+class SellerDetails {
   final int id;
-  final int? agencyId;
-  final String agentCredential;
-  final String? credentialUsedAt;
   final String name;
   final String email;
   final String? emailVerifiedAt;
@@ -41,20 +40,14 @@ class AgentDetails {
   final int? yearsOfExperience;
   final String? companyName;
   final String? licenseNumber;
-  final String? mobileNumberVerifiedAt;
+  final String? businessType;
+  final String? businessRegistrationNumber;
+  final String? businessAddress;
   final String? createdAt;
   final String? updatedAt;
-  final String? nationalId;
-  final String? address;
-  final String? reachableRadius;
-  final String? serviceAreaCenterLat;
-  final String? serviceAreaCenterLng;
 
-  AgentDetails({
+  SellerDetails({
     required this.id,
-    this.agencyId,
-    required this.agentCredential,
-    this.credentialUsedAt,
     required this.name,
     required this.email,
     this.emailVerifiedAt,
@@ -66,22 +59,16 @@ class AgentDetails {
     this.yearsOfExperience,
     this.companyName,
     this.licenseNumber,
-    this.mobileNumberVerifiedAt,
+    this.businessType,
+    this.businessRegistrationNumber,
+    this.businessAddress,
     this.createdAt,
     this.updatedAt,
-    this.nationalId,
-    this.address,
-    this.reachableRadius,
-    this.serviceAreaCenterLat,
-    this.serviceAreaCenterLng,
   });
 
-  factory AgentDetails.fromJson(Map<String, dynamic> json) {
-    return AgentDetails(
+  factory SellerDetails.fromJson(Map<String, dynamic> json) {
+    return SellerDetails(
       id: json['id'] ?? 0,
-      agencyId: json['agency_id'],
-      agentCredential: json['agent_credential'] ?? '',
-      credentialUsedAt: json['credential_used_at'],
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       emailVerifiedAt: json['email_verified_at'],
@@ -91,29 +78,27 @@ class AgentDetails {
       socialLinks: json['social_links'] is Map<String, dynamic>
           ? json['social_links'] as Map<String, dynamic>
           : (json['social_links'] is String
-                ? jsonDecode(json['social_links']) as Map<String, dynamic>
-                : null),
+              ? jsonDecode(json['social_links']) as Map<String, dynamic>
+              : null),
       languages: json['languages'] is Map<String, dynamic>
           ? json['languages'] as Map<String, dynamic>
           : (json['languages'] is String
-                ? jsonDecode(json['languages']) as Map<String, dynamic>
-                : null),
+              ? jsonDecode(json['languages']) as Map<String, dynamic>
+              : null),
       yearsOfExperience: json['years_of_experience'],
       companyName: json['company_name'],
       licenseNumber: json['license_number'],
-      mobileNumberVerifiedAt: json['mobile_number_verified_at'],
+      businessType: json['business_type'],
+      businessRegistrationNumber: json['business_registration_number'],
+      businessAddress: json['business_address'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
-      nationalId: json['national_id'],
-      address: json['address'],
-      reachableRadius: json['reachable_radius']?.toString(),
-      serviceAreaCenterLat: json['service_area_center_lat']?.toString(),
-      serviceAreaCenterLng: json['service_area_center_lng']?.toString(),
     );
   }
+
   int get profileLevel {
     final hasWorkInfo = companyName?.isNotEmpty == true;
-    final hasServiceArea = reachableRadius?.isNotEmpty == true;
+    final hasServiceArea = businessAddress?.isNotEmpty == true;
 
     int currentLevel = 1;
     if (hasWorkInfo) currentLevel = 2;
@@ -147,3 +132,4 @@ class ProfileVerificationStatus {
     );
   }
 }
+

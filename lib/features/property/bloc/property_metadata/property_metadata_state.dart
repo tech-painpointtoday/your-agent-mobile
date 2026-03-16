@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:youragent/data/models/property_specification_filters.dart';
-import 'package:youragent/data/models/developer_model.dart';
-import 'package:youragent/data/models/condo_project_model.dart';
-import 'package:youragent/data/models/house_project_model.dart';
+import 'package:yourhome/data/models/property_specification_filters.dart';
+import 'package:yourhome/data/models/developer_model.dart';
+import 'package:yourhome/data/models/condo_project_model.dart';
+import 'package:yourhome/data/models/house_project_model.dart';
 
 enum PropertyMetadataStatus { initial, loading, success, failure }
 

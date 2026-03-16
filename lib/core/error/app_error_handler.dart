@@ -4,12 +4,12 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
 
 import '../theme/app_colors.dart';
 import '../di/dependency_injection.dart';
 import '../../widgets/dialogs/status_dialog.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class AppErrorHandler {
   static void initialize() {

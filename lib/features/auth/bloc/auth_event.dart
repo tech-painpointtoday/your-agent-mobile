@@ -25,13 +25,13 @@ class SignInWithEmailEvent extends AuthEvent {
   List<Object?> get props => [email, password, role, rememberMe];
 }
 
-class RegisterAgentEvent extends AuthEvent {
+class RegisterSellerEvent extends AuthEvent {
   final String name;
   final String email;
   final String password;
   final String passwordConfirmation;
 
-  const RegisterAgentEvent({
+  const RegisterSellerEvent({
     required this.name,
     required this.email,
     required this.password,

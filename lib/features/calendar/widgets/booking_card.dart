@@ -3,15 +3,15 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:youragent/core/enums/booking_status.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/booking.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:yourhome/core/enums/booking_status.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/domain/entities/booking.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
-import 'package:youragent/l10n/app_localizations.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 class BookingCard extends StatelessWidget {
   final Booking booking;

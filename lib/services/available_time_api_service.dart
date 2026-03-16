@@ -1,5 +1,5 @@
-import 'package:youragent/domain/entities/available_time.dart';
-import 'package:youragent/services/api_client.dart';
+import 'package:yourhome/domain/entities/available_time.dart';
+import 'package:yourhome/services/api_client.dart';
 
 class AvailableTimeApiService {
   final ApiClient _apiClient;
@@ -25,7 +25,7 @@ class AvailableTimeApiService {
     }
 
     final response = await _apiClient.dio.get(
-      '/agent/available-times',
+      '/seller/available-times',
       queryParameters: queryParams,
     );
     final data = response.data['data'] as Map<String, dynamic>;
@@ -38,7 +38,7 @@ class AvailableTimeApiService {
     required String endTime,
   }) async {
     final response = await _apiClient.dio.post(
-      '/agent/available-times',
+      '/seller/available-times',
       data: {'date': date, 'start_time': startTime, 'end_time': endTime},
     );
     return AvailableTime.fromJson(
@@ -53,7 +53,7 @@ class AvailableTimeApiService {
     required bool isAvailable,
   }) async {
     final response = await _apiClient.dio.put(
-      '/agent/available-times/$id',
+      '/seller/available-times/$id',
       data: {
         'start_time': startTime,
         'end_time': endTime,
@@ -66,6 +66,6 @@ class AvailableTimeApiService {
   }
 
   Future<void> deleteAvailableTime(int id) async {
-    await _apiClient.dio.delete('/agent/available-times/$id');
+    await _apiClient.dio.delete('/seller/available-times/$id');
   }
 }

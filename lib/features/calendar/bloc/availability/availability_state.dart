@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:youragent/domain/entities/available_time.dart';
+import 'package:yourhome/domain/entities/available_time.dart';
 
 enum AvailabilityStatus { initial, loading, success, failure }
 

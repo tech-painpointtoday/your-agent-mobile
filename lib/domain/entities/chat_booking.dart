@@ -44,7 +44,7 @@ class ChatBooking extends Equatable {
       final senderType = (lastMsg?['sender_type'] ?? json['sender_type'])
           ?.toString()
           .toLowerCase();
-      if (senderType == 'agent' || senderType == 'staff') {
+      if (senderType == 'seller' || senderType == 'staff') {
         finalMessage = "You: sent an image";
       } else {
         finalMessage = "Have an image message";

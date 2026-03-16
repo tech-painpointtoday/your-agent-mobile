@@ -6,9 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/l10n/app_localizations.dart';
-import 'package:youragent/widgets/image_modal.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
+import 'package:yourhome/widgets/image_modal.dart';
 
 /// General image upload widget for form usage
 /// Displays image upload UI, existing photos grid, and new photos preview

@@ -5,7 +5,6 @@ import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 
 import '../../../core/di/dependency_injection.dart';
 import '../../../domain/entities/chat_message.dart';
-import '../../../domain/entities/user.dart';
 import '../../../services/pusher_service.dart';
 import 'message_event.dart';
 import 'message_state.dart';
@@ -16,7 +15,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   String? _currentChannel;
 
   MessageBloc({this.isStaff = false, this.isInquiry = false})
-      : super(MessageInitial()) {
+    : super(MessageInitial()) {
     on<LoadMessages>(_onLoadMessages);
     on<SendMessage>(_onSendMessage);
     on<MarkAsRead>(_onMarkAsRead);
@@ -37,8 +36,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   ) async {
     emit(MessageLoading());
     try {
-      final authRepo = DependencyInjection.authRepository;
-      final role = authRepo.currentRole == UserRole.agent ? 'agent' : 'agency';
+      const role = 'seller';
 
       // Load initial messages
       final messages = isInquiry
@@ -61,8 +59,8 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
               event.conversationId ?? event.bookingId,
             )
           : (isInquiry
-              ? PusherChannels.chatInquiryChannel(event.bookingId)
-              : PusherChannels.chatBookingChannel(event.bookingId));
+                ? PusherChannels.chatInquiryChannel(event.bookingId)
+                : PusherChannels.chatBookingChannel(event.bookingId));
       DependencyInjection.pusherService.subscribe(
         channelName: _currentChannel!,
         onEvent: (event) {
@@ -114,7 +112,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
         await Future.delayed(const Duration(milliseconds: 800));
         final newMessage = ChatMessage(
           id: DateTime.now().millisecondsSinceEpoch,
-          senderType: SenderType.agent,
+          senderType: SenderType.seller,
           senderId: 1,
           message: event.message,
           createdAt: DateTime.now(),
@@ -125,8 +123,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
         return;
       }
 
-      final authRepo = DependencyInjection.authRepository;
-      final role = authRepo.currentRole == UserRole.agent ? 'agent' : 'agency';
+      const role = 'seller';
 
       if (isInquiry) {
         await DependencyInjection.chatApiService.sendInquiryMessage(
@@ -136,10 +133,8 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
         );
 
         // Reload messages after sending
-        final updatedMessages =
-            await DependencyInjection.chatApiService.getInquiryMessages(
-          inquiryId: event.bookingId,
-        );
+        final updatedMessages = await DependencyInjection.chatApiService
+            .getInquiryMessages(inquiryId: event.bookingId);
 
         emit(MessageLoaded(messages: updatedMessages));
       } else {
@@ -156,7 +151,6 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
         emit(MessageLoaded(messages: updatedMessages));
       }
-
     } catch (e) {
       // Keep existing messages but show error if we had a way to toast
       emit(MessageError(e.toString()));
@@ -173,12 +167,8 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           inquiryId: event.bookingId,
         );
       } else {
-        final authRepo = DependencyInjection.authRepository;
-        final role =
-            authRepo.currentRole == UserRole.agent ? 'agent' : 'agency';
-
         await DependencyInjection.chatApiService.markAsRead(
-          role: role,
+          role: 'seller',
           chatId: event.bookingId,
         );
       }

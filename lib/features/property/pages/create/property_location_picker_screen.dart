@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:youragent/widgets/map/map_selection.dart';
+import 'package:yourhome/widgets/map/map_selection.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../widgets/buttons/app_button.dart';
 import '../../../../widgets/dialogs/status_dialog.dart';
 import '../../../../widgets/modals/app_confirmation_bottom_sheet.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class PropertyLocationPickerResult {
   final LatLng latLng;

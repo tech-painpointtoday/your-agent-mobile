@@ -22,7 +22,7 @@ class ContractApiService {
   Future<ContractResults> getContracts({int page = 1, int perPage = 10}) async {
     try {
       final response = await _apiClient.get(
-        '/agent/contracts',
+        '/seller/contracts',
         queryParameters: {'page': page, 'per_page': perPage},
       );
 
@@ -120,10 +120,10 @@ class ContractApiService {
   }
 
   /// Delete Contract
-  /// DELETE /agent/contracts/{id}
+  /// DELETE /seller/contracts/{id}
   Future<void> deleteContract({required int contractId}) async {
     try {
-      final response = await _apiClient.delete('/agent/contracts/$contractId');
+      final response = await _apiClient.delete('/seller/contracts/$contractId');
 
       final apiResponse = ApiResponseService.parseResponse<void>(
         response,
@@ -143,13 +143,13 @@ class ContractApiService {
   }
 
   /// Get Contract Create Data
-  /// GET /agent/contracts/properties/{id}/create
+  /// GET /seller/contracts/properties/{id}/create
   Future<ContractCreateData> getContractCreateData({
     required int propertyId,
   }) async {
     try {
       final response = await _apiClient.get(
-        '/agent/contracts/properties/$propertyId/create',
+        '/seller/contracts/properties/$propertyId/create',
       );
 
       final apiResponse =
@@ -175,10 +175,10 @@ class ContractApiService {
   }
 
   /// Get Contract Detail
-  /// GET /agent/contracts/{id}
+  /// GET /seller/contracts/{id}
   Future<Contract> getContractDetail({required int contractId}) async {
     try {
-      final response = await _apiClient.get('/agent/contracts/$contractId');
+      final response = await _apiClient.get('/seller/contracts/$contractId');
 
       final apiResponse =
           ApiResponseService.parseResponse<Map<String, dynamic>>(
@@ -201,11 +201,11 @@ class ContractApiService {
   }
 
   /// Get Contract PDF
-  /// GET /agent/contracts/{id}/pdf
+  /// GET /seller/contracts/{id}/pdf
   Future<List<int>> getContractPdf({required int contractId}) async {
     try {
       final response = await _apiClient.get(
-        '/agent/contracts/$contractId/pdf',
+        '/seller/contracts/$contractId/pdf',
         options: Options(responseType: ResponseType.bytes),
       );
 
@@ -224,11 +224,11 @@ class ContractApiService {
   }
 
   /// Send Contract to Seller
-  /// POST /agent/contracts/{id}/send-to-seller
+  /// POST /seller/contracts/{id}/send-to-seller
   Future<void> sendToSeller({required int contractId}) async {
     try {
       final response = await _apiClient.post(
-        '/agent/contracts/$contractId/send-to-seller',
+        '/seller/contracts/$contractId/send-to-seller',
       );
 
       final apiResponse = ApiResponseService.parseResponse<void>(
@@ -249,11 +249,11 @@ class ContractApiService {
   }
 
   /// Send Contract to Buyer
-  /// POST /agent/contracts/{id}/send-to-buyer
+  /// POST /seller/contracts/{id}/send-to-buyer
   Future<void> sendToBuyer({required int contractId}) async {
     try {
       final response = await _apiClient.post(
-        '/agent/contracts/$contractId/send-to-buyer',
+        '/seller/contracts/$contractId/send-to-buyer',
       );
 
       final apiResponse = ApiResponseService.parseResponse<void>(
@@ -276,7 +276,7 @@ class ContractApiService {
   Future<void> updateContract({required int id, required dynamic data}) async {
     try {
       final response = await _apiClient.post(
-        '/agent/contracts/$id',
+        '/seller/contracts/$id',
         data: data,
       );
 
@@ -303,8 +303,8 @@ class ContractApiService {
   }) async {
     try {
       final String apiPath = isFromProperty
-          ? '/agent/contracts/from-property'
-          : '/agent/contracts';
+          ? '/seller/contracts/from-property'
+          : '/seller/contracts';
 
       final response = await _apiClient.post(apiPath, data: data);
 
@@ -334,11 +334,11 @@ class ContractApiService {
   }
 
   /// Save contract as draft
-  /// POST /agent/contracts/draft
+  /// POST /seller/contracts/draft
   Future<int> createContractDraft({required dynamic data}) async {
     try {
       final response = await _apiClient.post(
-        '/agent/contracts/draft',
+        '/seller/contracts/draft',
         data: data,
       );
 
@@ -368,14 +368,14 @@ class ContractApiService {
   }
 
   /// Update contract draft
-  /// PUT /agent/contracts/{id}/draft
+  /// PUT /seller/contracts/{id}/draft
   Future<void> updateContractDraft({
     required int id,
     required dynamic data,
   }) async {
     try {
       final response = await _apiClient.post(
-        '/agent/contracts/$id/draft',
+        '/seller/contracts/$id/draft',
         data: data,
       );
 
@@ -397,10 +397,10 @@ class ContractApiService {
   }
 
   /// Publish contract
-  /// POST /agent/contracts/{id}/publish
+  /// POST /seller/contracts/{id}/publish
   Future<void> publishContract({required int id}) async {
     try {
-      final response = await _apiClient.post('/agent/contracts/$id/publish');
+      final response = await _apiClient.post('/seller/contracts/$id/publish');
 
       final apiResponse = ApiResponseService.parseResponse<void>(
         response,
@@ -420,10 +420,10 @@ class ContractApiService {
   }
 
   /// Get Contract Edit Data
-  /// GET /agent/contracts/{id}/edit
+  /// GET /seller/contracts/{id}/edit
   Future<ContractEditData> getContractEditData(dynamic id) async {
     try {
-      final response = await _apiClient.get('/agent/contracts/$id/edit');
+      final response = await _apiClient.get('/seller/contracts/$id/edit');
       final apiResponse =
           ApiResponseService.parseResponse<Map<String, dynamic>>(
             response,
@@ -447,7 +447,7 @@ class ContractApiService {
   }
 
   /// Upload Contract Document
-  /// POST /agent/contracts/{id}/documents
+  /// POST /seller/contracts/{id}/documents
   Future<void> uploadContractDocument({
     required int contractId,
     required String name,
@@ -461,7 +461,7 @@ class ContractApiService {
       });
 
       final response = await _apiClient.post(
-        '/agent/contracts/$contractId/documents',
+        '/seller/contracts/$contractId/documents',
         data: formData,
       );
 
@@ -485,11 +485,11 @@ class ContractApiService {
   }
 
   /// Get Contract Documents
-  /// GET /agent/contracts/{id}/documents
+  /// GET /seller/contracts/{id}/documents
   Future<List<ContractAttachment>> getContractDocuments(int contractId) async {
     try {
       final response = await _apiClient.get(
-        '/agent/contracts/$contractId/documents',
+        '/seller/contracts/$contractId/documents',
       );
       final apiResponse = ApiResponseService.parseResponse<List<dynamic>>(
         response,
@@ -517,11 +517,11 @@ class ContractApiService {
   }
 
   /// Delete Contract Document
-  /// DELETE /agent/contracts/{id}/documents/{document_id}
+  /// DELETE /seller/contracts/{id}/documents/{document_id}
   Future<void> deleteContractDocument(int contractId, int documentId) async {
     try {
       final response = await _apiClient.delete(
-        '/agent/contracts/$contractId/documents/$documentId',
+        '/seller/contracts/$contractId/documents/$documentId',
       );
       final apiResponse = ApiResponseService.parseResponse<void>(
         response,
@@ -543,14 +543,14 @@ class ContractApiService {
   }
 
   /// Delete Appliance Photo
-  /// DELETE /agent/contracts/{contract_id}/appliances/{appliance_id}/photo
+  /// DELETE /seller/contracts/{contract_id}/appliances/{appliance_id}/photo
   Future<void> deleteAppliancePhoto({
     required int contractId,
     required String applianceId,
   }) async {
     try {
       final response = await _apiClient.delete(
-        '/agent/contracts/$contractId/appliances/$applianceId/photo',
+        '/seller/contracts/$contractId/appliances/$applianceId/photo',
       );
 
       final apiResponse = ApiResponseService.parseResponse<void>(
@@ -573,14 +573,14 @@ class ContractApiService {
   }
 
   /// Delete Furniture Photo
-  /// DELETE /agent/contracts/{contract_id}/furniture/{furniture_id}/photo
+  /// DELETE /seller/contracts/{contract_id}/furniture/{furniture_id}/photo
   Future<void> deleteFurniturePhoto({
     required int contractId,
     required String furnitureId,
   }) async {
     try {
       final response = await _apiClient.delete(
-        '/agent/contracts/$contractId/furniture/$furnitureId/photo',
+        '/seller/contracts/$contractId/furniture/$furnitureId/photo',
       );
 
       final apiResponse = ApiResponseService.parseResponse<void>(
@@ -633,10 +633,10 @@ class ContractApiService {
   }
 
   /// Get Buyers
-  /// GET /agent/contracts/buyers
+  /// GET /seller/contracts/buyers
   Future<List<Buyer>> getBuyers() async {
     try {
-      final response = await _apiClient.get('/agent/contracts/buyers');
+      final response = await _apiClient.get('/seller/contracts/buyers');
 
       final apiResponse = ApiResponseService.parseResponse<List<dynamic>>(
         response,
@@ -659,10 +659,10 @@ class ContractApiService {
   }
 
   /// Get Sellers
-  /// GET /agent/contracts/sellers
+  /// GET /seller/contracts/sellers
   Future<List<Owner>> getSellers() async {
     try {
-      final response = await _apiClient.get('/agent/contracts/sellers');
+      final response = await _apiClient.get('/seller/contracts/sellers');
 
       final apiResponse = ApiResponseService.parseResponse<List<dynamic>>(
         response,

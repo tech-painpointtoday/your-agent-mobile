@@ -68,9 +68,9 @@ class LocalNotificationService {
     String? payload,
   }) async {
     const androidDetails = AndroidNotificationDetails(
-      'youragent_channel', // Channel ID
-      'YourAgent Notifications', // Channel name
-      channelDescription: 'Notifications from YourAgent app',
+      'yourhome_channel', // Channel ID
+      'YourHome Notifications', // Channel name
+      channelDescription: 'Notifications from YourHome app',
       importance: Importance.high,
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',

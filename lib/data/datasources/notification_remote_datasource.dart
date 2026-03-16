@@ -6,7 +6,7 @@ import '../../domain/repositories/notification_repository.dart';
 /// Remote data source for notification API calls
 class NotificationRemoteDataSource {
   // TODO: Replace with your actual API base URL
-  static const String _baseUrl = 'https://api.youragent.example.com';
+  static const String _baseUrl = 'https://api.yourhome.co.th';
 
   final http.Client client;
 

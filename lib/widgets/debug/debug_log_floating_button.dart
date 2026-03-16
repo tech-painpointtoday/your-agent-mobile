@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:youragent/core/config/app_config.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/widgets/debug/debug_log_overlay.dart';
+import 'package:yourhome/core/config/app_config.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/widgets/debug/debug_log_overlay.dart';
 
 /// Floating button to open debug logs
 /// Only visible in DEV environment

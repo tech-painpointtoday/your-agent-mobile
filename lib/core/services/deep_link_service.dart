@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:app_links/app_links.dart';
-import 'package:youragent/core/di/dependency_injection.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
 
 enum DeepLinkStatus { success, failure, none }
 
@@ -30,7 +30,7 @@ class DeepLinkService {
     DependencyInjection.talker?.log('Incoming Deep Link: $uri');
 
     // Check for both 'callback' (legacy/generic) and 'line-callback'
-    if (uri.scheme == 'youragent' &&
+    if (uri.scheme == 'yourhome' &&
         (uri.host == 'callback' || uri.host == 'line-callback')) {
       final status = uri.queryParameters['status'];
       if (status == 'success') {

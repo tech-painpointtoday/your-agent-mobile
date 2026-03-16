@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class NotificationEmptyState extends StatelessWidget {
   const NotificationEmptyState({super.key});

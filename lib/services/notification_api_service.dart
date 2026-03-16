@@ -13,7 +13,7 @@ class NotificationApiService {
   }) async {
     try {
       final response = await _apiClient.get(
-        '/agent/notifications',
+        '/seller/notifications',
         queryParameters: {'page': page, 'per_page': perPage},
       );
 
@@ -27,7 +27,7 @@ class NotificationApiService {
 
   Future<void> markAsRead(String id) async {
     try {
-      await _apiClient.post('/agent/notifications/$id/mark-read');
+      await _apiClient.post('/seller/notifications/$id/mark-read');
     } on DioException catch (e) {
       throw e.message ?? 'Failed to mark notification as read';
     } catch (e) {
@@ -37,7 +37,7 @@ class NotificationApiService {
 
   Future<void> markAllAsRead() async {
     try {
-      await _apiClient.post('/agent/notifications/mark-all-read');
+      await _apiClient.post('/seller/notifications/mark-all-read');
     } on DioException catch (e) {
       throw e.message ?? 'Failed to mark all notifications as read';
     } catch (e) {

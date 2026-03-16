@@ -1,5 +1,5 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
 #include "Generated.xcconfig"
 
-APP_DISPLAY_NAME=YourAgent Dev
-APP_URL_SCHEME=youragent
+APP_DISPLAY_NAME=YourHome Dev
+APP_URL_SCHEME=yourhome

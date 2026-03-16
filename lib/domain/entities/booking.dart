@@ -1,14 +1,15 @@
 import 'package:equatable/equatable.dart';
-import 'package:youragent/domain/entities/buyer.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/domain/entities/pagination.dart';
-import 'package:youragent/core/enums/booking_status.dart';
+import 'package:yourhome/domain/entities/buyer.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/domain/entities/pagination.dart';
+import 'package:yourhome/core/enums/booking_status.dart';
 
 class Booking extends Equatable {
   final int id;
   final int propertyId;
   final int buyerId;
   final int? agentId;
+  final int? sellerId;
   final String ymd;
   final String time;
   final BookingStatus status;
@@ -27,6 +28,7 @@ class Booking extends Equatable {
     required this.propertyId,
     required this.buyerId,
     this.agentId,
+    this.sellerId,
     required this.ymd,
     required this.time,
     required this.status,
@@ -47,6 +49,7 @@ class Booking extends Equatable {
       propertyId: json['property_id'] as int,
       buyerId: json['buyer_id'] as int,
       agentId: json['agent_id'] as int?,
+      sellerId: json['seller_id'] as int?,
       ymd: json['ymd'] as String,
       time: json['time'] as String,
       status: BookingStatus.fromInt(json['status'] as int? ?? 0),
@@ -80,6 +83,7 @@ class Booking extends Equatable {
     propertyId,
     buyerId,
     agentId,
+    sellerId,
     ymd,
     time,
     status,

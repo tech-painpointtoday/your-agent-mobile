@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:youragent/core/theme/app_colors.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
 
 /// Read-only field display widget for contract details
 class ContractDetailField extends StatelessWidget {

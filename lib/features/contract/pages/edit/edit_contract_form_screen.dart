@@ -3,16 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/di/dependency_injection.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/contract.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_bloc.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_event.dart';
-import 'package:youragent/features/contract/bloc/contract_form/contract_form_state.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/domain/entities/contract.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_bloc.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_event.dart';
+import 'package:yourhome/features/contract/bloc/contract_form/contract_form_state.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 import '../create/steps/property_owner_step.dart';
 import '../create/steps/buyer_info_step.dart';
@@ -21,7 +21,7 @@ import '../create/steps/furniture_step.dart';
 import '../create/steps/payment_step.dart';
 import '../create/steps/additional_conditions_step.dart';
 import '../create/steps/attachment_step.dart';
-import 'package:youragent/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
 
 enum EditContractStepType {
   ownerInfo,

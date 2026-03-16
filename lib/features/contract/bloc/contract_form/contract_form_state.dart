@@ -1,16 +1,16 @@
 import 'package:equatable/equatable.dart';
-import 'package:youragent/domain/entities/contract_type.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/domain/entities/person_type.dart';
-import 'package:youragent/domain/entities/owner.dart';
-import 'package:youragent/domain/entities/buyer.dart';
-import 'package:youragent/domain/entities/appliance_item.dart';
-import 'package:youragent/domain/entities/furniture_item.dart';
-import 'package:youragent/domain/entities/contract_create_data.dart';
-import 'package:youragent/domain/entities/contract_attachment.dart';
-import 'package:youragent/domain/entities/contract_status.dart';
-import 'package:youragent/domain/entities/contract_item_definition.dart';
-import 'package:youragent/domain/entities/contract.dart'; // Added import for Contract
+import 'package:yourhome/domain/entities/contract_type.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/domain/entities/person_type.dart';
+import 'package:yourhome/domain/entities/owner.dart';
+import 'package:yourhome/domain/entities/buyer.dart';
+import 'package:yourhome/domain/entities/appliance_item.dart';
+import 'package:yourhome/domain/entities/furniture_item.dart';
+import 'package:yourhome/domain/entities/contract_create_data.dart';
+import 'package:yourhome/domain/entities/contract_attachment.dart';
+import 'package:yourhome/domain/entities/contract_status.dart';
+import 'package:yourhome/domain/entities/contract_item_definition.dart';
+import 'package:yourhome/domain/entities/contract.dart'; // Added import for Contract
 
 enum ContractFormStatus {
   initial,

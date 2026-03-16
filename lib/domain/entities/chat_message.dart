@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'pagination.dart';
 
 /// ChatMessage entity matching the old Laravel ChatMessage model
-enum SenderType { buyer, agent, seller, staff }
+enum SenderType { buyer, seller, staff }
 
 class ChatMessage extends Equatable {
   final int? id;
@@ -79,8 +79,6 @@ class ChatMessage extends Equatable {
       switch (type.toLowerCase()) {
         case 'buyer':
           return SenderType.buyer;
-        case 'agent':
-          return SenderType.agent;
         case 'seller':
           return SenderType.seller;
         case 'staff':
@@ -130,7 +128,7 @@ class ChatMessage extends Equatable {
   ];
 }
 
-/// Response from GET /agent/chats: { "data": { "messages": [...], "pagination": {...} } }
+/// Response from GET /seller/chats: { "data": { "messages": [...], "pagination": {...} } }
 class PaginatedChatResponse extends Equatable {
   final List<ChatMessage> messages;
   final Pagination pagination;

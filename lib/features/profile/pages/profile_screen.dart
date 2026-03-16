@@ -7,8 +7,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:youragent/widgets/map/map_view.dart';
-import 'package:youragent/widgets/painters/dashed_border_painter.dart';
+import 'package:yourhome/widgets/map/map_view.dart';
+import 'package:yourhome/widgets/painters/dashed_border_painter.dart';
 
 import '../../../app/router.dart';
 import '../../../core/config/app_config.dart';
@@ -19,11 +19,11 @@ import '../../../utils/image_url_helper.dart';
 import '../../../widgets/badges/app_badge.dart';
 import '../../../widgets/buttons/app_button.dart';
 import '../bloc/profile_bloc.dart';
-import '../models/agent_profile.dart';
+import '../models/seller_profile.dart';
 import '../widgets/change_password_bottom_sheet.dart';
 import '../../../widgets/modals/app_image_picker_bottom_sheet.dart';
 import '../../../widgets/dialogs/status_dialog.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 import '../../../widgets/app_bars/silver_app_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -218,10 +218,10 @@ class ProfileView extends StatelessWidget {
 
   Widget _buildContent(
     BuildContext context,
-    AgentProfile profile,
+    SellerProfile profile,
     ProfileBloc profileBloc,
   ) {
-    final agent = profile.agent;
+    final seller = profile.seller;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,8 +240,7 @@ class ProfileView extends StatelessWidget {
                 left: 0,
                 child: _buildProfileHeader(
                   context,
-                  agent,
-                  profile.verificationStatus,
+                  seller,
                   profileBloc,
                 ),
               ),
@@ -275,7 +274,7 @@ class ProfileView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                agent.name,
+                seller.name,
                 style: GoogleFonts.anuphan(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
@@ -283,14 +282,15 @@ class ProfileView extends StatelessWidget {
                 ),
               ),
               Text(
-                agent.email,
+                seller.email,
                 style: GoogleFonts.anuphan(
                   fontSize: 16,
                   color: AppColors.baseGrey,
                 ),
               ),
               const SizedBox(height: 12),
-              if (profile.verificationStatus.emailVerified)
+              // Email verification badge based on emailVerifiedAt
+              if (seller.emailVerifiedAt != null)
                 AppBadge(
                   label: AppLocalizations.of(context).emailVerified,
                   color: BadgeColor.green,
@@ -311,17 +311,11 @@ class ProfileView extends StatelessWidget {
                   ),
                 ),
               const SizedBox(height: 24),
-              _buildProfileCompletenessWidget(context, agent),
+              _buildProfileCompletenessWidget(context, seller),
               const SizedBox(height: 24),
-              _buildPersonalInfoCard(context, agent),
+              _buildPersonalInfoCard(context, seller),
               const SizedBox(height: 16),
-              if (agent.agentCredential.isNotEmpty) ...[
-                _buildConnectionCodeCard(context, agent),
-                const SizedBox(height: 16),
-              ],
-              _buildWorkInfoCard(context, agent),
-              const SizedBox(height: 16),
-              _buildServiceAreaCard(context, agent),
+              _buildServiceAreaCard(context, seller),
               if (AppConfig.isDev) ...[
                 const SizedBox(height: 16),
                 _buildDebugInfoCard(context),
@@ -336,14 +330,14 @@ class ProfileView extends StatelessWidget {
 
   Widget _buildProfileHeader(
     BuildContext context,
-    AgentDetails agent,
-    ProfileVerificationStatus status,
+    SellerDetails seller,
     ProfileBloc profileBloc,
   ) {
     final profilePhotoUrl = ImageUrlHelper.getProfilePhotoUrl(
-      agent.profilePhoto,
+      seller.profilePhoto,
     );
-    final initial = agent.name.isNotEmpty ? agent.name[0].toUpperCase() : '?';
+    final initial =
+        seller.name.isNotEmpty ? seller.name[0].toUpperCase() : '?';
 
     return Stack(
       children: [
@@ -432,20 +426,20 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildPersonalInfoCard(BuildContext context, AgentDetails agent) {
+  Widget _buildPersonalInfoCard(BuildContext context, SellerDetails seller) {
     return _ProfileCard(
       title: AppLocalizations.of(context).personalInfoLabel,
-      onEdit: () => context.push('/profile/edit', extra: agent),
+      onEdit: () => context.push('/profile/edit', extra: seller),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildInfoRow('assets/icons/user.svg', agent.name),
+          _buildInfoRow('assets/icons/user.svg', seller.name),
           const SizedBox(height: 8),
-          _buildInfoRow('assets/icons/email.svg', agent.email),
+          _buildInfoRow('assets/icons/email.svg', seller.email),
           const SizedBox(height: 8),
           _buildInfoRow(
             'assets/icons/phone.svg',
-            agent.mobileNumber ?? AppLocalizations.of(context).notSpecified,
+            seller.mobileNumber ?? AppLocalizations.of(context).notSpecified,
           ),
           const SizedBox(height: 16),
           Text(
@@ -454,7 +448,7 @@ class ProfileView extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            agent.bio ?? AppLocalizations.of(context).notSpecified,
+            seller.bio ?? AppLocalizations.of(context).notSpecified,
             style: GoogleFonts.anuphan(
               fontSize: 16,
               fontWeight: FontWeight.w400,
@@ -466,69 +460,35 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildConnectionCodeCard(BuildContext context, AgentDetails agent) {
-    return _ProfileCard(
-      title: AppLocalizations.of(context).profile_agent_code,
-      onCopy: (BuildContext context) {
-        Clipboard.setData(ClipboardData(text: agent.agentCredential));
-        StatusDialog.showSuccess(
-          context: context,
-          title: AppLocalizations.of(context).connectionCodeCopied,
-        );
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  agent.agentCredential,
-                  style: GoogleFonts.anuphan(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.baseBlack,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          Text(
-            AppLocalizations.of(context).notConnectedAgency,
-            style: GoogleFonts.anuphan(fontSize: 12, color: AppColors.baseGrey),
-          ),
-        ],
-      ),
-    );
-  }
+  // Connection code card removed for seller; backend no longer provides credential
 
-  Widget _buildWorkInfoCard(BuildContext context, AgentDetails agent) {
+  Widget _buildWorkInfoCard(BuildContext context, SellerDetails seller) {
     final hasWorkInfo =
-        agent.companyName != null && agent.companyName!.isNotEmpty;
+        seller.companyName != null && seller.companyName!.isNotEmpty;
 
     if (!hasWorkInfo) {
       return _ProfileCard(
         title: AppLocalizations.of(context).workInfoLabel,
         child: DottedAddButton(
           label: AppLocalizations.of(context).addInfo,
-          onTap: () => context.push('/profile/work-info', extra: agent),
+          onTap: () => context.push('/profile/work-info', extra: seller),
         ),
       );
     }
 
     return _ProfileCard(
       title: AppLocalizations.of(context).workInfoLabel,
-      onEdit: () => context.push('/profile/work-info', extra: agent),
+      onEdit: () => context.push('/profile/work-info', extra: seller),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildWorkInfoRow('assets/icons/briefcase.svg', agent.companyName!),
+          _buildWorkInfoRow('assets/icons/briefcase.svg', seller.companyName!),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
             'assets/icons/file-check.svg',
             AppLocalizations.of(context).licenseNumberWithPrefix(
-              agent.licenseNumber ?? AppLocalizations.of(context).notSpecified,
+              seller.licenseNumber ??
+                  AppLocalizations.of(context).notSpecified,
             ),
           ),
           const SizedBox(height: 12),
@@ -536,7 +496,7 @@ class ProfileView extends StatelessWidget {
             'assets/icons/hour-glass.svg',
             AppLocalizations.of(
               context,
-            ).experienceYears(agent.yearsOfExperience ?? 0),
+            ).experienceYears(seller.yearsOfExperience ?? 0),
           ),
           const SizedBox(height: 16),
           Text(
@@ -548,8 +508,8 @@ class ProfileView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          if (agent.languages?.isNotEmpty == true)
-            ...agent.languages!.entries.map(
+          if (seller.languages?.isNotEmpty == true)
+            ...seller.languages!.entries.map(
               (e) => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
@@ -581,8 +541,8 @@ class ProfileView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          if (agent.socialLinks?.isNotEmpty == true)
-            ...agent.socialLinks!.entries.map((e) {
+          if (seller.socialLinks?.isNotEmpty == true)
+            ...seller.socialLinks!.entries.map((e) {
               String iconPath = '';
               final key = e.key.toLowerCase();
               if (key.contains('facebook')) {
@@ -680,55 +640,31 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceAreaCard(BuildContext context, AgentDetails agent) {
-    final hasServiceArea =
-        agent.reachableRadius != null &&
-        agent.serviceAreaCenterLat != null &&
-        agent.serviceAreaCenterLng != null;
-
-    if (!hasServiceArea) {
-      return _ProfileCard(
-        title: AppLocalizations.of(context).serviceAreaLabel,
-        child: DottedAddButton(
-          label: AppLocalizations.of(context).addInfo,
-          onTap: () => context.push('/profile/service-area', extra: agent),
-        ),
-      );
-    }
-
-    final lat = double.tryParse(agent.serviceAreaCenterLat!);
-    final lng = double.tryParse(agent.serviceAreaCenterLng!);
-
+  Widget _buildServiceAreaCard(BuildContext context, SellerDetails seller) {
     return _ProfileCard(
       title: AppLocalizations.of(context).serviceAreaLabel,
-      onEdit: () => context.push('/profile/service-area', extra: agent),
+      onEdit: () => context.push('/profile/service-area', extra: seller),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MapView(
             properties: [],
             height: 120,
-            initialLocation: LatLng(lat ?? 0, lng ?? 0),
+            // Without precise lat/lng from profile, center map at default 0,0
+            initialLocation: const LatLng(0, 0),
             showCenterMarker: true,
-            radius: (double.tryParse(agent.reachableRadius ?? '0') ?? 0) * 1000,
+            radius: 0,
           ),
           const SizedBox(height: 16),
           _buildWorkInfoRow(
             'assets/icons/map-pin.svg',
-            agent.serviceAreaCenterLat != null &&
-                    agent.serviceAreaCenterLng != null
-                ? '${agent.serviceAreaCenterLat}, ${agent.serviceAreaCenterLng}'
-                : AppLocalizations.of(context).addressNotSpecified,
+              AppLocalizations.of(context).addressNotSpecified,
           ),
           const SizedBox(height: 12),
           _buildWorkInfoRow(
             'assets/icons/chart-15.svg',
             AppLocalizations.of(context).serviceRadiusWithPrefix(
-              double.tryParse(
-                    agent.reachableRadius ?? '',
-                  )?.toStringAsFixed(2) ??
-                  agent.reachableRadius ??
-                  '',
+                '0',
             ),
           ),
         ],
@@ -771,17 +707,11 @@ class ProfileView extends StatelessWidget {
 
   Widget _buildProfileCompletenessWidget(
     BuildContext context,
-    AgentDetails agent,
+    SellerDetails seller,
   ) {
-    // Basic account: Lv 1
-    // Work Info: Lv 2
-    // Service Area: Lv 3
-    final hasWorkInfo = agent.companyName?.isNotEmpty == true;
-    final hasServiceArea = agent.reachableRadius?.isNotEmpty == true;
-
-    int currentLevel = 1;
-    if (hasWorkInfo) currentLevel = 2;
-    if (hasWorkInfo && hasServiceArea) currentLevel = 3;
+    // Simplified completeness: only work info for seller
+    final hasWorkInfo = seller.companyName?.isNotEmpty == true;
+    final currentLevel = hasWorkInfo ? 2 : 1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

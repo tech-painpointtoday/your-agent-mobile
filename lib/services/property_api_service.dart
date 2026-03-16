@@ -1,18 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:youragent/domain/entities/user.dart';
-import 'package:youragent/domain/repositories/auth_repository.dart';
+import 'package:yourhome/domain/repositories/auth_repository.dart';
 import 'api_client.dart';
 import 'api_response_service.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/data/models/api_response.dart';
-import 'package:youragent/data/models/developer_model.dart';
-import 'package:youragent/data/models/condo_project_model.dart';
-import 'package:youragent/data/models/property_specification_filters.dart';
-import 'package:youragent/data/models/house_project_model.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/data/models/api_response.dart';
+import 'package:yourhome/data/models/developer_model.dart';
+import 'package:yourhome/data/models/condo_project_model.dart';
+import 'package:yourhome/data/models/property_specification_filters.dart';
+import 'package:yourhome/data/models/house_project_model.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:youragent/domain/entities/pagination.dart';
-import 'package:youragent/domain/entities/property_results.dart';
+import 'package:yourhome/domain/entities/pagination.dart';
+import 'package:yourhome/domain/entities/property_results.dart';
 
 /// Photo upload data structure
 /// Uses XFile for cross-platform compatibility (web and mobile)
@@ -44,14 +43,11 @@ class PropertyApiService {
     return _instance!;
   }
 
-  /// Get current user role string ('agent' or 'agency')
-  String get _currentRole {
-    final role = _authRepository.currentRole;
-    return role == UserRole.agency ? 'agency' : 'agent';
-  }
+  /// Get current user role string (seller only)
+  String get _currentRole => 'seller';
 
   /// Get all properties (approved only)
-  /// GET /$role/properties (e.g., /agent/properties)
+  /// GET /$role/properties (e.g., /seller/properties)
   /// [q] search query, [listingType] e.g. '1' sale, '2' rent, '3' saleOrRent
   Future<PropertyResults> getProperties({
     String? role, // Optional: defaults to current user role
@@ -225,7 +221,7 @@ class PropertyApiService {
   }
 
   /// Get property status
-  /// GET /agent/properties/{id}/status or /agent/property/{id}/status
+  /// GET /seller/properties/{id}/status or /seller/property/{id}/status
   Future<Property> getPropertyStatus({
     String? role,
     required int propertyId,
@@ -272,7 +268,7 @@ class PropertyApiService {
   }
 
   /// Save a new property using unified endpoint
-  /// POST /agent/properties
+  /// POST /seller/properties
   /// This replaces the old multi-step process (createProperty + createPropertySpecs + createPropertyLocation)
   Future<Property> saveProperty({
     String? role,
@@ -301,7 +297,7 @@ class PropertyApiService {
   }
 
   /// Update an existing property
-  /// PUT /agent/properties/{id}
+  /// PUT /seller/properties/{id}
   Future<Property> updateProperty({
     String? role,
     required int propertyId,
@@ -330,7 +326,7 @@ class PropertyApiService {
   }
 
   /// Save property as draft (partial data allowed)
-  /// POST /agent/properties/draft
+  /// POST /seller/properties/draft
   Future<Map<String, dynamic>> saveDraft({
     String? role,
     required Map<String, dynamic> data,
@@ -351,7 +347,7 @@ class PropertyApiService {
   }
 
   /// Publish a draft property
-  /// POST /agent/properties/{id}/publish
+  /// POST /seller/properties/{id}/publish
   Future<Map<String, dynamic>> publishProperty({
     String? role,
     required int propertyId,
@@ -372,7 +368,7 @@ class PropertyApiService {
 
   /// @deprecated Use createProperty with unified payload instead
   /// Create a new property (with optional photos)
-  /// POST /agent/properties/create
+  /// POST /seller/properties/create
   @Deprecated('Use saveProperty with unified payload instead')
   Future<Property> createPropertyLegacy({
     String? role,
@@ -435,7 +431,7 @@ class PropertyApiService {
 
   /// @deprecated Use createProperty or updateProperty with unified payload instead
   /// Create property specs
-  /// POST /agent/properties/create/specs
+  /// POST /seller/properties/create/specs
   @Deprecated(
     'Use createProperty or updateProperty with unified payload instead',
   )
@@ -478,7 +474,7 @@ class PropertyApiService {
       }
 
       final response = await _apiClient.post(
-        '/agent/properties/create/specs',
+        '/seller/properties/create/specs',
         data: data,
       );
 
@@ -493,7 +489,7 @@ class PropertyApiService {
 
   /// @deprecated Use createProperty or updateProperty with unified payload instead
   /// Create property location
-  /// POST /agent/properties/create/location
+  /// POST /seller/properties/create/location
   @Deprecated(
     'Use createProperty or updateProperty with unified payload instead',
   )
@@ -520,7 +516,7 @@ class PropertyApiService {
       if (postalCode != null) data['postal_code'] = postalCode;
 
       final response = await _apiClient.post(
-        '/agent/properties/create/location',
+        '/seller/properties/create/location',
         data: data,
       );
       return response.data as Map<String, dynamic>;
@@ -533,7 +529,7 @@ class PropertyApiService {
   }
 
   /// Upload photos for a property
-  /// POST /agent/upload/photos or /agency/upload/photos
+  /// POST /seller/upload/photos or /agency/upload/photos
   ///
   /// Expected format:
   /// - property_id: {{property_id}}
@@ -625,7 +621,7 @@ class PropertyApiService {
   }
 
   /// Refresh photo URLs (for S3 URLs that expired)
-  /// POST /agent/refresh/photo-urls or /agency/refresh/photo-urls
+  /// POST /seller/refresh/photo-urls or /agency/refresh/photo-urls
   Future<Map<String, dynamic>> refreshPhotoUrls({
     String? role,
     required int propertyId,
@@ -729,7 +725,7 @@ class PropertyApiService {
   }
 
   /// Delete a property
-  /// DELETE /agent/properties/{id}
+  /// DELETE /seller/properties/{id}
   Future<void> deleteProperty({String? role, required int propertyId}) async {
     try {
       final actualRole = role ?? _currentRole;
@@ -829,7 +825,7 @@ class PropertyApiService {
   }
 
   /// Set condo details for a property
-  /// POST /agent/properties/{propertyId}/condo-details
+  /// POST /seller/properties/{propertyId}/condo-details
   Future<void> setCondoDetails({
     required int propertyId,
     required int condoProjectId,
@@ -844,7 +840,7 @@ class PropertyApiService {
       if (unitNo != null && unitNo.isNotEmpty) data['unit_no'] = unitNo;
 
       final response = await _apiClient.post(
-        '/agent/properties/$propertyId/condo-details',
+        '/seller/properties/$propertyId/condo-details',
         data: data,
       );
 
@@ -866,7 +862,7 @@ class PropertyApiService {
   }
 
   /// Set house details for a property
-  /// POST /agent/properties/{propertyId}/house-details
+  /// POST /seller/properties/{propertyId}/house-details
   Future<void> setHouseDetails({
     required int propertyId,
     int? houseProjectId,
@@ -894,7 +890,7 @@ class PropertyApiService {
       if (notes != null && notes.isNotEmpty) data['notes'] = notes;
 
       final response = await _apiClient.post(
-        '/agent/properties/$propertyId/house-details',
+        '/seller/properties/$propertyId/house-details',
         data: data,
       );
 
@@ -938,7 +934,7 @@ class PropertyApiService {
   }
 
   /// Delete a property image
-  /// POST /agent/properties/{propertyId}/images/{imageId}/delete
+  /// POST /seller/properties/{propertyId}/images/{imageId}/delete
   Future<void> deletePropertyImage({
     String? role,
     required int propertyId,
@@ -970,14 +966,14 @@ class PropertyApiService {
   }
 
   /// Create a new developer
-  /// POST /agent/developers
+  /// POST /seller/developers
   Future<Map<String, dynamic>> createDeveloper({
     required String nameEn,
     required String nameTh,
   }) async {
     try {
       final response = await _apiClient.post(
-        '/agent/developers',
+        '/seller/developers',
         data: {'name_en': nameEn, 'name_th': nameTh, 'is_active': true},
       );
 
@@ -998,7 +994,7 @@ class PropertyApiService {
   }
 
   /// Create a new condo project
-  /// POST /agent/condo-projects
+  /// POST /seller/condo-projects
   Future<Map<String, dynamic>> createCondoProject({
     required int developerId,
     required String nameEn,
@@ -1008,7 +1004,7 @@ class PropertyApiService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/agent/condo-projects',
+        '/seller/condo-projects',
         data: {
           'developer_id': developerId,
           'name_en': nameEn,
@@ -1036,7 +1032,7 @@ class PropertyApiService {
   }
 
   /// Create a new house project
-  /// POST /agent/house-projects
+  /// POST /seller/house-projects
   Future<Map<String, dynamic>> createHouseProject({
     required int developerId,
     required String nameEn,
@@ -1046,7 +1042,7 @@ class PropertyApiService {
   }) async {
     try {
       final response = await _apiClient.post(
-        '/agent/house-projects',
+        '/seller/house-projects',
         data: {
           'developer_id': developerId,
           'name_en': nameEn,

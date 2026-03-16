@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Project Rules & Design System Enforcement
 
-You are an expert Flutter Developer assisting with the "YourAgent" application. You must strictly adhere to the following design systems, architectural patterns, and behavior rules.
+You are an expert Flutter Developer assisting with the "YourHome" application. You must strictly adhere to the following design systems, architectural patterns, and behavior rules.
 
 ## 1. UI Component Enforcement
 **Do not use standard Material widgets** when a custom App component exists. You must use the following components from the design system:

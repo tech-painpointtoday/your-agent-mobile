@@ -3,20 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
-import 'package:youragent/features/property/bloc/property_metadata/property_metadata_bloc.dart';
-import 'package:youragent/features/property/bloc/property_metadata/property_metadata_event.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/features/property/bloc/property_form/property_form_bloc.dart';
+import 'package:yourhome/features/property/bloc/property_metadata/property_metadata_bloc.dart';
+import 'package:yourhome/features/property/bloc/property_metadata/property_metadata_event.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 import '../create/steps/additional_info_step.dart';
 import '../create/steps/general_info_step.dart';
 import '../create/steps/property_detail_step.dart';
 import '../create/steps/property_images_step.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 enum EditPropertyStepType {
   generalInfo,

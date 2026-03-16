@@ -11,7 +11,7 @@ import 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignInWithEmail signInWithEmailUseCase;
   final RegisterWithEmail registerWithEmailUseCase;
-  final RegisterAgent registerAgentUseCase;
+  final RegisterSeller registerSellerUseCase;
   final SignInWithGoogle signInWithGoogleUseCase;
   final SignInWithFacebook signInWithFacebookUseCase;
   final SignOut signOutUseCase;
@@ -20,14 +20,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required this.signInWithEmailUseCase,
     required this.registerWithEmailUseCase,
-    required this.registerAgentUseCase,
+    required this.registerSellerUseCase,
     required this.signInWithGoogleUseCase,
     required this.signInWithFacebookUseCase,
     required this.signOutUseCase,
     required this.authRepository,
   }) : super(const AuthInitial()) {
     on<SignInWithEmailEvent>(_onSignInWithEmail);
-    on<RegisterAgentEvent>(_onRegisterAgent);
+    on<RegisterSellerEvent>(_onRegisterSeller);
     on<SignOutEvent>(_onSignOut);
     on<CheckAuthStatusEvent>(_onCheckAuthStatus);
     on<SetRoleEvent>(_onSetRole);
@@ -77,13 +77,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  Future<void> _onRegisterAgent(
-    RegisterAgentEvent event,
+  Future<void> _onRegisterSeller(
+    RegisterSellerEvent event,
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthLoading());
-    final result = await registerAgentUseCase(
-      RegisterAgentParams(
+    final result = await registerSellerUseCase(
+      RegisterSellerParams(
         name: event.name,
         email: event.email,
         password: event.password,

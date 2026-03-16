@@ -8,8 +8,8 @@ import '../../../widgets/buttons/app_button.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import 'package:youragent/l10n/app_localizations.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
 
 class EmailVerificationPendingScreen extends StatelessWidget {
   final String email;

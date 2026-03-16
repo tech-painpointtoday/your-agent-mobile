@@ -24,11 +24,11 @@ flutter build appbundle --flavor dev -t lib/main_dev.dart $BUILD_ARGS
 
 # Rename the output AAB
 if [ -f "build/app/outputs/bundle/devRelease/app-dev-release.aab" ]; then
-  mv "build/app/outputs/bundle/devRelease/app-dev-release.aab" "build/app/outputs/bundle/devRelease/youragent_dev_v${VERSION_SAFE}.aab"
-  echo "Renamed to build/app/outputs/bundle/devRelease/youragent_dev_v${VERSION_SAFE}.aab"
+  mv "build/app/outputs/bundle/devRelease/app-dev-release.aab" "build/app/outputs/bundle/devRelease/yourhome_dev_v${VERSION_SAFE}.aab"
+  echo "Renamed to build/app/outputs/bundle/devRelease/yourhome_dev_v${VERSION_SAFE}.aab"
 elif [ -f "build/app/outputs/bundle/devDebug/app-dev-debug.aab" ]; then
-  mv "build/app/outputs/bundle/devDebug/app-dev-debug.aab" "build/app/outputs/bundle/devDebug/youragent_dev_debug_v${VERSION_SAFE}.aab"
-  echo "Renamed to build/app/outputs/bundle/devDebug/youragent_dev_debug_v${VERSION_SAFE}.aab"
+  mv "build/app/outputs/bundle/devDebug/app-dev-debug.aab" "build/app/outputs/bundle/devDebug/yourhome_dev_debug_v${VERSION_SAFE}.aab"
+  echo "Renamed to build/app/outputs/bundle/devDebug/yourhome_dev_debug_v${VERSION_SAFE}.aab"
 else
   echo "AAB file not found"
 fi

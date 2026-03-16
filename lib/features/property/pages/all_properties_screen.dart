@@ -3,18 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:youragent/core/di/dependency_injection.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/features/property/widgets/property_list_item.dart';
-import 'package:youragent/features/property/widgets/property_filter_bottom_sheet.dart';
-import 'package:youragent/widgets/app_search_bar.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/core/extensions/l10n_extensions.dart';
-import 'package:youragent/domain/entities/property_filter.dart';
-import 'package:youragent/features/property/bloc/property_list/property_list_bloc.dart';
-import 'package:youragent/features/property/bloc/property_list/property_list_event.dart';
-import 'package:youragent/features/property/bloc/property_list/property_list_state.dart';
+import 'package:yourhome/core/di/dependency_injection.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/features/property/widgets/property_list_item.dart';
+import 'package:yourhome/features/property/widgets/property_filter_bottom_sheet.dart';
+import 'package:yourhome/widgets/app_search_bar.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/domain/entities/property_filter.dart';
+import 'package:yourhome/features/property/bloc/property_list/property_list_bloc.dart';
+import 'package:yourhome/features/property/bloc/property_list/property_list_event.dart';
+import 'package:yourhome/features/property/bloc/property_list/property_list_state.dart';
 
 /// Screen showing all properties in a list with infinite scroll
 class AllPropertiesScreen extends StatefulWidget {

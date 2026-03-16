@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/domain/entities/contract.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/domain/entities/contract.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
+import 'package:yourhome/widgets/buttons/app_button.dart';
 import 'contract_status_badge.dart';
-import 'package:youragent/domain/entities/contract_status.dart';
+import 'package:yourhome/domain/entities/contract_status.dart';
 import 'contract_share_bottom_sheet.dart';
-import 'package:youragent/core/extensions/l10n_extensions.dart';
-import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
-import 'package:youragent/utils/app_utils.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/widgets/modals/app_call_bottom_sheet.dart';
+import 'package:yourhome/utils/app_utils.dart';
 
 class ContractListItem extends StatefulWidget {
   final Contract contract;

@@ -6,14 +6,14 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:youragent/core/theme/app_colors.dart';
-import 'package:youragent/features/property/bloc/property_form/property_form_bloc.dart';
-import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/widgets/dialogs/status_dialog.dart';
-import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
-import 'package:youragent/widgets/painters/dashed_border_painter.dart';
-import 'package:youragent/l10n/app_localizations.dart';
-import 'package:youragent/widgets/modals/app_image_picker_bottom_sheet.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
+import 'package:yourhome/features/property/bloc/property_form/property_form_bloc.dart';
+import 'package:yourhome/widgets/badges/app_badge.dart';
+import 'package:yourhome/widgets/dialogs/status_dialog.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:yourhome/widgets/painters/dashed_border_painter.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
+import 'package:yourhome/widgets/modals/app_image_picker_bottom_sheet.dart';
 
 class PropertyImagesStep extends StatelessWidget {
   final int? step;

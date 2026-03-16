@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:youragent/domain/entities/property.dart';
-import 'package:youragent/l10n/app_localizations.dart';
+import 'package:yourhome/domain/entities/property.dart';
+import 'package:yourhome/l10n/app_localizations.dart';
 
 class PropertyL10n {
   static String getPropertyTypeLabel(BuildContext context, PropertyType type) {

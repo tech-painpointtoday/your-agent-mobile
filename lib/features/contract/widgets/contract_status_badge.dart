@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:youragent/core/theme/app_colors.dart';
+import 'package:yourhome/core/theme/app_colors.dart';
 import '../../../domain/entities/contract_status.dart';
-import 'package:youragent/core/extensions/l10n_extensions.dart';
+import 'package:yourhome/core/extensions/l10n_extensions.dart';
 
 class ContractStatusBadge extends StatelessWidget {
   final ContractStatus status;
