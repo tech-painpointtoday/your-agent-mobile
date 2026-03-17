@@ -352,7 +352,6 @@ class _PropertyDetailStepState extends State<PropertyDetailStep> {
                 AppTextFormField(
                   label: '${AppLocalizations.of(context).builtLabel} ✦',
                   controller: _builtController,
-                  isRequired: true,
                   readOnly: false,
                   showCursor: false,
                   hintText: AppLocalizations.of(context).builtHint,

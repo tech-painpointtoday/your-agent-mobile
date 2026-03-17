@@ -557,7 +557,6 @@ class PropertyFormState extends Equatable {
           bedrooms != null &&
           bathrooms != null &&
           garage != null &&
-          built != null &&
           houseColor != null;
 
       bool priceValid = false;
