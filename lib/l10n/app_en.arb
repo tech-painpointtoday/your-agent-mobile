@@ -90,7 +90,7 @@
   "enter_email": "Please enter your email",
   "enter_valid_email": "Please enter a valid email",
   "enter_password": "Please enter your password",
-  "password_length_error": "Password must be at least 6 characters",
+  "password_length_error": "Password must be at least 8 characters",
   "sign_in_cancelled": "Sign in cancelled",
   "enter_name": "Please enter your name",
   "confirm_password_hint": "Confirm your password",

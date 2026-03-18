@@ -10,6 +10,7 @@ import 'package:yourhome/features/contract/pages/edit/edit_contract_menu_screen.
 import 'package:yourhome/features/contract/bloc/contract_form/contract_form_bloc.dart';
 import 'package:yourhome/features/contract/pages/create/add_contract_screen.dart';
 import 'package:yourhome/features/calendar/pages/booking_detail_screen.dart';
+import 'package:yourhome/features/calendar/pages/seller_booking_route_map_screen.dart';
 import 'package:yourhome/features/home/pages/home_screen.dart';
 import 'package:yourhome/features/property/pages/create/create_property_screen.dart';
 import 'package:yourhome/features/property/pages/edit/edit_property_form_screen.dart';
@@ -23,6 +24,7 @@ import '../features/auth/pages/forgot_password_screen.dart';
 import '../features/auth/pages/login_screen.dart';
 import '../features/auth/pages/register_screen.dart';
 import '../features/auth/pages/reset_password_screen.dart';
+import '../features/auth/pages/verify_email_screen.dart';
 import '../features/bureau/pages/bureau_screen.dart';
 import '../features/co_agent/pages/co_agent_screen.dart';
 import '../features/contract/pages/contract_screen.dart';
@@ -73,7 +75,8 @@ class AppRouter {
           currentPath.startsWith('/policy') ||
           currentPath.startsWith('/forgot-password') ||
           currentPath.startsWith('/reset-password') ||
-          currentPath.startsWith('/email-verification-pending')) {
+          currentPath.startsWith('/email-verification-pending') ||
+          currentPath.startsWith('/verify-email')) {
         return null;
       }
 
@@ -195,6 +198,13 @@ class AppRouter {
         builder: (context, state) {
           final id = int.parse(state.pathParameters['id']!);
           return BookingDetailScreen(bookingId: id);
+        },
+      ),
+      GoRoute(
+        path: '/seller/bookings/:id/route',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return SellerBookingRouteMapScreen(bookingId: id);
         },
       ),
       GoRoute(
@@ -358,6 +368,24 @@ class AppRouter {
             return LoginScreen(changeLocale: changeLocale);
           }
           return EmailVerificationPendingScreen(email: email);
+        },
+      ),
+      GoRoute(
+        path: '/verify-email',
+        builder: (context, state) {
+          final qp = state.uri.queryParameters;
+          final id = qp['id'] ?? '';
+          final hash = qp['hash'] ?? '';
+          final expires = qp['expires'] ?? '';
+          final signature = qp['signature'] ?? '';
+          final role = qp['role'] ?? '';
+          return VerifyEmailScreen(
+            id: id,
+            hash: hash,
+            expires: expires,
+            signature: signature,
+            role: role,
+          );
         },
       ),
       // Legacy route - redirects to main navigation

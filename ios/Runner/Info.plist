@@ -96,6 +96,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Your camera is used to take a picture</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

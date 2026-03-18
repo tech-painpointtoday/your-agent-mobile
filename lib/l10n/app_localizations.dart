@@ -641,7 +641,7 @@ abstract class AppLocalizations {
   /// No description provided for @password_length_error.
   ///
   /// In en, this message translates to:
-  /// **'Password must be at least 6 characters'**
+  /// **'Password must be at least 8 characters'**
   String get password_length_error;
 
   /// No description provided for @sign_in_cancelled.

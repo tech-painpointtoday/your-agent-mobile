@@ -23,6 +23,9 @@ import 'package:yourhome/features/calendar/bloc/booking_list/booking_date_filter
 import '../widgets/booking_card.dart';
 import 'package:yourhome/widgets/dialogs/status_dialog.dart';
 import 'package:yourhome/core/enums/thai_month.dart';
+import 'package:yourhome/core/enums/booking_attendance_status.dart';
+import 'package:yourhome/domain/entities/booking.dart';
+import 'package:yourhome/widgets/modals/app_confirmation_bottom_sheet.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -59,6 +62,19 @@ class _CalendarScreenState extends State<CalendarScreen>
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
+        switch (_tabController.index) {
+          case 0:
+            _bookingListBloc.add(const FetchBookings(refresh: true));
+            break;
+          case 1:
+            _refreshHistory();
+            break;
+          case 2:
+            _availabilityBloc.add(
+              FetchAvailability(date: DateTime.now(), forceRefresh: true),
+            );
+            break;
+        }
         setState(() {});
       }
     });
@@ -168,6 +184,120 @@ class _CalendarScreenState extends State<CalendarScreen>
         );
       }
     }
+  }
+
+  Future<void> _onStartTravel(BuildContext context, Booking booking) async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      await StatusDialog.showLoadingWhile(
+        context: context,
+        operation: () async {
+          if (booking.attendance?.seller?.confirmedOnDateAt == null) {
+            await DependencyInjection.bookingApiService.updateAttendanceStatus(
+              id: booking.id,
+              status: BookingAttendanceStatus.confirmedOnDate,
+            );
+          }
+          await DependencyInjection.bookingApiService.updateAttendanceStatus(
+            id: booking.id,
+            status: BookingAttendanceStatus.traveling,
+          );
+        },
+      );
+
+      if (!context.mounted) return;
+
+      StatusDialog.showSuccess(
+        context: context,
+        title: l10n.successTitle,
+        message: l10n.booking_start_traveling,
+      );
+
+      _bookingListBloc.add(const FetchBookings(refresh: true));
+      context.push('/seller/bookings/${booking.id}/route');
+    } catch (e) {
+      if (!context.mounted) return;
+      StatusDialog.showError(
+        context: context,
+        title: l10n.errorOccurredTitle,
+        message: e.toString(),
+      );
+    }
+  }
+
+  Future<void> _onArrivedFromList(BuildContext context, Booking booking) async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      await StatusDialog.showLoadingWhile(
+        context: context,
+        operation: () async {
+          final result = await DependencyInjection.bookingApiService
+              .updateAttendanceStatus(
+            id: booking.id,
+            status: BookingAttendanceStatus.arrived,
+          );
+          if (!context.mounted) return;
+          StatusDialog.showSuccess(
+            context: context,
+            title: l10n.successTitle,
+            message: result.statusLabel ?? result.message ?? '',
+          );
+        },
+      );
+
+      if (!context.mounted) return;
+
+      _bookingListBloc.add(const FetchBookings(refresh: true));
+    } catch (e) {
+      if (!context.mounted) return;
+      StatusDialog.showError(
+        context: context,
+        title: l10n.errorOccurredTitle,
+        message: e.toString(),
+      );
+    }
+  }
+
+  Future<void> _onSellerConfirmFromList(
+    BuildContext context,
+    Booking booking,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    AppConfirmationBottomSheet.show(
+      context: context,
+      title: l10n.booking_confirm_booking_title,
+      description: l10n.booking_confirm_booking_desc,
+      confirmLabel: l10n.confirm,
+      onConfirm: () async {
+        try {
+          await StatusDialog.showLoadingWhile(
+            context: context,
+            operation: () async {
+              final result = await DependencyInjection.bookingApiService
+                  .updateAttendanceStatus(
+                id: booking.id,
+                status: BookingAttendanceStatus.confirmedOnDate,
+              );
+              if (!context.mounted) return;
+              StatusDialog.showSuccess(
+                context: context,
+                title: l10n.successTitle,
+                message: result.statusLabel ?? result.message ?? '',
+              );
+            },
+          );
+          if (!context.mounted) return;
+          _bookingListBloc.add(const FetchBookings(refresh: true));
+        } catch (e) {
+          if (!context.mounted) return;
+          StatusDialog.showError(
+            context: context,
+            title: l10n.errorOccurredTitle,
+            message: e.toString(),
+          );
+        }
+      },
+    );
   }
 
   void _showMonthPicker() {
@@ -604,17 +734,26 @@ class _CalendarScreenState extends State<CalendarScreen>
                               separatorBuilder: (context, index) =>
                                   const SizedBox(height: 12),
                               itemBuilder: (context, index) {
-                                return BookingCard(
-                                  booking: bookings[index],
-                                  onStatusAction: (status) =>
-                                      _updateBookingStatus(
-                                        bookings[index].id,
-                                        status,
-                                      ),
-                                  onCancelTap: () =>
-                                      _cancelBooking(bookings[index].id),
-                                  onCoAgentTap: () {},
-                                );
+                            final booking = bookings[index];
+                            return BookingCard(
+                              booking: booking,
+                              onStatusAction: (status) =>
+                                  _updateBookingStatus(
+                                    booking.id,
+                                    status,
+                                  ),
+                              onCancelTap: () => _cancelBooking(booking.id),
+                              onCoAgentTap: () {},
+                              onStartTravelTap: () =>
+                                  _onStartTravel(context, booking),
+                              onArrivedTap: () =>
+                                  _onArrivedFromList(context, booking),
+                              onConfirmAppointmentTap: () =>
+                                  _onSellerConfirmFromList(context, booking),
+                              onRouteMapTap: () => context.push(
+                                '/seller/bookings/${booking.id}/route',
+                              ),
+                            );
                               },
                             ),
                     ),

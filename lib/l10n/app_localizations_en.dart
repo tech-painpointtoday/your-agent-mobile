@@ -282,7 +282,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enter_password => 'Please enter your password';
 
   @override
-  String get password_length_error => 'Password must be at least 6 characters';
+  String get password_length_error => 'Password must be at least 8 characters';
 
   @override
   String get sign_in_cancelled => 'Sign in cancelled';

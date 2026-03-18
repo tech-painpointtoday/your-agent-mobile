@@ -282,7 +282,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get password_length_error =>
-      'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
+      'รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร';
 
   @override
   String get sign_in_cancelled => 'ยกเลิกการลงชื่อเข้าใช้';

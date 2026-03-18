@@ -143,7 +143,7 @@ class _RegisterFormState extends State<RegisterForm> {
             controller: widget.passwordController,
             validator: (v) {
               if (v == null || v.isEmpty) return l10n.enter_password;
-              if (v.length < 6) return l10n.password_length_error;
+              if (v.length < 8) return l10n.password_length_error;
               return null;
             },
           ),
@@ -181,8 +181,7 @@ class _RegisterFormState extends State<RegisterForm> {
             onChanged: widget.onPrivacyChanged,
             linkText: l10n.link_privacy_policy,
             onLinkTap: () async {
-              final accepted =
-                  await context.push<bool>('/policy?type=privacy');
+              final accepted = await context.push<bool>('/policy?type=privacy');
               if (accepted == true) {
                 setState(() => _hasOpenedPrivacyPolicy = true);
                 widget.onPrivacyChanged(true);
