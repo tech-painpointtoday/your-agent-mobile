@@ -179,31 +179,31 @@ class _PropertyImageCarouselState extends State<PropertyImageCarousel> {
             ),
           ),
 
-        // Page indicators (dots) at bottom
-        if ((widget.imageUrls?.length ?? 0) > 1 ||
-            (widget.imageFiles?.length ?? 0) > 1)
-          Positioned(
-            bottom: 16,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                _totalImages,
-                (index) => Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: _currentPage == index
-                        ? Colors.white
-                        : Colors.white.withValues(alpha: 0.5),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-            ),
-          ),
+        // // Page indicators (dots) at bottom
+        // if ((widget.imageUrls?.length ?? 0) > 1 ||
+        //     (widget.imageFiles?.length ?? 0) > 1)
+        //   Positioned(
+        //     bottom: 16,
+        //     left: 0,
+        //     right: 0,
+        //     child: Row(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: List.generate(
+        //         _totalImages,
+        //         (index) => Container(
+        //           margin: const EdgeInsets.symmetric(horizontal: 4),
+        //           width: 6,
+        //           height: 6,
+        //           decoration: BoxDecoration(
+        //             color: _currentPage == index
+        //                 ? Colors.white
+        //                 : Colors.white.withValues(alpha: 0.5),
+        //             shape: BoxShape.circle,
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
       ],
     );
   }

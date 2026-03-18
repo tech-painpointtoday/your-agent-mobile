@@ -158,6 +158,7 @@ class BookingListBloc extends Bloc<BookingListEvent, BookingListState> {
           hasReachedMax:
               response.bookings.isEmpty ||
               response.pagination.currentPage >= response.pagination.lastPage,
+          isLoadingMore: false,
         ),
       );
     } catch (e) {

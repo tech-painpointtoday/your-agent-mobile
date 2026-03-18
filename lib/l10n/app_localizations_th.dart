@@ -1930,13 +1930,33 @@ class AppLocalizationsTh extends AppLocalizations {
   String get booking_retry => 'ลองใหม่';
 
   @override
-  String get booking_status_pending_client => 'ลูกค้ารอยืนยัน';
+  String get booking_status_pending_client => 'รอยืนยันนัดหมายจากลูกค้า';
 
   @override
   String get booking_status_traveling_client => 'ลูกค้ากำลังเดินทาง';
 
   @override
   String get booking_status_arrived_client => 'ถึงที่หมายแล้ว';
+
+  @override
+  String get booking_status_before_appointment => 'ยังไม่ถึงวันนัดหมาย';
+
+  @override
+  String get booking_status_waiting_confirm_badge => 'รอยืนยันนัดหมาย';
+
+  @override
+  String get booking_status_waiting_client_confirm_badge =>
+      'รอยืนยันนัดหมายจากลูกค้า';
+
+  @override
+  String booking_status_agent_please_confirm_line(String action) {
+    return 'กรุณากด “$action” เพื่อยืนยันนัดหมาย';
+  }
+
+  @override
+  String booking_status_agent_please_confirm_line_detail(String action) {
+    return 'กรุณากด “$action” เพื่อยืนยันการนัดหมายตามกำหนดการ';
+  }
 
   @override
   String get booking_confirm_booking => 'ยืนยันนัด';
@@ -1947,6 +1967,30 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get booking_confirm_booking_desc =>
       'คุณต้องการยืนยันนัดหมายนี้หรือไม่?';
+
+  @override
+  String get booking_route_map_button => 'แผนที่เส้นทาง';
+
+  @override
+  String get booking_route_duration_label => 'ระยะเวลา';
+
+  @override
+  String get booking_route_exit_button => 'ออก';
+
+  @override
+  String booking_route_you_will_arrive_at(String time) {
+    return 'คุณจะถึง $time น.';
+  }
+
+  @override
+  String booking_route_agent_timing(String start, String arrive) {
+    return 'เริ่มเดินทาง $start --- จะถึงประมาณ $arrive';
+  }
+
+  @override
+  String booking_route_buyer_arrived_time(String time) {
+    return 'ถึงเมื่อ $time น.';
+  }
 
   @override
   String get booking_start_traveling => 'เริ่มเดินทาง';
@@ -1963,6 +2007,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get booking_confirm_arrived_desc => 'คุณถึงที่หมายแล้วใช่หรือไม่?';
+
+  @override
+  String get buyer_traveling => 'ลูกค้ากำลังเดินทาง';
 
   @override
   String get booking_finish_work => 'เสร็จงาน';
@@ -3614,7 +3661,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get confirmEmail => 'ยืนยันอีเมล';
 
   @override
-  String confirmSubmitEmail(Object email) {
+  String confirmSubmitEmail(String email) {
     return 'เราได้ส่งลิงก์ยืนยันไปที่ $email แล้ว\nกรุณายืนยันอีเมลผ่านลิงก์ที่ส่งไป เพื่อเริ่มต้นใช้งาน';
   }
 

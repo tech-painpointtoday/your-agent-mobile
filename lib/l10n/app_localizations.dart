@@ -3794,6 +3794,36 @@ abstract class AppLocalizations {
   /// **'Arrived at destination'**
   String get booking_status_arrived_client;
 
+  /// No description provided for @booking_status_before_appointment.
+  ///
+  /// In en, this message translates to:
+  /// **'Not appointment day yet'**
+  String get booking_status_before_appointment;
+
+  /// No description provided for @booking_status_waiting_confirm_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to confirm appointment'**
+  String get booking_status_waiting_confirm_badge;
+
+  /// No description provided for @booking_status_waiting_client_confirm_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for renter/buyer confirmation'**
+  String get booking_status_waiting_client_confirm_badge;
+
+  /// No description provided for @booking_status_agent_please_confirm_line.
+  ///
+  /// In en, this message translates to:
+  /// **'Please tap “{action}” to confirm the appointment'**
+  String booking_status_agent_please_confirm_line(String action);
+
+  /// No description provided for @booking_status_agent_please_confirm_line_detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please tap “{action}” to confirm the appointment as scheduled'**
+  String booking_status_agent_please_confirm_line_detail(String action);
+
   /// No description provided for @booking_confirm_booking.
   ///
   /// In en, this message translates to:
@@ -3811,6 +3841,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Do you want to confirm this booking?'**
   String get booking_confirm_booking_desc;
+
+  /// No description provided for @booking_route_map_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Route map'**
+  String get booking_route_map_button;
+
+  /// No description provided for @booking_route_duration_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get booking_route_duration_label;
+
+  /// No description provided for @booking_route_exit_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get booking_route_exit_button;
+
+  /// No description provided for @booking_route_you_will_arrive_at.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll arrive at {time}'**
+  String booking_route_you_will_arrive_at(String time);
+
+  /// No description provided for @booking_route_agent_timing.
+  ///
+  /// In en, this message translates to:
+  /// **'Started at {start} --- Arrived at {arrive}'**
+  String booking_route_agent_timing(String start, String arrive);
+
+  /// No description provided for @booking_route_buyer_arrived_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived at {time}'**
+  String booking_route_buyer_arrived_time(String time);
 
   /// No description provided for @booking_start_traveling.
   ///
@@ -3841,6 +3907,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Have you arrived at the destination?'**
   String get booking_confirm_arrived_desc;
+
+  /// No description provided for @buyer_traveling.
+  ///
+  /// In en, this message translates to:
+  /// **'Client is traveling'**
+  String get buyer_traveling;
 
   /// No description provided for @booking_finish_work.
   ///
@@ -7050,7 +7122,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'We\'ve sent a confirmation link to {email}. Please check your inbox.'**
-  String confirmSubmitEmail(Object email);
+  String confirmSubmitEmail(String email);
 
   /// No description provided for @locationProperty.
   ///

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:youragent/core/enums/booking_attendance_status.dart';
 import 'package:youragent/domain/entities/booking.dart';
 import 'package:youragent/services/api_client.dart';
 
@@ -28,10 +29,40 @@ class TravelTimeResult {
       travelTimeFormatted: json['travel_time_formatted']?.toString(),
       timeUntilAppointmentSeconds:
           json['time_until_appointment_seconds'] as int?,
-      timeUntilAppointmentFormatted:
-          json['time_until_appointment_formatted']?.toString(),
+      timeUntilAppointmentFormatted: json['time_until_appointment_formatted']
+          ?.toString(),
       requiredTimeSeconds: json['required_time_seconds'] as int?,
       message: json['message']?.toString(),
+    );
+  }
+}
+
+class AttendanceStatusUpdateResult {
+  final String? message;
+  final int? bookingId;
+  final String? status;
+  final String? statusLabel;
+  final BookingAttendance? attendance;
+
+  const AttendanceStatusUpdateResult({
+    this.message,
+    this.bookingId,
+    this.status,
+    this.statusLabel,
+    this.attendance,
+  });
+
+  factory AttendanceStatusUpdateResult.fromJson(Map<String, dynamic> json) {
+    return AttendanceStatusUpdateResult(
+      message: json['message']?.toString(),
+      bookingId: json['booking_id'] as int?,
+      status: json['status']?.toString(),
+      statusLabel: json['status_label']?.toString(),
+      attendance: json['attendance'] is Map<String, dynamic>
+          ? BookingAttendance.fromJson(
+              json['attendance'] as Map<String, dynamic>,
+            )
+          : null,
     );
   }
 }
@@ -91,15 +122,13 @@ class BookingApiService {
     required double currentLng,
   }) async {
     final response = await _apiClient.dio.post(
-      '/api/bookings/$id/confirm',
-      data: {
-        'current_lat': currentLat,
-        'current_lng': currentLng,
-      },
+      '/bookings/$id/confirm',
+      data: {'current_lat': currentLat, 'current_lng': currentLng},
       options: Options(headers: {'Accept': 'application/json'}),
     );
 
-    final data = response.data['data'] as Map<String, dynamic>? ??
+    final data =
+        response.data['data'] as Map<String, dynamic>? ??
         response.data as Map<String, dynamic>;
     return Booking.fromJson(data);
   }
@@ -107,19 +136,20 @@ class BookingApiService {
   /// Updates individual attendance status for the current user (agent).
   ///
   /// Wraps `POST /api/bookings/{id}/attendance-status`.
-  Future<Booking> updateAttendanceStatus({
+  Future<AttendanceStatusUpdateResult> updateAttendanceStatus({
     required int id,
-    required String status,
+    required BookingAttendanceStatus status,
   }) async {
     final response = await _apiClient.dio.post(
-      '/api/bookings/$id/attendance-status',
-      data: {'status': status},
+      '/bookings/$id/attendance-status',
+      data: {'status': status.apiValue},
       options: Options(headers: {'Accept': 'application/json'}),
     );
 
-    final data = response.data['data'] as Map<String, dynamic>? ??
+    final data =
+        response.data['data'] as Map<String, dynamic>? ??
         response.data as Map<String, dynamic>;
-    return Booking.fromJson(data);
+    return AttendanceStatusUpdateResult.fromJson(data);
   }
 
   /// Calculates travel time from the agent's current location to the property.
@@ -131,15 +161,13 @@ class BookingApiService {
     required double currentLng,
   }) async {
     final response = await _apiClient.dio.post(
-      '/api/bookings/$id/calculate-travel-time',
-      data: {
-        'current_lat': currentLat,
-        'current_lng': currentLng,
-      },
+      '/bookings/$id/calculate-travel-time',
+      data: {'current_lat': currentLat, 'current_lng': currentLng},
       options: Options(headers: {'Accept': 'application/json'}),
     );
 
-    final data = response.data['data'] as Map<String, dynamic>? ??
+    final data =
+        response.data['data'] as Map<String, dynamic>? ??
         response.data as Map<String, dynamic>;
     return TravelTimeResult.fromJson(data);
   }
@@ -149,7 +177,7 @@ class BookingApiService {
   /// Wraps `POST /api/bookings/{id}/request-substitution`.
   Future<void> requestSubstitution({required int id}) async {
     await _apiClient.dio.post(
-      '/api/bookings/$id/request-substitution',
+      '/bookings/$id/request-substitution',
       data: const {},
       options: Options(headers: {'Accept': 'application/json'}),
     );

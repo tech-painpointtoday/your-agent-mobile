@@ -1942,6 +1942,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get booking_status_arrived_client => 'Arrived at destination';
 
   @override
+  String get booking_status_before_appointment => 'Not appointment day yet';
+
+  @override
+  String get booking_status_waiting_confirm_badge =>
+      'Waiting to confirm appointment';
+
+  @override
+  String get booking_status_waiting_client_confirm_badge =>
+      'Waiting for renter/buyer confirmation';
+
+  @override
+  String booking_status_agent_please_confirm_line(String action) {
+    return 'Please tap “$action” to confirm the appointment';
+  }
+
+  @override
+  String booking_status_agent_please_confirm_line_detail(String action) {
+    return 'Please tap “$action” to confirm the appointment as scheduled';
+  }
+
+  @override
   String get booking_confirm_booking => 'Confirm Booking';
 
   @override
@@ -1950,6 +1971,30 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get booking_confirm_booking_desc =>
       'Do you want to confirm this booking?';
+
+  @override
+  String get booking_route_map_button => 'Route map';
+
+  @override
+  String get booking_route_duration_label => 'Duration';
+
+  @override
+  String get booking_route_exit_button => 'Exit';
+
+  @override
+  String booking_route_you_will_arrive_at(String time) {
+    return 'You\'ll arrive at $time';
+  }
+
+  @override
+  String booking_route_agent_timing(String start, String arrive) {
+    return 'Started at $start --- Arrived at $arrive';
+  }
+
+  @override
+  String booking_route_buyer_arrived_time(String time) {
+    return 'Arrived at $time';
+  }
 
   @override
   String get booking_start_traveling => 'Start Traveling';
@@ -1967,6 +2012,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get booking_confirm_arrived_desc =>
       'Have you arrived at the destination?';
+
+  @override
+  String get buyer_traveling => 'Client is traveling';
 
   @override
   String get booking_finish_work => 'Finish Work';
@@ -3618,7 +3666,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmEmail => 'Confirm email';
 
   @override
-  String confirmSubmitEmail(Object email) {
+  String confirmSubmitEmail(String email) {
     return 'We\'ve sent a confirmation link to $email. Please check your inbox.';
   }
 

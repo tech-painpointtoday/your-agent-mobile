@@ -11,7 +11,9 @@ import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youragent/l10n/app_localizations.dart';
+import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:youragent/features/calendar/utils/booking_confirm_flow_ui.dart';
 
 class BookingCard extends StatelessWidget {
   final Booking booking;
@@ -20,6 +22,10 @@ class BookingCard extends StatelessWidget {
   final VoidCallback? onCoAgentTap;
   final Function(int status)? onStatusAction;
   final VoidCallback? onCancelTap;
+  final VoidCallback? onStartTravelTap;
+  final VoidCallback? onArrivedTap;
+  final VoidCallback? onConfirmAppointmentTap;
+  final VoidCallback? onRouteMapTap;
 
   const BookingCard({
     super.key,
@@ -27,6 +33,10 @@ class BookingCard extends StatelessWidget {
     this.onCoAgentTap,
     this.onStatusAction,
     this.onCancelTap,
+    this.onStartTravelTap,
+    this.onArrivedTap,
+    this.onConfirmAppointmentTap,
+    this.onRouteMapTap,
   });
 
   @override
@@ -60,8 +70,10 @@ class BookingCard extends StatelessWidget {
             const SizedBox(height: 16),
             _buildStatusAndSubtext(context),
             _buildWarningSection(context),
-            const SizedBox(height: 16),
-            _buildActions(context),
+            if (booking.status != BookingStatus.cancelled) ...[
+              const SizedBox(height: 16),
+              _buildActions(context),
+            ],
           ],
         ),
       ),
@@ -250,8 +262,23 @@ class BookingCard extends StatelessWidget {
   }
 
   Widget _buildStatusAndSubtext(BuildContext context) {
-    BadgeColor badgeColor = BadgeColor.default_;
+    final l10n = AppLocalizations.of(context);
+    if (booking.status == BookingStatus.confirm) {
+      final ui = computeAgentConfirmFlowUi(
+        booking: booking,
+        l10n: l10n,
+        now: DateTime.now(),
+      );
 
+      return _buildBadgeWithStatusLine(
+        label: ui.badgeLabel,
+        color: ui.badgeColor,
+        statusLine: ui.statusLine,
+      );
+    }
+
+    // Default badge using overall booking status.
+    BadgeColor badgeColor = BadgeColor.default_;
     switch (booking.status) {
       case BookingStatus.pending:
         badgeColor = BadgeColor.yellow;
@@ -280,6 +307,34 @@ class BookingCard extends StatelessWidget {
       label: booking.statusLabel,
       color: badgeColor,
       style: BadgeStyle.dot,
+    );
+  }
+
+  /// Returns the booking's datetime as a [DateTime] object.
+  DateTime get bookingDateTime {
+    return booking.bookingDateTime;
+  }
+
+  Widget _buildBadgeWithStatusLine({
+    required String label,
+    required BadgeColor color,
+    required String? statusLine,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppBadge(label: label, color: color, style: BadgeStyle.dot),
+        if (statusLine != null && statusLine.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Text(
+            statusLine,
+            style: GoogleFonts.anuphan(
+              color: AppColors.baseDarkGrey,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ],
     );
   }
 
@@ -355,13 +410,155 @@ class BookingCard extends StatelessWidget {
         onPressed: showCancelConfirm,
       );
     } else if (booking.status == BookingStatus.confirm) {
+      final sellerAttendance = booking.attendance?.seller;
+      final buyerAttendance = booking.attendance?.buyer;
+
+      final sellerAllAttendanceCompleted =
+          sellerAttendance?.confirmedOnDateAt != null &&
+          sellerAttendance?.travelingAt != null &&
+          sellerAttendance?.arrivedAt != null;
+      if (sellerAllAttendanceCompleted) {
+        final phone = booking.buyer?.phone?.trim() ?? '';
+        return AppButton(
+          width: double.infinity,
+          height: 36,
+          textSize: 14,
+          text: l10n.calendar_history_contact_button,
+          style: AppButtonStyle.outline,
+          onPressed: phone.isEmpty
+              ? null
+              : () {
+                  AppCallBottomSheet.show(
+                    context: context,
+                    options: [
+                      CallOption(
+                        label: booking.buyer?.name ?? '',
+                        phone: phone,
+                      ),
+                    ],
+                  );
+                },
+        );
+      }
+
+      final sellerTraveling =
+          sellerAttendance?.travelingAt != null &&
+          sellerAttendance?.arrivedAt == null;
+      final sellerArrived = sellerAttendance?.arrivedAt != null;
+
+      DateTime? appointmentDate;
+      try {
+        final ymd = booking.ymd;
+        if (ymd.length == 8) {
+          final year = int.parse(ymd.substring(0, 4));
+          final month = int.parse(ymd.substring(4, 6));
+          final day = int.parse(ymd.substring(6, 8));
+          appointmentDate = DateTime(year, month, day);
+        }
+      } catch (_) {}
+
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final isNotYetAppointmentDay = appointmentDate?.isAfter(today) ?? false;
+
+      final sellerConfirmed = sellerAttendance?.confirmedOnDateAt != null;
+      final buyerConfirmed = buyerAttendance?.confirmedOnDateAt != null;
+
+      if (!sellerConfirmed && !buyerConfirmed && isNotYetAppointmentDay) {
+        return const SizedBox.shrink();
+      }
+
+      if (!sellerConfirmed) {
+        return AppButton(
+          width: double.infinity,
+          height: 36,
+          textSize: 14,
+          text: l10n.booking_confirm_booking,
+          style: AppButtonStyle.primary,
+          onPressed: onConfirmAppointmentTap,
+        );
+      }
+
+      if (sellerConfirmed && !buyerConfirmed) {
+        return Row(
+          children: [
+            Expanded(
+              child: AppButton(
+                width: double.infinity,
+                height: 36,
+                textSize: 14,
+                text: l10n.calendar_cancel_label,
+                style: AppButtonStyle.outline,
+                onPressed: showCancelConfirm,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: AppButton(
+                width: double.infinity,
+                height: 36,
+                textSize: 14,
+                text: l10n.booking_start_traveling,
+                style: AppButtonStyle.primary,
+                onPressed: onStartTravelTap,
+              ),
+            ),
+          ],
+        );
+      }
+
+      // After agent started traveling, show route map secondary button too.
+      if (sellerTraveling && !sellerArrived) {
+        return Row(
+          children: [
+            Expanded(
+              child: AppButton(
+                width: double.infinity,
+                height: 36,
+                textSize: 14,
+                text: l10n.booking_route_map_button,
+                style: AppButtonStyle.outline,
+                onPressed: onRouteMapTap,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: AppButton(
+                width: double.infinity,
+                height: 36,
+                textSize: 14,
+                text: l10n.calendar_status_arrived,
+                style: AppButtonStyle.primary,
+                onPressed: onArrivedTap,
+              ),
+            ),
+          ],
+        );
+      }
+
+      final traveling =
+          buyerAttendance?.travelingAt != null &&
+          buyerAttendance?.arrivedAt == null;
+      final arrived = buyerAttendance?.arrivedAt != null;
+
+      if (arrived || traveling) {
+        return AppButton(
+          width: double.infinity,
+          height: 36,
+          textSize: 14,
+          text: l10n.calendar_status_arrived,
+          style: AppButtonStyle.primary,
+          onPressed: onArrivedTap,
+        );
+      }
+
       return AppButton(
         width: double.infinity,
-        height: 32,
-        textSize: 12,
-        text: l10n.calendar_cancel_label,
-        style: AppButtonStyle.outline,
-        onPressed: showCancelConfirm,
+        height: 36,
+        textSize: 14,
+        text: l10n.booking_start_traveling,
+        style: AppButtonStyle.primary,
+        onPressed: onStartTravelTap,
       );
     } else {
       return const SizedBox.shrink();

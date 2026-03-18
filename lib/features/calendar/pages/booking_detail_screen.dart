@@ -4,12 +4,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 import 'package:youragent/core/di/dependency_injection.dart';
+import 'package:youragent/core/enums/booking_attendance_status.dart';
 import 'package:youragent/core/enums/booking_status.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/domain/entities/booking.dart';
 import 'package:youragent/domain/entities/property.dart';
 import 'package:youragent/features/property/widgets/property_image_carousel.dart';
+import 'package:youragent/features/calendar/utils/booking_confirm_flow_ui.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 import 'package:youragent/utils/app_utils.dart';
 import 'package:youragent/widgets/buttons/app_button.dart';
@@ -17,6 +20,7 @@ import 'package:youragent/widgets/dialogs/status_dialog.dart';
 import 'package:youragent/widgets/map/map_view.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
 import 'package:youragent/widgets/modals/app_confirmation_bottom_sheet.dart';
+import 'package:youragent/widgets/modals/app_call_bottom_sheet.dart';
 
 class BookingDetailScreen extends StatefulWidget {
   final int bookingId;
@@ -88,6 +92,126 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     }
   }
 
+  Future<void> _confirmAppointment() async {
+    final l10n = AppLocalizations.of(context);
+    AppConfirmationBottomSheet.show(
+      context: context,
+      title: l10n.booking_confirm_booking_title,
+      description: l10n.booking_confirm_booking_desc,
+      confirmLabel: l10n.confirm,
+      onConfirm: () async {
+        try {
+          await StatusDialog.showLoadingWhile(
+            context: context,
+            operation: () async {
+              final result = await _bookingApiService.updateAttendanceStatus(
+                id: widget.bookingId,
+                status: BookingAttendanceStatus.confirmedOnDate,
+              );
+              if (!mounted) return;
+              StatusDialog.showSuccess(
+                context: context,
+                title: l10n.successTitle,
+                message: result.statusLabel ?? result.message ?? '',
+              );
+            },
+          );
+          if (!mounted) return;
+          _fetchBookingDetail();
+        } catch (e) {
+          if (!mounted) return;
+          StatusDialog.showError(
+            context: context,
+            title: l10n.errorOccurredTitle,
+            message: e.toString(),
+          );
+        }
+      },
+    );
+  }
+
+  Future<void> _startTravel(Booking booking) async {
+    final l10n = AppLocalizations.of(context);
+    AppConfirmationBottomSheet.show(
+      context: context,
+      title: l10n.booking_confirm_traveling_title,
+      description: l10n.booking_confirm_traveling_desc,
+      confirmLabel: l10n.booking_start_traveling,
+      onConfirm: () async {
+        try {
+          await StatusDialog.showLoadingWhile(
+            context: context,
+            operation: () async {
+              if (booking.attendance?.seller?.confirmedOnDateAt == null) {
+                await _bookingApiService.updateAttendanceStatus(
+                  id: widget.bookingId,
+                  status: BookingAttendanceStatus.confirmedOnDate,
+                );
+              }
+              await _bookingApiService.updateAttendanceStatus(
+                id: widget.bookingId,
+                status: BookingAttendanceStatus.traveling,
+              );
+            },
+          );
+          if (!mounted) return;
+          StatusDialog.showSuccess(
+            context: context,
+            title: l10n.successTitle,
+            message: l10n.booking_start_traveling,
+          );
+          _fetchBookingDetail();
+          context.push('/agent/bookings/${booking.id}/route');
+        } catch (e) {
+          if (!mounted) return;
+          StatusDialog.showError(
+            context: context,
+            title: l10n.errorOccurredTitle,
+            message: e.toString(),
+          );
+        }
+      },
+    );
+  }
+
+  Future<void> _arrived() async {
+    final l10n = AppLocalizations.of(context);
+    AppConfirmationBottomSheet.show(
+      context: context,
+      title: l10n.booking_confirm_arrived_title,
+      description: l10n.booking_confirm_arrived_desc,
+      confirmLabel: l10n.calendar_status_arrived,
+      onConfirm: () async {
+        try {
+          await StatusDialog.showLoadingWhile(
+            context: context,
+            operation: () async {
+              final result = await _bookingApiService.updateAttendanceStatus(
+                id: widget.bookingId,
+                status: BookingAttendanceStatus.arrived,
+              );
+              if (!mounted) return;
+              StatusDialog.showSuccess(
+                context: context,
+                title: l10n.successTitle,
+                message: result.statusLabel ?? result.message ?? '',
+              );
+            },
+          );
+          if (!mounted) return;
+          _fetchBookingDetail();
+        } catch (e) {
+          if (!mounted) return;
+          StatusDialog.showError(
+            context: context,
+            title: l10n.errorOccurredTitle,
+            message: e.toString(),
+          );
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -133,33 +257,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
-        children: [
-          _buildContent(booking),
-          _buildAppBar(context),
-          _buildBottomBar(context, booking),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAppBar(BuildContext context) {
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: Container(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-              onPressed: () => Navigator.pop(context),
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.black.withOpacity(0.3),
-              ),
-            ),
-          ],
-        ),
+        children: [_buildContent(booking), _buildBottomBar(context, booking)],
       ),
     );
   }
@@ -190,13 +288,13 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: -128,
+                bottom: -108,
                 child: _buildMainInfoCard(booking),
               ),
             ],
           ),
 
-          const SizedBox(height: 168),
+          const SizedBox(height: 148),
           // 3. Client Section
           // _buildClientSection(booking),
           // const SizedBox(height: 32),
@@ -265,8 +363,6 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
       case BookingStatus.contract:
         badgeColor = BadgeColor.blue;
         break;
-      default:
-        badgeColor = BadgeColor.default_;
     }
 
     return Container(
@@ -317,94 +413,42 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
             ),
           ],
           const SizedBox(height: 12),
-          AppBadges.status(label: booking.statusLabel, color: badgeColor),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildClientSection(Booking booking) {
-    final buyer = booking.buyer;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/user.svg',
-                width: 18,
-                height: 18,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFF181D27),
-                  BlendMode.srcIn,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'ผู้จองเข้าชม',
-                style: GoogleFonts.anuphan(
-                  color: const Color(0xFF181D27),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: const BoxDecoration(
-                  color: AppColors.basePaleGrey,
-                  shape: BoxShape.circle,
-                ),
-                child: const Center(
-                  child: Icon(Icons.person, color: AppColors.baseGrey),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
+          if (booking.status == BookingStatus.confirm) ...[
+            Builder(
+              builder: (context) {
+                final ui = computeAgentConfirmFlowUi(
+                  booking: booking,
+                  l10n: AppLocalizations.of(context),
+                  now: DateTime.now(),
+                );
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      buyer?.name ?? 'ไม่ระบุชื่อ',
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.baseBlack,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    AppBadge(
+                      label: ui.badgeLabel,
+                      color: ui.badgeColor,
+                      style: BadgeStyle.dot,
                     ),
-                    Text(
-                      buyer?.email ?? '-',
-                      style: GoogleFonts.anuphan(
-                        color: AppColors.baseDarkGrey,
-                        fontSize: 14,
+                    if (ui.statusLine != null && ui.statusLine!.isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        ui.statusLine!,
+                        style: GoogleFonts.anuphan(
+                          color: AppColors.baseDarkGrey,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
-                ),
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.phone_in_talk_outlined,
-                  color: AppColors.supportBlueDeep,
-                ),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.chat_bubble_outline,
-                  color: AppColors.supportBlueDeep,
-                ),
-                onPressed: () {},
-              ),
-            ],
-          ),
+                );
+              },
+            ),
+          ] else
+            AppBadge(
+              label: booking.statusLabel,
+              color: badgeColor,
+              style: BadgeStyle.dot,
+            ),
         ],
       ),
     );
@@ -525,61 +569,6 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPropertyDetailsSection(Booking booking) {
-    final property = booking.property;
-    if (property == null) return const SizedBox.shrink();
-
-    final l10n = AppLocalizations.of(context);
-    final isTh = Localizations.localeOf(context).languageCode == 'th';
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle(
-            title: AppLocalizations.of(context).booking_property_info,
-            svgIcon: 'assets/icons/home.svg',
-          ),
-          const SizedBox(height: 16),
-          _buildInfoRow(
-            label: l10n.property_type,
-            value: isTh
-                ? (property.propertyType?.labelTh ?? '-')
-                : (property.propertyType?.labelEn ?? '-'),
-          ),
-          if (property.bedrooms > 0)
-            _buildInfoRow(
-              label: l10n.bedroomsLabel,
-              value: '${property.bedrooms} ${l10n.roomUnit}',
-            ),
-          if (property.bathrooms > 0)
-            _buildInfoRow(
-              label: l10n.bathroomsLabel,
-              value: '${property.bathrooms} ${l10n.roomUnit}',
-            ),
-          if (property.landSize != null && property.landSize! > 0)
-            _buildInfoRow(
-              label: l10n.landSizeLabel,
-              value: '${property.landSize} ${l10n.sq_wa}',
-            ),
-          if (property.buildingSize != null && property.buildingSize! > 0)
-            _buildInfoRow(
-              label: l10n.usableAreaSize,
-              value: '${property.buildingSize} ${l10n.sq_m}',
-            ),
-          if (property.houseColor != null)
-            _buildInfoRow(
-              label: l10n.propertyColor,
-              value: isTh
-                  ? property.houseColor!.labelTh
-                  : property.houseColor!.labelEn,
-            ),
         ],
       ),
     );
@@ -767,23 +756,171 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
         },
       );
     } else if (booking.status == BookingStatus.confirm) {
-      actionButton = AppButton(
-        width: double.infinity,
-        text: AppLocalizations.of(context).calendar_cancel_label,
-        style: AppButtonStyle.outline,
-        onPressed: () {
+      final sellerAttendance = booking.attendance?.seller;
+      final buyerAttendance = booking.attendance?.buyer;
+
+      final sellerAllAttendanceCompleted =
+          sellerAttendance?.confirmedOnDateAt != null &&
+          sellerAttendance?.travelingAt != null &&
+          sellerAttendance?.arrivedAt != null;
+      if (sellerAllAttendanceCompleted) {
+        final phone = booking.buyer?.phone?.trim() ?? '';
+        actionButton = Row(
+          children: [
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.baseLightGrey),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SvgPicture.asset(
+                    'assets/icons/chevron-left.svg',
+                    width: 16,
+                    height: 16,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.baseDarkGrey,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: AppButton(
+                width: double.infinity,
+                text: l10n.calendar_history_contact_button,
+                style: AppButtonStyle.outline,
+                onPressed: phone.isEmpty
+                    ? null
+                    : () {
+                        AppCallBottomSheet.show(
+                          context: context,
+                          options: [
+                            CallOption(
+                              label: booking.buyer?.name ?? '',
+                              phone: phone,
+                            ),
+                          ],
+                        );
+                      },
+              ),
+            ),
+          ],
+        );
+      } else {
+        final sellerTraveling =
+            sellerAttendance?.travelingAt != null &&
+            sellerAttendance?.arrivedAt == null;
+        final sellerArrived = sellerAttendance?.arrivedAt != null;
+
+        DateTime? appointmentDate;
+        try {
+          final ymd = booking.ymd;
+          if (ymd.length == 8) {
+            final year = int.parse(ymd.substring(0, 4));
+            final month = int.parse(ymd.substring(4, 6));
+            final day = int.parse(ymd.substring(6, 8));
+            appointmentDate = DateTime(year, month, day);
+          }
+        } catch (_) {}
+
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        final isNotYetAppointmentDay = appointmentDate?.isAfter(today) ?? false;
+
+        final sellerConfirmed = sellerAttendance?.confirmedOnDateAt != null;
+        final buyerConfirmed = buyerAttendance?.confirmedOnDateAt != null;
+
+        void showCancelConfirm() {
           AppConfirmationBottomSheet.show(
             context: context,
-            title: AppLocalizations.of(context).calendar_confirm_cancel_title,
-            description: AppLocalizations.of(
-              context,
-            ).calendar_confirm_cancel_desc,
-            confirmLabel: AppLocalizations.of(context).calendar_confirm_label,
+            title: l10n.calendar_confirm_cancel_title,
+            description: l10n.calendar_confirm_cancel_desc,
+            confirmLabel: l10n.calendar_confirm_label,
             style: ConfirmationStyle.destructive,
             onConfirm: () => _updateStatus(BookingStatus.reject.value),
           );
-        },
-      );
+        }
+
+        if (!sellerConfirmed && !buyerConfirmed && isNotYetAppointmentDay) {
+          actionButton = null;
+        } else if (!sellerConfirmed) {
+          actionButton = AppButton(
+            width: double.infinity,
+            text: l10n.booking_confirm_booking,
+            style: AppButtonStyle.primary,
+            onPressed: _confirmAppointment,
+          );
+        } else if (sellerConfirmed && !buyerConfirmed) {
+          actionButton = Row(
+            children: [
+              Expanded(
+                child: AppButton(
+                  text: l10n.calendar_cancel_label,
+                  style: AppButtonStyle.outline,
+                  onPressed: showCancelConfirm,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: AppButton(
+                  text: l10n.booking_start_traveling,
+                  style: AppButtonStyle.primary,
+                  onPressed: () => _startTravel(booking),
+                ),
+              ),
+            ],
+          );
+        } else if (sellerTraveling && !sellerArrived) {
+          actionButton = Row(
+            children: [
+              Expanded(
+                child: AppButton(
+                  text: l10n.booking_route_map_button,
+                  style: AppButtonStyle.outline,
+                  onPressed: () =>
+                      context.push('/agent/bookings/${booking.id}/route'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: AppButton(
+                  text: l10n.calendar_status_arrived,
+                  style: AppButtonStyle.primary,
+                  onPressed: _arrived,
+                ),
+              ),
+            ],
+          );
+        } else {
+          final buyerTraveling =
+              buyerAttendance?.travelingAt != null &&
+              buyerAttendance?.arrivedAt == null;
+          final buyerArrived = buyerAttendance?.arrivedAt != null;
+          if (buyerArrived || buyerTraveling) {
+            actionButton = AppButton(
+              width: double.infinity,
+              text: l10n.calendar_status_arrived,
+              style: AppButtonStyle.primary,
+              onPressed: _arrived,
+            );
+          } else {
+            actionButton = AppButton(
+              width: double.infinity,
+              text: l10n.booking_start_traveling,
+              style: AppButtonStyle.primary,
+              onPressed: () => _startTravel(booking),
+            );
+          }
+        }
+      }
     }
 
     if (actionButton == null) return const SizedBox.shrink();

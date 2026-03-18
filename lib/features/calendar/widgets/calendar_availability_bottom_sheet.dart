@@ -433,8 +433,9 @@ class _CalendarAvailabilityBottomSheetState
               label: AppLocalizations.of(context).availability_date_label,
               controller: _dateCtrl,
               isRequired: true,
+              readOnly: isEdit,
               showCursor: false,
-              onTap: _selectDate,
+              onTap: isEdit ? null : _selectDate,
               suffix: Padding(
                 padding: const EdgeInsets.all(12),
                 child: SvgPicture.asset(

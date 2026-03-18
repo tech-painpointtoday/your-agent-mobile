@@ -693,14 +693,64 @@
   "booking_status_pending_client": "Waiting for client confirmation",
   "booking_status_traveling_client": "Client is traveling",
   "booking_status_arrived_client": "Arrived at destination",
+  "booking_status_before_appointment": "Not appointment day yet",
+  "booking_status_waiting_confirm_badge": "Waiting to confirm appointment",
+  "booking_status_waiting_client_confirm_badge": "Waiting for renter/buyer confirmation",
+  "booking_status_agent_please_confirm_line": "Please tap “{action}” to confirm the appointment",
+  "@booking_status_agent_please_confirm_line": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "booking_status_agent_please_confirm_line_detail": "Please tap “{action}” to confirm the appointment as scheduled",
+  "@booking_status_agent_please_confirm_line_detail": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
   "booking_confirm_booking": "Confirm Booking",
   "booking_confirm_booking_title": "Confirm Booking?",
   "booking_confirm_booking_desc": "Do you want to confirm this booking?",
+  "booking_route_map_button": "Route map",
+  "booking_route_duration_label": "Duration",
+  "booking_route_exit_button": "Exit",
+  "booking_route_you_will_arrive_at": "You'll arrive at {time}",
+  "@booking_route_you_will_arrive_at": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "booking_route_agent_timing": "Started at {start} --- Arrived at {arrive}",
+  "@booking_route_agent_timing": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "arrive": {
+        "type": "String"
+      }
+    }
+  },
+  "booking_route_buyer_arrived_time": "Arrived at {time}",
+  "@booking_route_buyer_arrived_time": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "booking_start_traveling": "Start Traveling",
   "booking_confirm_traveling_title": "Start Traveling?",
   "booking_confirm_traveling_desc": "Are you starting your journey to the client?",
   "booking_confirm_arrived_title": "Arrived at Destination?",
   "booking_confirm_arrived_desc": "Have you arrived at the destination?",
+  "buyer_traveling": "Client is traveling",
   "booking_finish_work": "Finish Work",
   "booking_confirm_finish_title": "Finish Work?",
   "booking_confirm_finish_desc": "Have you finished the property viewing?",
@@ -1264,6 +1314,13 @@
   "passwordSuccess": "Password success",
   "confirmEmail": "Confirm email",
   "confirmSubmitEmail": "We've sent a confirmation link to {email}. Please check your inbox.",
+  "@confirmSubmitEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "locationProperty": "Location property",
   "saveLocation": "Save location",
   "confirmLocationPropertySelect": "Confirm location property select",

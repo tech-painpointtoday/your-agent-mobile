@@ -690,17 +690,67 @@
   "booking_client": "ผู้จองเข้าชม",
   "booking_not_found": "ไม่พบข้อมูลการนัดหมาย",
   "booking_retry": "ลองใหม่",
-  "booking_status_pending_client": "ลูกค้ารอยืนยัน",
+  "booking_status_pending_client": "รอยืนยันนัดหมายจากลูกค้า",
   "booking_status_traveling_client": "ลูกค้ากำลังเดินทาง",
   "booking_status_arrived_client": "ถึงที่หมายแล้ว",
+  "booking_status_before_appointment": "ยังไม่ถึงวันนัดหมาย",
+  "booking_status_waiting_confirm_badge": "รอยืนยันนัดหมาย",
+  "booking_status_waiting_client_confirm_badge": "รอยืนยันนัดหมายจากลูกค้า",
+  "booking_status_agent_please_confirm_line": "กรุณากด “{action}” เพื่อยืนยันนัดหมาย",
+  "@booking_status_agent_please_confirm_line": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "booking_status_agent_please_confirm_line_detail": "กรุณากด “{action}” เพื่อยืนยันการนัดหมายตามกำหนดการ",
+  "@booking_status_agent_please_confirm_line_detail": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
   "booking_confirm_booking": "ยืนยันนัด",
   "booking_confirm_booking_title": "ยืนยันนัดหมาย?",
   "booking_confirm_booking_desc": "คุณต้องการยืนยันนัดหมายนี้หรือไม่?",
+  "booking_route_map_button": "แผนที่เส้นทาง",
+  "booking_route_duration_label": "ระยะเวลา",
+  "booking_route_exit_button": "ออก",
+  "booking_route_you_will_arrive_at": "คุณจะถึง {time} น.",
+  "@booking_route_you_will_arrive_at": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "booking_route_agent_timing": "เริ่มเดินทาง {start} --- จะถึงประมาณ {arrive}",
+  "@booking_route_agent_timing": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "arrive": {
+        "type": "String"
+      }
+    }
+  },
+  "booking_route_buyer_arrived_time": "ถึงเมื่อ {time} น.",
+  "@booking_route_buyer_arrived_time": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "booking_start_traveling": "เริ่มเดินทาง",
   "booking_confirm_traveling_title": "เริ่มเดินทาง?",
   "booking_confirm_traveling_desc": "คุณกำลังเริ่มเดินทางไปหาลูกค้าใช่หรือไม่?",
   "booking_confirm_arrived_title": "ถึงที่หมาย?",
   "booking_confirm_arrived_desc": "คุณถึงที่หมายแล้วใช่หรือไม่?",
+  "buyer_traveling": "ลูกค้ากำลังเดินทาง",
   "booking_finish_work": "เสร็จงาน",
   "booking_confirm_finish_title": "เสร็จสิ้นงาน?",
   "booking_confirm_finish_desc": "คุณดำเนินการเข้าชมบ้านเสร็จสิ้นแล้วใช่หรือไม่?",
@@ -1258,6 +1308,13 @@
   "passwordSuccess": "ตั้งรหัสผ่านใหม่สำเร็จ กรุณาเข้าสู่ระบบ",
   "confirmEmail": "ยืนยันอีเมล",
   "confirmSubmitEmail": "เราได้ส่งลิงก์ยืนยันไปที่ {email} แล้ว\nกรุณายืนยันอีเมลผ่านลิงก์ที่ส่งไป เพื่อเริ่มต้นใช้งาน",
+  "@confirmSubmitEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "locationProperty": "ตำแหน่งทรัพย์",
   "saveLocation": "บันทึกตำแหน่งนี้?",
   "confirmLocationPropertySelect": "ยืนยันการเลือกตำแหน่งนี้สำหรับประกาศทรัพย์",

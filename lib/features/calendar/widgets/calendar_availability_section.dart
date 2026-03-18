@@ -112,6 +112,12 @@ class _CalendarAvailabilitySectionState
               message: successDescription,
             );
           }
+
+          // After a successful create/update/delete, refetch availability
+          // for the currently focused month to ensure the list is in sync.
+          context.read<AvailabilityBloc>().add(
+                FetchAvailability(date: _focusedMonth, forceRefresh: true),
+              );
         } else if (state.status == AvailabilityStatus.failure) {
           StatusDialog.showError(
             context: context,

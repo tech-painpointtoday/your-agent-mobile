@@ -47,6 +47,7 @@ import '../features/profile/pages/notification_settings_screen.dart';
 import '../features/profile/pages/account_management_screen.dart';
 import '../features/profile/pages/contact_us_screen.dart';
 import '../widgets/main_navigation_screen.dart';
+import '../features/calendar/pages/agent_booking_route_map_screen.dart';
 
 /// Route observer used so ProfileScreen can refetch when user navigates back to it.
 final RouteObserver<ModalRoute<dynamic>> profileRouteObserver =
@@ -189,6 +190,13 @@ class AppRouter {
         path: '/calendar',
         builder: (context, state) =>
             const MainNavigationScreen(initialIndex: 3),
+      ),
+      GoRoute(
+        path: '/agent/bookings/:id/route',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return AgentBookingRouteMapScreen(bookingId: id);
+        },
       ),
       GoRoute(
         path: '/booking/:id',

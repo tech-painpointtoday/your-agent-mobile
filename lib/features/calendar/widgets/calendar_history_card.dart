@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:youragent/core/theme/app_colors.dart';
 import 'package:youragent/core/enums/booking_status.dart';
 import 'package:youragent/widgets/badges/app_badge.dart';
-import 'package:youragent/widgets/buttons/app_button.dart';
 import 'package:youragent/l10n/app_localizations.dart';
 
 class CalendarHistoryCard extends StatelessWidget {
@@ -152,71 +151,72 @@ class CalendarHistoryCard extends StatelessWidget {
             const SizedBox(height: 24),
             // Status Badge
             _buildStatusBadge(context, statusLabel),
-            const SizedBox(height: 16),
-            // Additional Context
-            if (status == BookingStatus.met) ...[
-              if (appointmentDuration != null) ...[
-                Text(
-                  appointmentDuration!,
-                  style: GoogleFonts.anuphan(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.baseDarkGrey,
-                  ),
-                ),
-                const SizedBox(height: 8),
-              ],
-              if (appointmentNote != null)
-                Text(
-                  AppLocalizations.of(
-                    context,
-                  ).calendar_history_personal_note(appointmentNote!),
-                  style: GoogleFonts.anuphan(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.baseDarkGrey,
-                  ),
-                ),
-            ] else if (status == BookingStatus.expired) ...[
-              Text(
-                AppLocalizations.of(context).calendar_history_expired_desc,
-                style: GoogleFonts.anuphan(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.baseDarkGrey,
-                ),
-              ),
-            ] else if (status == BookingStatus.cancelled &&
-                cancelReason != null) ...[
-              Text(
-                AppLocalizations.of(context).calendar_history_reason(
-                  cancelReason ??
-                      AppLocalizations.of(context).calendar_history_no_show,
-                ),
-                style: GoogleFonts.anuphan(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.baseDarkGrey,
-                ),
-              ),
-            ],
 
-            // Button
-            if (onContactTap != null) ...[
-              const SizedBox(height: 16),
-              AppButton(
-                iconPath: 'assets/icons/phone.svg',
-                iconSize: 16,
-                iconSpace: 16,
-                width: double.infinity,
-                text: AppLocalizations.of(
-                  context,
-                ).calendar_history_contact_button,
-                textColor: AppColors.baseWhite,
-                style: AppButtonStyle.primary,
-                onPressed: onContactTap ?? () {},
-              ),
-            ],
+            // const SizedBox(height: 16),
+            // // Additional Context
+            // if (status == BookingStatus.met) ...[
+            //   if (appointmentDuration != null) ...[
+            //     Text(
+            //       appointmentDuration!,
+            //       style: GoogleFonts.anuphan(
+            //         fontSize: 12,
+            //         fontWeight: FontWeight.w400,
+            //         color: AppColors.baseDarkGrey,
+            //       ),
+            //     ),
+            //     const SizedBox(height: 8),
+            //   ],
+            //   if (appointmentNote != null)
+            //     Text(
+            //       AppLocalizations.of(
+            //         context,
+            //       ).calendar_history_personal_note(appointmentNote!),
+            //       style: GoogleFonts.anuphan(
+            //         fontSize: 12,
+            //         fontWeight: FontWeight.w400,
+            //         color: AppColors.baseDarkGrey,
+            //       ),
+            //     ),
+            // ] else if (status == BookingStatus.expired) ...[
+            //   Text(
+            //     AppLocalizations.of(context).calendar_history_expired_desc,
+            //     style: GoogleFonts.anuphan(
+            //       fontSize: 12,
+            //       fontWeight: FontWeight.w400,
+            //       color: AppColors.baseDarkGrey,
+            //     ),
+            //   ),
+            // ] else if (status == BookingStatus.cancelled &&
+            //     cancelReason != null) ...[
+            //   Text(
+            //     AppLocalizations.of(context).calendar_history_reason(
+            //       cancelReason ??
+            //           AppLocalizations.of(context).calendar_history_no_show,
+            //     ),
+            //     style: GoogleFonts.anuphan(
+            //       fontSize: 12,
+            //       fontWeight: FontWeight.w400,
+            //       color: AppColors.baseDarkGrey,
+            //     ),
+            //   ),
+            // ],
+
+            // // Button
+            // if (onContactTap != null) ...[
+            //   const SizedBox(height: 16),
+            //   AppButton(
+            //     iconPath: 'assets/icons/phone.svg',
+            //     iconSize: 16,
+            //     iconSpace: 16,
+            //     width: double.infinity,
+            //     text: AppLocalizations.of(
+            //       context,
+            //     ).calendar_history_contact_button,
+            //     textColor: AppColors.baseWhite,
+            //     style: AppButtonStyle.primary,
+            //     onPressed: onContactTap ?? () {},
+            //   ),
+            // ],
           ],
         ),
       ),
@@ -224,13 +224,28 @@ class CalendarHistoryCard extends StatelessWidget {
   }
 
   Widget _buildStatusBadge(BuildContext context, String? statusLabel) {
-    BadgeColor badgeColor;
+    // For history view: any booking that is still pending/confirm in the past
+    // should be treated as "expired" for display purposes.
+    final l10n = AppLocalizations.of(context);
+    final displayStatus =
+        (status == BookingStatus.pending || status == BookingStatus.confirm)
+            ? BookingStatus.expired
+            : status;
 
-    switch (status) {
+    final String displayLabel;
+    if (displayStatus == BookingStatus.expired) {
+      displayLabel = l10n.calendar_status_expired;
+    } else {
+      displayLabel = statusLabel ?? 'Unknown';
+    }
+
+    BadgeColor badgeColor;
+    switch (displayStatus) {
       case BookingStatus.pending:
         badgeColor = BadgeColor.yellow;
         break;
       case BookingStatus.confirm:
+      case BookingStatus.closeDeal:
         badgeColor = BadgeColor.green;
         break;
       case BookingStatus.reject:
@@ -247,12 +262,10 @@ class CalendarHistoryCard extends StatelessWidget {
       case BookingStatus.contract:
         badgeColor = BadgeColor.blue;
         break;
-      default:
-        badgeColor = BadgeColor.default_;
     }
 
     return AppBadge(
-      label: statusLabel ?? 'Unknown',
+      label: displayLabel,
       color: badgeColor,
       style: BadgeStyle.dot,
     );
