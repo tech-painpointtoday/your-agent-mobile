@@ -19,6 +19,7 @@ import '../core/di/dependency_injection.dart';
 import '../domain/entities/property.dart';
 import '../features/activities/pages/all_activities_screen.dart';
 import '../features/auth/pages/email_verification_pending_screen.dart';
+import '../features/auth/pages/agent_verify_email_screen.dart';
 import '../features/auth/pages/forgot_password_screen.dart';
 import '../features/auth/pages/login_screen.dart';
 import '../features/auth/pages/register_screen.dart';
@@ -74,7 +75,8 @@ class AppRouter {
           currentPath.startsWith('/policy') ||
           currentPath.startsWith('/forgot-password') ||
           currentPath.startsWith('/reset-password') ||
-          currentPath.startsWith('/email-verification-pending')) {
+          currentPath.startsWith('/email-verification-pending') ||
+          currentPath.startsWith('/verify-email')) {
         return null;
       }
 
@@ -120,6 +122,10 @@ class AppRouter {
         return '/login';
       }
       return null;
+    },
+    errorBuilder: (context, state) {
+      // Fallback for malformed or unknown deep links
+      return const MainNavigationScreen(initialIndex: 0);
     },
     routes: [
       GoRoute(
@@ -366,6 +372,18 @@ class AppRouter {
             return LoginScreen(changeLocale: changeLocale);
           }
           return EmailVerificationPendingScreen(email: email);
+        },
+      ),
+      GoRoute(
+        path: '/verify-email',
+        builder: (context, state) {
+          final qp = state.uri.queryParameters;
+          return AgentVerifyEmailScreen(
+            id: qp['id'] ?? '',
+            hash: qp['hash'] ?? '',
+            expires: qp['expires'] ?? '',
+            signature: qp['signature'] ?? '',
+          );
         },
       ),
       // Legacy route - redirects to main navigation

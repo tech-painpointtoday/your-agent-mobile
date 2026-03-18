@@ -44,6 +44,26 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
+            <!-- App Links (HTTPS) for email verification -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="agent.yourhome.co.th" />
+            </intent-filter>
+
+            <!-- Custom URL Scheme (agentapp://agent.yourhome.co.th/...) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="agentapp"
+                    android:host="agent.yourhome.co.th" />
+            </intent-filter>
+
             <!-- Deep Link for LINE OAuth Callback -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

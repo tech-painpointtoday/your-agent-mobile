@@ -4,6 +4,8 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -32,6 +34,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>$(G_REVERSED_CLIENT_ID)</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.youragent.painpointtoday.agentapp</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>agentapp</string>
 			</array>
 		</dict>
 		<dict>

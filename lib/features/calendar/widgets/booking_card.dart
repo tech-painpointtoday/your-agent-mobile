@@ -388,6 +388,7 @@ class BookingCard extends StatelessWidget {
 
   Widget _buildActions(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final isLate = DateTime.now().isAfter(booking.bookingDateTime);
 
     void showCancelConfirm() {
       AppConfirmationBottomSheet.show(
@@ -401,6 +402,7 @@ class BookingCard extends StatelessWidget {
     }
 
     if (booking.status == BookingStatus.pending) {
+      if (isLate) return const SizedBox.shrink();
       return AppButton(
         width: double.infinity,
         height: 32,
@@ -480,6 +482,16 @@ class BookingCard extends StatelessWidget {
       }
 
       if (sellerConfirmed && !buyerConfirmed) {
+        if (isLate) {
+          return AppButton(
+            width: double.infinity,
+            height: 36,
+            textSize: 14,
+            text: l10n.booking_start_traveling,
+            style: AppButtonStyle.primary,
+            onPressed: onStartTravelTap,
+          );
+        }
         return Row(
           children: [
             Expanded(
