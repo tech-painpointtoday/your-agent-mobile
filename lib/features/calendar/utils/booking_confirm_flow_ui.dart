@@ -12,7 +12,7 @@ class BookingConfirmFlowUi {
   const BookingConfirmFlowUi({
     required this.badgeLabel,
     required this.badgeColor,
-    required this.statusLine,
+    this.statusLine,
   });
 }
 
@@ -66,12 +66,15 @@ BookingConfirmFlowUi computeAgentConfirmFlowUi({
   final buyerAttendance = booking.attendance?.buyer;
 
   final isAppointmentDay = isBookingAppointmentDay(booking: booking, now: now);
+  final isPastAppointmentDay = booking.bookingDateTime.isBefore(now);
   final sellerConfirmed = sellerAttendance?.confirmedOnDateAt != null;
   final buyerConfirmed = buyerAttendance?.confirmedOnDateAt != null;
 
   String? statusLine;
   if (booking.status == BookingStatus.confirm) {
-    if (!isAppointmentDay) {
+    if (!isAppointmentDay && !isPastAppointmentDay) {
+      statusLine = l10n.not_yet_appointment_day;
+    } else if (!isAppointmentDay) {
       statusLine = null;
     } else if (!sellerConfirmed) {
       statusLine = l10n.booking_status_agent_please_confirm_line_detail(
@@ -92,58 +95,58 @@ BookingConfirmFlowUi computeAgentConfirmFlowUi({
         statusLine = l10n.calendar_not_started_status;
       }
     }
-  }
 
-  if (!isAppointmentDay) {
+    if (!isAppointmentDay && !isPastAppointmentDay) {
+      return BookingConfirmFlowUi(
+        badgeLabel: l10n.not_yet_appointment_day,
+        badgeColor: BadgeColor.default_,
+        statusLine: statusLine,
+      );
+    } else if (!sellerConfirmed) {
+      return BookingConfirmFlowUi(
+        badgeLabel: l10n.booking_unconfirmed_on_date,
+        badgeColor: BadgeColor.yellow,
+        statusLine: statusLine,
+      );
+    } else if (sellerConfirmed && !buyerConfirmed) {
+      return BookingConfirmFlowUi(
+        badgeLabel: l10n.booking_status_pending_client,
+        badgeColor: BadgeColor.yellow,
+        statusLine: statusLine,
+      );
+    }
+
+    final traveling =
+        buyerAttendance?.travelingAt != null &&
+        buyerAttendance?.arrivedAt == null;
+    final arrived = buyerAttendance?.arrivedAt != null;
+
+    if (arrived) {
+      final timeStr = DateFormat.Hm().format(
+        buyerAttendance!.arrivedAt!.toLocal(),
+      );
+      return BookingConfirmFlowUi(
+        badgeLabel: '${l10n.calendar_status_arrived} ($timeStr)',
+        badgeColor: BadgeColor.purple,
+        statusLine: statusLine,
+      );
+    } else if (traveling) {
+      return BookingConfirmFlowUi(
+        badgeLabel: l10n.booking_status_traveling_client,
+        badgeColor: BadgeColor.blue,
+        statusLine: statusLine,
+      );
+    }
+
     return BookingConfirmFlowUi(
-      badgeLabel: l10n.booking_status_before_appointment,
-      badgeColor: BadgeColor.default_,
-      statusLine: statusLine,
-    );
-  }
-
-  if (!sellerConfirmed) {
-    return BookingConfirmFlowUi(
-      badgeLabel: l10n.booking_status_waiting_confirm_badge,
-      badgeColor: BadgeColor.yellow,
-      statusLine: statusLine,
-    );
-  }
-
-  if (sellerConfirmed && !buyerConfirmed) {
-    return BookingConfirmFlowUi(
-      badgeLabel: l10n.booking_status_waiting_confirm_badge,
-      badgeColor: BadgeColor.yellow,
-      statusLine: statusLine,
-    );
-  }
-
-  final traveling =
-      buyerAttendance?.travelingAt != null &&
-      buyerAttendance?.arrivedAt == null;
-  final arrived = buyerAttendance?.arrivedAt != null;
-
-  if (arrived) {
-    final timeStr =
-        DateFormat.Hm().format(buyerAttendance!.arrivedAt!.toLocal());
-    return BookingConfirmFlowUi(
-      badgeLabel: '${l10n.calendar_status_arrived} ($timeStr)',
-      badgeColor: BadgeColor.purple,
-      statusLine: statusLine,
-    );
-  }
-
-  if (traveling) {
-    return BookingConfirmFlowUi(
-      badgeLabel: l10n.booking_status_traveling_client,
-      badgeColor: BadgeColor.blue,
+      badgeLabel: l10n.calendar_status_confirmed,
+      badgeColor: BadgeColor.green,
       statusLine: statusLine,
     );
   }
 
   return BookingConfirmFlowUi(
-    badgeLabel: l10n.calendar_status_confirmed,
-    badgeColor: BadgeColor.green,
-    statusLine: statusLine,
+    badgeLabel: l10n.booking_unconfirmed_on_date,
+    badgeColor: BadgeColor.default_,
   );
 }

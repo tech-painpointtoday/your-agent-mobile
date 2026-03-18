@@ -3776,6 +3776,18 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get booking_retry;
 
+  /// No description provided for @not_yet_appointment_day.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet appointment day'**
+  String get not_yet_appointment_day;
+
+  /// No description provided for @booking_unconfirmed_on_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for confirmation'**
+  String get booking_unconfirmed_on_date;
+
   /// No description provided for @booking_status_pending_client.
   ///
   /// In en, this message translates to:

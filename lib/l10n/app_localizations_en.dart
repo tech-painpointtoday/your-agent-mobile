@@ -1933,6 +1933,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get booking_retry => 'Retry';
 
   @override
+  String get not_yet_appointment_day => 'Not yet appointment day';
+
+  @override
+  String get booking_unconfirmed_on_date => 'Waiting for confirmation';
+
+  @override
   String get booking_status_pending_client => 'Waiting for client confirmation';
 
   @override

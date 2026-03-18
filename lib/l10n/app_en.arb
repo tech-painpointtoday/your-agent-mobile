@@ -690,6 +690,8 @@
   "booking_client": "Booking Client",
   "booking_not_found": "Booking information not found",
   "booking_retry": "Retry",
+  "not_yet_appointment_day": "Not yet appointment day",
+  "booking_unconfirmed_on_date": "Waiting for confirmation",
   "booking_status_pending_client": "Waiting for client confirmation",
   "booking_status_traveling_client": "Client is traveling",
   "booking_status_arrived_client": "Arrived at destination",

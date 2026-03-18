@@ -1930,6 +1930,12 @@ class AppLocalizationsTh extends AppLocalizations {
   String get booking_retry => 'ลองใหม่';
 
   @override
+  String get not_yet_appointment_day => 'ยังไม่ถึงวันนัดหมาย';
+
+  @override
+  String get booking_unconfirmed_on_date => 'รอยืนยันนัดหมาย';
+
+  @override
   String get booking_status_pending_client => 'รอยืนยันนัดหมายจากลูกค้า';
 
   @override

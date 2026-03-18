@@ -690,6 +690,8 @@
   "booking_client": "ผู้จองเข้าชม",
   "booking_not_found": "ไม่พบข้อมูลการนัดหมาย",
   "booking_retry": "ลองใหม่",
+  "not_yet_appointment_day": "ยังไม่ถึงวันนัดหมาย",
+  "booking_unconfirmed_on_date": "รอยืนยันนัดหมาย",
   "booking_status_pending_client": "รอยืนยันนัดหมายจากลูกค้า",
   "booking_status_traveling_client": "ลูกค้ากำลังเดินทาง",
   "booking_status_arrived_client": "ถึงที่หมายแล้ว",
