@@ -564,6 +564,7 @@
       }
     }
   },
+  "not_yet_appointment_day": "ยังไม่ถึงวันนัดหมาย",
   "calendar_not_started_status": "ยังไม่เริ่มเดินทาง",
   "calendar_tab_appointments": "นัดหมาย",
   "calendar_tab_history": "ประวัติ",
@@ -627,6 +628,7 @@
   "calendar_status_expired": "เกินกำหนด",
   "calendar_cancel_success": "ยกเลิกนัดหมายสำเร็จ",
   "calendar_cancel_error": "ไม่สามารถยกเลิกนัดหมายได้",
+  "calendar_unconfirmed_on_date": "รอยืนยันนัดหมาย",
   "notifications_mark_all_read": "อ่านทั้งหมด",
   "notifications_confirm_mark_all_read_title": "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด?",
   "notifications_confirm_mark_all_read_desc": "คุณต้องการทำเครื่องหมายการแจ้งเตือนทั้งหมดว่าอ่านแล้วใช่หรือไม่?",
@@ -690,7 +692,7 @@
   "booking_client": "ผู้จองเข้าชม",
   "booking_not_found": "ไม่พบข้อมูลการนัดหมาย",
   "booking_retry": "ลองใหม่",
-  "booking_status_pending_client": "ลูกค้ารอยืนยัน",
+  "booking_status_pending_client": "รอการยืนยันนัดจากลูกค้า",
   "booking_status_traveling_client": "ลูกค้ากำลังเดินทาง",
   "booking_status_arrived_client": "ถึงที่หมายแล้ว",
   "booking_confirm_booking": "ยืนยันนัด",

@@ -1640,6 +1640,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get not_yet_appointment_day => 'Not yet appointment day';
+
+  @override
   String get calendar_not_started_status => 'Not started';
 
   @override
@@ -1837,6 +1840,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calendar_cancel_error => 'Failed to cancel appointment';
+
+  @override
+  String get calendar_unconfirmed_on_date => 'Waiting for confirmation';
 
   @override
   String get notifications_mark_all_read => 'Mark all as read';

@@ -3236,6 +3236,12 @@ abstract class AppLocalizations {
   /// **'Arriving at {time}'**
   String calendar_arriving_status(String time);
 
+  /// No description provided for @not_yet_appointment_day.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet appointment day'**
+  String get not_yet_appointment_day;
+
   /// No description provided for @calendar_not_started_status.
   ///
   /// In en, this message translates to:
@@ -3613,6 +3619,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to cancel appointment'**
   String get calendar_cancel_error;
+
+  /// No description provided for @calendar_unconfirmed_on_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Unconfirmed on date'**
+  String get calendar_unconfirmed_on_date;
 
   /// No description provided for @notifications_mark_all_read.
   ///

@@ -1636,6 +1636,9 @@ class AppLocalizationsTh extends AppLocalizations {
   }
 
   @override
+  String get not_yet_appointment_day => 'ยังไม่ถึงวันนัดหมาย';
+
+  @override
   String get calendar_not_started_status => 'ยังไม่เริ่มเดินทาง';
 
   @override
@@ -1835,6 +1838,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get calendar_cancel_error => 'ไม่สามารถยกเลิกนัดหมายได้';
 
   @override
+  String get calendar_unconfirmed_on_date => 'รอยืนยันนัดหมาย';
+
+  @override
   String get notifications_mark_all_read => 'อ่านทั้งหมด';
 
   @override
@@ -1933,7 +1939,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get booking_retry => 'ลองใหม่';
 
   @override
-  String get booking_status_pending_client => 'ลูกค้ารอยืนยัน';
+  String get booking_status_pending_client => 'รอการยืนยันนัดจากลูกค้า';
 
   @override
   String get booking_status_traveling_client => 'ลูกค้ากำลังเดินทาง';

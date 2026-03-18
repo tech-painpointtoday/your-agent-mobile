@@ -565,6 +565,7 @@
       }
     }
   },
+  "not_yet_appointment_day": "Not yet appointment day",
   "calendar_not_started_status": "Not started",
   "calendar_tab_appointments": "Appointments",
   "calendar_tab_history": "History",
@@ -628,6 +629,7 @@
   "calendar_status_expired": "Expired",
   "calendar_cancel_success": "Appointment cancelled successfully",
   "calendar_cancel_error": "Failed to cancel appointment",
+  "calendar_unconfirmed_on_date": "Waiting for confirmation",
   "notifications_mark_all_read": "Mark all as read",
   "notifications_confirm_mark_all_read_title": "Mark All as Read?",
   "notifications_confirm_mark_all_read_desc": "Are you sure you want to mark all notifications as read?",
