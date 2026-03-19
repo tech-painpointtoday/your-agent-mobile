@@ -99,15 +99,15 @@
 	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Your camera is used to take a picture</string>
+	<string>YourAgent uses the camera to let you take and upload property and document photos.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Your location is used to show location point of interest and improve navigation.</string>
+	<string>YourAgent uses location to show nearby properties, map routes, and improve location-based search.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is used to show location point of interest and improve navigation.</string>
+	<string>YourAgent uses background location to keep route guidance accurate during navigation.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is used to show location point of interest and improve navigation.</string>
+	<string>YourAgent uses location while the app is open for nearby properties and booking route maps.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Your photo is used to upload a picture</string>
+	<string>YourAgent accesses your photo library so you can select and upload property photos and documents.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
