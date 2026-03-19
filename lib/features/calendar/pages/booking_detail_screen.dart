@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -36,11 +38,21 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
   Booking? _booking;
   String? _error;
   final _bookingApiService = DependencyInjection.bookingApiService;
+  StreamSubscription<RemoteMessage>? _messageSub;
 
   @override
   void initState() {
     super.initState();
     _fetchBookingDetail();
+    _messageSub = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      final idStr = message.data['booking_id']?.toString() ??
+          message.data['bookingId']?.toString();
+      if (idStr == null) return;
+      final id = int.tryParse(idStr);
+      if (id == widget.bookingId) {
+        _fetchBookingDetail();
+      }
+    });
   }
 
   Future<void> _fetchBookingDetail() async {
@@ -210,6 +222,12 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _messageSub?.cancel();
+    super.dispose();
   }
 
   @override

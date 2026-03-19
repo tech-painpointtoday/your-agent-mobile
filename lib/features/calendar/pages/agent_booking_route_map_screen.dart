@@ -282,7 +282,7 @@ class _AgentBookingRouteMapScreenState
       );
 
       if (!mounted) return;
-      context.canPop() ? context.pop() : context.go('/agent/bookings');
+      context.canPop() ? context.pop() : context.go('/calendar');
     } catch (e) {
       if (!mounted) return;
       StatusDialog.showError(
