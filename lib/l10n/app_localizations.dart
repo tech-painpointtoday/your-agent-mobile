@@ -3623,7 +3623,7 @@ abstract class AppLocalizations {
   /// No description provided for @calendar_unconfirmed_on_date.
   ///
   /// In en, this message translates to:
-  /// **'Unconfirmed on date'**
+  /// **'Waiting for confirmation'**
   String get calendar_unconfirmed_on_date;
 
   /// No description provided for @notifications_mark_all_read.

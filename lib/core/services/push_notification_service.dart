@@ -26,8 +26,22 @@ class PushNotificationService {
     required Function(String token) onTokenReceived,
   }) async {
     try {
+      await _localNotifications.initialize(
+        onNotificationTap: (payload) {
+          if (payload != null && payload.isNotEmpty) {
+            onNotificationTap(payload);
+          }
+        },
+      );
+
       // Request permissions (iOS)
       await _requestPermissions();
+      await _localNotifications.requestPermissions();
+      await _messaging.setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
 
       // Get FCM token
       if (Platform.isIOS) {
@@ -69,7 +83,7 @@ class PushNotificationService {
       // Handle notification taps when app is in background/terminated
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         debugPrint('Notification tapped: ${message.data}');
-        final notificationId = message.data['notificationId'];
+        final notificationId = _extractNotificationPayload(message);
         if (notificationId != null) {
           onNotificationTap(notificationId);
         }
@@ -78,7 +92,7 @@ class PushNotificationService {
       // Check if app was opened from a terminated state via notification
       final initialMessage = await _messaging.getInitialMessage();
       if (initialMessage != null) {
-        final notificationId = initialMessage.data['notificationId'];
+        final notificationId = _extractNotificationPayload(initialMessage);
         if (notificationId != null) {
           onNotificationTap(notificationId);
         }
@@ -103,15 +117,33 @@ class PushNotificationService {
   /// Handle messages when app is in foreground
   Future<void> _handleForegroundMessage(RemoteMessage message) async {
     final notification = message.notification;
-    if (notification == null) return;
+    final title = notification?.title ?? message.data['title']?.toString();
+    final body = notification?.body ?? message.data['body']?.toString();
+    if ((title == null || title.isEmpty) && (body == null || body.isEmpty)) {
+      return;
+    }
 
     // Show local notification
     await _localNotifications.showNotification(
       id: message.hashCode,
-      title: notification.title ?? 'New Notification',
-      body: notification.body ?? '',
-      payload: message.data['notificationId'],
+      title: title ?? 'New Notification',
+      body: body ?? '',
+      payload: _extractNotificationPayload(message),
     );
+  }
+
+  String? _extractNotificationPayload(RemoteMessage message) {
+    final notificationId = message.data['notificationId']?.toString();
+    if (notificationId != null && notificationId.isNotEmpty) {
+      return notificationId;
+    }
+
+    final route = message.data['route']?.toString();
+    if (route != null && route.isNotEmpty) {
+      return route;
+    }
+
+    return null;
   }
 
   /// Subscribe to a topic

@@ -695,6 +695,26 @@
   "booking_status_pending_client": "รอการยืนยันนัดจากลูกค้า",
   "booking_status_traveling_client": "ลูกค้ากำลังเดินทาง",
   "booking_status_arrived_client": "ถึงที่หมายแล้ว",
+  "booking_status_before_appointment": "ยังไม่ถึงวันนัดหมาย",
+  "booking_status_past_appointment_day": "การนัดหมายนี้เลยกำหนดเวลาแล้ว โดยไม่มีการอัปเดต",
+  "booking_status_waiting_confirm_badge": "รอยืนยันนัดหมาย",
+  "booking_status_waiting_client_confirm_badge": "รอยืนยันนัดหมายจากลูกค้า",
+  "booking_status_agent_please_confirm_line": "กรุณากด “{action}” เพื่อยืนยันนัดหมาย",
+  "@booking_status_agent_please_confirm_line": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "booking_status_agent_please_confirm_line_detail": "กรุณากด “{action}” เพื่อยืนยันการนัดหมายตามกำหนดการ",
+  "@booking_status_agent_please_confirm_line_detail": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
   "booking_confirm_booking": "ยืนยันนัด",
   "booking_confirm_booking_title": "ยืนยันนัดหมาย?",
   "booking_confirm_booking_desc": "คุณต้องการยืนยันนัดหมายนี้หรือไม่?",
