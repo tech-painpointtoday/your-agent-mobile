@@ -2,9 +2,12 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'local_notification_service.dart';
 import '../di/dependency_injection.dart';
 import 'device_service.dart';
+import 'package:youragent/features/calendar/bloc/booking_list/booking_list_bloc.dart';
+import 'package:youragent/features/calendar/bloc/booking_list/booking_list_event.dart';
 
 /// Service for handling Firebase Cloud Messaging (Push Notifications)
 class PushNotificationService {
@@ -130,6 +133,16 @@ class PushNotificationService {
       body: body ?? '',
       payload: _extractNotificationPayload(message),
     );
+
+    // Best-effort refresh for booking lists if Calendar is in the tree.
+    final ctx = navigatorKey.currentContext;
+    if (ctx != null) {
+      try {
+        ctx.read<BookingListBloc>().add(const FetchBookings(refresh: true));
+      } catch (_) {
+        // Ignore if BookingListBloc is not in scope.
+      }
+    }
   }
 
   String? _extractNotificationPayload(RemoteMessage message) {

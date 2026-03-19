@@ -696,6 +696,26 @@
   "booking_status_pending_client": "Waiting for client confirmation",
   "booking_status_traveling_client": "Client is traveling",
   "booking_status_arrived_client": "Arrived at destination",
+  "booking_status_before_appointment": "Not appointment day yet",
+  "booking_status_past_appointment_day": "Appointment has passed without update",
+  "booking_status_waiting_confirm_badge": "Waiting to confirm appointment",
+  "booking_status_waiting_client_confirm_badge": "Waiting for renter/buyer confirmation",
+  "booking_status_agent_please_confirm_line": "Please tap “{action}” to confirm the appointment",
+  "@booking_status_agent_please_confirm_line": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "booking_status_agent_please_confirm_line_detail": "Please tap “{action}” to confirm the appointment as scheduled",
+  "@booking_status_agent_please_confirm_line_detail": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
   "booking_confirm_booking": "Confirm Booking",
   "booking_confirm_booking_title": "Confirm Booking?",
   "booking_confirm_booking_desc": "Do you want to confirm this booking?",
