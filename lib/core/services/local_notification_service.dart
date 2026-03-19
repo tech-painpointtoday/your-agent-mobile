@@ -11,6 +11,11 @@ class LocalNotificationService {
   final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
 
+  static const String channelId = 'youragent_high_importance_channel';
+  static const String channelName = 'YourAgent Alerts';
+  static const String channelDescription =
+      'Important alerts and updates from YourAgent';
+
   bool _initialized = false;
 
   /// Initialize local notifications
@@ -40,24 +45,46 @@ class LocalNotificationService {
     await _notifications.initialize(
       initSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        if (response.payload != null) {
-          onNotificationTap(response.payload);
+        final payload = response.payload;
+        if (payload != null && payload.isNotEmpty) {
+          onNotificationTap(payload);
         }
       },
     );
 
+    final androidPlugin = _notifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (androidPlugin != null) {
+      await androidPlugin.createNotificationChannel(
+        const AndroidNotificationChannel(
+          channelId,
+          channelName,
+          description: channelDescription,
+          importance: Importance.max,
+        ),
+      );
+    }
+
     _initialized = true;
   }
 
-  /// Request permissions (iOS only, Android permissions handled in AndroidManifest)
+  /// Request permissions for iOS and Android 13+.
   Future<bool> requestPermissions() async {
-    final result = await _notifications
+    final iosResult = await _notifications
         .resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin
         >()
         ?.requestPermissions(alert: true, badge: true, sound: true);
 
-    return result ?? false;
+    final androidResult = await _notifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.requestNotificationsPermission();
+
+    return (iosResult ?? true) && (androidResult ?? true);
   }
 
   /// Show a local notification
@@ -68,11 +95,11 @@ class LocalNotificationService {
     String? payload,
   }) async {
     const androidDetails = AndroidNotificationDetails(
-      'youragent_channel', // Channel ID
-      'YourAgent Notifications', // Channel name
-      channelDescription: 'Notifications from YourAgent app',
-      importance: Importance.high,
-      priority: Priority.high,
+      channelId,
+      channelName,
+      channelDescription: channelDescription,
+      importance: Importance.max,
+      priority: Priority.max,
       icon: '@mipmap/ic_launcher',
     );
 

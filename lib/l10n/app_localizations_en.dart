@@ -1951,6 +1951,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get booking_status_before_appointment => 'Not appointment day yet';
 
   @override
+  String get booking_status_past_appointment_day =>
+      'Appointment has passed without update';
+
+  @override
   String get booking_status_waiting_confirm_badge =>
       'Waiting to confirm appointment';
 

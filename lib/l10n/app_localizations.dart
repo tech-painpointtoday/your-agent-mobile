@@ -3812,6 +3812,12 @@ abstract class AppLocalizations {
   /// **'Not appointment day yet'**
   String get booking_status_before_appointment;
 
+  /// No description provided for @booking_status_past_appointment_day.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment has passed without update'**
+  String get booking_status_past_appointment_day;
+
   /// No description provided for @booking_status_waiting_confirm_badge.
   ///
   /// In en, this message translates to:

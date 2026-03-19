@@ -1948,6 +1948,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get booking_status_before_appointment => 'ยังไม่ถึงวันนัดหมาย';
 
   @override
+  String get booking_status_past_appointment_day =>
+      'การนัดหมายนี้เลยกำหนดเวลาแล้ว โดยไม่มีการอัปเดต';
+
+  @override
   String get booking_status_waiting_confirm_badge => 'รอยืนยันนัดหมาย';
 
   @override

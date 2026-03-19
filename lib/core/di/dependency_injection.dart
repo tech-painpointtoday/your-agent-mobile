@@ -133,6 +133,11 @@ class DependencyInjection {
     // Initialize Push Notifications
     _pushNotificationService.initialize(
       onNotificationTap: (notificationId) {
+        if (notificationId.startsWith('/')) {
+          navigatorKey.currentContext?.push(notificationId);
+          return;
+        }
+
         // notificationId format is 'booking_123'
         if (notificationId.startsWith('booking_')) {
           final id = notificationId.replaceFirst('booking_', '');
