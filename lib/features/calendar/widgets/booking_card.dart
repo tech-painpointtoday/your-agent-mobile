@@ -69,6 +69,21 @@ class BookingCard extends StatelessWidget {
             _buildHeader(context),
             const SizedBox(height: 16),
             _buildStatusAndSubtext(context),
+            if (booking.status == BookingStatus.cancelled &&
+                booking.cancelledAt != null) ...[
+              const SizedBox(height: 8),
+              SelectableText(
+                DateFormat(
+                  'd MMM yyyy, HH:mm',
+                  Localizations.localeOf(context).languageCode,
+                ).format(booking.cancelledAt!.toLocal()),
+                style: GoogleFonts.anuphan(
+                  fontSize: 12,
+                  color: AppColors.supportRedDark,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
             _buildWarningSection(context),
             const SizedBox(height: 16),
             _buildActions(context),

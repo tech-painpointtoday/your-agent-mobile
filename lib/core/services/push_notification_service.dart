@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'local_notification_service.dart';
 import '../di/dependency_injection.dart';
 import 'device_service.dart';
-import 'package:youragent/features/calendar/bloc/booking_list/booking_list_bloc.dart';
-import 'package:youragent/features/calendar/bloc/booking_list/booking_list_event.dart';
+import 'package:yourhome/features/calendar/bloc/booking_list/booking_list_bloc.dart';
+import 'package:yourhome/features/calendar/bloc/booking_list/booking_list_event.dart';
 
 /// Service for handling Firebase Cloud Messaging (Push Notifications)
 class PushNotificationService {

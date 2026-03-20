@@ -33,7 +33,12 @@ class BookingAttendanceParty extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, confirmedOnDateAt, travelingAt, arrivedAt];
+  List<Object?> get props => [
+    status,
+    confirmedOnDateAt,
+    travelingAt,
+    arrivedAt,
+  ];
 }
 
 class BookingAttendance extends Equatable {
@@ -156,8 +161,8 @@ class Booking extends Equatable {
       travelTimeFormatted: json['travel_time_formatted']?.toString(),
       timeUntilAppointmentSeconds:
           json['time_until_appointment_seconds'] as int?,
-      timeUntilAppointmentFormatted:
-          json['time_until_appointment_formatted']?.toString(),
+      timeUntilAppointmentFormatted: json['time_until_appointment_formatted']
+          ?.toString(),
       requiredTimeSeconds: json['required_time_seconds'] as int?,
     );
   }
@@ -188,6 +193,53 @@ class Booking extends Equatable {
     timeUntilAppointmentFormatted,
     requiredTimeSeconds,
   ];
+
+  /// Returns the booking's datetime as a [DateTime] object.
+  DateTime get bookingDateTime {
+    try {
+      DateTime? d = DateTime.tryParse(ymd);
+
+      // Fallback for YYYYMMDD format
+      if (d == null && ymd.length == 8) {
+        final year = int.tryParse(ymd.substring(0, 4));
+        final month = int.tryParse(ymd.substring(4, 6));
+        final day = int.tryParse(ymd.substring(6, 8));
+        if (year != null && month != null && day != null) {
+          d = DateTime(year, month, day);
+        }
+      }
+
+      d ??= DateTime.now();
+
+      final parts = time.split(':');
+      final h = parts.isNotEmpty ? int.tryParse(parts[0]) ?? 0 : 0;
+      final m = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
+      return DateTime(d.year, d.month, d.day, h, m);
+    } catch (_) {
+      return DateTime.now();
+    }
+  }
+
+  /// Returns true if the booking is in the future (upcoming)
+  bool get isUpcoming {
+    final now = DateTime.now();
+    if (bookingDateTime.isAfter(now)) return true;
+
+    // If same day and status is confirm, keep it in upcoming/active
+    if (status == BookingStatus.confirm) {
+      final today = DateTime(now.year, now.month, now.day);
+      final bookingDate = DateTime(
+        bookingDateTime.year,
+        bookingDateTime.month,
+        bookingDateTime.day,
+      );
+      if (bookingDate.isAtSameMomentAs(today)) return true;
+    }
+    return false;
+  }
+
+  /// Returns true if the booking is in the past (history)
+  bool get isPast => !isUpcoming;
 }
 
 class PaginatedBookings extends Equatable {

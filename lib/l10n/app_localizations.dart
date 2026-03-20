@@ -3812,6 +3812,42 @@ abstract class AppLocalizations {
   /// **'Arrived at destination'**
   String get booking_status_arrived_client;
 
+  /// No description provided for @booking_status_before_appointment.
+  ///
+  /// In en, this message translates to:
+  /// **'Not appointment day yet'**
+  String get booking_status_before_appointment;
+
+  /// No description provided for @booking_status_past_appointment_day.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment has passed without update'**
+  String get booking_status_past_appointment_day;
+
+  /// No description provided for @booking_status_waiting_confirm_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to confirm appointment'**
+  String get booking_status_waiting_confirm_badge;
+
+  /// No description provided for @booking_status_waiting_client_confirm_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for renter/buyer confirmation'**
+  String get booking_status_waiting_client_confirm_badge;
+
+  /// No description provided for @booking_status_agent_please_confirm_line.
+  ///
+  /// In en, this message translates to:
+  /// **'Please tap “{action}” to confirm the appointment'**
+  String booking_status_agent_please_confirm_line(String action);
+
+  /// No description provided for @booking_status_agent_please_confirm_line_detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please tap “{action}” to confirm the appointment as scheduled'**
+  String booking_status_agent_please_confirm_line_detail(String action);
+
   /// No description provided for @booking_confirm_booking.
   ///
   /// In en, this message translates to:

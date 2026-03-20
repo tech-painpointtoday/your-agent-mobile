@@ -45,7 +45,8 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     super.initState();
     _fetchBookingDetail();
     _messageSub = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      final idStr = message.data['booking_id']?.toString() ??
+      final idStr =
+          message.data['booking_id']?.toString() ??
           message.data['bookingId']?.toString();
       if (idStr == null) return;
       final id = int.tryParse(idStr);

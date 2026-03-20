@@ -75,7 +75,6 @@ String? bookingStatusLineForAgent({
   );
 
   final isBeforeDate = appointmentDate.isAfter(today);
-  final isPastAppointmentDay = appointmentDate.isBefore(now);
 
   final sellerAttendance = booking.attendance?.seller;
   final buyerAttendance = booking.attendance?.buyer;
@@ -90,7 +89,7 @@ String? bookingStatusLineForAgent({
 
   if (booking.status == BookingStatus.cancelled) {
     return null;
-  } else if (isPastAppointmentDay && !isMet) {
+  } else if (booking.isPast && !isMet) {
     return l10n.booking_status_past_appointment_day;
   } else if (booking.status == BookingStatus.confirm) {
     if (isBeforeDate) {
@@ -129,17 +128,37 @@ BookingConfirmFlowUi computeAgentConfirmFlowUi({
   final buyerAttendance = booking.attendance?.buyer;
 
   final isAppointmentDay = isBookingAppointmentDay(booking: booking, now: now);
-  final isPastAppointmentDay = booking.bookingDateTime.isBefore(now);
   final sellerConfirmed = sellerAttendance?.confirmedOnDateAt != null;
   final buyerConfirmed = buyerAttendance?.confirmedOnDateAt != null;
+  final isMet =
+      buyerAttendance?.arrivedAt != null && sellerAttendance?.arrivedAt != null;
 
   final statusLine = bookingStatusLineForAgent(
     l10n: l10n,
     booking: booking,
     now: now,
   );
-  if (booking.status == BookingStatus.confirm) {
-    if (!isAppointmentDay && !isPastAppointmentDay) {
+
+  if (booking.status == BookingStatus.cancelled) {
+    return BookingConfirmFlowUi(
+      badgeLabel: l10n.booking_status_past_appointment_day,
+      badgeColor: BadgeColor.red,
+      statusLine: statusLine,
+    );
+  } else if (isMet) {
+    return BookingConfirmFlowUi(
+      badgeLabel: l10n.calendar_status_finished,
+      badgeColor: BadgeColor.purple,
+      statusLine: statusLine,
+    );
+  } else if (booking.isPast) {
+    return BookingConfirmFlowUi(
+      badgeLabel: l10n.booking_status_past_appointment_day,
+      badgeColor: BadgeColor.orange,
+      statusLine: statusLine,
+    );
+  } else if (booking.status == BookingStatus.confirm) {
+    if (!isAppointmentDay && !booking.isPast) {
       return BookingConfirmFlowUi(
         badgeLabel: l10n.not_yet_appointment_day,
         badgeColor: BadgeColor.default_,

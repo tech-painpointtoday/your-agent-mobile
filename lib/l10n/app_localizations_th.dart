@@ -1948,6 +1948,30 @@ class AppLocalizationsTh extends AppLocalizations {
   String get booking_status_arrived_client => 'ถึงที่หมายแล้ว';
 
   @override
+  String get booking_status_before_appointment => 'ยังไม่ถึงวันนัดหมาย';
+
+  @override
+  String get booking_status_past_appointment_day =>
+      'การนัดหมายนี้เลยกำหนดเวลาแล้ว โดยไม่มีการอัปเดต';
+
+  @override
+  String get booking_status_waiting_confirm_badge => 'รอยืนยันนัดหมาย';
+
+  @override
+  String get booking_status_waiting_client_confirm_badge =>
+      'รอยืนยันนัดหมายจากลูกค้า';
+
+  @override
+  String booking_status_agent_please_confirm_line(String action) {
+    return 'กรุณากด “$action” เพื่อยืนยันนัดหมาย';
+  }
+
+  @override
+  String booking_status_agent_please_confirm_line_detail(String action) {
+    return 'กรุณากด “$action” เพื่อยืนยันการนัดหมายตามกำหนดการ';
+  }
+
+  @override
   String get booking_confirm_booking => 'ยืนยันนัด';
 
   @override
